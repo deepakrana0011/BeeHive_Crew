@@ -52,9 +52,14 @@ class ImageConstants{
   static const String cameraIcon = "assets/images/ic_camera_icon.svg";
   static const String userIcon = "assets/images/ic_user_icon.png";
   static const String cardIcon = "assets/images/ic_card_icon.png";
-
+  static const String forwardArrowIcon = "assets/images/ic_forward_icon.svg";
+  static const String checkoutIcon = "assets/images/ic_checkout.svg";
+  static const String closeIcon = "assets/images/ic_close.svg";
+  static const String downArrowIcon = "assets/images/ic_down_arrow.svg";
+  static const String checkedInIcon = "assets/images/ic_checked_in.svg";
+  static const String smallBackIcon = "assets/images/ic_small_back.svg";
+  static const String exportIcon = "assets/images/ic_export.svg";
+  static const String backIcon = "assets/images/ic_back.svg";
+  static const String timeSheetsProfile = "assets/images/timesheets_profile.png";
+  static const String archivedFolderIcon = "assets/images/ic_archived_folder.svg";
 }
-
-
-
-

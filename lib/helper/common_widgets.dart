@@ -18,6 +18,7 @@ class CommonWidgets{
       currentFocus.unfocus();
     }
   }
+
   static Widget signInCreateAccountRow(BuildContext context){
     return Padding(
       padding: EdgeInsets.only(left: DimensionConstants.d6.w, right: DimensionConstants.d29.w),
@@ -28,7 +29,7 @@ class CommonWidgets{
             onTap: (){
               Navigator.of(context)
                   .pushNamedAndRemoveUntil(
-                  RouteConstants.signInScreen,
+                  RouteConstants.selectToContinueScreen,
                       (route) => false);
             },
             child:  Text("sign_in".tr()).regularText(context,
@@ -38,7 +39,7 @@ class CommonWidgets{
             onTap: (){
               Navigator.of(context)
                   .pushNamedAndRemoveUntil(
-                  RouteConstants.signInScreen,
+                  RouteConstants.selectToContinueScreen,
                       (route) => false);
             },
             child: Text("create_account".tr()).regularText(context,
@@ -202,4 +203,77 @@ class CommonWidgets{
 
 
 
+
+ static Widget totalProjectsTotalHoursRow(BuildContext context, String totalProject, String totalHours) {
+    return Container(
+          height: DimensionConstants.d72.h,
+          width: DimensionConstants.d343.w,
+          decoration: BoxDecoration(
+            color: ColorConstants.littleDarkGray,
+            borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
+          ),
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d40.w),
+            child: Row(
+              children: <Widget>[
+                Padding(
+                  padding:
+                  EdgeInsets.symmetric(vertical: DimensionConstants.d13.h),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Text(totalProject).semiBoldText(
+                          context, DimensionConstants.d20.sp, TextAlign.left,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? ColorConstants.colorBlack
+                              : ColorConstants.colorBlack),
+                      SizedBox(
+                        height: DimensionConstants.d5.h,
+                      ),
+                      Text("project_projects".tr()).regularText(
+                          context, DimensionConstants.d14.sp, TextAlign.left,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? ColorConstants.colorBlack
+                              : ColorConstants.colorBlack),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  width: DimensionConstants.d40.w,
+                ),
+                Container(
+                  height: DimensionConstants.d72.h,
+                  width: DimensionConstants.d1.w,
+                  color: ColorConstants.colorGrayE8,
+                ),
+                SizedBox(
+                  width: DimensionConstants.d55.w,
+                ),
+                Padding(
+                  padding:
+                  EdgeInsets.symmetric(vertical: DimensionConstants.d13.h),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Text(totalHours).semiBoldText(
+                          context, DimensionConstants.d20.sp, TextAlign.left,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? ColorConstants.colorBlack
+                              : ColorConstants.colorBlack),
+                      SizedBox(
+                        height: DimensionConstants.d5.h,
+                      ),
+                      Text("total_hours".tr()).regularText(
+                          context, DimensionConstants.d14.sp, TextAlign.left,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? ColorConstants.colorBlack
+                              : ColorConstants.colorBlack),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+  }
 }

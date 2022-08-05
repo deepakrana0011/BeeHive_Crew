@@ -44,8 +44,6 @@
   "0_projects" : "0 Projects",
   "0_hours" : "0 Hours",
   "all_projects": "All Projects",
-  "project_projects": "Project Projects",
-  "total_hours": "Total Hours",
   "create_a_new_project": "Create a New Project",
   "project_details": "Project details",
   "directions": "Directions",
@@ -53,7 +51,6 @@
   "notes": "Notes",
   "add_note": "Add note",
   "water_pipe_scale_notes": "Water Pipe scale notes",
-  "crew": "Crew",
   "crew_manager": "CREW MANAGER",
   "carpenter": "Carpenter",
   "title": "Title",
@@ -64,7 +61,6 @@
   "camera": "Camera",
   "cancel": "Cancel",
   "project_settings": "Project Settings",
-  "notifications": "Notifications",
   "turn_on_notifications_for_this_project": "Turn on notifications for this project.",
   "crew_manager_small": "Crew Manager",
   "contact": "Contact",
@@ -109,13 +105,37 @@
   "don_use_it_don_pay": "Don’t use it, don’t pay",
   "you_will_not_be_charged_for_inactive_crew_members": "You will not be charged for inactive crew members.",
   "continue": "Continue",
-  "payment": "Payment"
-
-
-
-
-
-
-
-
+  "payment": "Payment",
+  "projects" : "Projects",
+  "hours" : "Hours",
+  "You_have_not_checked_in_today" : "You haven’t checked-in today.",
+  "checked_out" : "Checked-out",
+  "last_check_in" : "Last Check in",
+  "total_hours" : "Total Hours",
+  "checked_in" : "Checked In:",
+  "check_out" : "Check-out",
+  "are_you_still_checked_in" : "Hey John,\u2028are you still checked-in?",
+  "no_check_out" : "No, check-out",
+  "i_am_still_here" : "I’m still here",
+  "when_did_you_check_out" : "When did you check-out?",
+  "export_time_sheet" : "Export Timesheet",
+  "interruption" : "interruption",
+  "break" : "Break",
+  "notifications" : "Notifications",
+  "invited_to_join_new_project" : "Invited you to join a new project. ",
+  "crew" : "Crew",
+  "units" : "Units",
+  "time" : "Time",
+  "language" : "Language",
+  "font_size" : "Font Size",
+  "about" : "About",
+  "privacy_policy" : "Privacy Policy",
+  "terms_of_use" : "Terms of Use",
+  "data_and_app_tracking" : "Data & App Tracking",
+  "metric_km" : "Metric (km)",
+  "am_pm" : "AM / PM",
+  "english" : "English",
+  "project_projects" : "Project Projects",
+  "select_to_continue_registration_or_login" : "Select To Continue Registration Or Login",
+  "manager" : "Manager"
 }

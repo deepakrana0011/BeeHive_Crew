@@ -4,7 +4,12 @@ import 'package:flutter/material.dart';
 class DashboardProvider extends BaseProvider{
 
   bool checkedInNoProjects = false;
+  bool hasProjects = false;
+  bool has2Projects = false;
+  bool isCheckedIn = false;
 
-  TabController? controller;
-  int selectedIndex = 0;
+  String? checkIn;
+  List<String> checkInItems = ["123 Main St., Toronto, ON", "123 Main St., Toronto, ON", "123 Main St., Toronto, ON"];
+
+
 }

@@ -13,3 +13,10 @@ class RouteConstants{
   static const String upgradePage = "upgradePage";
   static const String paymentPage = "paymentPage";
 }
+  static const String timeSheetsScreen = "timeSheetsScreen";
+  static const String notificationsScreen = "notificationsScreen";
+  static const String archivedProjectsScreen = "archivedProjectsScreen";
+  static const String appSettings = "appSettings";
+  static const String selectToContinueScreen = "selectToContinueScreen";
+  static const String emailAddressScreen = "emailAddressScreen";
+ }

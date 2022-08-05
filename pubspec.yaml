@@ -47,6 +47,7 @@ dependencies:
   google_maps_flutter: ^2.1.10
   image_picker: ^0.8.5+3
   custom_switch: ^0.0.1
+  dropdown_button2: ^1.7.1
 
 dev_dependencies:
   flutter_test:
