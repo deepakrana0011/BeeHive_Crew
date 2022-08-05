@@ -23,6 +23,20 @@ class ImageConstants{
   static const String locationIcon = "assets/images/ic_location.svg";
   static const String noProject = "assets/images/no_project.png";
   static const String dashboardAppBarIcon1 = "assets/images/ic_dashboard_appbar1.png";
-  static const String mapIcon = "assets/images/ic_map.svg";
-  static const String clockIcon = "assets/images/ic_clock.svg";
+  static const String mapIcon = "assets/images/ic_map.png";
+  static const String clockIcon = "assets/images/ic_clock.png";
+  static const String forwardArrowIcon = "assets/images/ic_forward_icon.svg";
+  static const String coolIcon = "assets/images/ic_cool_icon.svg";
+  static const String checkoutIcon = "assets/images/ic_checkout.svg";
+  static const String closeIcon = "assets/images/ic_close.svg";
+  static const String downArrowIcon = "assets/images/ic_down_arrow.svg";
+  static const String checkedInIcon = "assets/images/ic_checked_in.svg";
+  static const String smallBackIcon = "assets/images/ic_small_back.svg";
+  static const String backIconIos = "assets/images/ic_back_iOS.svg";
+  static const String nextIconIos = "assets/images/ic_next_iOS.svg";
+  static const String exportIcon = "assets/images/ic_export.svg";
+  static const String backIcon = "assets/images/ic_back.svg";
+  static const String timeSheetsProfile = "assets/images/timesheets_profile.png";
+  static const String searchIcon = "assets/images/ic_search.svg";
+  static const String archivedFolderIcon = "assets/images/ic_archived_folder.svg";
 }

@@ -36,7 +36,7 @@ class IntroductionWidget extends StatelessWidget {
             onTap: (){
               Navigator.of(context)
                   .pushNamedAndRemoveUntil(
-                  RouteConstants.signInScreen,
+                  RouteConstants.selectToContinueScreen,
                       (route) => false);
             },
             child: Text("skip".tr()).regularText(context,

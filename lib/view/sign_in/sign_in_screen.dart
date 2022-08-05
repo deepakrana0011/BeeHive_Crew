@@ -25,6 +25,8 @@ class _SignInScreenState extends State<SignInScreen> with TickerProviderStateMix
 
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
+  final emailFocusNode = FocusNode();
+  final passwordFocusNode = FocusNode();
   SignInProvider provider = locator<SignInProvider>();
   final _formKey = GlobalKey<FormState>();
   @override
@@ -42,6 +44,13 @@ class _SignInScreenState extends State<SignInScreen> with TickerProviderStateMix
             provider.tabController = TabController(length: 2, vsync: this);
             provider.tabController!.addListener(() {
               provider.selectedIndex = provider.tabController!.index;
+              emailController.clear();
+              passwordController.clear();
+              FocusScope.of(context).requestFocus(FocusNode());
+              provider.emailContentPadding = false;
+              provider.emailContentPadding1  = false;
+              provider.passwordContentPadding = false;
+              provider.passwordContentPadding1 = false;
               provider.updateLoadingStatus(true);
             });
 
@@ -99,10 +108,10 @@ class _SignInScreenState extends State<SignInScreen> with TickerProviderStateMix
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text("your_email".tr()).mediumText(context, DimensionConstants.d12.sp, TextAlign.center, color: ColorConstants.colorWhite70),
-                                emailTextField(provider.emailContentPadding),
+                                emailTextField(),
                                 SizedBox(height: DimensionConstants.d32.h),
                                 Text("your_password".tr()).mediumText(context, DimensionConstants.d12.sp, TextAlign.center, color: ColorConstants.colorWhite70),
-                                passwordTextField(provider.passwordContentPadding),
+                                passwordTextField(),
                                 SizedBox(height: DimensionConstants.d27.h),
                                 Row(
                                   children: [
@@ -144,10 +153,10 @@ class _SignInScreenState extends State<SignInScreen> with TickerProviderStateMix
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Text("your_email".tr()).mediumText(context, DimensionConstants.d12.sp, TextAlign.center, color: ColorConstants.colorWhite70),
-                                emailTextField(provider.emailContentPadding1),
+                                emailTextField(),
                                 SizedBox(height: DimensionConstants.d32.h),
                                 Text("your_password".tr()).mediumText(context, DimensionConstants.d12.sp, TextAlign.center, color: ColorConstants.colorWhite70),
-                                passwordTextField(provider.passwordContentPadding1),
+                                passwordTextField(),
                                 SizedBox(height: DimensionConstants.d27.h),
                                 Row(
                                   children: [
@@ -201,18 +210,27 @@ class _SignInScreenState extends State<SignInScreen> with TickerProviderStateMix
     );
   }
 
-  Widget emailTextField(bool contPadding){
+  Widget emailTextField(){
     return  TextFormField(
+      focusNode: emailFocusNode,
       controller: emailController,
       style: ViewDecoration.textFieldStyle(DimensionConstants.d18.sp, FontWeight.w400, ColorConstants.colorWhite),
-      decoration: ViewDecoration.inputDecorationTextField(contPadding: contPadding),
+      decoration: ViewDecoration.inputDecorationTextField(contPadding: provider.selectedIndex == 0 ? provider.emailContentPadding : provider.emailContentPadding1),
       textInputAction: TextInputAction.next,
       keyboardType: TextInputType.emailAddress,
       onChanged: (value) {
         if (value.isNotEmpty) {
-          contPadding = true;
+          if(provider.selectedIndex == 0){
+            provider.emailContentPadding = true;
+          } else{
+            provider.emailContentPadding1 = true;
+          }
         } else{
-          contPadding = false;
+          if(provider.selectedIndex == 0){
+            provider.emailContentPadding = false;
+          } else{
+            provider.emailContentPadding1 = false;
+          }
         }
         provider.updateLoadingStatus(true);
       },
@@ -229,12 +247,13 @@ class _SignInScreenState extends State<SignInScreen> with TickerProviderStateMix
     );
   }
 
-  Widget passwordTextField(bool contPadding){
+  Widget passwordTextField(){
     return  TextFormField(
+      focusNode: passwordFocusNode,
       controller: passwordController,
       obscureText: !provider.passwordVisible,
       style: ViewDecoration.textFieldStyle(DimensionConstants.d18.sp, FontWeight.w400, ColorConstants.colorWhite),
-      decoration: ViewDecoration.inputDecorationTextField(contPadding: contPadding, suffixIcon:  IconButton(
+      decoration: ViewDecoration.inputDecorationTextField(contPadding: provider.selectedIndex == 0 ? provider.passwordContentPadding : provider.passwordContentPadding1, suffixIcon:  IconButton(
         padding: EdgeInsets.zero,
         icon: const ImageView(
           path: ImageConstants.eyeIcon,
@@ -248,9 +267,17 @@ class _SignInScreenState extends State<SignInScreen> with TickerProviderStateMix
       keyboardType: TextInputType.text,
       onChanged: (value) {
         if (value.isNotEmpty) {
-          contPadding = true;
+          if(provider.selectedIndex == 0){
+            provider.passwordContentPadding = true;
+          } else{
+            provider.passwordContentPadding1 = true;
+          }
         } else{
-          contPadding = false;
+          if(provider.selectedIndex == 0){
+            provider.passwordContentPadding = false;
+          } else{
+            provider.passwordContentPadding1 = false;
+          }
         }
         provider.updateLoadingStatus(true);
       },

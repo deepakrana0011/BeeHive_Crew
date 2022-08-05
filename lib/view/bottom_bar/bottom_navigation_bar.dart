@@ -6,7 +6,7 @@ import 'package:beehive/view/base_view.dart';
 import 'package:beehive/view/dashboard/dashboard.dart';
 import 'package:beehive/view/profile/profile.dart';
 import 'package:beehive/view/projects/projects.dart';
-import 'package:beehive/view/timesheets/timesheets.dart';
+import 'package:beehive/view/timesheets/timesheets_tab_bar.dart';
 import 'package:beehive/widget/image_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -22,7 +22,7 @@ class _BottomBarState extends State<BottomBar> {
   static final List<Widget> _widgetOptions = <Widget>[
      DashBoardPage(),
     const Projects(),
-    const TimeSheets(),
+    const TimeSheetsTabBar(),
     const Profile(),
   ];
   @override
