@@ -12,6 +12,9 @@ class AppTheme {
     scaffoldBackgroundColor: ColorConstants.colorWhite,
     appBarTheme: const AppBarTheme(
       color: ColorConstants.colorWhite,
+      titleTextStyle: TextStyle(
+          color: ColorConstants.colorBlack
+      ),
       iconTheme: IconThemeData(
         color: ColorConstants.colorWhite,
       ),
@@ -64,6 +67,9 @@ class AppTheme {
     scaffoldBackgroundColor: ColorConstants.colorBlack,
     appBarTheme: const AppBarTheme(
       color: ColorConstants.colorBlack,
+      titleTextStyle: TextStyle(
+        color: ColorConstants.colorWhite
+      ),
       iconTheme: IconThemeData(
         color: ColorConstants.colorWhite,
       ),

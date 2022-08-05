@@ -998,4 +998,6 @@ class DimensionConstants {
   static const double d997 =997;
   static const double d998 =998;
   static const double d999 =999;
+  static const double d1110 = 1110;
+  static const double d1280 = 1280;
 }

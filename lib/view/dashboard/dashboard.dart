@@ -33,7 +33,6 @@ class _DashBoardPageState extends State<DashBoardPage> with TickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    final themeChange = Provider.of<AppStateNotifier>(context);
     return BaseView<DashboardProvider>(
       onModelReady: (provider){
         this.provider = provider;
@@ -41,29 +40,7 @@ class _DashBoardPageState extends State<DashBoardPage> with TickerProviderStateM
       },
         builder: (context, provider, _){
       return Scaffold(
-        key: _scaffoldKey,
-        drawer: drawer(context),
-        appBar: AppBar(
-          centerTitle: true,
-          elevation: 0.0,
-          backgroundColor: ColorConstants.colorWhite,
-          title: const ImageView(path: ImageConstants.dashboardAppBarIcon),
-          leading: GestureDetector(
-              onTap: () {
-                _scaffoldKey.currentState!.openDrawer();
-              },
-              child: const ImageView(path: ImageConstants.drawerIcon)),
-          actions: [
-            Switch(
-              value: themeChange.isDarkModeOn,
-              onChanged: (boolVal) {
-                  themeChange.updateTheme(boolVal);
-                  provider.updateLoadingStatus(true);
-              },
-            ),
-            const ImageView(path: ImageConstants.notificationIcon),
-          ],
-        ),
+
         body: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
