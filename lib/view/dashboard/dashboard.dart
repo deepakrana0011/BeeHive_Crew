@@ -39,31 +39,6 @@ class _DashBoardPageState extends State<DashBoardPage> with TickerProviderStateM
       return Scaffold(
         key: _scaffoldKey,
         drawer: drawer(context),
-        appBar: AppBar(
-          centerTitle: true,
-          elevation: 0.0,
-          backgroundColor: ColorConstants.colorWhite,
-          title: const ImageView(path: ImageConstants.dashboardAppBarIcon),
-          leading: GestureDetector(
-              onTap: () {
-                _scaffoldKey.currentState!.openDrawer();
-              },
-              child: const ImageView(path: ImageConstants.drawerIcon)),
-          actions: [
-            Switch(
-              value: themeChange.isDarkModeOn,
-              onChanged: (boolVal) {
-                  themeChange.updateTheme(boolVal);
-                  provider.updateLoadingStatus(true);
-              },
-            ),
-            GestureDetector(
-              onTap: (){
-                Navigator.pushNamed(context, RouteConstants.notificationsScreen);
-              },
-                child: const ImageView(path: ImageConstants.notificationIcon)),
-          ],
-        ),
         body: provider.checkedInNoProjects ? Column(
           children: [
            provider.hasProjects ? (provider.has2Projects ? noProjectNotCheckedInContainer(context, "you_are_not_checked_in".tr(), onTap: (){

@@ -25,7 +25,6 @@ void setUpLocator(){
   locator.registerFactory<AppSettingsProvider>(() => AppSettingsProvider());
   locator.registerFactory<BaseProvider>(() => BaseProvider());
   locator.registerFactory(() => ProjectsProvider());
-  locator.registerFactory(() => BaseProvider());
   locator.registerFactory(() => ProjectDetailsPageProvider());
   locator.registerFactory(() => AddNotePageProvider());
   locator.registerFactory(() => ProjectSettingsProvider());
