@@ -4,6 +4,8 @@
         android:label="beehive"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+       <meta-data android:name="com.google.android.geo.API_KEY"
+           android:value="AIzaSyBxm2UszCS9kTUBdXlCnG5mJ6Sne57OF6c"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"

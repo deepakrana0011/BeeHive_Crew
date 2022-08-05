@@ -7,6 +7,8 @@ import '../constants/dimension_constants.dart';
 
 class ViewDecoration {
 
+
+
   static InputDecoration inputDecorationTextField({bool contPadding = false, Widget? suffixIcon}) {
     return InputDecoration(
       suffixIconConstraints: const BoxConstraints(maxHeight: 15),
@@ -40,6 +42,56 @@ class ViewDecoration {
    );
   }
 
+  static InputDecoration inputDecorationBox(
+
+      {
+        required String fieldName,required Color color, required Color?hintTextColor,
+        required double? hintTextSize,
+        IconData? icon,
+        Widget? prefixIcon,
+        Widget? suffixIcon,
+        double? textSize,
+        Color? fillColor,
+        double? radius,
+        bool imageView = false,
+        String? path,
+        Color? textFiledColor,
+
+      }) {
+    return InputDecoration(
+        contentPadding: EdgeInsets.only(
+          //  top: DimensionConstants.d10.h,
+            bottom: DimensionConstants.d28.h,
+            left: DimensionConstants.d25.w,
+            right: DimensionConstants.d25.w
+        ),
+        hintText: fieldName,
+        hintStyle: textFieldStyle( hintTextSize!,FontWeight.w400, hintTextColor,),
+        border: InputBorder.none,
+        fillColor: color,
+        filled: true,
+        enabledBorder: OutlineInputBorder(
+            borderSide:
+            BorderSide(color: fillColor ?? Colors.transparent, width: 0),
+            borderRadius: BorderRadius.all(Radius.circular(radius ?? 20))),
+        disabledBorder: OutlineInputBorder(
+            borderSide:
+            BorderSide(color: fillColor ?? Colors.transparent, width: 0),
+            borderRadius: BorderRadius.all(Radius.circular(radius ?? 20))),
+        focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(color: fillColor ?? Colors.transparent, width: 0),
+            borderRadius: BorderRadius.all(Radius.circular(radius ?? 20))),
+        errorBorder:  const OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.transparent, width: 0),
+            borderRadius: BorderRadius.all(Radius.circular(20))),
+        focusedErrorBorder:  const OutlineInputBorder(
+            borderSide: BorderSide(color: Colors.transparent, width: 0),
+            borderRadius: BorderRadius.all(Radius.circular(20)))
+
+
+    );
+  }
+
 
   static TextStyle textFieldStyle(double size, fontWeight, color) {
     return TextStyle(
@@ -49,4 +101,6 @@ class ViewDecoration {
         fontSize: size,
         letterSpacing: 1.0);
   }
+
+
 }
