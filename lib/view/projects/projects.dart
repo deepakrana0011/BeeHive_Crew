@@ -401,7 +401,8 @@ Widget projectDetails(BuildContext context) {
             padding: EdgeInsets.symmetric(vertical: DimensionConstants.d5.h),
             child: GestureDetector(
               onTap: () {
-                Navigator.pushNamed(context, RouteConstants.projectDetailsPage);
+                Navigator.pushNamed(context, RouteConstants.projectDetailsPage,
+                    arguments: ProjectDetailsPage(archivedOrProject: false));
               },
               child: Container(
                 height: DimensionConstants.d126.h,
@@ -539,7 +540,7 @@ Widget schedule(BuildContext context, ProjectsProvider provider) {
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  backNextBtn(ImageConstants.nextIconIos),
+                  backNextBtn(ImageConstants.backIconIos),
                   SizedBox(
                     width: DimensionConstants.d27.w,
                   ),
@@ -549,21 +550,23 @@ Widget schedule(BuildContext context, ProjectsProvider provider) {
                   SizedBox(
                     width: DimensionConstants.d27.w,
                   ),
-                  backNextBtn(ImageConstants.backIconIos)
+                  backNextBtn(ImageConstants.nextIconIos)
                 ],
               ),
               SizedBox(
                 height: DimensionConstants.d20.h,
               ),
               Container(
-               height:Theme.of(context).brightness == Brightness.dark?  DimensionConstants.d413.h:DimensionConstants.d416.h,
-
+                height: Theme.of(context).brightness == Brightness.dark
+                    ? DimensionConstants.d413.h
+                    : DimensionConstants.d416.h,
                 decoration: BoxDecoration(
                     color: Theme.of(context).brightness == Brightness.dark
                         ? ColorConstants.colorBlack
                         : ColorConstants.colorWhite,
-                  borderRadius: BorderRadius.only(bottomLeft: Radius.circular(DimensionConstants.d8.r),bottomRight:Radius.circular(DimensionConstants.d8.r) )
-                ),
+                    borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(DimensionConstants.d8.r),
+                        bottomRight: Radius.circular(DimensionConstants.d8.r))),
                 child: Column(
                   children: <Widget>[
                     SizedBox(

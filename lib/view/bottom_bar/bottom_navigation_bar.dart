@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
+import '../../constants/route_constants.dart';
 import '../../helper/common_widgets.dart';
 import '../../provider/app_state_provider.dart';
 
@@ -85,13 +86,18 @@ class _BottomBarState extends State<BottomBar> {
               },
             ):Container(),
             Padding(
-              padding: provider.selectedIndex == 0 ?EdgeInsets.only():EdgeInsets.only(right: DimensionConstants.d10.w,top: DimensionConstants.d10.h),
-              child: ImageView(path: actionIcon.elementAt(provider.selectedIndex),
-              height: DimensionConstants.d24.h,
-                width: DimensionConstants.d24.w,
-                color:provider.selectedIndex != 0? Theme.of(context).brightness == Brightness.dark
-                    ? ColorConstants.colorWhite
-                    : ColorConstants.colorBlack:null,
+              padding: provider.selectedIndex == 0 ?EdgeInsets.only(right: DimensionConstants.d10.w):EdgeInsets.only(right: DimensionConstants.d10.w,top: DimensionConstants.d10.h),
+              child: GestureDetector(
+                onTap:(){
+                  provider.routeNavigation(context, provider.selectedIndex);
+                },
+                child: ImageView(path: actionIcon.elementAt(provider.selectedIndex),
+                height: DimensionConstants.d24.h,
+                  width: DimensionConstants.d24.w,
+                  color:provider.selectedIndex != 0? Theme.of(context).brightness == Brightness.dark
+                      ? ColorConstants.colorWhite
+                      : ColorConstants.colorBlack:null,
+                ),
               ),
             ),
           ],
@@ -299,7 +305,13 @@ Widget drawer(BuildContext context) {
                   height: DimensionConstants.d50.h,
                   color1: ColorConstants.blueGradient2Color,
                   color2: ColorConstants.blueGradient1Color,
-                  fontSize: DimensionConstants.d14.sp),
+                  fontSize: DimensionConstants.d14.sp,
+                onBtnTap: (){
+                    Navigator.of(context).pop();
+                  Navigator.pushNamed(context, RouteConstants.upgradePage);
+                }
+
+              ),
             ),
             SizedBox(height: DimensionConstants.d20.h),
           ],

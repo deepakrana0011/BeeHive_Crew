@@ -4,9 +4,11 @@ import 'package:beehive/provider/app_state_provider.dart';
 import 'package:beehive/provider/base_provider.dart';
 import 'package:beehive/provider/bottom_bar_provider.dart';
 import 'package:beehive/provider/certification_page_provider.dart';
+import 'package:beehive/provider/continue_with_phone_provider.dart';
 import 'package:beehive/provider/dashboard_provider.dart';
 import 'package:beehive/provider/edit_profile_provider.dart';
 import 'package:beehive/provider/introduction_provider.dart';
+import 'package:beehive/provider/notification_provider.dart';
 import 'package:beehive/provider/login_provider.dart';
 import 'package:beehive/provider/project_details_provider.dart';
 import 'package:beehive/provider/project_settings_provider.dart';
@@ -36,4 +38,7 @@ void setUpLocator(){
   locator.registerFactory(() => ProjectSettingsProvider());
   locator.registerFactory(() => EditProfileProvider());
   locator.registerFactory(() => CertificationPageProvider());
+  locator.registerFactory(() => NotificationProvider());
+  locator.registerFactory(() => ContinueWithPhoneProvider());
+
 }

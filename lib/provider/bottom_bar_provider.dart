@@ -1,3 +1,4 @@
+import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/provider/base_provider.dart';
 import 'package:beehive/widget/image_view.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,4 +15,11 @@ class BottomBarProvider extends BaseProvider{
     selectedIndex = index;
     notifyListeners();
   }
+
+  routeNavigation(BuildContext context, int index){
+    if(index == 0){
+      Navigator.pushNamed(context, RouteConstants.notificationsScreen);
+    }
+  }
+
 }

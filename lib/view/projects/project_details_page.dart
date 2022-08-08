@@ -15,7 +15,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../constants/route_constants.dart';
 
 class ProjectDetailsPage extends StatefulWidget {
-  const ProjectDetailsPage({Key? key}) : super(key: key);
+  bool archivedOrProject;
+  ProjectDetailsPage({Key? key, required this.archivedOrProject})
+      : super(key: key);
 
   @override
   State<ProjectDetailsPage> createState() => _ProjectDetailsPageState();
@@ -33,14 +35,23 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage>
         return Scaffold(
           appBar: CommonWidgets.appBarWithTitleAndAction(context,
               title: "project_details",
-              actionIcon: ImageConstants.settingsIcon,actionButtonRequired: true ,onTapAction: (){ Navigator.pushNamed(context, RouteConstants.projectSettingsPage); }),
+              actionIcon: ImageConstants.settingsIcon,
+              actionButtonRequired: true, onTapAction: () {
+            Navigator.pushNamed(context, RouteConstants.projectSettingsPage);
+          }),
           body: Padding(
             padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
             child: SingleChildScrollView(
               child: Column(
                 children: <Widget>[
                   SizedBox(
-                    height: DimensionConstants.d24.h,
+                    height: DimensionConstants.d16.h,
+                  ),
+                  widget.archivedOrProject == true
+                      ? projectByArchived(context)
+                      : Container(),
+                  SizedBox(
+                    height: DimensionConstants.d16.h,
                   ),
                   mapAndHoursDetails(context, provider),
                   SizedBox(
@@ -348,179 +359,184 @@ Widget todayTab(BuildContext context, bool todayOrWeekly,
 }
 
 Widget stepperLine(BuildContext context, bool todayOrWeek, String date) {
-  return Card(
-    margin: EdgeInsets.zero,
-    elevation: 1,
-    shape: RoundedRectangleBorder(
-        borderRadius: todayOrWeek == true
-            ? BorderRadius.circular(DimensionConstants.d8.r)
-            : BorderRadius.zero,
-        side: todayOrWeek == true
-            ? BorderSide.none
-            : BorderSide(
-                width: DimensionConstants.d1.w,
+  return GestureDetector(
+    onTap: (){
+     Navigator.pushNamed(context, RouteConstants.timeSheetsScreen);
+    },
+    child: Card(
+      margin: EdgeInsets.zero,
+      elevation: 1,
+      shape: RoundedRectangleBorder(
+          borderRadius: todayOrWeek == true
+              ? BorderRadius.circular(DimensionConstants.d8.r)
+              : BorderRadius.zero,
+          side: todayOrWeek == true
+              ? BorderSide.none
+              : BorderSide(
+                  width: DimensionConstants.d1.w,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? ColorConstants.colorWhite
+                      : ColorConstants.littleDarkGray)),
+      child: Container(
+        height: DimensionConstants.d61.h,
+        decoration: BoxDecoration(
+          color: Theme.of(context).brightness == Brightness.dark
+              ? ColorConstants.colorBlack
+              : ColorConstants.colorWhite,
+          borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
+          border: todayOrWeek == true
+              ? Theme.of(context).brightness == Brightness.dark
+                  ? Border.all(
+                      color: ColorConstants.colorWhite,
+                      width: DimensionConstants.d1.w)
+                  : null
+              : null,
+        ),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
+          child: Row(
+            children: <Widget>[
+              todayOrWeek == true
+                  ? Text("8:50a").regularText(
+                      context,
+                      DimensionConstants.d13.sp,
+                      TextAlign.left,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? ColorConstants.colorWhite
+                          : ColorConstants.colorBlack,
+                    )
+                  : Text(date).boldText(
+                      context,
+                      DimensionConstants.d13.sp,
+                      TextAlign.left,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? ColorConstants.colorWhite
+                          : ColorConstants.colorBlack,
+                    ),
+              SizedBox(
+                width: DimensionConstants.d9.w,
+              ),
+              Container(
+                height: DimensionConstants.d4.h,
+                width: DimensionConstants.d20.w,
+                decoration: BoxDecoration(
+                    color: ColorConstants.green6FCF97,
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(DimensionConstants.d4.r),
+                        bottomLeft: Radius.circular(DimensionConstants.d4.r))),
+              ),
+              SizedBox(
+                width: DimensionConstants.d5.w,
+              ),
+              Padding(
+                padding: EdgeInsets.only(bottom: DimensionConstants.d18.h),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    const ImageView(
+                      path: ImageConstants.coolIcon,
+                    ),
+                    SizedBox(
+                      height: DimensionConstants.d5.h,
+                    ),
+                    Container(
+                      height: DimensionConstants.d4.h,
+                      width: DimensionConstants.d15.w,
+                      color: ColorConstants.redColorEB5757,
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                width: DimensionConstants.d5.w,
+              ),
+              Container(
+                height: DimensionConstants.d4.h,
+                width: DimensionConstants.d20.w,
+                color: ColorConstants.grayD2D2D7,
+              ),
+              SizedBox(
+                width: DimensionConstants.d5.w,
+              ),
+              Container(
+                height: DimensionConstants.d4.h,
+                width: DimensionConstants.d15.w,
+                color: ColorConstants.green6FCF97,
+              ),
+              SizedBox(
+                width: DimensionConstants.d5.w,
+              ),
+              Padding(
+                padding: EdgeInsets.only(bottom: DimensionConstants.d18.h),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    const ImageView(
+                      path: ImageConstants.coolIcon,
+                    ),
+                    SizedBox(
+                      height: DimensionConstants.d5.h,
+                    ),
+                    Container(
+                      height: DimensionConstants.d4.h,
+                      width: DimensionConstants.d15.w,
+                      color: ColorConstants.redColorEB5757,
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                width: DimensionConstants.d4.w,
+              ),
+              Container(
+                height: DimensionConstants.d4.h,
+                width: DimensionConstants.d8.w,
+                decoration: BoxDecoration(
+                    color: ColorConstants.green6FCF97,
+                    borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(DimensionConstants.d4.r),
+                        bottomRight: Radius.circular(DimensionConstants.d4.r))),
+              ),
+              ImageView(
+                path: ImageConstants.stepperIcon,
+                height: DimensionConstants.d20.h,
+                width: DimensionConstants.d20.w,
+              ),
+              SizedBox(
+                width: DimensionConstants.d10.w,
+              ),
+              Text("8:50a").regularText(
+                context,
+                DimensionConstants.d13.sp,
+                TextAlign.left,
                 color: Theme.of(context).brightness == Brightness.dark
                     ? ColorConstants.colorWhite
-                    : ColorConstants.littleDarkGray)),
-    child: Container(
-      height: DimensionConstants.d61.h,
-      decoration: BoxDecoration(
-        color: Theme.of(context).brightness == Brightness.dark
-            ? ColorConstants.colorBlack
-            : ColorConstants.colorWhite,
-        borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
-        border: todayOrWeek == true
-            ? Theme.of(context).brightness == Brightness.dark
-                ? Border.all(
-                    color: ColorConstants.colorWhite,
-                    width: DimensionConstants.d1.w)
-                : null
-            : null,
-      ),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
-        child: Row(
-          children: <Widget>[
-            todayOrWeek == true
-                ? Text("8:50a").regularText(
-                    context,
-                    DimensionConstants.d13.sp,
-                    TextAlign.left,
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? ColorConstants.colorWhite
-                        : ColorConstants.colorBlack,
-                  )
-                : Text(date).boldText(
-                    context,
-                    DimensionConstants.d13.sp,
-                    TextAlign.left,
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? ColorConstants.colorWhite
-                        : ColorConstants.colorBlack,
-                  ),
-            SizedBox(
-              width: DimensionConstants.d9.w,
-            ),
-            Container(
-              height: DimensionConstants.d4.h,
-              width: DimensionConstants.d20.w,
-              decoration: BoxDecoration(
-                  color: ColorConstants.green6FCF97,
-                  borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(DimensionConstants.d4.r),
-                      bottomLeft: Radius.circular(DimensionConstants.d4.r))),
-            ),
-            SizedBox(
-              width: DimensionConstants.d5.w,
-            ),
-            Padding(
-              padding: EdgeInsets.only(bottom: DimensionConstants.d18.h),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  const ImageView(
-                    path: ImageConstants.coolIcon,
-                  ),
-                  SizedBox(
-                    height: DimensionConstants.d5.h,
-                  ),
-                  Container(
-                    height: DimensionConstants.d4.h,
-                    width: DimensionConstants.d15.w,
-                    color: ColorConstants.redColorEB5757,
-                  ),
-                ],
+                    : ColorConstants.colorBlack,
               ),
-            ),
-            SizedBox(
-              width: DimensionConstants.d5.w,
-            ),
-            Container(
-              height: DimensionConstants.d4.h,
-              width: DimensionConstants.d20.w,
-              color: ColorConstants.grayD2D2D7,
-            ),
-            SizedBox(
-              width: DimensionConstants.d5.w,
-            ),
-            Container(
-              height: DimensionConstants.d4.h,
-              width: DimensionConstants.d15.w,
-              color: ColorConstants.green6FCF97,
-            ),
-            SizedBox(
-              width: DimensionConstants.d5.w,
-            ),
-            Padding(
-              padding: EdgeInsets.only(bottom: DimensionConstants.d18.h),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  const ImageView(
-                    path: ImageConstants.coolIcon,
-                  ),
-                  SizedBox(
-                    height: DimensionConstants.d5.h,
-                  ),
-                  Container(
-                    height: DimensionConstants.d4.h,
-                    width: DimensionConstants.d15.w,
-                    color: ColorConstants.redColorEB5757,
-                  ),
-                ],
+              SizedBox(
+                width: DimensionConstants.d15.w,
               ),
-            ),
-            SizedBox(
-              width: DimensionConstants.d4.w,
-            ),
-            Container(
-              height: DimensionConstants.d4.h,
-              width: DimensionConstants.d8.w,
-              decoration: BoxDecoration(
-                  color: ColorConstants.green6FCF97,
-                  borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(DimensionConstants.d4.r),
-                      bottomRight: Radius.circular(DimensionConstants.d4.r))),
-            ),
-            ImageView(
-              path: ImageConstants.stepperIcon,
-              height: DimensionConstants.d20.h,
-              width: DimensionConstants.d20.w,
-            ),
-            SizedBox(
-              width: DimensionConstants.d10.w,
-            ),
-            Text("8:50a").regularText(
-              context,
-              DimensionConstants.d13.sp,
-              TextAlign.left,
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? ColorConstants.colorWhite
-                  : ColorConstants.colorBlack,
-            ),
-            SizedBox(
-              width: DimensionConstants.d15.w,
-            ),
-            Text("08:57h").boldText(
-              context,
-              DimensionConstants.d13.sp,
-              TextAlign.left,
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? ColorConstants.colorWhite
-                  : ColorConstants.colorBlack,
-            ),
-            SizedBox(
-              width: DimensionConstants.d10.w,
-            ),
-            ImageView(
-              path: ImageConstants.arrowIcon,
-              height: DimensionConstants.d10.h,
-              width: DimensionConstants.d8.w,
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? ColorConstants.colorWhite
-                  : ColorConstants.colorBlack,
-            ),
-          ],
+              Text("08:57h").boldText(
+                context,
+                DimensionConstants.d13.sp,
+                TextAlign.left,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? ColorConstants.colorWhite
+                    : ColorConstants.colorBlack,
+              ),
+              SizedBox(
+                width: DimensionConstants.d10.w,
+              ),
+              ImageView(
+                path: ImageConstants.arrowIcon,
+                height: DimensionConstants.d10.h,
+                width: DimensionConstants.d8.w,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? ColorConstants.colorWhite
+                    : ColorConstants.colorBlack,
+              ),
+            ],
+          ),
         ),
       ),
     ),
@@ -615,7 +631,7 @@ Widget crewWidget(BuildContext context) {
         height: DimensionConstants.d8.h,
       ),
       GestureDetector(
-          onTap: (){
+          onTap: () {
             Navigator.pushNamed(context, RouteConstants.crewProfilePage);
           },
           child: managerDetails(context, false, "Benjamin Poole")),
@@ -858,6 +874,34 @@ Widget backNextBtn(String path) {
     ),
     child: ImageView(
       path: path,
+    ),
+  );
+}
+
+Widget projectByArchived(BuildContext context) {
+  return Container(
+    height: DimensionConstants.d42.h,
+    width: DimensionConstants.d343.w,
+    decoration: BoxDecoration(
+      color: ColorConstants.redColorEB5757.withOpacity(0.1),
+      borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
+    ),
+    child: Padding(
+      padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d14.w),
+      child: Row(
+        children: <Widget>[
+          ImageView(
+            path: ImageConstants.folderIcon,
+            height: DimensionConstants.d24.h,
+            width: DimensionConstants.d24.w,
+          ),
+          SizedBox(
+            width: DimensionConstants.d9.w,
+          ),
+          Text("this_project_was_archived_by_the_crew_manager".tr())
+              .regularText(context, DimensionConstants.d14.sp, TextAlign.left),
+        ],
+      ),
     ),
   );
 }

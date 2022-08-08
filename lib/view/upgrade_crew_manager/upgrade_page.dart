@@ -10,6 +10,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../helper/dialog_helper.dart';
+
 class UpgradePage extends StatelessWidget {
   const UpgradePage({Key? key}) : super(key: key);
 
@@ -35,6 +37,7 @@ class UpgradePage extends StatelessWidget {
                 color2: ColorConstants.primaryGradient1Color,
                 fontSize: DimensionConstants.d14.sp, onBtnTap: () {
               Navigator.pushNamed(context, RouteConstants.paymentPage);
+
             }),
           ),
         ],

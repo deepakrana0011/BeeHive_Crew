@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 
 extension ExtendText on Text {
   regularText(BuildContext context, double textSize, TextAlign alignment,
-      {maxLines, overflow, Color? color, letterSpacing = 0.0, bool underline = false}) {
+      {maxLines, overflow, Color? color, letterSpacing = 0.0,TextDecoration? decoration}) {
     return Text(
       data!,
       maxLines: maxLines,
@@ -15,7 +15,8 @@ extension ExtendText on Text {
           fontFamily: StringConstants.fontFamily,
           fontWeight: FontWeight.w400,
           fontSize: textSize,
-          letterSpacing: letterSpacing, decoration: underline ? TextDecoration.underline : TextDecoration.none),
+          letterSpacing: letterSpacing,
+      decoration: decoration),
     );
   }
 
