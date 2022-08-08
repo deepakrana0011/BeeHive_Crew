@@ -107,7 +107,6 @@ class OnGenerateRouter {
       case RouteConstants.resetPasswordScreen:
         return MaterialPageRoute(
             builder: (_) => ResetPasswordScreen(), settings: settings);
-            builder: (_) => EmailAddressScreen(), settings: settings);
       case RouteConstants.continueWithPhone:
         return MaterialPageRoute(
             builder: (_) => ContinueWithPhone(), settings: settings);

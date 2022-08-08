@@ -90,7 +90,7 @@ class SignUpScreen extends StatelessWidget {
                                     },
                                     child: Align(
                                       alignment: Alignment.center,
-                                      child: Text("login".tr()).regularText(context, DimensionConstants.d13.sp, TextAlign.center, color: ColorConstants.colorBlack, underline: true),
+                                      child: Text("login".tr()).regularText(context, DimensionConstants.d13.sp, TextAlign.center, color: ColorConstants.colorBlack),
                                     ),
                                   ),
                                   SizedBox(height: DimensionConstants.d39.h),

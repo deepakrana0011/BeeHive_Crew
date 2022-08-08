@@ -81,7 +81,7 @@ class LoginScreen extends StatelessWidget {
                                       SizedBox(height: DimensionConstants.d16.h),
                                       Align(
                                         alignment: Alignment.center,
-                                        child: Text("forgot_password".tr()).regularText(context, DimensionConstants.d13.sp, TextAlign.center, color: ColorConstants.colorBlack, underline: true),
+                                        child: Text("forgot_password".tr()).regularText(context, DimensionConstants.d13.sp, TextAlign.center, color: ColorConstants.colorBlack),
                                       ),
                                       SizedBox(height: DimensionConstants.d16.h),
                                       GestureDetector(
@@ -90,7 +90,7 @@ class LoginScreen extends StatelessWidget {
                                         },
                                         child: Align(
                                           alignment: Alignment.center,
-                                          child: Text("sign_up".tr()).regularText(context, DimensionConstants.d13.sp, TextAlign.center, color: ColorConstants.colorBlack, underline: true),
+                                          child: Text("sign_up".tr()).regularText(context, DimensionConstants.d13.sp, TextAlign.center, color: ColorConstants.colorBlack),
                                         ),
                                       ),
                                       SizedBox(height: DimensionConstants.d29.h),
