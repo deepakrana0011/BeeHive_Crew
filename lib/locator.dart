@@ -7,10 +7,13 @@ import 'package:beehive/provider/certification_page_provider.dart';
 import 'package:beehive/provider/dashboard_provider.dart';
 import 'package:beehive/provider/edit_profile_provider.dart';
 import 'package:beehive/provider/introduction_provider.dart';
+import 'package:beehive/provider/login_provider.dart';
 import 'package:beehive/provider/project_details_provider.dart';
 import 'package:beehive/provider/project_settings_provider.dart';
 import 'package:beehive/provider/projects_provider.dart';
+import 'package:beehive/provider/reset_password_provider.dart';
 import 'package:beehive/provider/sign_in_provider.dart';
+import 'package:beehive/provider/sign_up_provider.dart';
 import 'package:get_it/get_it.dart';
 
 GetIt locator = GetIt.instance;
@@ -24,6 +27,9 @@ void setUpLocator(){
   locator.registerFactory<DashboardProvider>(() => DashboardProvider());
   locator.registerFactory<AppSettingsProvider>(() => AppSettingsProvider());
   locator.registerFactory<BaseProvider>(() => BaseProvider());
+  locator.registerFactory<SignUpProvider>(() => SignUpProvider());
+  locator.registerFactory<LoginProvider>(() => LoginProvider());
+  locator.registerFactory<ResetPasswordProvider>(() => ResetPasswordProvider());
   locator.registerFactory(() => ProjectsProvider());
   locator.registerFactory(() => ProjectDetailsPageProvider());
   locator.registerFactory(() => AddNotePageProvider());

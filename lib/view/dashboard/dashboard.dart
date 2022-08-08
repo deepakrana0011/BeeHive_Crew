@@ -30,7 +30,6 @@ class _DashBoardPageState extends State<DashBoardPage> with TickerProviderStateM
 
   @override
   Widget build(BuildContext context) {
-    final themeChange = Provider.of<AppStateNotifier>(context);
     return BaseView<DashboardProvider>(
       onModelReady: (provider){
         this.provider = provider;
@@ -39,12 +38,16 @@ class _DashBoardPageState extends State<DashBoardPage> with TickerProviderStateM
       return Scaffold(
         key: _scaffoldKey,
         drawer: drawer(context),
-        body: provider.checkedInNoProjects ? Column(
+        body:
+        provider.checkedInNoProjects ? Column(
           children: [
-           provider.hasProjects ? (provider.has2Projects ? noProjectNotCheckedInContainer(context, "you_are_not_checked_in".tr(), onTap: (){
-             checkInAlert();
-           }) :
-           projectsCheckInCheckoutContainer("Momentum Smart House Project")) : noProjectNotCheckedInContainer(context, "you_are_not_checked_in".tr()),
+          provider.hasCheckInCheckOut ? (provider.isCheckedIn ? projectsCheckOutContainer("Momentum Smart House Project") : projectsCheckInContainer("Momentum Smart House Project")) :  noProjectNotCheckedInContainer(context, "you_are_not_checked_in".tr(), onTap: (){
+              checkInAlert();
+            }),
+           // provider.hasProjects ? (!provider.hasCheckInCheckOut ? noProjectNotCheckedInContainer(context, "you_are_not_checked_in".tr(), onTap: (){
+           //   checkInAlert();
+           // }) :
+           // projectsCheckInCheckoutContainer("Momentum Smart House Project")) : noProjectNotCheckedInContainer(context, "you_are_not_checked_in".tr()),
             CustomTabBar(),
             SizedBox(height: DimensionConstants.d20.h),
           ],
@@ -190,7 +193,7 @@ class _DashBoardPageState extends State<DashBoardPage> with TickerProviderStateM
             children: [
               Text("hey_john".tr()).boldText(context, DimensionConstants.d18.sp, TextAlign.left, color: ColorConstants.colorWhite),
               checkInCheckOutBtn("check_in".tr(), ColorConstants.colorWhite, onBtnTap: (){
-                provider.isCheckedIn = true;
+                checkInAlert();
                 provider.notifyListeners();
               },)
             ],
@@ -248,7 +251,7 @@ class _DashBoardPageState extends State<DashBoardPage> with TickerProviderStateM
     );
   }
 
-  Widget projectsCheckInCheckoutContainer(String location){
+  Widget projectsCheckInContainer(String location){
     return Container(
       width: double.infinity,
       color: ColorConstants.deepBlue,
@@ -257,32 +260,95 @@ class _DashBoardPageState extends State<DashBoardPage> with TickerProviderStateM
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-        provider.isCheckedIn ? Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
+     Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              const ImageView(path: ImageConstants.checkoutIcon),
+              SizedBox(width: DimensionConstants.d12.w),
+              Text("checked_out".tr()).regularText(context, DimensionConstants.d16.sp, TextAlign.left, color: ColorConstants.colorWhite),
+            ],
+          ),
+          checkInCheckOutBtn("check_in".tr(), ColorConstants.colorWhite, onBtnTap: (){
+            provider.isCheckedIn = true;
+            provider.notifyListeners();
+          },)
+        ],
+      ) ,
+          SizedBox(height: DimensionConstants.d12.h),
+          noProjectCheckedInLocationContainer(context, location, forwardIcon: true),
+          SizedBox(height: DimensionConstants.d16.h),
+          Padding(
+            padding: EdgeInsets.fromLTRB(DimensionConstants.d20.w, 0.0, DimensionConstants.d20.w, 0.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const ImageView(path: ImageConstants.checkedInIcon),
-                SizedBox(width: DimensionConstants.d12.w),
-                Text("${"checked_in".tr()} 3h 31m").regularText(context, DimensionConstants.d16.sp, TextAlign.left, color: ColorConstants.colorLightGreen),
+                GestureDetector(
+                    onTap : (){
+                      stillCheckedInAlert();
+                    },
+                    child: lastCheckInTotalHoursColumn("12:50", "PM", "last_check_in".tr())),
+                lastCheckInTotalHoursColumn("08:23", "HR", "total_hours".tr()),
               ],
             ),
-            checkInCheckOutBtn("check_out".tr(), ColorConstants.colorLightGreen, onBtnTap: (){
-            },)
-          ],
-        ) :  Row(
+          )
+        ],
+      ),
+    );
+  }
+
+  Widget projectsCheckOutContainer(String location){
+    return Container(
+      width: double.infinity,
+      color: ColorConstants.deepBlue,
+      height: DimensionConstants.d194.h,
+      padding: EdgeInsets.fromLTRB(DimensionConstants.d20.w, DimensionConstants.d13.w, DimensionConstants.d20.w, DimensionConstants.d17.h),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
+              // ( provider.isCheckedIn ? Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     Row(
+              //       children: [
+              //         const ImageView(path: ImageConstants.checkedInIcon),
+              //         SizedBox(width: DimensionConstants.d12.w),
+              //         Text("${"checked_in".tr()} 3h 31m").regularText(context, DimensionConstants.d16.sp, TextAlign.left, color: ColorConstants.colorLightGreen),
+              //       ],
+              //     ),
+              //     checkInCheckOutBtn("check_out".tr(), ColorConstants.colorLightGreen, onBtnTap: (){
+              //     },)
+              //   ],
+              // ) :  Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     Row(
+              //       children: [
+              //         const ImageView(path: ImageConstants.checkoutIcon),
+              //         SizedBox(width: DimensionConstants.d12.w),
+              //         Text("checked_out".tr()).regularText(context, DimensionConstants.d16.sp, TextAlign.left, color: ColorConstants.colorWhite),
+              //       ],
+              //     ),
+              //     checkInCheckOutBtn("check_in".tr(), ColorConstants.colorWhite, onBtnTap: (){
+              //       provider.isCheckedIn = true;
+              //       provider.notifyListeners();
+              //     },)
+              //   ],
+              // ))
               Row(
                 children: [
-                  const ImageView(path: ImageConstants.checkoutIcon),
+                  const ImageView(path: ImageConstants.checkedInIcon),
                   SizedBox(width: DimensionConstants.d12.w),
-                  Text("checked_out".tr()).regularText(context, DimensionConstants.d16.sp, TextAlign.left, color: ColorConstants.colorWhite),
+                  Text("${"checked_in".tr()} 3h 31m").regularText(context, DimensionConstants.d16.sp, TextAlign.left, color: ColorConstants.colorLightGreen),
                 ],
               ),
-              checkInCheckOutBtn("check_in".tr(), ColorConstants.colorWhite, onBtnTap: (){
-                provider.isCheckedIn = true;
-                provider.notifyListeners();
+              checkInCheckOutBtn("check_out".tr(), ColorConstants.colorLightGreen, onBtnTap: (){
+                provider.isCheckedIn = false;
+                provider.updateLoadingStatus(true);
               },)
             ],
           ),
@@ -307,6 +373,7 @@ class _DashBoardPageState extends State<DashBoardPage> with TickerProviderStateM
       ),
     );
   }
+
 
   Widget lastCheckInTotalHoursColumn(String time, String timeFormat, String txt){
     return Column(
@@ -464,7 +531,10 @@ class _DashBoardPageState extends State<DashBoardPage> with TickerProviderStateM
                          ),
                        ),
                        SizedBox(height: DimensionConstants.d23.h),
-                       CommonWidgets.commonButton(context, "check_in".tr(), height: DimensionConstants.d50.h)
+                       CommonWidgets.commonButton(context, "check_in".tr(), height: DimensionConstants.d50.h, onBtnTap: (){
+                         Navigator.of(context).pop();
+                         whenDidYouCheckOutAlert();
+                       })
                      ],
                    ),
                  );
@@ -611,6 +681,8 @@ class _DashBoardPageState extends State<DashBoardPage> with TickerProviderStateM
                     SizedBox(height: DimensionConstants.d22.h),
                     CommonWidgets.commonButton(context, "check_out".tr(), height: 50, onBtnTap: (){
                       Navigator.of(context).pop();
+                      provider.hasCheckInCheckOut = true;
+                      provider.updateLoadingStatus(true);
                     })
                   ],
                 ),);

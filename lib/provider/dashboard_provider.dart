@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 class DashboardProvider extends BaseProvider{
 
   bool checkedInNoProjects = false;
-  bool hasProjects = false;
-  bool has2Projects = false;
+
+  bool hasCheckInCheckOut = false;
   bool isCheckedIn = false;
 
   String? checkIn;
-  List<String> checkInItems = ["123 Main St., Toronto, ON", "123 Main St., Toronto, ON", "123 Main St., Toronto, ON"];
+  List<String> checkInItems = ["123 Main St., Toronto, ON", "123 Main St1., Toronto, ON", "123 Main St2., Toronto, ON"];
 
 
 }

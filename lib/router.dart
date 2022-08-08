@@ -4,9 +4,12 @@ import 'package:beehive/view/dashboard/app_settings.dart';
 import 'package:beehive/view/dashboard/archived_projects_screen.dart';
 import 'package:beehive/view/dashboard/notifications_screen.dart';
 import 'package:beehive/view/dashboard/select_to_continue_screen.dart';
-import 'package:beehive/view/email_address_screen.dart';
+import 'package:beehive/view/light_theme_signup_login/email_address_screen.dart';
 import 'package:beehive/view/introduction/beehive_introduction.dart';
 import 'package:beehive/view/introduction/introduction_pages.dart';
+import 'package:beehive/view/light_theme_signup_login/login_screen.dart';
+import 'package:beehive/view/light_theme_signup_login/reset_password_screen.dart';
+import 'package:beehive/view/light_theme_signup_login/sign_up_screen.dart';
 import 'package:beehive/view/profile/certification_page.dart';
 import 'package:beehive/view/profile/change_password_page.dart';
 import 'package:beehive/view/profile/edit_profile_page.dart';
@@ -87,7 +90,19 @@ class OnGenerateRouter {
 
       case RouteConstants.emailAddressScreen:
         return MaterialPageRoute(
-            builder: (_) => EmailAddressScreen(), settings: settings);
+            builder: (_) => EmailAddressScreen(fromForgotPassword: args == null ? false : args as bool,), settings: settings);
+
+      case RouteConstants.signUpScreen:
+        return MaterialPageRoute(
+            builder: (_) => SignUpScreen(email: args as String), settings: settings);
+
+      case RouteConstants.loginScreen:
+        return MaterialPageRoute(
+            builder: (_) => LoginScreen(), settings: settings);
+
+      case RouteConstants.resetPasswordScreen:
+        return MaterialPageRoute(
+            builder: (_) => ResetPasswordScreen(), settings: settings);
 
       default:
         return _onPageNotFound();

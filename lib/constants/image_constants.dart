@@ -62,4 +62,6 @@ class ImageConstants{
   static const String backIcon = "assets/images/ic_back.svg";
   static const String timeSheetsProfile = "assets/images/timesheets_profile.png";
   static const String archivedFolderIcon = "assets/images/ic_archived_folder.svg";
+  static const String lightThemeSignUpBg = "assets/images/light_theme_signup_bg.png";
+  static const String circleCloseIcon = "assets/images/ic_circle_close.svg";
 }
