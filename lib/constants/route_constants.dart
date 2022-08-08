@@ -18,4 +18,6 @@ class RouteConstants{
   static const String appSettings = "appSettings";
   static const String selectToContinueScreen = "selectToContinueScreen";
   static const String emailAddressScreen = "emailAddressScreen";
+  static const String continueWithPhone = "continueWithPhone";
+  static const String otpVerificationPage = "otpVerificationPage";
  }

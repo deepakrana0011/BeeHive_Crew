@@ -29,6 +29,7 @@ class ColorConstants{
   static const Color blue007AFF = Color(0xFF007AFF);
   static const Color grayF2F2F2 = Color(0xFFF2F2F2);
   static const Color grayE0E0E0 = Color(0xFFE0E0E0);
+  static const Color grayD2D2D2 = Color(0xFFD2D2D2);
   ///Color for schedule
   static const Color schedule1 = Color(0xFF2F80ED);
   static const Color schedule2 = Color(0xFF2F80ED);

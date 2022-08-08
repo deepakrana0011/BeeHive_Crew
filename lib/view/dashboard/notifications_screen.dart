@@ -7,6 +7,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../helper/dialog_helper.dart';
+
 class NotificationsScreen extends StatelessWidget {
   const NotificationsScreen({Key? key}) : super(key: key);
 
@@ -38,37 +40,50 @@ class NotificationsScreen extends StatelessWidget {
   }
 
   Widget invitedNotificationContainer(BuildContext context, String userName, String date, String time){
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d18.w, vertical: DimensionConstants.d24.h),
-      child: Row(
-        children: [
-          SizedBox(
-            width: DimensionConstants.d50.w,
-            height: DimensionConstants.d50.h,
-            child: const ImageView(path: ImageConstants.timeSheetsProfile, fit: BoxFit.cover),
-          ),
-          SizedBox(width: DimensionConstants.d23.w),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(userName).semiBoldText(context, DimensionConstants.d14.sp, TextAlign.center),
-              SizedBox(height: DimensionConstants.d4.h),
-              Row(
-                children: [
-                  const Icon(Icons.circle, color: ColorConstants.colorOrangeSienna, size: 16,),
-                  SizedBox(width: DimensionConstants.d8.w),
-                  Text(date).regularText(context, DimensionConstants.d14.sp, TextAlign.center),
-                  SizedBox(width: DimensionConstants.d8.w),
-                  const Icon(Icons.circle, color: ColorConstants.colorGray2, size: 8,),
-                  SizedBox(width: DimensionConstants.d8.w),
-                  Text(time).regularText(context, DimensionConstants.d14.sp, TextAlign.center),
-                ],
-              ),
-              SizedBox(height: DimensionConstants.d8.h),
-              Text("invited_to_join_new_project".tr()).regularText(context, DimensionConstants.d14.sp, TextAlign.center),
-            ],
-          )
-        ],
+    return GestureDetector(
+      onTap: (){
+        showDialog(
+            context: context,
+            builder: (BuildContext context) =>
+                DialogHelper.notificationDialog(
+                  context,
+                  photoFromCamera: () {},
+                  photoFromGallery: () {},
+                ));;
+      },
+      child: Container(
+        color: Colors.transparent,
+        padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d18.w, vertical: DimensionConstants.d24.h),
+        child: Row(
+          children: [
+            SizedBox(
+              width: DimensionConstants.d50.w,
+              height: DimensionConstants.d50.h,
+              child: const ImageView(path: ImageConstants.timeSheetsProfile, fit: BoxFit.cover),
+            ),
+            SizedBox(width: DimensionConstants.d23.w),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(userName).semiBoldText(context, DimensionConstants.d14.sp, TextAlign.center),
+                SizedBox(height: DimensionConstants.d4.h),
+                Row(
+                  children: [
+                    const Icon(Icons.circle, color: ColorConstants.colorOrangeSienna, size: 16,),
+                    SizedBox(width: DimensionConstants.d8.w),
+                    Text(date).regularText(context, DimensionConstants.d14.sp, TextAlign.center),
+                    SizedBox(width: DimensionConstants.d8.w),
+                    const Icon(Icons.circle, color: ColorConstants.colorGray2, size: 8,),
+                    SizedBox(width: DimensionConstants.d8.w),
+                    Text(time).regularText(context, DimensionConstants.d14.sp, TextAlign.center),
+                  ],
+                ),
+                SizedBox(height: DimensionConstants.d8.h),
+                Text("invited_to_join_new_project".tr()).regularText(context, DimensionConstants.d14.sp, TextAlign.center),
+              ],
+            )
+          ],
+        ),
       ),
     );
   }

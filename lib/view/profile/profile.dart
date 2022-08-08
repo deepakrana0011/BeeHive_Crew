@@ -256,7 +256,7 @@ Widget certificationAndAddButtonWidget(BuildContext context) {
                     width: DimensionConstants.d16.w,
                   ),
                   SizedBox(
-                    width: DimensionConstants.d7.w,
+                    width: DimensionConstants.d6.w,
                   ),
                   Text("add".tr()).semiBoldText(
                       context, DimensionConstants.d14.sp, TextAlign.left,

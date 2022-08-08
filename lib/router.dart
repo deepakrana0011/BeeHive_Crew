@@ -1,4 +1,6 @@
 import 'package:beehive/constants/route_constants.dart';
+import 'package:beehive/view/%20light_theme_signup_login/continue_with_phone.dart';
+import 'package:beehive/view/%20light_theme_signup_login/otp_verification_page.dart';
 import 'package:beehive/view/bottom_bar/bottom_navigation_bar.dart';
 import 'package:beehive/view/dashboard/app_settings.dart';
 import 'package:beehive/view/dashboard/archived_projects_screen.dart';
@@ -35,11 +37,13 @@ class OnGenerateRouter {
             builder: (_) => SignInScreen(), settings: settings);
 
       case RouteConstants.bottomNavigationBar:
+
         return MaterialPageRoute(
             builder: (_) => BottomBar(), settings: settings);
       case RouteConstants.projectDetailsPage:
+        final args = settings.arguments as ProjectDetailsPage;
         return MaterialPageRoute(
-            builder: (_) => ProjectDetailsPage(), settings: settings);
+            builder: (_) => ProjectDetailsPage(archivedOrProject: args.archivedOrProject,), settings: settings);
       case RouteConstants.addNotePage:
         return MaterialPageRoute(
             builder: (_) => AddNotePage(), settings: settings);
@@ -88,6 +92,12 @@ class OnGenerateRouter {
       case RouteConstants.emailAddressScreen:
         return MaterialPageRoute(
             builder: (_) => EmailAddressScreen(), settings: settings);
+      case RouteConstants.continueWithPhone:
+        return MaterialPageRoute(
+            builder: (_) => ContinueWithPhone(), settings: settings);
+      case RouteConstants.otpVerificationPage:
+        return MaterialPageRoute(
+            builder: (_) => OtpVerificationPage(), settings: settings);
 
       default:
         return _onPageNotFound();

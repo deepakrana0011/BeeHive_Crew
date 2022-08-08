@@ -345,7 +345,7 @@ class _DashBoardPageState extends State<DashBoardPage> with TickerProviderStateM
           Padding(
             padding: EdgeInsets.only(left: DimensionConstants.d14.w, right: DimensionConstants.d18.w),
             child: CommonWidgets.commonButton(context, "upgrade_to_crew_manager".tr(), height: DimensionConstants.d50.h, color1: ColorConstants.blueGradient2Color,
-                color2: ColorConstants.blueGradient1Color, fontSize: DimensionConstants.d14.sp),
+                color2: ColorConstants.blueGradient1Color, fontSize: DimensionConstants.d14.sp,onBtnTap: (){ Navigator.pushNamed(context, RouteConstants.upgradePage);}),
           ),
           SizedBox(height: DimensionConstants.d20.h),
         ],

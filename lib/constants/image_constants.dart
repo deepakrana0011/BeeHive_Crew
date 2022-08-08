@@ -62,4 +62,13 @@ class ImageConstants{
   static const String backIcon = "assets/images/ic_back.svg";
   static const String timeSheetsProfile = "assets/images/timesheets_profile.png";
   static const String archivedFolderIcon = "assets/images/ic_archived_folder.svg";
+  static const String appleIcon = "assets/images/ic_apple_icon.svg";
+  static const String googleIcon = "assets/images/ic_google_icon.svg";
+  static const String payPalIcon = "assets/images/ic_pay_pal_icon.svg";
+  static const String closeIconDialog = "assets/images/ic_close_icon.svg";
+  static const String folderIcon = "assets/images/ic_folder_icon.svg";
+  static const String lightThemeSignUpBg = "assets/images/light_theme_signup_bg.png";
 }
+
+
+

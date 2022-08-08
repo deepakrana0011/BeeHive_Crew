@@ -393,7 +393,7 @@ class _CustomTabBarState extends State<CustomTabBar> with TickerProviderStateMix
             Text(endTime).regularText(context, DimensionConstants.d13.sp, TextAlign.center),
             SizedBox(width: DimensionConstants.d15.w),
             Text(totalTime).boldText(context, DimensionConstants.d13.sp, TextAlign.center),
-            SizedBox(width: DimensionConstants.d12.w),
+            SizedBox(width: DimensionConstants.d11.w),
             ImageView(path: ImageConstants.forwardArrowIcon, color: (Theme.of(context).brightness == Brightness.dark ? ColorConstants.colorWhite : ColorConstants.colorBlack))
           ],
         ),
@@ -474,7 +474,7 @@ class _CustomTabBarState extends State<CustomTabBar> with TickerProviderStateMix
     return Column(
       children: [
         SizedBox(
-          width: DimensionConstants.d75.w,
+          width: DimensionConstants.d80.w,
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: <Widget>[

@@ -137,5 +137,20 @@
   "english" : "English",
   "project_projects" : "Project Projects",
   "select_to_continue_registration_or_login" : "Select To Continue Registration Or Login",
-  "manager" : "Manager"
+  "manager" : "Manager",
+  "apple_pay": "Apple Pay",
+  "google_pay": "Google Pay",
+  "paypal": "Paypal",
+  "benjamin_poole_invited_you_to_join_a_new_project": "Benjamin Poole invited you to join a new project",
+  "momentum_smart_house_project": "Momentum Smart House Project",
+  "accept": "Accept",
+  "decline": "Decline",
+  "accept_all_future_invites_from_benjamin": "Accept all future invites from Benjamin",
+  "this_project_was_archived_by_the_crew_manager": "This project was archived by the Crew Manager",
+  "continue_with_phone": "Continue \nwith Phone",
+  "enter_phone_number": "ENTER PHONE NUMBER",
+  "mobileNumber": "Mobile Number",
+  "verify_phone": "Verify Phone",
+  "resend_code": "Resend code",
+  "continue_with_email" : "Continue with Email"
 }

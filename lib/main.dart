@@ -72,7 +72,7 @@ class MyApp extends StatelessWidget {
                     //   primarySwatch: color,
                     // ),
                     onGenerateRoute: router.OnGenerateRouter.onGenerate,
-                    initialRoute: RouteConstants.bottomNavigationBar
+                    initialRoute: RouteConstants.beehiveIntro
                 );
         });
       },
