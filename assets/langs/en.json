@@ -152,5 +152,15 @@
   "mobileNumber": "Mobile Number",
   "verify_phone": "Verify Phone",
   "resend_code": "Resend code",
-  "continue_with_email" : "Continue with Email"
+  "whats_your_email_address" : "What’s your email address?",
+  "sign_up" : "Sign Up",
+  "your_name" : "YOUR  NAME",
+  "sign_up_" : "Signup",
+  "login" : "Login",
+  "forgot_password" : "Forgot Password?",
+  "new_password_" : "NEW  PASSWORD",
+  "confirm_new_password" : "CONFIRM  NEW  PASSWORD",
+  "reset_password" : "Reset Password",
+  "continue_with_email" : "Continue \nwith Email",
+  "enter_email" : "ENTER  EMAIL"
 }

@@ -68,7 +68,5 @@ class ImageConstants{
   static const String closeIconDialog = "assets/images/ic_close_icon.svg";
   static const String folderIcon = "assets/images/ic_folder_icon.svg";
   static const String lightThemeSignUpBg = "assets/images/light_theme_signup_bg.png";
+  static const String circleCloseIcon = "assets/images/ic_circle_close.svg";
 }
-
-
-

@@ -9,10 +9,11 @@ class ViewDecoration {
 
 
 
-  static InputDecoration inputDecorationTextField({bool contPadding = false, Widget? suffixIcon}) {
+  static InputDecoration inputDecorationTextField({bool contPadding = false, Widget? suffixIcon, Color? fillColor, Color? focusColor, Widget? suffix}) {
     return InputDecoration(
       suffixIconConstraints: const BoxConstraints(maxHeight: 15),
         suffixIcon: suffixIcon,
+        suffix: suffix,
         filled: true,
         isDense: true,
         errorMaxLines: 2,
@@ -21,6 +22,8 @@ class ViewDecoration {
           fontSize: DimensionConstants.d14.sp,
           fontFamily: StringConstants.fontFamily
         ),
+        fillColor: fillColor,
+        focusColor: focusColor,
         contentPadding: contPadding ?
         EdgeInsets.fromLTRB(0.0, DimensionConstants.d16.h, 0.0, DimensionConstants.d16.h) :
         EdgeInsets.fromLTRB(0.0, 0.0, 0.0, DimensionConstants.d10.h),

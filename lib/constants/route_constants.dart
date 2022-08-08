@@ -20,4 +20,7 @@ class RouteConstants{
   static const String emailAddressScreen = "emailAddressScreen";
   static const String continueWithPhone = "continueWithPhone";
   static const String otpVerificationPage = "otpVerificationPage";
+  static const String signUpScreen = "signUpScreen";
+  static const String loginScreen = "loginScreen";
+  static const String resetPasswordScreen = "resetPasswordScreen";
  }
