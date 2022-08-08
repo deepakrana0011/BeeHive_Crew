@@ -70,7 +70,9 @@ class _DashBoardPageState extends State<DashBoardPage> with TickerProviderStateM
                SizedBox(height: DimensionConstants.d13.h),
                Padding(
                  padding: EdgeInsets.only(left: DimensionConstants.d20.w , right: DimensionConstants.d25.w),
-                 child: CommonWidgets.commonButton(context, "update_my_profile".tr(), height: DimensionConstants.d50.h),
+                 child: CommonWidgets.commonButton(context, "update_my_profile".tr(), height: DimensionConstants.d50.h,
+                 onBtnTap: (){ Navigator.pushNamed(context, RouteConstants.editProfilePage);}
+                 ),
                ),
                SizedBox(height: DimensionConstants.d35.h),
                createYourOwnProjectCard(context),
