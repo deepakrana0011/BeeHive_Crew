@@ -24,6 +24,19 @@ class ChangePasswordPage extends StatelessWidget {
           textFiledName(context, "new_password", "*********"),
           SizedBox(height: DimensionConstants.d16.h,),
           textFiledName(context, "re_enter_new_password", "*********"),
+          SizedBox(height: DimensionConstants.d335.h,),
+          Padding(
+            padding:  EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
+            child: CommonWidgets.commonButton(
+                context, "change_password".tr(),
+                color1: ColorConstants.primaryGradient2Color,
+                color2: ColorConstants.primaryGradient1Color,
+                fontSize: DimensionConstants.d14.sp, onBtnTap: () {
+                  Navigator.pop(context);
+            },
+                shadowRequired: true
+            ),
+          ),
 
         ],
       ),

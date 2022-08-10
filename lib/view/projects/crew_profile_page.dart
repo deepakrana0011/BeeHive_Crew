@@ -68,11 +68,13 @@ Widget crewProfileWidget(BuildContext context) {
                     color: Theme.of(context).brightness == Brightness.dark
                         ? ColorConstants.colorWhite
                         : ColorConstants.deepBlue),
+                SizedBox(height: DimensionConstants.d7.h,),
                 Text("carpenter".tr()).boldText(
                     context, DimensionConstants.d18.sp, TextAlign.left,
                     color: Theme.of(context).brightness == Brightness.dark
                         ? ColorConstants.colorWhite
                         : ColorConstants.deepBlue),
+                SizedBox(height: DimensionConstants.d8.h,),
                 Text("Finishing and Framing").regularText(
                     context, DimensionConstants.d14.sp, TextAlign.left,
                     color: Theme.of(context).brightness == Brightness.dark

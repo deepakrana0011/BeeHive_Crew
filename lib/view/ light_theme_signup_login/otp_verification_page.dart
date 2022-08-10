@@ -1,3 +1,4 @@
+import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -24,85 +25,79 @@ class OtpVerificationPage extends StatelessWidget {
               const ImageView(path: ImageConstants.lightThemeSignUpBg),
               Positioned(
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(
-                            top: DimensionConstants.d44.h,
-                            left: DimensionConstants.d24.w),
-                        child: GestureDetector(
-                          behavior: HitTestBehavior.translucent,
-                          onTap: () {
-                            Navigator.of(context).pop();
-                          },
-                          child: SizedBox(
-                              width: DimensionConstants.d24.w,
-                              height: DimensionConstants.d24.h,
-                              child: const ImageView(
-                                  path: ImageConstants.backIcon,
-                                  fit: BoxFit.cover)),
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: EdgeInsets.only(
+                        top: DimensionConstants.d44.h,
+                        left: DimensionConstants.d24.w),
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.translucent,
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: SizedBox(
+                          width: DimensionConstants.d24.w,
+                          height: DimensionConstants.d24.h,
+                          child: const ImageView(
+                              path: ImageConstants.backIcon,
+                              fit: BoxFit.cover)),
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: DimensionConstants.d32.w),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: DimensionConstants.d75.h),
+                        SizedBox(
+                          width: DimensionConstants.d242.w,
+                          child: Text("verify_phone".tr()).boldText(context,
+                              DimensionConstants.d30.sp, TextAlign.left,
+                              color: ColorConstants.colorBlack),
                         ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: DimensionConstants.d32.w),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            SizedBox(height: DimensionConstants.d75.h),
-                            SizedBox(
-                              width: DimensionConstants.d242.w,
-                              child: Text("verify_phone".tr())
-                                  .boldText(
-                                  context,
-                                  DimensionConstants.d30.sp,
-                                  TextAlign.left,
-                                  color: ColorConstants.colorBlack),
-                            ),
-                            SizedBox(height: DimensionConstants.d18.h),
-                            const Text("Code sent to +1234567634354").boldText(context,
-                                DimensionConstants.d16.sp, TextAlign.center,
-                                color: ColorConstants.colorBlack,
-
-
-                            ),
-                            SizedBox(height: DimensionConstants.d60.h),
-                            optFiled(context,),
-                            SizedBox(height: DimensionConstants.d25.h),
-                             Align(
-                               alignment: Alignment.center,
-                               child: Text("resend_code".tr()).regularText(context,
-                                   DimensionConstants.d14.sp, TextAlign.center,
-                                   color: ColorConstants.colorBlack,
-                                   decoration: TextDecoration.underline
-                               ),
-                             ),
-
-                            SizedBox(height: DimensionConstants.d35.h),
-                            CommonWidgets.commonButton(context, "verify_phone".tr(),
-                                onBtnTap: () {
-                                  //  Navigator.pushNamed(context, RouteConstants.emailAddressScreen, arguments: true);
-                                })
-                          ],
+                        SizedBox(height: DimensionConstants.d18.h),
+                        const Text("Code sent to +1234567634354").boldText(
+                          context,
+                          DimensionConstants.d16.sp,
+                          TextAlign.center,
+                          color: ColorConstants.colorBlack,
                         ),
-                      )
-                    ],
-                  ))
+                        SizedBox(height: DimensionConstants.d60.h),
+                        optFiled(
+                          context,
+                        ),
+                        SizedBox(height: DimensionConstants.d25.h),
+                        Align(
+                          alignment: Alignment.center,
+                          child: Text("resend_code".tr()).regularText(context,
+                              DimensionConstants.d14.sp, TextAlign.center,
+                              color: ColorConstants.colorBlack,
+                              decoration: TextDecoration.underline),
+                        ),
+                        SizedBox(height: DimensionConstants.d35.h),
+                        CommonWidgets.commonButton(context, "verify_phone".tr(),
+                            onBtnTap: () {
+                          Navigator.pushNamed(
+                              context, RouteConstants.bottomNavigationBar);
+                        }, shadowRequired: true)
+                      ],
+                    ),
+                  )
+                ],
+              ))
             ],
           ),
-
-
-
         ],
       ),
-
-
-
     );
   }
 }
 
-Widget optFiled(BuildContext context,) {
+Widget optFiled(
+  BuildContext context,
+) {
   return OtpTextField(
     fieldWidth: DimensionConstants.d60.w,
     numberOfFields: 4,
@@ -111,14 +106,11 @@ Widget optFiled(BuildContext context,) {
     showFieldAsBox: true,
     textStyle: TextStyle(
       fontWeight: FontWeight.w700,
-      fontSize:DimensionConstants.d20.sp,
+      fontSize: DimensionConstants.d20.sp,
     ),
     focusedBorderColor: ColorConstants.primaryColor,
     borderRadius: BorderRadius.circular(DimensionConstants.d20.r),
     onCodeChanged: (String code) {},
-    onSubmit: (String verificationCode) {
-
-    }, // end onSubmit
+    onSubmit: (String verificationCode) {}, // end onSubmit
   );
-
 }

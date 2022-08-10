@@ -3,6 +3,7 @@ import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/constants/image_constants.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/provider/bottom_bar_provider.dart';
+import 'package:beehive/provider/dashboard_provider.dart';
 import 'package:beehive/view/base_view.dart';
 import 'package:beehive/view/dashboard/dashboard.dart';
 import 'package:beehive/view/profile/profile.dart';
@@ -26,6 +27,9 @@ class BottomBar extends StatefulWidget {
 }
 
 class _BottomBarState extends State<BottomBar> {
+
+
+
   static final List<Widget> _widgetOptions = <Widget>[
     DashBoardPage(),
     const Projects(),
@@ -33,7 +37,7 @@ class _BottomBarState extends State<BottomBar> {
     const Profile(),
   ];
   List<String> menuName = [
-    ImageConstants.dashboardAppBarIcon,
+    ImageConstants.brandIocn,
     "Projects",
     "Timesheets",
     "Profile"
@@ -50,14 +54,16 @@ class _BottomBarState extends State<BottomBar> {
     return BaseView<BottomBarProvider>(builder: (context, provider, _) {
       return Scaffold(
         key: provider.scaffoldKey,
-        drawer: drawer(context),
+        drawer: drawer(context,provider),
         appBar: AppBar(
           centerTitle: true,
           elevation: 1,
           backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
           title: provider.selectedIndex == 0
               ? ImageView(
-                  path: menuName.elementAt(provider.selectedIndex),
+                  path: menuName.elementAt(provider.selectedIndex,),
+                  height: DimensionConstants.d56.h,
+                  width: DimensionConstants.d56.w,
                 )
               : Text(menuName.elementAt(provider.selectedIndex)).semiBoldText(
                   context,
@@ -78,13 +84,13 @@ class _BottomBarState extends State<BottomBar> {
                     : ColorConstants.colorBlack,
               )),
           actions: [
-          provider.selectedIndex == 0 ? Switch(
-              value: themeChange.isDarkModeOn,
-              onChanged: (boolVal) {
-                themeChange.updateTheme(boolVal);
-                provider.updateLoadingStatus(true);
-              },
-            ):Container(),
+          // provider.selectedIndex == 0 ? Switch(
+          //     value: themeChange.isDarkModeOn,
+          //     onChanged: (boolVal) {
+          //       themeChange.updateTheme(boolVal);
+          //       provider.updateLoadingStatus(true);
+          //     },
+          //   ):Container(),
             Padding(
               padding: provider.selectedIndex == 0 ?EdgeInsets.only(right: DimensionConstants.d10.w):EdgeInsets.only(right: DimensionConstants.d10.w,top: DimensionConstants.d10.h),
               child: GestureDetector(
@@ -112,11 +118,8 @@ class _BottomBarState extends State<BottomBar> {
                 padding: EdgeInsets.only(
                     top: DimensionConstants.d8.h,
                     bottom: DimensionConstants.d3.h),
-                child: ImageView(
-                  path: ImageConstants.dashboardIcon,
-                  color: (Theme.of(context).brightness == Brightness.dark
-                      ? ColorConstants.colorWhite
-                      : ColorConstants.colorBlack),
+                child: const ImageView(
+                  path: ImageConstants.bottomBarDashBoardInActive,
                 ),
               ),
               activeIcon: Padding(
@@ -146,7 +149,7 @@ class _BottomBarState extends State<BottomBar> {
                     top: DimensionConstants.d8.h,
                     bottom: DimensionConstants.d3.h),
                 child: const ImageView(
-                  path: ImageConstants.projectsIcon,
+                  path: ImageConstants.bottomBarProjectActive,
                   color: ColorConstants.primaryColor,
                 ),
               ),
@@ -169,7 +172,7 @@ class _BottomBarState extends State<BottomBar> {
                     top: DimensionConstants.d8.h,
                     bottom: DimensionConstants.d3.h),
                 child: const ImageView(
-                  path: ImageConstants.timeSheetsIcon,
+                  path: ImageConstants.bottomBarTimeSheetActive,
                   color: ColorConstants.primaryColor,
                 ),
               ),
@@ -192,7 +195,7 @@ class _BottomBarState extends State<BottomBar> {
                     top: DimensionConstants.d8.h,
                     bottom: DimensionConstants.d3.h),
                 child: const ImageView(
-                  path: ImageConstants.profileIcon,
+                  path: ImageConstants.bottomBarProfileActive,
                   color: ColorConstants.primaryColor,
                 ),
               ),
@@ -222,7 +225,7 @@ class _BottomBarState extends State<BottomBar> {
   }
 }
 
-Widget drawer(BuildContext context) {
+Widget drawer(BuildContext context,BottomBarProvider provider) {
   return Drawer(
       width: DimensionConstants.d314.w,
       child: SingleChildScrollView(
@@ -269,18 +272,39 @@ Widget drawer(BuildContext context) {
               ),
             ),
             SizedBox(height: DimensionConstants.d41.h),
-            drawerHeadingsRow(
-                context, ImageConstants.dashboardIcon, "dashboard".tr(),
-                active: true),
+            GestureDetector(
+              onTap: (){
+                Navigator.pop(context); provider.onItemTapped(0);
+              },
+              child: drawerHeadingsRow(
+                  context, ImageConstants.dashboardIcon, "dashboard".tr(),
+                  active: provider.selectedIndex== 0?true:false),
+            ),
             SizedBox(height: DimensionConstants.d36.h),
-            drawerHeadingsRow(
-                context, ImageConstants.timeSheetsIcon, "time_sheets".tr()),
+            GestureDetector(
+              onTap: (){
+                Navigator.pop(context); provider.onItemTapped(2);
+              },
+              child: drawerHeadingsRow(
+                  context, ImageConstants.timeSheetsIcon, "time_sheets".tr(),active: provider.selectedIndex== 2?true:false),
+            ),
             SizedBox(height: DimensionConstants.d33.h),
-            drawerHeadingsRow(
-                context, ImageConstants.calendarIcon, "schedule".tr()),
+            GestureDetector(
+              onTap: (){
+                Navigator.pop(context); provider.onItemTapped(1);
+              },
+              child: drawerHeadingsRow(
+                  context, ImageConstants.calendarIcon, "schedule".tr(),active: provider.selectedIndex== 1?true:false),
+            ),
             SizedBox(height: DimensionConstants.d33.h),
-            drawerHeadingsRow(context, ImageConstants.openFolderIcon,
-                "archived_projects".tr()),
+            GestureDetector(
+              onTap: (){
+                Navigator.pop(context);
+                Navigator.pushNamed(context, RouteConstants.archivedProjectsScreen);
+              },
+              child: drawerHeadingsRow(context, ImageConstants.openFolderIcon,
+                  "archived_projects".tr()),
+            ),
             SizedBox(height: DimensionConstants.d30.h),
             const Divider(
               color: ColorConstants.colorGreyDrawer,
@@ -288,14 +312,29 @@ Widget drawer(BuildContext context) {
               height: 0.0,
             ),
             SizedBox(height: DimensionConstants.d30.h),
-            drawerHeadingsRow(
-                context, ImageConstants.settingsIcon, "app_settings".tr()),
+            GestureDetector(
+                onTap: (){
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, RouteConstants.appSettings);
+                },
+                child: drawerHeadingsRow(context, ImageConstants.settingsIcon, "app_settings".tr())),
             SizedBox(height: DimensionConstants.d37.h),
-            drawerHeadingsRow(
-                context, ImageConstants.profileIcon, "my_account".tr()),
+            GestureDetector(
+              onTap: (){
+                Navigator.pop(context); provider.onItemTapped(3);
+              },
+              child: drawerHeadingsRow(
+                  context, ImageConstants.profileIcon, "my_account".tr(),active: provider.selectedIndex== 3?true:false),
+            ),
             SizedBox(height: DimensionConstants.d34.h),
-            drawerHeadingsRow(
-                context, ImageConstants.logoutIcon, "logout".tr()),
+            GestureDetector(
+              onTap: (){
+                Navigator.pop(context);
+                Navigator.pushNamed(context, RouteConstants.signInScreen);
+              },
+              child: drawerHeadingsRow(
+                  context, ImageConstants.logoutIcon, "logout".tr()),
+            ),
             SizedBox(height: DimensionConstants.d19.h),
             Padding(
               padding:
@@ -309,7 +348,9 @@ Widget drawer(BuildContext context) {
                 onBtnTap: (){
                     Navigator.of(context).pop();
                   Navigator.pushNamed(context, RouteConstants.upgradePage);
-                }
+                },
+                shadowRequired: false
+
 
               ),
             ),
@@ -321,24 +362,27 @@ Widget drawer(BuildContext context) {
 
 Widget drawerHeadingsRow(BuildContext context, String iconPath, String heading,
     {bool active = false, Color? color}) {
-  return Padding(
-    padding: EdgeInsets.only(left: DimensionConstants.d38.w),
-    child: Row(
-      children: [
-        ImageView(
-            path: iconPath,
-            color: active
-                ? ColorConstants.primaryColor
-                : (Theme.of(context).brightness == Brightness.dark
-                    ? ColorConstants.colorWhite
-                    : ColorConstants.colorBlack)),
-        SizedBox(width: DimensionConstants.d16.w),
-        !active
-            ? Text(heading)
-                .regularText(context, DimensionConstants.d16.sp, TextAlign.left)
-            : Text(heading)
-                .boldText(context, DimensionConstants.d16.sp, TextAlign.left)
-      ],
+  return Container(
+    color: Colors.transparent,
+    child: Padding(
+      padding: EdgeInsets.only(left: DimensionConstants.d38.w),
+      child: Row(
+        children: [
+          ImageView(
+              path: iconPath,
+              color: active
+                  ? ColorConstants.primaryColor
+                  : (Theme.of(context).brightness == Brightness.dark
+                      ? ColorConstants.colorWhite
+                      : ColorConstants.colorBlack)),
+          SizedBox(width: DimensionConstants.d16.w),
+          !active
+              ? Text(heading)
+                  .regularText(context, DimensionConstants.d16.sp, TextAlign.left)
+              : Text(heading)
+                  .boldText(context, DimensionConstants.d16.sp, TextAlign.left)
+        ],
+      ),
     ),
   );
 }

@@ -94,7 +94,9 @@ class EditProfilePage extends StatelessWidget {
                       color2: ColorConstants.primaryGradient1Color,
                       fontSize: DimensionConstants.d14.sp, onBtnTap: () {
                     Navigator.of(context).pop();
-                  }),
+                  },
+                    shadowRequired: true
+                  ),
                 ),
                 SizedBox(
                   height: DimensionConstants.d50.h,

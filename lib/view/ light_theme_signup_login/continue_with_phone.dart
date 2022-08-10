@@ -9,6 +9,7 @@ import 'package:beehive/helper/validations.dart';
 import 'package:beehive/locator.dart';
 import 'package:beehive/provider/continue_with_phone_provider.dart';
 import 'package:beehive/view/base_view.dart';
+import 'package:beehive/view/light_theme_signup_login/email_address_screen.dart';
 import 'package:beehive/widget/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -78,19 +79,24 @@ class ContinueWithPhone extends StatelessWidget {
                               SizedBox(height: DimensionConstants.d42.h),
                               phoneNumberWidget(provider.phoneNumberController),
                               SizedBox(height: DimensionConstants.d25.h),
-                              Align(
-                                alignment: Alignment.center,
-                                child: Text("continue_with_email".tr()).regularText(context,
-                                    DimensionConstants.d14.sp, TextAlign.center,
-                                    color: ColorConstants.colorBlack,
-                                    decoration: TextDecoration.underline
+                              GestureDetector(
+                                onTap: (){
+                                  Navigator.pushNamed(context, RouteConstants.emailAddressScreen,arguments: EmailAddressScreen(fromForgotPassword: true,));
+                                },
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Text("continue_with_email".tr()).regularText(context,
+                                      DimensionConstants.d14.sp, TextAlign.center,
+                                      color: ColorConstants.colorBlack,
+                                      decoration: TextDecoration.underline
+                                  ),
                                 ),
                               ),
                               SizedBox(height: DimensionConstants.d50.h),
                               CommonWidgets.commonButton(context, "continue".tr(),
                                   onBtnTap: () {
                                   Navigator.pushNamed(context, RouteConstants.otpVerificationPage);
-                              })
+                              },shadowRequired: true)
                             ],
                           ),
                         )

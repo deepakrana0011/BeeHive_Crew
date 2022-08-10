@@ -53,11 +53,11 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage>
                   SizedBox(
                     height: DimensionConstants.d16.h,
                   ),
-                  mapAndHoursDetails(context, provider),
+                  mapAndHoursDetails(context, provider,widget.archivedOrProject),
                   SizedBox(
                     height: DimensionConstants.d10.h,
                   ),
-                  tabBarView(context, provider.tabController!, provider)
+                  tabBarView(context, provider.tabController!, provider,widget.archivedOrProject)
                 ],
               ),
             ),
@@ -69,7 +69,7 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage>
 }
 
 Widget mapAndHoursDetails(
-    BuildContext context, ProjectDetailsPageProvider provider) {
+    BuildContext context, ProjectDetailsPageProvider provider,bool archivedOrNot) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
@@ -105,7 +105,7 @@ Widget mapAndHoursDetails(
                         : ColorConstants.darkGray4F4F4F),
           ),
           Expanded(child: Container()),
-          Container(
+        archivedOrNot != true?  Container(
             height: DimensionConstants.d42.h,
             width: DimensionConstants.d94.w,
             decoration: BoxDecoration(
@@ -129,7 +129,7 @@ Widget mapAndHoursDetails(
                       ? ColorConstants.colorWhite
                       : ColorConstants.colorBlack),
             ),
-          )
+          ):Container()
         ],
       ),
       SizedBox(
@@ -195,7 +195,7 @@ Widget mapAndHoursDetails(
 }
 
 Widget tabBarView(BuildContext context, TabController controller,
-    ProjectDetailsPageProvider provider) {
+    ProjectDetailsPageProvider provider,bool archivedOrNot) {
   return Column(
     children: [
       Card(
@@ -272,8 +272,8 @@ Widget tabBarView(BuildContext context, TabController controller,
             physics: NeverScrollableScrollPhysics(),
             controller: controller,
             children: <Widget>[
-              todayTab(context, true, provider),
-              todayTab(context, false, provider),
+              todayTab(context, true, provider,archivedOrNot),
+              todayTab(context, false, provider,archivedOrNot),
               Container(),
             ]),
       )
@@ -282,7 +282,7 @@ Widget tabBarView(BuildContext context, TabController controller,
 }
 
 Widget todayTab(BuildContext context, bool todayOrWeekly,
-    ProjectDetailsPageProvider provider) {
+    ProjectDetailsPageProvider provider,bool archivedOrNot) {
   return SizedBox(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -304,7 +304,7 @@ Widget todayTab(BuildContext context, bool todayOrWeekly,
                     ? ColorConstants.colorWhite
                     : ColorConstants.colorBlack),
             Expanded(child: Container()),
-            GestureDetector(
+         archivedOrNot != true?   GestureDetector(
               onTap: () {
                 Navigator.pushNamed(context, RouteConstants.addNotePage);
               },
@@ -342,7 +342,7 @@ Widget todayTab(BuildContext context, bool todayOrWeekly,
                   ),
                 ),
               ),
-            ),
+            ):Container()
           ],
         ),
         SizedBox(
@@ -352,7 +352,7 @@ Widget todayTab(BuildContext context, bool todayOrWeekly,
         SizedBox(
           height: DimensionConstants.d25.h,
         ),
-        crewWidget(context),
+        crewWidget(context,archivedOrNot),
       ],
     ),
   );
@@ -405,20 +405,35 @@ Widget stepperLine(BuildContext context, bool todayOrWeek, String date) {
                           ? ColorConstants.colorWhite
                           : ColorConstants.colorBlack,
                     )
-                  : Text(date).boldText(
-                      context,
-                      DimensionConstants.d13.sp,
-                      TextAlign.left,
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? ColorConstants.colorWhite
-                          : ColorConstants.colorBlack,
-                    ),
-              SizedBox(
-                width: DimensionConstants.d9.w,
+                  :Row(
+                children:<Widget> [
+                  Text(date).boldText(
+                    context,
+                    DimensionConstants.d13.sp,
+                    TextAlign.left,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? ColorConstants.colorWhite
+                        : ColorConstants.colorBlack,
+                  ),
+                  SizedBox(
+                    width: DimensionConstants.d9.w,
+                  ),Text("8:50a").regularText(
+                    context,
+                    DimensionConstants.d13.sp,
+                    TextAlign.left,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? ColorConstants.colorWhite
+                        : ColorConstants.colorBlack,
+                  )
+
+                ],
+              ),
+            SizedBox(
+                width: DimensionConstants.d5.w,
               ),
               Container(
                 height: DimensionConstants.d4.h,
-                width: DimensionConstants.d20.w,
+                width:todayOrWeek != true? DimensionConstants.d12.w:DimensionConstants.d20.w,
                 decoration: BoxDecoration(
                     color: ColorConstants.green6FCF97,
                     borderRadius: BorderRadius.only(
@@ -426,10 +441,10 @@ Widget stepperLine(BuildContext context, bool todayOrWeek, String date) {
                         bottomLeft: Radius.circular(DimensionConstants.d4.r))),
               ),
               SizedBox(
-                width: DimensionConstants.d5.w,
+                width: DimensionConstants.d4.w,
               ),
               Padding(
-                padding: EdgeInsets.only(bottom: DimensionConstants.d18.h),
+                padding: EdgeInsets.only(bottom: DimensionConstants.d20.h),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
@@ -441,45 +456,7 @@ Widget stepperLine(BuildContext context, bool todayOrWeek, String date) {
                     ),
                     Container(
                       height: DimensionConstants.d4.h,
-                      width: DimensionConstants.d15.w,
-                      color: ColorConstants.redColorEB5757,
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                width: DimensionConstants.d5.w,
-              ),
-              Container(
-                height: DimensionConstants.d4.h,
-                width: DimensionConstants.d20.w,
-                color: ColorConstants.grayD2D2D7,
-              ),
-              SizedBox(
-                width: DimensionConstants.d5.w,
-              ),
-              Container(
-                height: DimensionConstants.d4.h,
-                width: DimensionConstants.d15.w,
-                color: ColorConstants.green6FCF97,
-              ),
-              SizedBox(
-                width: DimensionConstants.d5.w,
-              ),
-              Padding(
-                padding: EdgeInsets.only(bottom: DimensionConstants.d18.h),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    const ImageView(
-                      path: ImageConstants.coolIcon,
-                    ),
-                    SizedBox(
-                      height: DimensionConstants.d5.h,
-                    ),
-                    Container(
-                      height: DimensionConstants.d4.h,
-                      width: DimensionConstants.d15.w,
+                      width: todayOrWeek != true? DimensionConstants.d12.w:DimensionConstants.d20.w,
                       color: ColorConstants.redColorEB5757,
                     ),
                   ],
@@ -490,7 +467,45 @@ Widget stepperLine(BuildContext context, bool todayOrWeek, String date) {
               ),
               Container(
                 height: DimensionConstants.d4.h,
-                width: DimensionConstants.d8.w,
+                width: todayOrWeek != true? DimensionConstants.d12.w:DimensionConstants.d15.w,
+                color: ColorConstants.grayD2D2D7,
+              ),
+              SizedBox(
+                width: DimensionConstants.d4.w,
+              ),
+              Container(
+                height: DimensionConstants.d4.h,
+                width: todayOrWeek != true? DimensionConstants.d12.w:DimensionConstants.d20.w,
+                color: ColorConstants.green6FCF97,
+              ),
+              SizedBox(
+                width: DimensionConstants.d4.w,
+              ),
+              Padding(
+                padding: EdgeInsets.only(bottom: DimensionConstants.d20.h),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    const ImageView(
+                      path: ImageConstants.coolIcon,
+                    ),
+                    SizedBox(
+                      height: DimensionConstants.d5.h,
+                    ),
+                    Container(
+                      height: DimensionConstants.d4.h,
+                      width: todayOrWeek != true? DimensionConstants.d12.w:DimensionConstants.d20.w,
+                      color: ColorConstants.redColorEB5757,
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                width: DimensionConstants.d4.w,
+              ),
+              Container(
+                height: DimensionConstants.d4.h,
+                width:todayOrWeek != true? DimensionConstants.d8.w:DimensionConstants.d20.w,
                 decoration: BoxDecoration(
                     color: ColorConstants.green6FCF97,
                     borderRadius: BorderRadius.only(
@@ -503,9 +518,9 @@ Widget stepperLine(BuildContext context, bool todayOrWeek, String date) {
                 width: DimensionConstants.d20.w,
               ),
               SizedBox(
-                width: DimensionConstants.d10.w,
+                width: DimensionConstants.d5.w,
               ),
-              Text("8:50a").regularText(
+              Text("8:50p").regularText(
                 context,
                 DimensionConstants.d13.sp,
                 TextAlign.left,
@@ -514,7 +529,7 @@ Widget stepperLine(BuildContext context, bool todayOrWeek, String date) {
                     : ColorConstants.colorBlack,
               ),
               SizedBox(
-                width: DimensionConstants.d15.w,
+                width: DimensionConstants.d14.w,
               ),
               Text("08:57h").boldText(
                 context,
@@ -611,7 +626,7 @@ Widget scaleNotesWidget(BuildContext context) {
   );
 }
 
-Widget crewWidget(BuildContext context) {
+Widget crewWidget(BuildContext context,bool archivedOrNot) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
@@ -626,7 +641,7 @@ Widget crewWidget(BuildContext context) {
       SizedBox(
         height: DimensionConstants.d24.h,
       ),
-      managerDetails(context, true, "Katharine Wells"),
+      managerDetails(context, true, "Katharine Wells",archivedOrNot),
       SizedBox(
         height: DimensionConstants.d8.h,
       ),
@@ -634,16 +649,16 @@ Widget crewWidget(BuildContext context) {
           onTap: () {
             Navigator.pushNamed(context, RouteConstants.crewProfilePage);
           },
-          child: managerDetails(context, false, "Benjamin Poole")),
+          child: managerDetails(context, false, "Benjamin Poole",archivedOrNot)),
       SizedBox(
         height: DimensionConstants.d8.h,
       ),
-      managerDetails(context, false, "Jason Smith"),
+      managerDetails(context, false, "Jason Smith",archivedOrNot)
     ],
   );
 }
 
-Widget managerDetails(BuildContext context, bool managerOrNot, String name) {
+Widget managerDetails(BuildContext context, bool managerOrNot, String name,bool archivedOrNot) {
   return Card(
     elevation: 1,
     shape: RoundedRectangleBorder(
@@ -750,14 +765,27 @@ Widget managerDetails(BuildContext context, bool managerOrNot, String name) {
                           ),
                         ),
                       )
-                    : Text("carpenter".tr()).regularText(
-                        context,
-                        DimensionConstants.d14.sp,
-                        TextAlign.left,
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? ColorConstants.colorWhite
-                            : ColorConstants.deepBlue,
-                      )
+                    : Row(
+                  children:<Widget> [
+                    Text("carpenter".tr()).regularText(
+                      context,
+                      DimensionConstants.d14.sp,
+                      TextAlign.left,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? ColorConstants.colorWhite
+                          : ColorConstants.deepBlue,
+                    ),
+                    archivedOrNot == true?const Text("   \$20.00/hr").regularText(
+                      context,
+                      DimensionConstants.d14.sp,
+                      TextAlign.left,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? ColorConstants.colorWhite
+                          : ColorConstants.deepBlue,
+                    ):Container()
+
+                  ],
+                )
               ],
             ),
             Expanded(child: Container()),
@@ -792,7 +820,7 @@ Widget weeklyTabBarContainer(BuildContext context) {
         Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            backNextBtn(ImageConstants.nextIconIos),
+            backNextBtn(ImageConstants.backIconIos),
             SizedBox(
               width: DimensionConstants.d27.w,
             ),
@@ -802,7 +830,7 @@ Widget weeklyTabBarContainer(BuildContext context) {
             SizedBox(
               width: DimensionConstants.d27.w,
             ),
-            backNextBtn(ImageConstants.backIconIos)
+            backNextBtn(ImageConstants.nextIconIos)
           ],
         ),
         SizedBox(

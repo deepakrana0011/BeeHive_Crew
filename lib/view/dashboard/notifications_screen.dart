@@ -1,3 +1,5 @@
+
+
 import 'package:beehive/constants/color_constants.dart';
 import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/constants/image_constants.dart';
@@ -17,6 +19,7 @@ class NotificationsScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
+        centerTitle: true,
         title: Text("notifications".tr()).semiBoldText(context, DimensionConstants.d22.sp, TextAlign.center),
         leading: GestureDetector(
             onTap: (){
@@ -49,7 +52,7 @@ class NotificationsScreen extends StatelessWidget {
                   context,
                   photoFromCamera: () {},
                   photoFromGallery: () {},
-                ));;
+                ));
       },
       child: Container(
         color: Colors.transparent,
@@ -116,9 +119,17 @@ class NotificationsScreen extends StatelessWidget {
               SizedBox(height: DimensionConstants.d8.h),
               SizedBox(
                 width: DimensionConstants.d247.w,
-                child:
-                Text(notificationText).
-                regularText(context, DimensionConstants.d14.sp, TextAlign.left, maxLines: 2, overflow: TextOverflow.ellipsis, color: ColorConstants.colorGray3),
+                child:RichText(
+                  text: TextSpan(
+                    text: "You have recieved a new message from",
+                    style: const TextStyle(color: ColorConstants.colorGray3,fontFamily: "SFProDisplay"),
+                    children: <TextSpan>[
+                      TextSpan(text: " @johnsmith",style: TextStyle(fontSize: DimensionConstants.d14.sp,color: ColorConstants.primaryColor))
+
+                    ],
+                  ),
+                )
+               // Text(notificationText).regularText(context, DimensionConstants.d14.sp, TextAlign.left, maxLines: 2, overflow: TextOverflow.ellipsis, color: ColorConstants.colorGray3),
 
               )
             ],

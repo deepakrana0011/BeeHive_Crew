@@ -9,6 +9,7 @@ import 'package:beehive/helper/validations.dart';
 import 'package:beehive/locator.dart';
 import 'package:beehive/provider/login_provider.dart';
 import 'package:beehive/view/base_view.dart';
+import 'package:beehive/view/light_theme_signup_login/email_address_screen.dart';
 import 'package:beehive/widget/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -36,78 +37,83 @@ class LoginScreen extends StatelessWidget {
               backgroundColor: ColorConstants.colorWhite,
               body: Form(
                 key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Stack(
-                      children: [
-                        const ImageView(path: ImageConstants.lightThemeSignUpBg),
-                        Positioned(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      top: DimensionConstants.d44.h,
-                                      left: DimensionConstants.d24.w),
-                                  child: GestureDetector(
-                                    behavior: HitTestBehavior.translucent,
-                                    onTap: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: SizedBox(
-                                        width: DimensionConstants.d24.w,
-                                        height: DimensionConstants.d24.h,
-                                        child: const ImageView(
-                                            path: ImageConstants.backIcon, fit: BoxFit.cover)),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Stack(
+                        children: [
+                          const ImageView(path: ImageConstants.lightThemeSignUpBg),
+                          Positioned(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        top: DimensionConstants.d44.h,
+                                        left: DimensionConstants.d24.w),
+                                    child: GestureDetector(
+                                      behavior: HitTestBehavior.translucent,
+                                      onTap: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: SizedBox(
+                                          width: DimensionConstants.d24.w,
+                                          height: DimensionConstants.d24.h,
+                                          child: const ImageView(
+                                              path: ImageConstants.backIcon, fit: BoxFit.cover)),
+                                    ),
                                   ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d32.w),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      SizedBox(height: DimensionConstants.d75.h),
-                                      SizedBox(
-                                        width: DimensionConstants.d242.w,
-                                        child: Text("login".tr()).boldText(context, DimensionConstants.d30.sp, TextAlign.left, color: ColorConstants.colorBlack),
-                                      ),
-                                      SizedBox(height: DimensionConstants.d42.h),
-                                      Text("your_email".tr()).boldText(context, DimensionConstants.d14.sp, TextAlign.center, color: ColorConstants.colorWhite70),
-                                      emailTextField(provider),
-                                      SizedBox(height: DimensionConstants.d24.h),
-                                      Text("your_password".tr()).boldText(context, DimensionConstants.d14.sp, TextAlign.center, color: ColorConstants.colorWhite70),
-                                      passwordTextField(provider),
-                                      SizedBox(height: DimensionConstants.d16.h),
-                                      Align(
-                                        alignment: Alignment.center,
-                                        child: Text("forgot_password".tr()).regularText(context, DimensionConstants.d13.sp, TextAlign.center, color: ColorConstants.colorBlack),
-                                      ),
-                                      SizedBox(height: DimensionConstants.d16.h),
-                                      GestureDetector(
-                                        onTap: (){
-                                          Navigator.pushNamed(context, RouteConstants.emailAddressScreen);
-                                        },
-                                        child: Align(
-                                          alignment: Alignment.center,
-                                          child: Text("sign_up".tr()).regularText(context, DimensionConstants.d13.sp, TextAlign.center, color: ColorConstants.colorBlack),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d32.w),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        SizedBox(height: DimensionConstants.d75.h),
+                                        SizedBox(
+                                          width: DimensionConstants.d242.w,
+                                          child: Text("login".tr()).boldText(context, DimensionConstants.d30.sp, TextAlign.left, color: ColorConstants.colorBlack),
                                         ),
-                                      ),
-                                      SizedBox(height: DimensionConstants.d29.h),
-                                      CommonWidgets.commonButton(context, "login".tr(), onBtnTap: (){
-                                      //  Navigator.pushNamed(context, RouteConstants.emailAddressScreen, arguments: true);
-                                        if(_formKey.currentState!.validate()){
+                                        SizedBox(height: DimensionConstants.d42.h),
+                                        Text("your_email".tr()).boldText(context, DimensionConstants.d14.sp, TextAlign.center, color: ColorConstants.colorWhite70),
+                                        emailTextField(provider),
+                                        SizedBox(height: DimensionConstants.d24.h),
+                                        Text("your_password".tr()).boldText(context, DimensionConstants.d14.sp, TextAlign.center, color: ColorConstants.colorWhite70),
+                                        passwordTextField(provider),
+                                        SizedBox(height: DimensionConstants.d16.h),
+                                        GestureDetector(
+                                          onTap: (){
+                                            Navigator.pushNamed(context, RouteConstants.resetPasswordScreen);
+                                          },
+                                          child: Align(
+                                            alignment: Alignment.center,
+                                            child: Text("forgot_password".tr()).regularText(context, DimensionConstants.d16.sp, TextAlign.center, color: ColorConstants.colorBlack,decoration: TextDecoration.underline),
+                                          ),
+                                        ),
+                                        SizedBox(height: DimensionConstants.d29.h),
+                                        CommonWidgets.commonButton(context, "login".tr(), onBtnTap: (){
                                           CommonWidgets.hideKeyboard(context);
-                                        }
-                                      })
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ))
-                      ],
-                    ),
-                  ],
+                                          Navigator.pushNamed(context, RouteConstants.bottomNavigationBar,);
+                                        },shadowRequired: true),
+                                        SizedBox(height: DimensionConstants.d16.h),
+                                        GestureDetector(
+                                          onTap: (){
+                                            Navigator.pushNamed(context, RouteConstants.emailAddressScreen,arguments: EmailAddressScreen(fromForgotPassword: false,));
+                                          },
+                                          child: Align(
+                                            alignment: Alignment.center,
+                                            child: Text("sign_up".tr()).regularText(context, DimensionConstants.d16.sp, TextAlign.center, color: ColorConstants.colorBlack,decoration: TextDecoration.underline),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ))
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

@@ -19,6 +19,9 @@ class BottomBarProvider extends BaseProvider{
   routeNavigation(BuildContext context, int index){
     if(index == 0){
       Navigator.pushNamed(context, RouteConstants.notificationsScreen);
+    }else if(index == 3){
+      Navigator.pushNamed(context, RouteConstants.notificationsScreen);
+
     }
   }
 

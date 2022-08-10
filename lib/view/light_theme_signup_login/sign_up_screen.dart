@@ -39,74 +39,74 @@ class SignUpScreen extends StatelessWidget {
           backgroundColor: ColorConstants.colorWhite,
           body: Form(
             key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Stack(
-                  children: [
-                    const ImageView(path: ImageConstants.lightThemeSignUpBg),
-                    Positioned(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  top: DimensionConstants.d44.h,
-                                  left: DimensionConstants.d24.w),
-                                 child: GestureDetector(
-                                    behavior: HitTestBehavior.translucent,
-                                    onTap: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: SizedBox(
-                                        width: DimensionConstants.d24.w,
-                                        height: DimensionConstants.d24.h,
-                                        child: const ImageView(
-                                            path: ImageConstants.backIcon, fit: BoxFit.cover)),
-                                  ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d32.w),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(height: DimensionConstants.d75.h),
-                                  SizedBox(
-                                    width: DimensionConstants.d242.w,
-                                    child: Text("sign_up".tr()).boldText(context, DimensionConstants.d30.sp, TextAlign.left, color: ColorConstants.colorBlack),
-                                  ),
-                                  SizedBox(height: DimensionConstants.d16.h),
-                                  Text(email).regularText(context, DimensionConstants.d16.sp, TextAlign.left, color: ColorConstants.colorBlack),
-                                  SizedBox(height: DimensionConstants.d49.h),
-                                  Text("your_name".tr()).boldText(context, DimensionConstants.d14.sp, TextAlign.center, color: ColorConstants.colorWhite70),
-                                  nameTextField(),
-                                  SizedBox(height: DimensionConstants.d24.h),
-                                  Text("your_password".tr()).boldText(context, DimensionConstants.d14.sp, TextAlign.center, color: ColorConstants.colorWhite70),
-                                  passwordTextField(),
-                                  SizedBox(height: DimensionConstants.d16.h),
-                                  GestureDetector(
-                                    onTap: (){
-                                      Navigator.pushNamed(context, RouteConstants.loginScreen);
-                                    },
-                                    child: Align(
-                                      alignment: Alignment.center,
-                                      child: Text("login".tr()).regularText(context, DimensionConstants.d13.sp, TextAlign.center, color: ColorConstants.colorBlack),
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Stack(
+                    children: [
+                      const ImageView(path: ImageConstants.lightThemeSignUpBg),
+                      Positioned(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    top: DimensionConstants.d44.h,
+                                    left: DimensionConstants.d24.w),
+                                   child: GestureDetector(
+                                      behavior: HitTestBehavior.translucent,
+                                      onTap: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: SizedBox(
+                                          width: DimensionConstants.d24.w,
+                                          height: DimensionConstants.d24.h,
+                                          child: const ImageView(
+                                              path: ImageConstants.backIcon, fit: BoxFit.cover)),
                                     ),
-                                  ),
-                                  SizedBox(height: DimensionConstants.d39.h),
-                                  CommonWidgets.commonButton(context, "sign_up_".tr(), onBtnTap: (){
-                                    if(_formKey.currentState!.validate()){
-                                      CommonWidgets.hideKeyboard(context);
-                                    }
-                                  })
-                                ],
                               ),
-                            )
-                          ],
-                        ))
-                  ],
-                ),
-              ],
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d32.w),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(height: DimensionConstants.d75.h),
+                                    SizedBox(
+                                      width: DimensionConstants.d242.w,
+                                      child: Text("sign_up".tr()).boldText(context, DimensionConstants.d30.sp, TextAlign.left, color: ColorConstants.colorBlack),
+                                    ),
+                                    SizedBox(height: DimensionConstants.d16.h),
+                                    Text(email).regularText(context, DimensionConstants.d16.sp, TextAlign.left, color: ColorConstants.colorBlack),
+                                    SizedBox(height: DimensionConstants.d49.h),
+                                    Text("your_name".tr()).boldText(context, DimensionConstants.d14.sp, TextAlign.center, color: ColorConstants.colorWhite70),
+                                    nameTextField(),
+                                    SizedBox(height: DimensionConstants.d24.h),
+                                    Text("your_password".tr()).boldText(context, DimensionConstants.d14.sp, TextAlign.center, color: ColorConstants.colorWhite70),
+                                    passwordTextField(),
+                                    SizedBox(height: DimensionConstants.d39.h),
+                                    CommonWidgets.commonButton(context, "sign_up_".tr(), onBtnTap: (){
+                                      Navigator.pushNamed(context, RouteConstants.continueWithPhone);
+                                    },shadowRequired: true),
+                                    SizedBox(height: DimensionConstants.d20.h),
+                                    GestureDetector(
+                                      onTap: (){
+                                        Navigator.pushNamed(context, RouteConstants.loginScreen);
+                                      },
+                                      child: Align(
+                                        alignment: Alignment.center,
+                                        child: Text("login".tr()).regularText(context, DimensionConstants.d16.sp, TextAlign.center, color: ColorConstants.colorBlack,decoration: TextDecoration.underline),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ))
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),

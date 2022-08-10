@@ -2,6 +2,8 @@ import 'package:beehive/provider/base_provider.dart';
 import 'package:flutter/material.dart';
 
 class SignInProvider extends BaseProvider{
+
+
   TabController? tabController;
   int selectedIndex = 0;
 

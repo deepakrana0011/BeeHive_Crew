@@ -6,9 +6,9 @@ import 'package:beehive/view/dashboard/app_settings.dart';
 import 'package:beehive/view/dashboard/archived_projects_screen.dart';
 import 'package:beehive/view/dashboard/notifications_screen.dart';
 import 'package:beehive/view/dashboard/select_to_continue_screen.dart';
-import 'package:beehive/view/light_theme_signup_login/email_address_screen.dart';
 import 'package:beehive/view/introduction/beehive_introduction.dart';
 import 'package:beehive/view/introduction/introduction_pages.dart';
+import 'package:beehive/view/light_theme_signup_login/email_address_screen.dart';
 import 'package:beehive/view/light_theme_signup_login/login_screen.dart';
 import 'package:beehive/view/light_theme_signup_login/reset_password_screen.dart';
 import 'package:beehive/view/light_theme_signup_login/sign_up_screen.dart';
@@ -23,10 +23,20 @@ import 'package:beehive/view/sign_in/sign_in_screen.dart';
 import 'package:beehive/view/timesheets/timesheets_screen.dart';
 import 'package:beehive/view/upgrade_crew_manager/payment_page.dart';
 import 'package:beehive/view/upgrade_crew_manager/upgrade_page.dart';
+import 'package:beehive/views_manager/bottom_bar_manager/bottom_navigation_bar_manager.dart';
+import 'package:beehive/views_manager/dashboard_manager/app_settings_manager.dart';
+import 'package:beehive/views_manager/dashboard_manager/archived_projects_screen_manager.dart';
+import 'package:beehive/views_manager/dashboard_manager/notifications_screen_manager.dart';
+import 'package:beehive/views_manager/light_theme_signup_login_manager/continue_with_phone_manager.dart';
+import 'package:beehive/views_manager/light_theme_signup_login_manager/email_address_screen_manager.dart';
+import 'package:beehive/views_manager/light_theme_signup_login_manager/login_screen_manager.dart';
+import 'package:beehive/views_manager/light_theme_signup_login_manager/otp_verification_page_manager.dart';
+import 'package:beehive/views_manager/light_theme_signup_login_manager/sign_up_screen_manager.dart';
+import 'package:beehive/views_manager/projects_manager/create_project_manager.dart';
+import 'package:beehive/views_manager/projects_manager/project_details_manager.dart';
 import 'package:flutter/material.dart';
 
 class OnGenerateRouter {
-
   static Route<dynamic> onGenerate(RouteSettings settings) {
     final args = settings.arguments;
 
@@ -40,13 +50,14 @@ class OnGenerateRouter {
             builder: (_) => SignInScreen(), settings: settings);
 
       case RouteConstants.bottomNavigationBar:
-
         return MaterialPageRoute(
             builder: (_) => BottomBar(), settings: settings);
       case RouteConstants.projectDetailsPage:
         final args = settings.arguments as ProjectDetailsPage;
         return MaterialPageRoute(
-            builder: (_) => ProjectDetailsPage(archivedOrProject: args.archivedOrProject,), settings: settings);
+            builder: (_) =>
+                ProjectDetailsPage(archivedOrProject: args.archivedOrProject),
+            settings: settings);
       case RouteConstants.addNotePage:
         return MaterialPageRoute(
             builder: (_) => AddNotePage(), settings: settings);
@@ -93,17 +104,16 @@ class OnGenerateRouter {
             builder: (_) => SelectToContinueScreen(), settings: settings);
 
       case RouteConstants.emailAddressScreen:
+        final args = settings.arguments as EmailAddressScreen;
         return MaterialPageRoute(
-            builder: (_) => EmailAddressScreen(fromForgotPassword: args == null ? false : args as bool,), settings: settings);
-
+            builder: (_) => EmailAddressScreen(fromForgotPassword: args.fromForgotPassword,), settings: settings);
       case RouteConstants.signUpScreen:
+        final args = settings.arguments as SignUpScreen;
         return MaterialPageRoute(
-            builder: (_) => SignUpScreen(email: args as String), settings: settings);
-
+            builder: (_) => SignUpScreen(email: args.email), settings: settings);
       case RouteConstants.loginScreen:
         return MaterialPageRoute(
             builder: (_) => LoginScreen(), settings: settings);
-
       case RouteConstants.resetPasswordScreen:
         return MaterialPageRoute(
             builder: (_) => ResetPasswordScreen(), settings: settings);
@@ -113,6 +123,48 @@ class OnGenerateRouter {
       case RouteConstants.otpVerificationPage:
         return MaterialPageRoute(
             builder: (_) => OtpVerificationPage(), settings: settings);
+      case RouteConstants.bottomBarManager:
+        return MaterialPageRoute(
+            builder: (_) => BottomBarManager(), settings: settings);
+      case RouteConstants.continueWithPhoneManager:
+        return MaterialPageRoute(
+            builder: (_) => ContinueWithPhoneManager(), settings: settings);
+      case RouteConstants.otpVerificationPageManager:
+        return MaterialPageRoute(
+            builder: (_) => OtpVerificationPageManager(), settings: settings);
+      case RouteConstants.signUpScreenManager:
+        final args = settings.arguments as SignUpScreenManager;
+        return MaterialPageRoute(
+            builder: (_) => SignUpScreenManager(email: args.email), settings: settings);
+      case RouteConstants.emailAddressScreenManager:
+        final args = settings.arguments as EmailAddressScreenManager;
+        return MaterialPageRoute(
+            builder: (_) => EmailAddressScreenManager(fromForgotPassword: args.fromForgotPassword,), settings: settings);
+      case RouteConstants.notificationsScreenManager:
+        return MaterialPageRoute(
+            builder: (_) => NotificationsScreenManager(), settings: settings);
+      case RouteConstants.appSettingsManager:
+        return MaterialPageRoute(
+            builder: (_) => AppSettingsManager(), settings: settings);
+      case RouteConstants.loginScreenManager:
+        return MaterialPageRoute(
+            builder: (_) => LoginScreenManager(), settings: settings);
+      case RouteConstants.projectDetailsPageManager:
+        final args = settings.arguments as ProjectDetailsPageManager;
+        return MaterialPageRoute(
+            builder: (_) =>
+                ProjectDetailsPageManager(archivedOrProject: args.archivedOrProject),
+            settings: settings);
+      case RouteConstants.archivedProjectsScreenManager:
+        return MaterialPageRoute(
+            builder: (_) => ArchivedProjectsScreenManager(), settings: settings);
+      case RouteConstants.createProjectManager:
+        return MaterialPageRoute(
+            builder: (_) => CreateProjectManager(), settings: settings);
+
+
+
+
 
       default:
         return _onPageNotFound();

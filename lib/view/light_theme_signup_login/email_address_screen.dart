@@ -1,3 +1,5 @@
+
+
 import 'package:beehive/constants/color_constants.dart';
 import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/constants/image_constants.dart';
@@ -8,6 +10,7 @@ import 'package:beehive/helper/decoration.dart';
 import 'package:beehive/helper/validations.dart';
 import 'package:beehive/provider/base_provider.dart';
 import 'package:beehive/view/base_view.dart';
+import 'package:beehive/view/light_theme_signup_login/sign_up_screen.dart';
 import 'package:beehive/widget/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -71,9 +74,14 @@ class EmailAddressScreen extends StatelessWidget {
                                 SizedBox(height: DimensionConstants.d39.h),
                                 CommonWidgets.commonButton(context, "continue".tr(), onBtnTap: (){
                                   if(_formKey.currentState!.validate()){
-                                    Navigator.pushNamed(context, RouteConstants.signUpScreen, arguments: emailController.text);
+                                    if(fromForgotPassword == true){
+                                      Navigator.pushNamed(context, RouteConstants.otpVerificationPage,);
+                                    }else{
+                                      Navigator.pushNamed(context, RouteConstants.signUpScreen, arguments: SignUpScreen(email: emailController.text));
+                                    }
+
                                   }
-                                })
+                                },shadowRequired: true)
                               ],
                             ),
                           )

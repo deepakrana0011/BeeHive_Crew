@@ -23,6 +23,7 @@ class UpgradePage extends StatelessWidget {
         title: "upgrade",
         actionButtonRequired: true,
         actionIcon: ImageConstants.notificationIconBell,
+        onTapAction: (){Navigator.pushNamed(context, RouteConstants.notificationsScreen);}
       ),
       body: Column(
         children: <Widget>[

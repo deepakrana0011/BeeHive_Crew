@@ -51,7 +51,7 @@ class CommonWidgets{
   }
 
 
-  static Widget commonButton(BuildContext context, String btnText, {VoidCallback? onBtnTap, double? height, Color? color1, Color? color2, double? fontSize}){
+  static Widget commonButton(BuildContext context, String btnText, {VoidCallback? onBtnTap, double? height, Color? color1, Color? color2, double? fontSize,bool? shadowRequired}){
     return GestureDetector(
       onTap: onBtnTap,
       child: Container(
@@ -66,6 +66,14 @@ class CommonWidgets{
                color2 ??  ColorConstants.primaryGradient1Color
               ],
             ),
+            boxShadow:shadowRequired == true? <BoxShadow>[
+              BoxShadow(
+                  color: ColorConstants.primaryGradient2Color.withOpacity(0.7),
+                  blurRadius: 20.0,
+                  offset: const Offset(0.0, 6),
+              )
+            ]:null,
+
           borderRadius: BorderRadius.all(
             Radius.circular(DimensionConstants.d8.r),
           ),

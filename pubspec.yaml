@@ -50,6 +50,8 @@ dependencies:
   dropdown_button2: ^1.7.1
   intl_phone_number_input: ^0.7.0+2
   flutter_otp_text_field: ^1.0.1
+  toggle_switch: ^2.0.1
+  geolocator: ^9.0.1
 
 dev_dependencies:
   flutter_test:

@@ -7,6 +7,12 @@ class DashboardProvider extends BaseProvider{
 
   bool hasCheckInCheckOut = false;
   bool isCheckedIn = false;
+  bool noProject = false;
+  updateNoProject(){
+    noProject = !noProject;
+    notifyListeners();
+
+  }
 
   String? checkIn;
   List<String> checkInItems = ["123 Main St., Toronto, ON", "123 Main St1., Toronto, ON", "123 Main St2., Toronto, ON"];

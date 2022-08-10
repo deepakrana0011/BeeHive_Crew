@@ -32,62 +32,64 @@ class ResetPasswordScreen extends StatelessWidget {
               backgroundColor: ColorConstants.colorWhite,
               body: Form(
                 key: _formKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Stack(
-                      children: [
-                        const ImageView(path: ImageConstants.lightThemeSignUpBg),
-                        Positioned(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      top: DimensionConstants.d44.h,
-                                      left: DimensionConstants.d24.w),
-                                  child: GestureDetector(
-                                    behavior: HitTestBehavior.translucent,
-                                    onTap: () {
-                                      Navigator.of(context).pop();
-                                    },
-                                    child: SizedBox(
-                                        width: DimensionConstants.d24.w,
-                                        height: DimensionConstants.d24.h,
-                                        child: const ImageView(
-                                            path: ImageConstants.backIcon, fit: BoxFit.cover)),
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Stack(
+                        children: [
+                          const ImageView(path: ImageConstants.lightThemeSignUpBg),
+                          Positioned(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        top: DimensionConstants.d44.h,
+                                        left: DimensionConstants.d24.w),
+                                    child: GestureDetector(
+                                      behavior: HitTestBehavior.translucent,
+                                      onTap: () {
+                                        Navigator.of(context).pop();
+                                      },
+                                      child: SizedBox(
+                                          width: DimensionConstants.d24.w,
+                                          height: DimensionConstants.d24.h,
+                                          child: const ImageView(
+                                              path: ImageConstants.backIcon, fit: BoxFit.cover)),
+                                    ),
                                   ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d32.w),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      SizedBox(height: DimensionConstants.d75.h),
-                                      SizedBox(
-                                        width: DimensionConstants.d242.w,
-                                        child: Text("reset_password".tr()).boldText(context, DimensionConstants.d30.sp, TextAlign.left, color: ColorConstants.colorBlack),
-                                      ),
-                                      SizedBox(height: DimensionConstants.d59.h),
-                                      Text("new_password_".tr()).boldText(context, DimensionConstants.d14.sp, TextAlign.center, color: ColorConstants.colorWhite70),
-                                      newPasswordTextField(provider),
-                                      SizedBox(height: DimensionConstants.d24.h),
-                                      Text("confirm_new_password".tr()).boldText(context, DimensionConstants.d14.sp, TextAlign.center, color: ColorConstants.colorWhite70),
-                                      confirmPasswordTextField(provider),
-                                      SizedBox(height: DimensionConstants.d64.h),
-                                      CommonWidgets.commonButton(context, "reset_password".tr(), onBtnTap: (){
-                                        if(_formKey.currentState!.validate()){
-                                          CommonWidgets.hideKeyboard(context);
-                                        }
-                                      })
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ))
-                      ],
-                    ),
-                  ],
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d32.w),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        SizedBox(height: DimensionConstants.d75.h),
+                                        SizedBox(
+                                          width: DimensionConstants.d242.w,
+                                          child: Text("reset_password".tr()).boldText(context, DimensionConstants.d30.sp, TextAlign.left, color: ColorConstants.colorBlack),
+                                        ),
+                                        SizedBox(height: DimensionConstants.d59.h),
+                                        Text("new_password_".tr()).boldText(context, DimensionConstants.d14.sp, TextAlign.center, color: ColorConstants.colorWhite70),
+                                        newPasswordTextField(provider),
+                                        SizedBox(height: DimensionConstants.d24.h),
+                                        Text("confirm_new_password".tr()).boldText(context, DimensionConstants.d14.sp, TextAlign.center, color: ColorConstants.colorWhite70),
+                                        confirmPasswordTextField(provider),
+                                        SizedBox(height: DimensionConstants.d64.h),
+                                        CommonWidgets.commonButton(context, "reset_password".tr(), onBtnTap: (){
+                                          if(_formKey.currentState!.validate()){
+                                            CommonWidgets.hideKeyboard(context);
+                                          }
+                                        },shadowRequired: true)
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ))
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

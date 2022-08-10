@@ -34,152 +34,163 @@ class _ProjectsState extends State<Projects> with TickerProviderStateMixin {
           backgroundColor: Theme.of(context).brightness == Brightness.dark
               ? ColorConstants.colorBlack
               : ColorConstants.colorWhite,
-          body: Column(
-            children: <Widget>[
-              tabBarView(context, tabController, provider),
-              tabController.index == 0
-                  ? Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: DimensionConstants.d18.w),
-                      child: CommonWidgets.commonButton(
-                        context,
-                        "create_a_new_project".tr(),
-                        color1: ColorConstants.primaryGradient1Color,
-                        color2: ColorConstants.primaryGradient2Color,
-                        fontSize: DimensionConstants.d16.sp,
-                      ),
-                    )
-                  : Container(),
-              tabController.index == 1
-                  ? Container(
-                      child: Column(
-                        children: [
-                          Padding(
-                            padding:
-                                EdgeInsets.only(left: DimensionConstants.d40.w),
-                            child: Row(
-                              children: <Widget>[
-                                Row(
-                                  children: <Widget>[
-                                    Container(
-                                      height: DimensionConstants.d10.h,
-                                      width: DimensionConstants.d10.w,
-                                      decoration: BoxDecoration(
-                                        color: ColorConstants.schedule5,
-                                        borderRadius: BorderRadius.circular(
-                                            DimensionConstants.d5.r),
+          body: SingleChildScrollView(
+            child: Column(
+              children: <Widget>[
+                tabBarView(context, tabController, provider),
+                tabController.index == 0
+                    ? Padding(
+                        padding: EdgeInsets.only(
+                            left: DimensionConstants.d18.w,
+                            right: DimensionConstants.d18.w,
+                            top: DimensionConstants.d15.h,
+                        bottom: DimensionConstants.d40.h),
+                        child: CommonWidgets.commonButton(
+                          context,
+                          "create_a_new_project".tr(),
+                          color1: ColorConstants.primaryGradient1Color,
+                          color2: ColorConstants.primaryGradient2Color,
+                          fontSize: DimensionConstants.d16.sp,
+                          shadowRequired: true,
+                        ),
+                      )
+                    : Container(),
+                tabController.index == 1
+                    ? Container(
+                        child: Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  left: DimensionConstants.d40.w),
+                              child: Row(
+                                children: <Widget>[
+                                  Row(
+                                    children: <Widget>[
+                                      Container(
+                                        height: DimensionConstants.d10.h,
+                                        width: DimensionConstants.d10.w,
+                                        decoration: BoxDecoration(
+                                          color: ColorConstants.schedule5,
+                                          borderRadius: BorderRadius.circular(
+                                              DimensionConstants.d5.r),
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(
-                                      width: DimensionConstants.d5.w,
-                                    ),
-                                    Text("Momentum Smart Project").regularText(
-                                        context,
-                                        DimensionConstants.d14.sp,
-                                        TextAlign.left,
-                                        color: Theme.of(context).brightness ==
-                                                Brightness.dark
-                                            ? ColorConstants.colorWhite
-                                            : ColorConstants.colorBlack),
-                                  ],
-                                ),
-                                SizedBox(
-                                  width: DimensionConstants.d15.w,
-                                ),
-                                Row(
-                                  children: <Widget>[
-                                    Container(
-                                      height: DimensionConstants.d10.h,
-                                      width: DimensionConstants.d10.w,
-                                      decoration: BoxDecoration(
-                                        color: ColorConstants.green6FCF97,
-                                        borderRadius: BorderRadius.circular(
-                                            DimensionConstants.d5.r),
+                                      SizedBox(
+                                        width: DimensionConstants.d5.w,
                                       ),
-                                    ),
-                                    SizedBox(
-                                      width: DimensionConstants.d5.w,
-                                    ),
-                                    Text("Momentum Digital").regularText(
-                                        context,
-                                        DimensionConstants.d14.sp,
-                                        TextAlign.left,
-                                        color: Theme.of(context).brightness ==
-                                                Brightness.dark
-                                            ? ColorConstants.colorWhite
-                                            : ColorConstants.colorBlack),
-                                  ],
-                                ),
-                              ],
+                                      Text("Momentum Smart Project")
+                                          .regularText(
+                                              context,
+                                              DimensionConstants.d14.sp,
+                                              TextAlign.left,
+                                              color: Theme.of(context)
+                                                          .brightness ==
+                                                      Brightness.dark
+                                                  ? ColorConstants.colorWhite
+                                                  : ColorConstants.colorBlack),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    width: DimensionConstants.d15.w,
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      Container(
+                                        height: DimensionConstants.d10.h,
+                                        width: DimensionConstants.d10.w,
+                                        decoration: BoxDecoration(
+                                          color: ColorConstants.green6FCF97,
+                                          borderRadius: BorderRadius.circular(
+                                              DimensionConstants.d5.r),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: DimensionConstants.d5.w,
+                                      ),
+                                      Text("Momentum Digital").regularText(
+                                          context,
+                                          DimensionConstants.d14.sp,
+                                          TextAlign.left,
+                                          color: Theme.of(context).brightness ==
+                                                  Brightness.dark
+                                              ? ColorConstants.colorWhite
+                                              : ColorConstants.colorBlack),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                          SizedBox(
-                            height: DimensionConstants.d15.h,
-                          ),
-                          Padding(
-                            padding:
-                                EdgeInsets.only(left: DimensionConstants.d40.w),
-                            child: Row(
-                              children: <Widget>[
-                                Row(
-                                  children: <Widget>[
-                                    Container(
-                                      height: DimensionConstants.d10.h,
-                                      width: DimensionConstants.d10.w,
-                                      decoration: BoxDecoration(
-                                        color: ColorConstants.schedule5,
-                                        borderRadius: BorderRadius.circular(
-                                            DimensionConstants.d5.r),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: DimensionConstants.d5.w,
-                                    ),
-                                    Text("Adam’s Lodge").regularText(
-                                        context,
-                                        DimensionConstants.d14.sp,
-                                        TextAlign.left,
-                                        color: Theme.of(context).brightness ==
-                                                Brightness.dark
-                                            ? ColorConstants.colorWhite
-                                            : ColorConstants.colorBlack),
-                                  ],
-                                ),
-                                SizedBox(
-                                  width: DimensionConstants.d15.w,
-                                ),
-                                Row(
-                                  children: <Widget>[
-                                    Container(
-                                      height: DimensionConstants.d10.h,
-                                      width: DimensionConstants.d10.w,
-                                      decoration: BoxDecoration(
-                                        color: ColorConstants.green6FCF97,
-                                        borderRadius: BorderRadius.circular(
-                                            DimensionConstants.d5.r),
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: DimensionConstants.d5.w,
-                                    ),
-                                    Text("Kennedy House").regularText(
-                                        context,
-                                        DimensionConstants.d14.sp,
-                                        TextAlign.left,
-                                        color: Theme.of(context).brightness ==
-                                                Brightness.dark
-                                            ? ColorConstants.colorWhite
-                                            : ColorConstants.colorBlack),
-                                  ],
-                                ),
-                              ],
+                            SizedBox(
+                              height: DimensionConstants.d15.h,
                             ),
-                          ),
-                        ],
-                      ),
-                    )
-                  : Container(),
-            ],
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  left: DimensionConstants.d40.w),
+                              child: Row(
+                                children: <Widget>[
+                                  Row(
+                                    children: <Widget>[
+                                      Container(
+                                        height: DimensionConstants.d10.h,
+                                        width: DimensionConstants.d10.w,
+                                        decoration: BoxDecoration(
+                                          color: ColorConstants.schedule5,
+                                          borderRadius: BorderRadius.circular(
+                                              DimensionConstants.d5.r),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: DimensionConstants.d5.w,
+                                      ),
+                                      Text("Adam’s Lodge").regularText(
+                                          context,
+                                          DimensionConstants.d14.sp,
+                                          TextAlign.left,
+                                          color: Theme.of(context).brightness ==
+                                                  Brightness.dark
+                                              ? ColorConstants.colorWhite
+                                              : ColorConstants.colorBlack),
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    width: DimensionConstants.d15.w,
+                                  ),
+                                  Row(
+                                    children: <Widget>[
+                                      Container(
+                                        height: DimensionConstants.d10.h,
+                                        width: DimensionConstants.d10.w,
+                                        decoration: BoxDecoration(
+                                          color: ColorConstants.green6FCF97,
+                                          borderRadius: BorderRadius.circular(
+                                              DimensionConstants.d5.r),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: DimensionConstants.d5.w,
+                                      ),
+                                      Text("Kennedy House").regularText(
+                                          context,
+                                          DimensionConstants.d14.sp,
+                                          TextAlign.left,
+                                          color: Theme.of(context).brightness ==
+                                                  Brightness.dark
+                                              ? ColorConstants.colorWhite
+                                              : ColorConstants.colorBlack),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              height: DimensionConstants.d40.h,
+                            ),
+                          ],
+                        ),
+                      )
+                    : Container(),
+              ],
+            ),
           ),
         );
       },
@@ -193,14 +204,14 @@ Widget tabBarView(
     children: [
       SizedBox(
         child: Container(
-          height: DimensionConstants.d64.h,
+          height: DimensionConstants.d52.h,
           width: DimensionConstants.d375.w,
           color: ColorConstants.deepBlue,
           child: Padding(
             padding: EdgeInsets.only(
                 left: DimensionConstants.d8.w,
                 right: DimensionConstants.d8.w,
-                top: DimensionConstants.d20.h,
+                top: DimensionConstants.d10.h,
                 bottom: 0),
             child: TabBar(
               indicatorPadding: EdgeInsets.zero,
@@ -393,8 +404,9 @@ Widget projectDetails(BuildContext context) {
     width: DimensionConstants.d343.w,
     color: Theme.of(context).brightness == Brightness.dark
         ? ColorConstants.colorBlack
-        : ColorConstants.grayF1F1F1,
+        : ColorConstants.colorWhite,
     child: ListView.builder(
+      physics: NeverScrollableScrollPhysics(),
         itemCount: 3,
         itemBuilder: (BuildContext context, int index) {
           return Padding(
@@ -404,108 +416,116 @@ Widget projectDetails(BuildContext context) {
                 Navigator.pushNamed(context, RouteConstants.projectDetailsPage,
                     arguments: ProjectDetailsPage(archivedOrProject: false));
               },
-              child: Container(
-                height: DimensionConstants.d126.h,
-                // width: DimensionConstants.d343.w,
-                decoration: BoxDecoration(
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? ColorConstants.colorBlack
-                        : ColorConstants.colorWhite,
-                    border: Theme.of(context).brightness == Brightness.dark
-                        ? Border.all(
-                            color:
-                                Theme.of(context).brightness == Brightness.dark
-                                    ? ColorConstants.colorWhite
-                                    : Colors.transparent,
-                            width: DimensionConstants.d1.w)
-                        : null,
+              child: Material(
+                elevation: 2,
+                shape: RoundedRectangleBorder(
                     borderRadius:
                         BorderRadius.circular(DimensionConstants.d8.r)),
-                child: Column(
-                  children: <Widget>[
-                    Padding(
-                      padding: EdgeInsets.only(
-                          left: DimensionConstants.d15.w,
-                          right: DimensionConstants.d26.w,
-                          top: DimensionConstants.d8.h,
-                          bottom: DimensionConstants.d8.h),
-                      child: Row(
-                        children: <Widget>[
-                          Container(
-                              height: DimensionConstants.d32.h,
-                              width: DimensionConstants.d32.w,
-                              decoration: BoxDecoration(
-                                  color: ColorConstants.green6FCF97,
-                                  borderRadius: BorderRadius.circular(
-                                      DimensionConstants.d16.r)),
-                              child: Center(
-                                child: Text("MD").semiBoldText(context,
-                                    DimensionConstants.d14.sp, TextAlign.center,
-                                    color: Theme.of(context).brightness ==
-                                            Brightness.dark
-                                        ? ColorConstants.colorWhite
-                                        : ColorConstants.colorBlack),
-                              )),
-                          SizedBox(
-                            width: DimensionConstants.d16.w,
-                          ),
-                          Text("Momentum Digital").semiBoldText(context,
-                              DimensionConstants.d14.sp, TextAlign.center,
+                child: Container(
+                  height: DimensionConstants.d126.h,
+                  // width: DimensionConstants.d343.w,
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? ColorConstants.colorBlack
+                          : ColorConstants.colorWhite,
+                      border: Theme.of(context).brightness == Brightness.dark
+                          ? Border.all(
                               color: Theme.of(context).brightness ==
                                       Brightness.dark
                                   ? ColorConstants.colorWhite
-                                  : ColorConstants.colorBlack),
-                          Expanded(child: Container()),
-                          ImageView(
-                            path: ImageConstants.arrowIcon,
-                            width: DimensionConstants.d5.w,
-                            height: DimensionConstants.d10.h,
-                            color:
-                                Theme.of(context).brightness == Brightness.dark
+                                  : Colors.transparent,
+                              width: DimensionConstants.d1.w)
+                          : null,
+                      borderRadius:
+                          BorderRadius.circular(DimensionConstants.d8.r)),
+                  child: Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(
+                            left: DimensionConstants.d15.w,
+                            right: DimensionConstants.d26.w,
+                            top: DimensionConstants.d8.h,
+                            bottom: DimensionConstants.d8.h),
+                        child: Row(
+                          children: <Widget>[
+                            Container(
+                                height: DimensionConstants.d32.h,
+                                width: DimensionConstants.d32.w,
+                                decoration: BoxDecoration(
+                                    color: ColorConstants.green6FCF97,
+                                    borderRadius: BorderRadius.circular(
+                                        DimensionConstants.d16.r)),
+                                child: Center(
+                                  child: Text("MD").semiBoldText(
+                                      context,
+                                      DimensionConstants.d14.sp,
+                                      TextAlign.center,
+                                      color: Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? ColorConstants.colorWhite
+                                          : ColorConstants.colorBlack),
+                                )),
+                            SizedBox(
+                              width: DimensionConstants.d16.w,
+                            ),
+                            Text("Momentum Digital").semiBoldText(context,
+                                DimensionConstants.d14.sp, TextAlign.center,
+                                color: Theme.of(context).brightness ==
+                                        Brightness.dark
                                     ? ColorConstants.colorWhite
-                                    : ColorConstants.colorBlack,
-                          ),
-                        ],
-                      ),
-                    ),
-                    Container(
-                      height: DimensionConstants.d1.h,
-                      width: DimensionConstants.d343.w,
-                      color: ColorConstants.lightGray,
-                    ),
-                    Padding(
-                      padding: EdgeInsets.only(
-                          left: DimensionConstants.d15.w,
-                          right: DimensionConstants.d26.w,
-                          top: DimensionConstants.d20.h,
-                          bottom: DimensionConstants.d8.h),
-                      child: Row(
-                        children: <Widget>[
-                          ImageView(
-                            path: ImageConstants.clockIconAllProjects,
-                            height: DimensionConstants.d34.h,
-                            width: DimensionConstants.d34.w,
-                          ),
-                          SizedBox(
-                            width: DimensionConstants.d16.w,
-                          ),
-                          Text("total_hours".tr()).regularText(context,
-                              DimensionConstants.d14.sp, TextAlign.center,
+                                    : ColorConstants.colorBlack),
+                            Expanded(child: Container()),
+                            ImageView(
+                              path: ImageConstants.arrowIcon,
+                              width: DimensionConstants.d5.w,
+                              height: DimensionConstants.d10.h,
                               color: Theme.of(context).brightness ==
                                       Brightness.dark
                                   ? ColorConstants.colorWhite
-                                  : ColorConstants.colorBlack),
-                          Expanded(child: Container()),
-                          Text("200").semiBoldText(context,
-                              DimensionConstants.d20.sp, TextAlign.center,
-                              color: Theme.of(context).brightness ==
-                                      Brightness.dark
-                                  ? ColorConstants.colorWhite
-                                  : ColorConstants.colorBlack),
-                        ],
+                                  : ColorConstants.colorBlack,
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  ],
+                      Container(
+                        height: DimensionConstants.d1.h,
+                        width: DimensionConstants.d343.w,
+                        color: ColorConstants.lightGray,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(
+                            left: DimensionConstants.d15.w,
+                            right: DimensionConstants.d26.w,
+                            top: DimensionConstants.d20.h,
+                            bottom: DimensionConstants.d8.h),
+                        child: Row(
+                          children: <Widget>[
+                            ImageView(
+                              path: ImageConstants.clockIconAllProjects,
+                              height: DimensionConstants.d34.h,
+                              width: DimensionConstants.d34.w,
+                            ),
+                            SizedBox(
+                              width: DimensionConstants.d16.w,
+                            ),
+                            Text("total_hours".tr()).regularText(context,
+                                DimensionConstants.d14.sp, TextAlign.center,
+                                color: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? ColorConstants.colorWhite
+                                    : ColorConstants.colorBlack),
+                            Expanded(child: Container()),
+                            Text("200").semiBoldText(context,
+                                DimensionConstants.d20.sp, TextAlign.center,
+                                color: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? ColorConstants.colorWhite
+                                    : ColorConstants.colorBlack),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

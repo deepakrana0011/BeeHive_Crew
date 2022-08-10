@@ -4,6 +4,8 @@ import 'package:beehive/constants/image_constants.dart';
 import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
+import 'package:beehive/view/light_theme_signup_login/email_address_screen.dart';
+import 'package:beehive/views_manager/light_theme_signup_login_manager/email_address_screen_manager.dart';
 import 'package:beehive/widget/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -43,10 +45,12 @@ class SelectToContinueScreen extends StatelessWidget {
               ),
               SizedBox(height: DimensionConstants.d60.h),
               CommonWidgets.commonButton(context, "crew".tr(), fontSize: DimensionConstants.d20.sp, onBtnTap: (){
-                Navigator.pushNamed(context, RouteConstants.signInScreen);
+                Navigator.pushNamed(context, RouteConstants.emailAddressScreen,arguments: EmailAddressScreen(fromForgotPassword: false,));
               }),
               SizedBox(height: DimensionConstants.d25.h),
-              CommonWidgets.commonButton(context, "manager".tr(), fontSize: DimensionConstants.d20.sp),
+              CommonWidgets.commonButton(context, "manager".tr(), fontSize: DimensionConstants.d20.sp,onBtnTap: (){
+                Navigator.pushNamed(context, RouteConstants.emailAddressScreenManager,arguments: EmailAddressScreenManager(fromForgotPassword: false,));
+              }),
             ],
           ),
         ),

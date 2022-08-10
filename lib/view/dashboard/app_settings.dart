@@ -1,3 +1,5 @@
+
+
 import 'package:beehive/constants/color_constants.dart';
 import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/constants/image_constants.dart';
@@ -20,6 +22,7 @@ class AppSettings extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
+        centerTitle: true,
         title: Text("app_settings".tr()).semiBoldText(context, DimensionConstants.d22.sp, TextAlign.center),
         leading: GestureDetector(
             onTap: (){
@@ -151,7 +154,7 @@ class AppSettings extends StatelessWidget {
           SizedBox(height: DimensionConstants.d22.h),
           policyTermsDataRow(context, "data_and_app_tracking".tr()),
           SizedBox(height: DimensionConstants.d99.h),
-          CommonWidgets.commonButton(context, "save")
+          CommonWidgets.commonButton(context, "save",shadowRequired: true)
         ],
       ),
     );

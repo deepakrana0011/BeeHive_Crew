@@ -69,4 +69,15 @@ class ImageConstants{
   static const String folderIcon = "assets/images/ic_folder_icon.svg";
   static const String lightThemeSignUpBg = "assets/images/light_theme_signup_bg.png";
   static const String circleCloseIcon = "assets/images/ic_circle_close.svg";
+  static const String bottomBarProfileActive = "assets/images/ic_bottom_bar_profile.svg";
+  static const String bottomBarProjectActive = "assets/images/ic_project_bottom_bar.svg";
+  static const String bottomBarDashBoardInActive = "assets/images/ic_dashbord_inactive.svg";
+  static const String bottomBarTimeSheetActive = "assets/images/ic_bottomSheet_active.svg";
+  static const String dashBoardIcon = "assets/images/ic_dashBoard_icon.png";
+  static const String groupIcon = "assets/images/ic_grop.svg";
+  static const String twoUserIcon = "assets/images/ic_two_user_icon.svg";
+  static const String currentLocation = "assets/images/ic_current_location_icon.svg";
 }
+
+
+

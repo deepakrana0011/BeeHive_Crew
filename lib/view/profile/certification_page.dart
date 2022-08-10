@@ -1,4 +1,5 @@
 import 'package:beehive/constants/image_constants.dart';
+import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
 import 'package:beehive/provider/certification_page_provider.dart';
@@ -25,7 +26,7 @@ class CertificationPage extends StatelessWidget {
           appBar: CommonWidgets.appBarWithTitleAndAction(context,
               title: "certification".tr(),
               actionButtonRequired: true,
-              actionIcon: ImageConstants.notificationIconBell),
+              actionIcon: ImageConstants.notificationIconBell,onTapAction: (){Navigator.pushNamed(context, RouteConstants.notificationsScreen);}),
           body: Column(
             children: <Widget>[
               SizedBox(
@@ -86,7 +87,9 @@ class CertificationPage extends StatelessWidget {
                     color2: ColorConstants.primaryGradient1Color,
                     fontSize: DimensionConstants.d14.sp, onBtnTap: () {
                   Navigator.of(context).pop();
-                }),
+                },
+                  shadowRequired: true
+                ),
               ),
             ],
           ),

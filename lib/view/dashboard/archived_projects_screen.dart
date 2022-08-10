@@ -55,7 +55,9 @@ class ArchivedProjectsScreen extends StatelessWidget {
                 color1: ColorConstants.primaryGradient2Color,
                 color2: ColorConstants.primaryGradient1Color,
                 fontSize: DimensionConstants.d14.sp, onBtnTap: () {
-            }),
+            },
+            shadowRequired: true
+            ),
           ),
 
         ],

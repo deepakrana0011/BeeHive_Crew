@@ -23,4 +23,15 @@ class RouteConstants{
   static const String signUpScreen = "signUpScreen";
   static const String loginScreen = "loginScreen";
   static const String resetPasswordScreen = "resetPasswordScreen";
+  static const String bottomBarManager = "bottomBarManager";
+  static const String continueWithPhoneManager = "continueWithPhoneManager";
+  static const String otpVerificationPageManager = "otpVerificationPageManager";
+  static const String signUpScreenManager = "signUpScreenManager";
+  static const String emailAddressScreenManager = "emailAddressScreenManager";
+  static const String notificationsScreenManager = "notificationsScreenManager";
+  static const String appSettingsManager = "appSettingsManager";
+  static const String loginScreenManager = "loginScreenManager";
+  static const String projectDetailsPageManager = "projectDetailsPageManager";
+  static const String archivedProjectsScreenManager = "archivedProjectsScreenManager";
+  static const String createProjectManager = "createProjectManager";
  }
