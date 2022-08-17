@@ -68,12 +68,9 @@ class _CustomSwitchState extends State<CustomSwitch>
             height: DimensionConstants.d32.h,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(DimensionConstants.d100.r),
-              // I commented here.
-              // color: _circleAnimation.value == Alignment.centerLeft
-              //     ? widget.inactiveColor
-              //     : widget.activeColor,
+              color: _circleAnimation!.value == Alignment.centerLeft ? widget.inactiveColor : widget.activeColor,
 
-              gradient: const LinearGradient(
+              gradient:widget.value ==true ? const LinearGradient(
                 begin: Alignment.topRight,
                 end: Alignment.bottomLeft,
                 // You can set your own colors in here!
@@ -81,7 +78,7 @@ class _CustomSwitchState extends State<CustomSwitch>
                   ColorConstants.primaryGradient2Color,
                   ColorConstants.primaryGradient1Color
                 ],
-              ),
+              ): null
             ),
             child: Padding(
               padding: const EdgeInsets.only(

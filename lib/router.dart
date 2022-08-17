@@ -32,8 +32,16 @@ import 'package:beehive/views_manager/light_theme_signup_login_manager/email_add
 import 'package:beehive/views_manager/light_theme_signup_login_manager/login_screen_manager.dart';
 import 'package:beehive/views_manager/light_theme_signup_login_manager/otp_verification_page_manager.dart';
 import 'package:beehive/views_manager/light_theme_signup_login_manager/sign_up_screen_manager.dart';
+import 'package:beehive/views_manager/projects_manager/add_crew_page_manager.dart';
+import 'package:beehive/views_manager/projects_manager/add_note_page_manager.dart';
+import 'package:beehive/views_manager/projects_manager/archived_project_details_manager.dart';
 import 'package:beehive/views_manager/projects_manager/create_project_manager.dart';
+import 'package:beehive/views_manager/projects_manager/crew_mamber_add_by_manager.dart';
+import 'package:beehive/views_manager/projects_manager/crew_profile_page_manager.dart';
 import 'package:beehive/views_manager/projects_manager/project_details_manager.dart';
+import 'package:beehive/views_manager/projects_manager/project_setting_page_manager.dart';
+import 'package:beehive/views_manager/projects_manager/set_rates_page_manager.dart';
+import 'package:beehive/views_manager/projects_manager/timesheets_screen_manager.dart';
 import 'package:flutter/material.dart';
 
 class OnGenerateRouter {
@@ -106,11 +114,15 @@ class OnGenerateRouter {
       case RouteConstants.emailAddressScreen:
         final args = settings.arguments as EmailAddressScreen;
         return MaterialPageRoute(
-            builder: (_) => EmailAddressScreen(fromForgotPassword: args.fromForgotPassword,), settings: settings);
+            builder: (_) => EmailAddressScreen(
+                  fromForgotPassword: args.fromForgotPassword,
+                ),
+            settings: settings);
       case RouteConstants.signUpScreen:
         final args = settings.arguments as SignUpScreen;
         return MaterialPageRoute(
-            builder: (_) => SignUpScreen(email: args.email), settings: settings);
+            builder: (_) => SignUpScreen(email: args.email),
+            settings: settings);
       case RouteConstants.loginScreen:
         return MaterialPageRoute(
             builder: (_) => LoginScreen(), settings: settings);
@@ -135,11 +147,15 @@ class OnGenerateRouter {
       case RouteConstants.signUpScreenManager:
         final args = settings.arguments as SignUpScreenManager;
         return MaterialPageRoute(
-            builder: (_) => SignUpScreenManager(email: args.email), settings: settings);
+            builder: (_) => SignUpScreenManager(email: args.email),
+            settings: settings);
       case RouteConstants.emailAddressScreenManager:
         final args = settings.arguments as EmailAddressScreenManager;
         return MaterialPageRoute(
-            builder: (_) => EmailAddressScreenManager(fromForgotPassword: args.fromForgotPassword,), settings: settings);
+            builder: (_) => EmailAddressScreenManager(
+                  fromForgotPassword: args.fromForgotPassword,
+                ),
+            settings: settings);
       case RouteConstants.notificationsScreenManager:
         return MaterialPageRoute(
             builder: (_) => NotificationsScreenManager(), settings: settings);
@@ -152,20 +168,55 @@ class OnGenerateRouter {
       case RouteConstants.projectDetailsPageManager:
         final args = settings.arguments as ProjectDetailsPageManager;
         return MaterialPageRoute(
-            builder: (_) =>
-                ProjectDetailsPageManager(archivedOrProject: args.archivedOrProject),
+            builder: (_) => ProjectDetailsPageManager(
+                  createProject: args.createProject,
+                ),
             settings: settings);
       case RouteConstants.archivedProjectsScreenManager:
         return MaterialPageRoute(
-            builder: (_) => ArchivedProjectsScreenManager(), settings: settings);
+            builder: (_) => ArchivedProjectsScreenManager(),
+            settings: settings);
       case RouteConstants.createProjectManager:
         return MaterialPageRoute(
             builder: (_) => CreateProjectManager(), settings: settings);
-
-
-
-
-
+      case RouteConstants.addCrewPageManager:
+        return MaterialPageRoute(
+            builder: (_) => AddCrewPageManager(), settings: settings);
+      case RouteConstants.crewMemberAddByManager:
+        return MaterialPageRoute(
+            builder: (_) => CrewMemberAddByManager(), settings: settings);
+      case RouteConstants.setRatesManager:
+        return MaterialPageRoute(
+            builder: (_) => SetRatesPageManager(), settings: settings);
+      case RouteConstants.projectSettingsPageManager:
+        final args = settings.arguments as ProjectSettingsPageManager;
+        return MaterialPageRoute(
+            builder: (_) => ProjectSettingsPageManager(
+                  fromProjectOrCreateProject: args.fromProjectOrCreateProject,
+                ),
+            settings: settings);
+      case RouteConstants.addNotePageManager:
+        final args = settings.arguments as AddNotePageManager;
+        return MaterialPageRoute(
+            builder: (_) => AddNotePageManager(
+                  publicOrPrivate: args.publicOrPrivate,
+                ),
+            settings: settings);
+      case RouteConstants.archivedProjectDetailsManager:
+        final args = settings.arguments as ArchivedProjectDetailsManager;
+        return MaterialPageRoute(
+            builder: (_) => ArchivedProjectDetailsManager(
+                  archivedOrProject: args.archivedOrProject,
+                  fromProject: args.fromProject,
+                ),
+            settings: settings);
+      case RouteConstants.crewPageProfileManager:
+        return MaterialPageRoute(
+            builder: (_) => CrewProfilePageManager(), settings: settings);
+      case RouteConstants.timeSheetScreenManager:
+        final args = settings.arguments as TimeSheetsScreenManager;
+        return MaterialPageRoute(
+            builder: (_) => TimeSheetsScreenManager(removeInterruption: args.removeInterruption,), settings: settings);
       default:
         return _onPageNotFound();
     }

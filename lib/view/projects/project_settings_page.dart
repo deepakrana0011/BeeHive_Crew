@@ -69,8 +69,7 @@ class ProjectSettingsPage extends StatelessWidget {
   }
 }
 
-Widget notificationSwitcher(
-    BuildContext context, ProjectSettingsProvider provider) {
+Widget notificationSwitcher(BuildContext context, ProjectSettingsProvider provider) {
   return Container(
     height: DimensionConstants.d80.h,
     decoration: BoxDecoration(

@@ -77,6 +77,22 @@ class ImageConstants{
   static const String groupIcon = "assets/images/ic_grop.svg";
   static const String twoUserIcon = "assets/images/ic_two_user_icon.svg";
   static const String currentLocation = "assets/images/ic_current_location_icon.svg";
+  static const String locationMark = "assets/images/ic_location_mark.png";
+  static const String messageIcon = "assets/images/ic_message_icon.svg";
+  static const String addCrewIcon = "assets/images/ic_add_crew_icon.svg";
+  static const String userImage = "assets/images/ic_image.png";
+  static const String userImage1 = "assets/images/ic_image1.png";
+  static const String userImage2 = "assets/images/ic_image2.png";
+  static const String userImage3 = "assets/images/ic_image3.png";
+  static const String selectedIcon = "assets/images/ic_selected_icon.svg";
+  static const String blankIcon = "assets/images/ic_blank_icon.svg";
+  static const String warningIcon = "assets/images/ic_warning_icon.svg";
+  static const String subtractIcon = "assets/images/ic_subtract_icon.svg";
+  static const String greenIcon = "assets/images/ic_green_icon.svg";
+  static const String hrIcon = "assets/images/ic_hr_icon.svg";
+  static const String dollarIcon = "assets/images/ic_dollar_icon.svg";
+  static const String ignoreIcon = "assets/images/ic_igore_icon.svg";
+
 }
 
 

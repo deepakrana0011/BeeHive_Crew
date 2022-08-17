@@ -5,6 +5,7 @@ import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/provider/bottom_bar_Manager_provider.dart';
 import 'package:beehive/view/base_view.dart';
 import 'package:beehive/views_manager/projects_manager/projects_page_manager.dart';
+import 'package:beehive/views_manager/timesheet_manager/timesheet_page_manager.dart';
 import 'package:beehive/widget/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -25,7 +26,7 @@ class _BottomBarManagerState extends State<BottomBarManager> {
   static final List<Widget> _widgetOptions = <Widget>[
     const DashBoardPageManager(),
     const ProjectsPageManager(),
-    Container(),
+    const TimeSheetPageManager(),
     Container(),
   ];
   List<String> menuName = [
@@ -37,7 +38,7 @@ class _BottomBarManagerState extends State<BottomBarManager> {
   List<String> actionIcon = [
     ImageConstants.notificationIcon,
     ImageConstants.searchIcon,
-    ImageConstants.settingsIcon,
+    ImageConstants.searchIcon,
     ImageConstants.notificationIconBell
   ];
   @override

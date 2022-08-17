@@ -5,7 +5,7 @@ import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
 import 'package:beehive/provider/projects_provider.dart';
 import 'package:beehive/view/base_view.dart';
-import 'package:beehive/view/projects/project_details_page.dart';
+import 'package:beehive/views_manager/projects_manager/archived_project_details_manager.dart';
 import 'package:beehive/widget/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,6 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../constants/color_constants.dart';
+import '../../widget/bottom_sheet_project_details.dart';
 
 class ProjectsPageManager extends StatefulWidget {
   const ProjectsPageManager({Key? key}) : super(key: key);
@@ -21,7 +22,8 @@ class ProjectsPageManager extends StatefulWidget {
   State<ProjectsPageManager> createState() => _ProjectsPageManagerState();
 }
 
-class _ProjectsPageManagerState extends State<ProjectsPageManager> with TickerProviderStateMixin {
+class _ProjectsPageManagerState extends State<ProjectsPageManager>
+    with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     TabController tabController = TabController(length: 2, vsync: this);
@@ -44,18 +46,16 @@ class _ProjectsPageManagerState extends State<ProjectsPageManager> with TickerPr
                             left: DimensionConstants.d18.w,
                             right: DimensionConstants.d18.w,
                             top: DimensionConstants.d15.h,
-                        bottom: DimensionConstants.d40.h),
+                            bottom: DimensionConstants.d40.h),
                         child: CommonWidgets.commonButton(
-                          context,
-                          "create_a_new_project".tr(),
-                          color1: ColorConstants.primaryGradient1Color,
-                          color2: ColorConstants.primaryGradient2Color,
-                          fontSize: DimensionConstants.d16.sp,
-                          shadowRequired: true,
-                          onBtnTap: (){
-                            Navigator.pushNamed(context, RouteConstants.createProjectManager);
-                          }
-                        ),
+                            context, "create_a_new_project".tr(),
+                            color1: ColorConstants.primaryGradient1Color,
+                            color2: ColorConstants.primaryGradient2Color,
+                            fontSize: DimensionConstants.d16.sp,
+                            shadowRequired: true, onBtnTap: () {
+                          Navigator.pushNamed(
+                              context, RouteConstants.createProjectManager);
+                        }),
                       )
                     : Container(),
                 tabController.index == 1
@@ -201,17 +201,18 @@ class _ProjectsPageManagerState extends State<ProjectsPageManager> with TickerPr
   }
 }
 
-Widget tabBarView(
-    BuildContext context, TabController controller, ProjectsProvider provider) {
+Widget tabBarView(BuildContext context, TabController controller, ProjectsProvider provider) {
   return Column(
     children: [
       SizedBox(
         child: Container(
           height: DimensionConstants.d60.h,
           width: DimensionConstants.d375.w,
-         decoration: const BoxDecoration(
-           gradient: LinearGradient(colors: [ColorConstants.blueGradient1Color,ColorConstants.blueGradient2Color])
-         ),
+          decoration: const BoxDecoration(
+              gradient: LinearGradient(colors: [
+            ColorConstants.blueGradient1Color,
+            ColorConstants.blueGradient2Color
+          ])),
           child: Padding(
             padding: EdgeInsets.only(
                 left: DimensionConstants.d8.w,
@@ -334,14 +335,14 @@ Widget allProjects(BuildContext context) {
         ),
         child: Row(
           children: <Widget>[
-            SizedBox(width: DimensionConstants.d35.w,),
+            SizedBox(
+              width: DimensionConstants.d35.w,
+            ),
             Padding(
-              padding:
-              EdgeInsets.symmetric(vertical: DimensionConstants.d13.h),
+              padding: EdgeInsets.symmetric(vertical: DimensionConstants.d13.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
-
                   Text("4").semiBoldText(
                       context, DimensionConstants.d20.sp, TextAlign.left,
                       color: Theme.of(context).brightness == Brightness.dark
@@ -358,16 +359,19 @@ Widget allProjects(BuildContext context) {
                 ],
               ),
             ),
-            SizedBox(width: DimensionConstants.d35.w,),
+            SizedBox(
+              width: DimensionConstants.d35.w,
+            ),
             Container(
               height: DimensionConstants.d72.h,
               width: DimensionConstants.d1.w,
               color: ColorConstants.lightGray,
             ),
-            SizedBox(width: DimensionConstants.d42.w,),
+            SizedBox(
+              width: DimensionConstants.d42.w,
+            ),
             Padding(
-              padding:
-                  EdgeInsets.symmetric(vertical: DimensionConstants.d13.h),
+              padding: EdgeInsets.symmetric(vertical: DimensionConstants.d13.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
@@ -387,18 +391,19 @@ Widget allProjects(BuildContext context) {
                 ],
               ),
             ),
-            SizedBox(width: DimensionConstants.d42.w,),
-
+            SizedBox(
+              width: DimensionConstants.d42.w,
+            ),
             Container(
               height: DimensionConstants.d72.h,
               width: DimensionConstants.d1.w,
               color: ColorConstants.lightGray,
             ),
-            SizedBox(width: DimensionConstants.d20.w,),
-
+            SizedBox(
+              width: DimensionConstants.d20.w,
+            ),
             Padding(
-              padding:
-                  EdgeInsets.symmetric(vertical: DimensionConstants.d13.h),
+              padding: EdgeInsets.symmetric(vertical: DimensionConstants.d13.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
@@ -437,15 +442,19 @@ Widget projectDetails(BuildContext context) {
         ? ColorConstants.colorBlack
         : ColorConstants.colorWhite,
     child: ListView.builder(
-      physics: NeverScrollableScrollPhysics(),
+        physics: NeverScrollableScrollPhysics(),
         itemCount: 3,
         itemBuilder: (BuildContext context, int index) {
           return Padding(
             padding: EdgeInsets.symmetric(vertical: DimensionConstants.d5.h),
             child: GestureDetector(
               onTap: () {
-                Navigator.pushNamed(context, RouteConstants.projectDetailsPageManager,
-                    arguments: ProjectDetailsPage(archivedOrProject: false));
+                Navigator.pushNamed(
+                    context, RouteConstants.archivedProjectDetailsManager,
+                    arguments: ArchivedProjectDetailsManager(
+                      archivedOrProject: false,
+                      fromProject: true,
+                    ));
               },
               child: Material(
                 elevation: 2,
@@ -514,46 +523,49 @@ Widget projectDetails(BuildContext context) {
                             bottom: DimensionConstants.d8.h),
                         child: Row(
                           children: <Widget>[
-                           Padding(
-                             padding:  EdgeInsets.only(left: DimensionConstants.d40.w),
-                             child: Column(
-                               children:<Widget> [
-                                 Text("200").semiBoldText(context,
-                                     DimensionConstants.d20.sp, TextAlign.center,
-                                     color: Theme.of(context).brightness ==
-                                         Brightness.dark
-                                         ? ColorConstants.colorWhite
-                                         : ColorConstants.colorBlack),
-                                 Text("total_hours".tr()).regularText(context,
-                                     DimensionConstants.d14.sp, TextAlign.center,
-                                     color: Theme.of(context).brightness ==
-                                         Brightness.dark
-                                         ? ColorConstants.colorWhite
-                                         : ColorConstants.colorBlack),
-
-                               ],
-                             ),
-                           ),
-                          SizedBox(width: DimensionConstants.d120.w,),
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  left: DimensionConstants.d40.w),
+                              child: Column(
+                                children: <Widget>[
+                                  Text("200").semiBoldText(
+                                      context,
+                                      DimensionConstants.d20.sp,
+                                      TextAlign.center,
+                                      color: Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? ColorConstants.colorWhite
+                                          : ColorConstants.colorBlack),
+                                  Text("total_hours".tr()).regularText(
+                                      context,
+                                      DimensionConstants.d14.sp,
+                                      TextAlign.center,
+                                      color: Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? ColorConstants.colorWhite
+                                          : ColorConstants.colorBlack),
+                                ],
+                              ),
+                            ),
+                            SizedBox(
+                              width: DimensionConstants.d120.w,
+                            ),
                             Column(
-                              children:<Widget> [
+                              children: <Widget>[
                                 Text("4").semiBoldText(context,
                                     DimensionConstants.d20.sp, TextAlign.center,
                                     color: Theme.of(context).brightness ==
-                                        Brightness.dark
+                                            Brightness.dark
                                         ? ColorConstants.colorWhite
                                         : ColorConstants.colorBlack),
                                 Text("crew".tr()).regularText(context,
                                     DimensionConstants.d14.sp, TextAlign.center,
                                     color: Theme.of(context).brightness ==
-                                        Brightness.dark
+                                            Brightness.dark
                                         ? ColorConstants.colorWhite
                                         : ColorConstants.colorBlack),
-
                               ],
                             ),
-
-
                           ],
                         ),
                       ),
@@ -678,27 +690,36 @@ Widget schedule(BuildContext context, ProjectsProvider provider) {
                             scrollDirection: Axis.horizontal,
                             itemCount: provider.name.length,
                             itemBuilder: (BuildContext context, int index) {
-                              return Padding(
-                                  padding: EdgeInsets.only(
-                                      left: DimensionConstants.d10.w,
-                                      right: DimensionConstants.d2.w,
-                                      top: DimensionConstants.d9.h),
-                                  child: Container(
-                                      height: DimensionConstants.d35.h,
-                                      width: DimensionConstants.d35.w,
-                                      decoration: BoxDecoration(
-                                          color: provider.colors[index],
-                                          borderRadius: BorderRadius.circular(
-                                              DimensionConstants.d20.r)),
-                                      child: Center(
-                                        child: Text("${provider.name[index]}")
-                                            .semiBoldText(
-                                                context,
-                                                DimensionConstants.d14.sp,
-                                                TextAlign.center,
-                                                color:
-                                                    ColorConstants.colorWhite),
-                                      )));
+                              return GestureDetector(
+                                onTap: () {
+                                  bottomSheetProjectDetails(
+                                    context,
+                                    onTap: () {}, timeSheetOrSchedule: true,
+
+                                  );
+                                },
+                                child: Padding(
+                                    padding: EdgeInsets.only(
+                                        left: DimensionConstants.d10.w,
+                                        right: DimensionConstants.d2.w,
+                                        top: DimensionConstants.d9.h),
+                                    child: Container(
+                                        height: DimensionConstants.d35.h,
+                                        width: DimensionConstants.d35.w,
+                                        decoration: BoxDecoration(
+                                            color: provider.colors[index],
+                                            borderRadius: BorderRadius.circular(
+                                                DimensionConstants.d20.r)),
+                                        child: Center(
+                                          child: Text("${provider.name[index]}")
+                                              .semiBoldText(
+                                                  context,
+                                                  DimensionConstants.d14.sp,
+                                                  TextAlign.center,
+                                                  color: ColorConstants
+                                                      .colorWhite),
+                                        ))),
+                              );
                             })),
                     Container(
                         height: DimensionConstants.d45.h,
@@ -709,27 +730,36 @@ Widget schedule(BuildContext context, ProjectsProvider provider) {
                             scrollDirection: Axis.horizontal,
                             itemCount: provider.days2.length,
                             itemBuilder: (BuildContext context, int index) {
-                              return Padding(
-                                  padding: EdgeInsets.only(
-                                      left: DimensionConstants.d10.w,
-                                      right: DimensionConstants.d2.w,
-                                      top: DimensionConstants.d9.h),
-                                  child: Container(
-                                      height: DimensionConstants.d35.h,
-                                      width: DimensionConstants.d35.w,
-                                      decoration: BoxDecoration(
-                                          color: provider.colors2[index],
-                                          borderRadius: BorderRadius.circular(
-                                              DimensionConstants.d20.r)),
-                                      child: Center(
-                                        child: Text("${provider.days2[index]}")
-                                            .semiBoldText(
-                                                context,
-                                                DimensionConstants.d14.sp,
-                                                TextAlign.center,
-                                                color:
-                                                    ColorConstants.colorWhite),
-                                      )));
+                              return GestureDetector(
+                                onTap: (){
+
+                                  bottomSheetProjectDetails(
+                                      context,
+                                      onTap: () {}, timeSheetOrSchedule: true,
+                                  );
+                                },
+                                child: Padding(
+                                    padding: EdgeInsets.only(
+                                        left: DimensionConstants.d10.w,
+                                        right: DimensionConstants.d2.w,
+                                        top: DimensionConstants.d9.h),
+                                    child: Container(
+                                        height: DimensionConstants.d35.h,
+                                        width: DimensionConstants.d35.w,
+                                        decoration: BoxDecoration(
+                                            color: provider.colors2[index],
+                                            borderRadius: BorderRadius.circular(
+                                                DimensionConstants.d20.r)),
+                                        child: Center(
+                                          child: Text("${provider.days2[index]}")
+                                              .semiBoldText(
+                                                  context,
+                                                  DimensionConstants.d14.sp,
+                                                  TextAlign.center,
+                                                  color:
+                                                      ColorConstants.colorWhite),
+                                        ))),
+                              );
                             })),
                     Container(
                         height: DimensionConstants.d45.h,
@@ -740,27 +770,35 @@ Widget schedule(BuildContext context, ProjectsProvider provider) {
                             scrollDirection: Axis.horizontal,
                             itemCount: provider.days3.length,
                             itemBuilder: (BuildContext context, int index) {
-                              return Padding(
-                                  padding: EdgeInsets.only(
-                                      left: DimensionConstants.d10.w,
-                                      right: DimensionConstants.d2.w,
-                                      top: DimensionConstants.d9.h),
-                                  child: Container(
-                                      height: DimensionConstants.d35.h,
-                                      width: DimensionConstants.d35.w,
-                                      decoration: BoxDecoration(
-                                          color: provider.colors3[index],
-                                          borderRadius: BorderRadius.circular(
-                                              DimensionConstants.d20.r)),
-                                      child: Center(
-                                        child: Text("${provider.days3[index]}")
-                                            .semiBoldText(
-                                                context,
-                                                DimensionConstants.d14.sp,
-                                                TextAlign.center,
-                                                color:
-                                                    ColorConstants.colorWhite),
-                                      )));
+                              return GestureDetector(
+                                onTap: (){
+                                  bottomSheetProjectDetails(
+                                    context,
+                                    onTap: () {}, timeSheetOrSchedule: true,
+                                  );
+                                },
+                                child: Padding(
+                                    padding: EdgeInsets.only(
+                                        left: DimensionConstants.d10.w,
+                                        right: DimensionConstants.d2.w,
+                                        top: DimensionConstants.d9.h),
+                                    child: Container(
+                                        height: DimensionConstants.d35.h,
+                                        width: DimensionConstants.d35.w,
+                                        decoration: BoxDecoration(
+                                            color: provider.colors3[index],
+                                            borderRadius: BorderRadius.circular(
+                                                DimensionConstants.d20.r)),
+                                        child: Center(
+                                          child: Text("${provider.days3[index]}")
+                                              .semiBoldText(
+                                                  context,
+                                                  DimensionConstants.d14.sp,
+                                                  TextAlign.center,
+                                                  color:
+                                                      ColorConstants.colorWhite),
+                                        ))),
+                              );
                             })),
                     SizedBox(
                       height: DimensionConstants.d28.h,
@@ -821,27 +859,35 @@ Widget schedule(BuildContext context, ProjectsProvider provider) {
                             scrollDirection: Axis.horizontal,
                             itemCount: provider.name.length,
                             itemBuilder: (BuildContext context, int index) {
-                              return Padding(
-                                  padding: EdgeInsets.only(
-                                      left: DimensionConstants.d10.w,
-                                      right: DimensionConstants.d2.w,
-                                      top: DimensionConstants.d9.h),
-                                  child: Container(
-                                      height: DimensionConstants.d35.h,
-                                      width: DimensionConstants.d35.w,
-                                      decoration: BoxDecoration(
-                                          color: provider.colors[index],
-                                          borderRadius: BorderRadius.circular(
-                                              DimensionConstants.d20.r)),
-                                      child: Center(
-                                        child: Text("${provider.name[index]}")
-                                            .semiBoldText(
-                                                context,
-                                                DimensionConstants.d14.sp,
-                                                TextAlign.center,
-                                                color:
-                                                    ColorConstants.colorWhite),
-                                      )));
+                              return GestureDetector(
+                                onTap: (){
+                                  bottomSheetProjectDetails(
+                                    context,
+                                    onTap: () {}, timeSheetOrSchedule: true,
+                                  );
+                                },
+                                child: Padding(
+                                    padding: EdgeInsets.only(
+                                        left: DimensionConstants.d10.w,
+                                        right: DimensionConstants.d2.w,
+                                        top: DimensionConstants.d9.h),
+                                    child: Container(
+                                        height: DimensionConstants.d35.h,
+                                        width: DimensionConstants.d35.w,
+                                        decoration: BoxDecoration(
+                                            color: provider.colors[index],
+                                            borderRadius: BorderRadius.circular(
+                                                DimensionConstants.d20.r)),
+                                        child: Center(
+                                          child: Text("${provider.name[index]}")
+                                              .semiBoldText(
+                                                  context,
+                                                  DimensionConstants.d14.sp,
+                                                  TextAlign.center,
+                                                  color:
+                                                      ColorConstants.colorWhite),
+                                        ))),
+                              );
                             })),
                     Container(
                         height: DimensionConstants.d45.h,
@@ -852,27 +898,35 @@ Widget schedule(BuildContext context, ProjectsProvider provider) {
                             scrollDirection: Axis.horizontal,
                             itemCount: provider.days3.length,
                             itemBuilder: (BuildContext context, int index) {
-                              return Padding(
-                                  padding: EdgeInsets.only(
-                                      left: DimensionConstants.d10.w,
-                                      right: DimensionConstants.d2.w,
-                                      top: DimensionConstants.d9.h),
-                                  child: Container(
-                                      height: DimensionConstants.d35.h,
-                                      width: DimensionConstants.d35.w,
-                                      decoration: BoxDecoration(
-                                          color: provider.colors3[index],
-                                          borderRadius: BorderRadius.circular(
-                                              DimensionConstants.d20.r)),
-                                      child: Center(
-                                        child: Text("${provider.days3[index]}")
-                                            .semiBoldText(
-                                                context,
-                                                DimensionConstants.d14.sp,
-                                                TextAlign.center,
-                                                color:
-                                                    ColorConstants.colorWhite),
-                                      )));
+                              return GestureDetector(
+                                onTap: (){
+                                  bottomSheetProjectDetails(
+                                    context,
+                                    onTap: () {}, timeSheetOrSchedule: true,
+                                  );
+                                },
+                                child: Padding(
+                                    padding: EdgeInsets.only(
+                                        left: DimensionConstants.d10.w,
+                                        right: DimensionConstants.d2.w,
+                                        top: DimensionConstants.d9.h),
+                                    child: Container(
+                                        height: DimensionConstants.d35.h,
+                                        width: DimensionConstants.d35.w,
+                                        decoration: BoxDecoration(
+                                            color: provider.colors3[index],
+                                            borderRadius: BorderRadius.circular(
+                                                DimensionConstants.d20.r)),
+                                        child: Center(
+                                          child: Text("${provider.days3[index]}")
+                                              .semiBoldText(
+                                                  context,
+                                                  DimensionConstants.d14.sp,
+                                                  TextAlign.center,
+                                                  color:
+                                                      ColorConstants.colorWhite),
+                                        ))),
+                              );
                             })),
                   ],
                 ),

@@ -5,6 +5,7 @@ import 'package:beehive/constants/image_constants.dart';
 import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/view/projects/project_details_page.dart';
+import 'package:beehive/views_manager/projects_manager/archived_project_details_manager.dart';
 import 'package:beehive/views_manager/projects_manager/project_details_manager.dart';
 import 'package:beehive/widget/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -57,7 +58,7 @@ class ArchivedProjectsScreenManager extends StatelessWidget {
   Widget archivedProjectCard(BuildContext context, String projectName, String totalHours, String crew){
     return GestureDetector(
       onTap: (){
-        Navigator.pushNamed(context, RouteConstants.projectDetailsPageManager,arguments: ProjectDetailsPageManager(archivedOrProject: true));
+        Navigator.pushNamed(context, RouteConstants.archivedProjectDetailsManager,arguments: ArchivedProjectDetailsManager(archivedOrProject: true, fromProject: false,));
       },
       child: Container(
         margin: EdgeInsets.only(left: DimensionConstants.d16.w, right: DimensionConstants.d16.w, top: DimensionConstants.d16.h),

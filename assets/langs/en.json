@@ -179,5 +179,51 @@
   "type_an_address_or_drag_pin_on_map": "Type an address or drag pin on map",
   "enter_address": "Enter Address",
   "project_location": "Project Location",
-  "current_location": "Current Location"
+  "current_location": "Current Location",
+  "location_radius": "Location Radius",
+  "next": "Next",
+  "add_crew": "Add Crew",
+  "search_for_name_city_or_trade": "Search for name, city or trade",
+  "send_invite": "Send Invite",
+  "invite_a_new_crew_member":"Invite a new crew member",
+  "set_rates": "Set Rates",
+  "same_rate_for_all_crew": "Same rate for all crew",
+  "set_one_rate_that_applies_to_entire_crew": "Set one rate that applies to entire crew.",
+  "warning_text": "Changing a crew member’s rate will apply to all\nother projects that you have added them to.",
+  "after_hours_rate": "After Hours Rate",
+  "increase_pay_text": "Increase pay for time worked outside regular hours/days.",
+  "add_profile": "Add Profile",
+  "work_days": "Work Days",
+  "add_break": "Add Break",
+  "round_timesheets_to_nearest": "Round timesheets to nearest",
+  "create_project": "Create Project",
+  "nice_work_your_project_has_been_created": "Nice work! Your project has been created.",
+  "you_don_have_a_crew_yet_start_inviting_your_crew_memebers": "You don’t have a crew yet. \nStart inviting your crew memebers.",
+  "hrs": "Hrs",
+  "invite_pending": "  Invite Pending",
+  "manager_settings": "Manager Settings",
+  "these_attributes_are_set_by_the_project": "These attributes are set by the Project Manager and\ncannot be edited by crew members.",
+  "archive_project": "Archive Project",
+  "archive_project_mark": "Archive Project?",
+  "remove": "Remove",
+  "private_notes": "Private Notes",
+  "only_you_can_see_these_notes": "Only you can see these notes",
+  "add_private_note": "Add Private Note",
+  "these_notes_are_private": "These notes are private and can only be seen by you. \nThey will not be shared with the crew member.",
+  "remove_from_project": "Remove from Project",
+  "are_you_sure_you_want_to": "Are you sure you want to remove Benjamin Poole from Momentum Smart Project?",
+  "edit_rate": "Edit Rate",
+  "change": "Change",
+  "ignore_all_interruptions": "Ignore all Interruptions",
+  "revert_all_iterruptions": "Revert all Interruptions",
+  "project_sites": "Project Sites",
+  "change_time": "Change Time"
+
+
+
+
+
+
+
+
 }

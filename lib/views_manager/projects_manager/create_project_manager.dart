@@ -1,4 +1,8 @@
+
+
 import 'package:beehive/constants/image_constants.dart';
+import 'package:beehive/constants/route_constants.dart';
+import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
 import 'package:beehive/provider/create_project_manager_provider.dart';
@@ -9,6 +13,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:syncfusion_flutter_sliders/sliders.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 import '../../constants/color_constants.dart';
@@ -20,45 +25,62 @@ class CreateProjectManager extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BaseView<CreateProjectManagerProvider>(
-        onModelReady: (provider) {
-          provider.determinePosition().then((value) => {
-            provider.addLatLongToMap(value.latitude, value.longitude),
-
-
-
-
+    return BaseView<CreateProjectManagerProvider>(onModelReady: (provider) {
+      provider.determinePosition().then((value) => {
+            provider.getLngLt(context),
+            provider.setCustomMapPinUser(),
           });
-
-        },
-        builder: (context, provider, _) {
-          return Scaffold(
-            appBar: CommonWidgets.appBarWithTitleAndAction(context,
-                title: "create_a_project"),
-            body: SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  SizedBox(
-                    height: DimensionConstants.d19.h,
-                  ),
-                  titleWidget(context),
-                  SizedBox(
-                    height: DimensionConstants.d24.h,
-                  ),
-                  projectLocation(context),
-                  SizedBox(
-                    height: DimensionConstants.d19.h,
-                  ),
-                  locationFiled(context),
-                  SizedBox(
-                    height: DimensionConstants.d16.h,
-                  ),
-                  googleMapWidget(provider),
-                ],
+    }, builder: (context, provider, _) {
+      return Scaffold(
+        appBar: CommonWidgets.appBarWithTitleAndAction(context,
+            title: "create_a_project"),
+        body: SingleChildScrollView(
+          child: Column(
+            children: <Widget>[
+              SizedBox(
+                height: DimensionConstants.d16.h,
               ),
-            ),
-          );
-        });
+              titleWidget(context),
+              SizedBox(
+                height: DimensionConstants.d20.h,
+              ),
+              projectLocation(context),
+              SizedBox(
+                height: DimensionConstants.d16.h,
+              ),
+              locationFiled(context, provider),
+              SizedBox(
+                height: DimensionConstants.d16.h,
+              ),
+              googleMapWidget(provider),
+              SizedBox(
+                height: DimensionConstants.d16.h,
+              ),
+              locationRadiusWidget(context,provider),
+              SizedBox(
+                height: DimensionConstants.d30.h,
+              ),
+              Padding(
+                padding:  EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
+                child: CommonWidgets.commonButton(context, "next".tr(),
+                    color1: ColorConstants.primaryGradient2Color,
+                    color2: ColorConstants.primaryGradient1Color,
+                    fontSize: DimensionConstants.d16.sp,
+                    onBtnTap: () {
+                  Navigator.pushNamed(context, RouteConstants.addCrewPageManager);
+
+                    },
+                    shadowRequired: true),
+              ),
+              SizedBox(
+                height: DimensionConstants.d30.h,
+              ),
+
+            ],
+          ),
+        ),
+      );
+    });
   }
 }
 
@@ -172,7 +194,8 @@ Widget projectLocation(BuildContext context) {
   );
 }
 
-Widget locationFiled(BuildContext context) {
+Widget locationFiled(
+    BuildContext context, CreateProjectManagerProvider provider) {
   return Padding(
     padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
     child: Card(
@@ -191,7 +214,9 @@ Widget locationFiled(BuildContext context) {
             const ImageView(
               path: ImageConstants.currentLocation,
             ),
-            SizedBox(width: DimensionConstants.d10.w,),
+            SizedBox(
+              width: DimensionConstants.d10.w,
+            ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -204,7 +229,7 @@ Widget locationFiled(BuildContext context) {
                 SizedBox(
                   height: DimensionConstants.d4.h,
                 ),
-                Text("").regularText(
+                Text(provider.pickUpLocation).regularText(
                     context, DimensionConstants.d14.sp, TextAlign.left,
                     color: ColorConstants.black333333)
               ],
@@ -215,61 +240,107 @@ Widget locationFiled(BuildContext context) {
     ),
   );
 }
-Widget googleMapWidget(CreateProjectManagerProvider provider){
+
+Widget googleMapWidget(CreateProjectManagerProvider provider) {
   return Padding(
-    padding:  EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
+    padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
     child: Container(
       height: DimensionConstants.d329.h,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(DimensionConstants.d8.r)
-      ),
+          borderRadius: BorderRadius.circular(DimensionConstants.d8.r)),
       child: Stack(
-        children:<Widget> [
+        children: <Widget>[
           ClipRRect(
-            borderRadius:
-            BorderRadius.circular(DimensionConstants.d8.r),
-            child: GoogleMap(
-              mapType: provider.mapType,
-              myLocationButtonEnabled: false,
-              compassEnabled: false,
-              zoomControlsEnabled: false,
-              scrollGesturesEnabled: true,
-              initialCameraPosition:CameraPosition(
-                target: LatLng(provider.latitude, provider.longitude),
-                zoom: 11.0,
-              ),
-              onMapCreated: (GoogleMapController controller) {
-                provider.controller.complete(controller);
-              },
-            ),
-          ),
+              borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
+              child: provider.state == ViewState.idle
+                  ? GoogleMap(
+                      mapType: provider.mapType,
+                      myLocationButtonEnabled: false,
+                      compassEnabled: false,
+                      zoomControlsEnabled: false,
+                      scrollGesturesEnabled: true,
+                      initialCameraPosition: CameraPosition(
+                        target: LatLng(provider.latitude, provider.longitude),
+                        zoom: 11.0,
+                      ),
+                      onMapCreated: provider.onMapCreated,
+                      onCameraMove: (CameraPosition cameraPosition) {
+                        provider.position = cameraPosition;
+                      },
+                  onCameraIdle: () => provider.cameraIdle(provider.position),
+                      markers: Set<Marker>.of(provider.markers))
+                  : const Center(
+                      child: CircularProgressIndicator(),
+                    )),
           Positioned(
             top: DimensionConstants.d8.h,
             left: DimensionConstants.d85.w,
             child: ToggleSwitch(
-            minWidth: DimensionConstants.d91.w,
-            minHeight: DimensionConstants.d41.h,
-            fontSize: DimensionConstants.d14.sp,
-            initialLabelIndex: provider.initialIndex,
-            radiusStyle: true,
-            cornerRadius: DimensionConstants.d8.r,
-            activeBgColor: [ColorConstants.colorWhite],
-            activeFgColor: ColorConstants.deepBlue,
-            inactiveBgColor: ColorConstants.deepBlue,
-            inactiveFgColor: ColorConstants.colorWhite,
-            totalSwitches: 2,
-            labels: const ['Default', 'Satelite',],
-            onToggle: (index) {
-              provider.updateMapStyle(index!);
-            },
-          ),)
-
-
+              minWidth: DimensionConstants.d91.w,
+              minHeight: DimensionConstants.d41.h,
+              fontSize: DimensionConstants.d14.sp,
+              initialLabelIndex: provider.initialIndex,
+              radiusStyle: true,
+              cornerRadius: DimensionConstants.d8.r,
+              activeBgColor: [ColorConstants.colorWhite],
+              activeFgColor: ColorConstants.deepBlue,
+              inactiveBgColor: ColorConstants.deepBlue,
+              inactiveFgColor: ColorConstants.colorWhite,
+              totalSwitches: 2,
+              labels: const [
+                'Default',
+                'Satelite',
+              ],
+              onToggle: (index) {
+                provider.updateMapStyle(index!);
+              },
+            ),
+          )
         ],
       ),
-
     ),
   );
+}
+Widget locationRadiusWidget(BuildContext context, CreateProjectManagerProvider provider){
+  return Column(
+    children: [
+      Padding(
+        padding:  EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
+        child: Row(
+          children:<Widget> [
+            Text("location_radius".tr()).boldText(context, DimensionConstants.d16.sp, TextAlign.left,color: ColorConstants.deepBlue),
+            Expanded(child: Container()),
+            Text("<".tr()).boldText(context, DimensionConstants.d16.sp, TextAlign.left,color: ColorConstants.deepBlue),
+            SizedBox(width: DimensionConstants.d5.w,),
+            Text(provider.valueFor.toStringAsFixed(0)).boldText(context, DimensionConstants.d16.sp, TextAlign.left,color: ColorConstants.deepBlue),
+            SizedBox(width: DimensionConstants.d5.w,),
+            Text("m".tr()).boldText(context, DimensionConstants.d16.sp, TextAlign.left,color: ColorConstants.deepBlue),
+
+          ],
+        ),
+      ),
+      SizedBox(
+        width: DimensionConstants.d470.w,
+        child: SfSlider(
+          min: 0.0,
+          max: 100.0,
+          value: provider.valueFor,
+          activeColor: ColorConstants.primaryColor,
+          inactiveColor: ColorConstants.grayF3F3F3,
+          interval: 20,
+          minorTicksPerInterval: 1,
+          onChanged: (dynamic value) {
+            provider.updateValue(value);
+          },
+        ),
+      ),
+
+
+    ],
+  );
+
+
+
 
 
 }

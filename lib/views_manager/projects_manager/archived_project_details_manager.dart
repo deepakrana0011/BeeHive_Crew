@@ -6,7 +6,10 @@ import 'package:beehive/helper/common_widgets.dart';
 import 'package:beehive/provider/project_details_manager_provider.dart';
 import 'package:beehive/provider/project_details_provider.dart';
 import 'package:beehive/view/base_view.dart';
+import 'package:beehive/views_manager/projects_manager/add_note_page_manager.dart';
 import 'package:beehive/views_manager/projects_manager/project_setting_page_manager.dart';
+import 'package:beehive/views_manager/projects_manager/set_rates_page_manager.dart';
+import 'package:beehive/views_manager/projects_manager/timesheets_screen_manager.dart';
 import 'package:beehive/widget/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,17 +20,20 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../constants/route_constants.dart';
 import '../../helper/dialog_helper.dart';
 
-class ProjectDetailsPageManager extends StatefulWidget {
-  bool? createProject;
-  ProjectDetailsPageManager({Key? key, this.createProject}) : super(key: key);
+class ArchivedProjectDetailsManager extends StatefulWidget {
+  bool archivedOrProject;
+  bool fromProject;
+  ArchivedProjectDetailsManager(
+      {Key? key, required this.archivedOrProject, required this.fromProject})
+      : super(key: key);
 
   @override
-  State<ProjectDetailsPageManager> createState() =>
-      _ProjectDetailsPageManagerState();
+  State<ArchivedProjectDetailsManager> createState() =>
+      _ArchivedProjectDetailsManagerState();
 }
 
-class _ProjectDetailsPageManagerState extends State<ProjectDetailsPageManager>
-    with TickerProviderStateMixin {
+class _ArchivedProjectDetailsManagerState
+    extends State<ArchivedProjectDetailsManager> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return BaseView<ProjectDetailsManagerProvider>(
@@ -39,9 +45,13 @@ class _ProjectDetailsPageManagerState extends State<ProjectDetailsPageManager>
           appBar: CommonWidgets.appBarWithTitleAndAction(context,
               title: "project_details",
               actionIcon: ImageConstants.settingsIcon,
-              actionButtonRequired: true, onTapAction: () {
+              actionButtonRequired: widget.archivedOrProject == false
+                  ? true
+                  : false, onTapAction: () {
             Navigator.pushNamed(
-                context, RouteConstants.projectSettingsPageManager, arguments: ProjectSettingsPageManager(fromProjectOrCreateProject: false));
+                context, RouteConstants.projectSettingsPageManager,
+                arguments: ProjectSettingsPageManager(
+                    fromProjectOrCreateProject: false));
           }),
           body: Padding(
             padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
@@ -51,19 +61,23 @@ class _ProjectDetailsPageManagerState extends State<ProjectDetailsPageManager>
                   SizedBox(
                     height: DimensionConstants.d16.h,
                   ),
-                  widget.createProject == true
-                      ? projectCreated(context)
+                  widget.archivedOrProject == true
+                      ? projectByArchived(context)
                       : Container(),
                   SizedBox(
                     height: DimensionConstants.d16.h,
                   ),
-                  mapAndHoursDetails(context, provider, widget.createProject!),
+                  mapAndHoursDetails(
+                    context,
+                    provider,
+                    widget.archivedOrProject,
+                  ),
                   SizedBox(
                     height: DimensionConstants.d10.h,
                   ),
                   tabBarView(context, provider.tabController!, provider,
-                      widget.createProject!),
-                  widget.createProject == false
+                      widget.archivedOrProject, widget.fromProject),
+                  widget.archivedOrProject == true
                       ? Padding(
                           padding: EdgeInsets.symmetric(
                               horizontal: DimensionConstants.d3.w),
@@ -97,8 +111,11 @@ class _ProjectDetailsPageManagerState extends State<ProjectDetailsPageManager>
   }
 }
 
-Widget mapAndHoursDetails(BuildContext context,
-    ProjectDetailsManagerProvider provider, bool createProject) {
+Widget mapAndHoursDetails(
+  BuildContext context,
+  ProjectDetailsManagerProvider provider,
+  bool archivedOrNot,
+) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
@@ -127,10 +144,12 @@ Widget mapAndHoursDetails(BuildContext context,
             width: DimensionConstants.d210.w,
             child: const Text("Northfield Road, Toronto, Ontario M1G 2h4 ")
                 .regularText(context, DimensionConstants.d16.sp, TextAlign.left,
-                    color: ColorConstants.darkGray4F4F4F),
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? ColorConstants.colorWhite
+                        : ColorConstants.darkGray4F4F4F),
           ),
           Expanded(child: Container()),
-          createProject != true
+          archivedOrNot != true
               ? Container(
                   height: DimensionConstants.d42.h,
                   width: DimensionConstants.d94.w,
@@ -211,7 +230,7 @@ Widget mapAndHoursDetails(BuildContext context,
                       ? ColorConstants.colorWhite
                       : ColorConstants.colorBlack),
               Expanded(child: Container()),
-              Text(createProject == false ? "1200" : "0").semiBoldText(
+              Text("1200").semiBoldText(
                   context, DimensionConstants.d14.sp, TextAlign.left,
                   color: Theme.of(context).brightness == Brightness.dark
                       ? ColorConstants.colorWhite
@@ -224,8 +243,12 @@ Widget mapAndHoursDetails(BuildContext context,
   );
 }
 
-Widget tabBarView(BuildContext context, TabController controller,
-    ProjectDetailsManagerProvider provider, bool projectCreate) {
+Widget tabBarView(
+    BuildContext context,
+    TabController controller,
+    ProjectDetailsManagerProvider provider,
+    bool archivedOrNot,
+    bool fromProject) {
   return Column(
     children: [
       Card(
@@ -294,23 +317,14 @@ Widget tabBarView(BuildContext context, TabController controller,
         ),
       ),
       SizedBox(
-        height: controller.index == 0
-            ? DimensionConstants.d710.h
-            : projectCreate == true
-                ? 680
-                : 1145,
+        height: controller.index == 0 ? DimensionConstants.d730.h : 1145,
         width: DimensionConstants.d343.w,
         child: TabBarView(
             physics: NeverScrollableScrollPhysics(),
             controller: controller,
             children: <Widget>[
-              todayTab(
-                context,
-                projectCreate == true ? false : true,
-                provider,
-                projectCreate,
-              ),
-              todayTab(context, false, provider, projectCreate),
+              todayTab(context, true, provider, archivedOrNot, fromProject),
+              todayTab(context, false, provider, archivedOrNot, fromProject),
               Container(),
             ]),
       )
@@ -319,11 +333,11 @@ Widget tabBarView(BuildContext context, TabController controller,
 }
 
 Widget todayTab(
-  BuildContext context,
-  bool todayOrWeekly,
-  ProjectDetailsManagerProvider provider,
-  bool projectCreate,
-) {
+    BuildContext context,
+    bool todayOrWeekly,
+    ProjectDetailsManagerProvider provider,
+    bool archivedOrNot,
+    bool fromProject) {
   return SizedBox(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -332,12 +346,9 @@ Widget todayTab(
           height: DimensionConstants.d15.h,
         ),
         todayOrWeekly == true
-            ? stepperLine(context, true, "")
-            : projectCreate == true
-                ? projectCreatedBox(context)
-                : provider.tabController!.index == 1
-                    ? weeklyTabBarContainer(context)
-                    : Container(),
+            ? /*stepperLine(context, true, "") */ todayBoxForProjectDetails(
+                context)
+            : weeklyTabBarContainer(context),
         SizedBox(
           height: DimensionConstants.d24.h,
         ),
@@ -349,11 +360,13 @@ Widget todayTab(
                     ? ColorConstants.colorWhite
                     : ColorConstants.colorBlack),
             Expanded(child: Container()),
-            projectCreate == true
+            fromProject == true
                 ? GestureDetector(
                     onTap: () {
                       Navigator.pushNamed(
-                          context, RouteConstants.addNotePageManager);
+                          context, RouteConstants.addNotePageManager,
+                          arguments:
+                              AddNotePageManager(publicOrPrivate: false));
                     },
                     child: Container(
                       height: DimensionConstants.d40.h,
@@ -396,70 +409,13 @@ Widget todayTab(
           ],
         ),
         SizedBox(
-          height: DimensionConstants.d16.h,
+          height: DimensionConstants.d25.h,
         ),
-        Row(
-          children: <Widget>[
-            Text("crew".tr()).semiBoldText(
-                context, DimensionConstants.d20.sp, TextAlign.left,
-                color: ColorConstants.colorBlack),
-            Expanded(child: Container()),
-            projectCreate == true
-                ? GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(
-                          context, RouteConstants.addCrewPageManager);
-                    },
-                    child: Container(
-                      height: DimensionConstants.d40.h,
-                      width: DimensionConstants.d118,
-                      decoration: BoxDecoration(
-                        color: ColorConstants.deepBlue,
-                        border: Theme.of(context).brightness == Brightness.dark
-                            ? Border.all(
-                                color: ColorConstants.colorWhite,
-                                width: DimensionConstants.d1.w)
-                            : null,
-                        borderRadius:
-                            BorderRadius.circular(DimensionConstants.d8.r),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: DimensionConstants.d10.w),
-                        child: Row(
-                          children: <Widget>[
-                            ImageView(
-                              path: ImageConstants.addNotesIcon,
-                              height: DimensionConstants.d16.h,
-                              width: DimensionConstants.d16.w,
-                            ),
-                            SizedBox(
-                              width: DimensionConstants.d8.w,
-                            ),
-                            Text("add_crew".tr()).semiBoldText(context,
-                                DimensionConstants.d14.sp, TextAlign.left,
-                                color: Theme.of(context).brightness ==
-                                        Brightness.dark
-                                    ? ColorConstants.colorWhite
-                                    : ColorConstants.colorWhite),
-                          ],
-                        ),
-                      ),
-                    ),
-                  )
-                : Container()
-          ],
-        ),
-        SizedBox(
-          height: projectCreate == false
-              ? DimensionConstants.d25.h
-              : DimensionConstants.d1.h,
-        ),
-        projectCreate == false ? scaleNotesWidget(context) : Container(),
+        scaleNotesWidget(context),
         SizedBox(
           height: DimensionConstants.d25.h,
         ),
-        crewWidget(context, projectCreate),
+        crewWidget(context, archivedOrNot, fromProject),
       ],
     ),
   );
@@ -468,7 +424,8 @@ Widget todayTab(
 Widget stepperLine(BuildContext context, bool todayOrWeek, String date) {
   return GestureDetector(
     onTap: () {
-      //  Navigator.pushNamed(context, RouteConstants.timeSheetsScreen);
+      Navigator.pushNamed(context, RouteConstants.timeSheetScreenManager,
+          arguments: TimeSheetsScreenManager(removeInterruption: false));
     },
     child: Card(
       margin: EdgeInsets.zero,
@@ -563,7 +520,10 @@ Widget stepperLine(BuildContext context, bool todayOrWeek, String date) {
 Widget stepperLineError(BuildContext context, bool todayOrWeek, String date) {
   return GestureDetector(
     onTap: () {
-      //  Navigator.pushNamed(context, RouteConstants.timeSheetsScreen);
+      Navigator.pushNamed(context, RouteConstants.timeSheetScreenManager,
+          arguments: TimeSheetsScreenManager(
+            removeInterruption: false,
+          ));
     },
     child: Card(
       margin: EdgeInsets.zero,
@@ -757,10 +717,62 @@ Widget scaleNotesWidget(BuildContext context) {
   );
 }
 
-Widget crewWidget(BuildContext context, bool archivedOrNot) {
+Widget crewWidget(BuildContext context, bool archivedOrNot, bool fromProject) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
+      Row(
+        children: <Widget>[
+          Text("crew".tr()).semiBoldText(
+              context, DimensionConstants.d20.sp, TextAlign.left,
+              color: ColorConstants.deepBlue),
+          Expanded(child: Container()),
+          fromProject == true
+              ? GestureDetector(
+                  onTap: () {
+                    Navigator.pushNamed(
+                        context, RouteConstants.addCrewPageManager);
+                  },
+                  child: Container(
+                    height: DimensionConstants.d40.h,
+                    width: DimensionConstants.d118,
+                    decoration: BoxDecoration(
+                      color: ColorConstants.deepBlue,
+                      border: Theme.of(context).brightness == Brightness.dark
+                          ? Border.all(
+                              color: ColorConstants.colorWhite,
+                              width: DimensionConstants.d1.w)
+                          : null,
+                      borderRadius:
+                          BorderRadius.circular(DimensionConstants.d8.r),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: DimensionConstants.d10.w),
+                      child: Row(
+                        children: <Widget>[
+                          ImageView(
+                            path: ImageConstants.addNotesIcon,
+                            height: DimensionConstants.d16.h,
+                            width: DimensionConstants.d16.w,
+                          ),
+                          SizedBox(
+                            width: DimensionConstants.d8.w,
+                          ),
+                          Text("add_crew".tr()).semiBoldText(context,
+                              DimensionConstants.d14.sp, TextAlign.left,
+                              color: Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? ColorConstants.colorWhite
+                                  : ColorConstants.colorWhite),
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+              : Container(),
+        ],
+      ),
       SizedBox(
         height: DimensionConstants.d24.h,
       ),
@@ -770,7 +782,7 @@ Widget crewWidget(BuildContext context, bool archivedOrNot) {
       ),
       GestureDetector(
           onTap: () {
-            // Navigator.pushNamed(context, RouteConstants.crewProfilePage);
+            Navigator.pushNamed(context, RouteConstants.crewPageProfileManager);
           },
           child:
               managerDetails(context, false, "Benjamin Poole", archivedOrNot)),
@@ -892,16 +904,15 @@ Widget managerDetails(
                                     ? ColorConstants.colorWhite
                                     : ColorConstants.deepBlue,
                           ),
-                          archivedOrNot != true
-                              ? const Text("   \$20.00/hr").regularText(
-                                  context,
-                                  DimensionConstants.d14.sp,
-                                  TextAlign.left,
-                                  color: ColorConstants.deepBlue,
-                                )
-                              : Text("invite_pending".tr()).regularText(context,
-                                  DimensionConstants.d14.sp, TextAlign.left,
-                                  color: ColorConstants.redColorEB5757),
+                          const Text("   \$20.00/hr").regularText(
+                            context,
+                            DimensionConstants.d14.sp,
+                            TextAlign.left,
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? ColorConstants.colorWhite
+                                    : ColorConstants.deepBlue,
+                          )
                         ],
                       )
               ],
@@ -1203,6 +1214,62 @@ Widget addBreakButton(BuildContext context) {
           ],
         ),
       ),
+    ),
+  );
+}
+
+Widget todayBoxForProjectDetails(BuildContext context) {
+  return Container(
+    height: DimensionConstants.d70.h,
+    //  width: DimensionConstants.d343.w,
+    decoration: BoxDecoration(
+        color: ColorConstants.littleDarkGray,
+        borderRadius: BorderRadius.circular(DimensionConstants.d8.r)),
+    child: Row(
+      children: <Widget>[
+        SizedBox(
+          width: DimensionConstants.d60.w,
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(
+              height: DimensionConstants.d13.h,
+            ),
+            Text("4.5h").boldText(
+                context, DimensionConstants.d20.sp, TextAlign.center,
+                color: ColorConstants.colorBlack),
+            Text("total_hours".tr()).regularText(
+                context, DimensionConstants.d14.sp, TextAlign.center,
+                color: ColorConstants.colorBlack),
+          ],
+        ),
+        SizedBox(
+          width: DimensionConstants.d50.w,
+        ),
+        Devider(DimensionConstants.d70.h, DimensionConstants.d1.w,
+            ColorConstants.colorWhite90),
+        SizedBox(
+          width: DimensionConstants.d70.w,
+        ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            SizedBox(
+              height: DimensionConstants.d13.h,
+            ),
+            Text("3").boldText(
+                context, DimensionConstants.d20.sp, TextAlign.center,
+                color: ColorConstants.colorBlack),
+            Text("crew".tr()).regularText(
+                context, DimensionConstants.d14.sp, TextAlign.center,
+                color: ColorConstants.colorBlack),
+          ],
+        ),
+        SizedBox(
+          width: DimensionConstants.d40.w,
+        ),
+      ],
     ),
   );
 }

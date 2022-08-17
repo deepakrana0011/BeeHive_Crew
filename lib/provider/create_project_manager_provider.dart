@@ -1,8 +1,13 @@
 import 'dart:async';
 
+import 'package:beehive/enum/enum.dart';
 import 'package:beehive/provider/base_provider.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+import '../constants/image_constants.dart';
 
 class CreateProjectManagerProvider extends BaseProvider {
   Completer<GoogleMapController> controller = Completer();
@@ -18,9 +23,64 @@ class CreateProjectManagerProvider extends BaseProvider {
 
   double latitude = 0;
   double longitude = 0;
-  addLatLongToMap(double lat, double long){
-    latitude = lat;
-    longitude = long;
+  var value;
+  String pickUpLocation = "";
+
+  Future getLngLt(context) async {
+    setState(ViewState.busy);
+    value = await Geolocator.getCurrentPosition();
+    latitude = value.latitude;
+    longitude = value.longitude;
+    setState(ViewState.idle);
+  }
+
+  BitmapDescriptor? pinLocationIconUser;
+  void setCustomMapPinUser() async {
+    pinLocationIconUser = await BitmapDescriptor.fromAssetImage(
+        const ImageConfiguration(), ImageConstants.locationMark);
+    notifyListeners();
+  }
+
+  List<Marker> markers = [];
+  onMapCreated(GoogleMapController controller) {
+    setState(ViewState.busy);
+    markers.add(Marker(
+      draggable: true,
+      markerId: const MarkerId("ID1"),
+      position: LatLng(latitude, longitude),
+      icon: pinLocationIconUser!,
+      flat: true,
+      anchor: const Offset(0.5, 0.5),
+    ));
+    getPickUpAddress();
+    notifyListeners();
+
+    setState(ViewState.idle);
+  }
+  CameraPosition? position;
+
+  Future<void> cameraIdle(position) async {
+    List<Placemark> placeMark = await placemarkFromCoordinates(position!.target.latitude, position!.target.longitude);
+
+    pickUpLocation = placeMark.first.street.toString() +
+        " " +
+        placeMark.first.thoroughfare.toString() +
+        placeMark.first.subLocality.toString() +
+        placeMark.first.country.toString() + placeMark.first.administrativeArea.toString();
+    notifyListeners();
+
+
+
+
+  }
+
+  Future<void> getPickUpAddress() async {
+    List<Placemark> placeMark =
+        await placemarkFromCoordinates(latitude, longitude);
+    pickUpLocation = placeMark.first.street.toString() +
+        " " +
+        placeMark.first.thoroughfare.toString() +
+        placeMark.first.subLocality.toString();
     notifyListeners();
   }
 
@@ -59,4 +119,25 @@ class CreateProjectManagerProvider extends BaseProvider {
 
     return await Geolocator.getCurrentPosition();
   }
+
+  dynamic valueFor = 0;
+  updateValue(dynamic value){
+    valueFor = value;
+    notifyListeners();
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

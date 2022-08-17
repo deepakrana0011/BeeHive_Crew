@@ -1,3 +1,5 @@
+import 'package:beehive/provider/add_crew_page_manager.dart';
+import 'package:beehive/provider/add_note_page_manager_provider.dart';
 import 'package:beehive/provider/add_note_page_provider.dart';
 import 'package:beehive/provider/app_settings_provider.dart';
 import 'package:beehive/provider/app_state_provider.dart';
@@ -7,6 +9,8 @@ import 'package:beehive/provider/bottom_bar_provider.dart';
 import 'package:beehive/provider/certification_page_provider.dart';
 import 'package:beehive/provider/continue_with_phone_provider.dart';
 import 'package:beehive/provider/create_project_manager_provider.dart';
+import 'package:beehive/provider/crew_member_add_by_manager_provider.dart';
+import 'package:beehive/provider/crew_profile_page_provider_manager.dart';
 import 'package:beehive/provider/dashboard_page_manager_provider.dart';
 import 'package:beehive/provider/dashboard_provider.dart';
 import 'package:beehive/provider/edit_profile_provider.dart';
@@ -16,13 +20,16 @@ import 'package:beehive/provider/notification_provider.dart';
 import 'package:beehive/provider/login_provider.dart';
 import 'package:beehive/provider/project_details_manager_provider.dart';
 import 'package:beehive/provider/project_details_provider.dart';
+import 'package:beehive/provider/project_settings_manager_provider.dart';
 import 'package:beehive/provider/project_settings_provider.dart';
 import 'package:beehive/provider/projects_provider.dart';
 import 'package:beehive/provider/reset_password_manager_provider.dart';
 import 'package:beehive/provider/reset_password_provider.dart';
+import 'package:beehive/provider/set_rates_page_manager_provider.dart';
 import 'package:beehive/provider/sign_in_provider.dart';
 import 'package:beehive/provider/sign_up_manager_provider.dart';
 import 'package:beehive/provider/sign_up_provider.dart';
+import 'package:beehive/provider/timesheet_manager_provider.dart';
 import 'package:get_it/get_it.dart';
 
 GetIt locator = GetIt.instance;
@@ -54,6 +61,12 @@ void setUpLocator(){
   locator.registerFactory(() => LoginManagerProvider());
   locator.registerFactory(() => ProjectDetailsManagerProvider());
   locator.registerFactory(() => CreateProjectManagerProvider());
-
+  locator.registerFactory(() => CrewMemberAddByManagerProvider());
+  locator.registerFactory(() => AddCrewPageManagerProvider());
+  locator.registerFactory(() => SetRatesPageManageProvider());
+  locator.registerFactory(() => ProjectSettingsManagerProvider());
+  locator.registerFactory(() => AddNotePageManagerProvider());
+  locator.registerFactory(() => CrewProfilePageProviderManager());
+  locator.registerFactory(() => TimeSheetManagerProvider());
 
 }
