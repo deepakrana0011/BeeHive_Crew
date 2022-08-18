@@ -4,6 +4,8 @@ import 'package:beehive/constants/image_constants.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/provider/bottom_bar_Manager_provider.dart';
 import 'package:beehive/view/base_view.dart';
+import 'package:beehive/views_manager/billing_information/billing_information_page_manager.dart';
+import 'package:beehive/views_manager/profile_manager/profile_page_manager.dart';
 import 'package:beehive/views_manager/projects_manager/projects_page_manager.dart';
 import 'package:beehive/views_manager/timesheet_manager/timesheet_page_manager.dart';
 import 'package:beehive/widget/image_view.dart';
@@ -27,7 +29,7 @@ class _BottomBarManagerState extends State<BottomBarManager> {
     const DashBoardPageManager(),
     const ProjectsPageManager(),
     const TimeSheetPageManager(),
-    Container(),
+    const ProfilePageManager(),
   ];
   List<String> menuName = [
     ImageConstants.dashBoardIcon,
@@ -76,11 +78,17 @@ class _BottomBarManagerState extends State<BottomBarManager> {
                   onTap: () {
                     provider.scaffoldKey.currentState!.openDrawer();
                   },
-                  child: ImageView(
-                    path: ImageConstants.drawerIcon,
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? ColorConstants.colorWhite
-                        : ColorConstants.colorBlack,
+                  child: Padding(
+                    padding:  const EdgeInsets.all(DimensionConstants.d15),
+                    child: ImageView(
+                      path: ImageConstants.drawerIcon,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? ColorConstants.colorWhite
+                          : ColorConstants.colorBlack,
+                      height: DimensionConstants.d24.h,
+                      width: DimensionConstants.d24.w,
+
+                    ),
                   )),
               actions: [
                 // provider.selectedIndex == 0 ? Switch(
@@ -126,7 +134,6 @@ class _BottomBarManagerState extends State<BottomBarManager> {
                         bottom: DimensionConstants.d3.h),
                     child: const ImageView(
                       path: ImageConstants.bottomBarDashBoardInActive,
-
                     ),
                   ),
                   activeIcon: Padding(
@@ -286,7 +293,7 @@ Widget drawer(BuildContext context, BottomBarManagerProvider provider) {
                                 DimensionConstants.d20.sp, TextAlign.center,
                                 color: ColorConstants.colorWhite),
                             // SizedBox(height: DimensionConstants.d3.h),
-                            Text("John Smith").boldText(context,
+                            const Text("John Smith").boldText(context,
                                 DimensionConstants.d30.sp, TextAlign.center,
                                 color: ColorConstants.colorWhite),
                             SizedBox(
@@ -365,10 +372,14 @@ Widget drawer(BuildContext context, BottomBarManagerProvider provider) {
             GestureDetector(
               onTap: () {
                 Navigator.pop(context);
-                Navigator.pushNamed(context, RouteConstants.archivedProjectsScreenManager);
+                Navigator.pushNamed(
+                    context, RouteConstants.archivedProjectsScreenManager);
               },
-              child: drawerHeadingsRow(context, ImageConstants.openFolderIcon,
-                  "archived_projects".tr(), ),
+              child: drawerHeadingsRow(
+                context,
+                ImageConstants.openFolderIcon,
+                "archived_projects".tr(),
+              ),
             ),
             SizedBox(height: DimensionConstants.d30.h),
             const Divider(
@@ -380,18 +391,24 @@ Widget drawer(BuildContext context, BottomBarManagerProvider provider) {
             GestureDetector(
                 onTap: () {
                   Navigator.pop(context);
-                  Navigator.pushNamed(context, RouteConstants.appSettingsManager);
+                  Navigator.pushNamed(
+                      context, RouteConstants.appSettingsManager);
                 },
                 child: drawerHeadingsRow(
                     context, ImageConstants.settingsIcon, "app_settings".tr())),
             SizedBox(height: DimensionConstants.d37.h),
             GestureDetector(
-              onTap: (){
+              onTap: () {
                 Navigator.pop(context);
-                provider.onItemTapped(3);
+                Navigator.pushNamed(
+                    context, RouteConstants.billingInformationPageManager,
+                    arguments: BillingInformationPageManager(texOrNot: true));
               },
               child: drawerHeadingsRow(
-                  context, ImageConstants.profileIcon, "my_account".tr(),active: provider.selectedIndex == 3 ? true : false),
+                context,
+                ImageConstants.billingIcon,
+                "billing".tr(),
+              ),
             ),
             SizedBox(height: DimensionConstants.d34.h),
             GestureDetector(

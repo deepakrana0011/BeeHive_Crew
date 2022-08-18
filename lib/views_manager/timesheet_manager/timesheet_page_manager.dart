@@ -1,4 +1,5 @@
 import 'package:beehive/constants/dimension_constants.dart';
+import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/view/base_view.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -25,7 +26,6 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager>
   Widget build(BuildContext context) {
     TabController tabController = TabController(length: 2, vsync: this);
     return BaseView<TimeSheetManagerProvider>(onModelReady: (provider) {
-      provider.indexCheck(tabController.index);
       provider.controller = TabController(length: 3, vsync: this);
     }, builder: (context, provider, _) {
       return Scaffold(
@@ -145,7 +145,7 @@ Widget tabBarView(BuildContext context, TabController controller,
         ),
       ),
       Container(
-        height: controller.index==0? DimensionConstants.d560.h:DimensionConstants.d580.h,
+        height: controller.index==0? DimensionConstants.d570.h:DimensionConstants.d580.h,
         // width: DimensionConstants.d313.w,
         child: TabBarView(
             physics: const NeverScrollableScrollPhysics(),
@@ -173,8 +173,7 @@ Widget projects(BuildContext context, TabController controller,
   );
 }
 
-Widget tabBarViewWidget(BuildContext context, TabController controller,
-    TimeSheetManagerProvider provider) {
+Widget tabBarViewWidget(BuildContext context, TabController controller, TimeSheetManagerProvider provider) {
   return Expanded(
     child: Padding(
       padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
@@ -488,9 +487,7 @@ Widget projectsHoursRow(BuildContext context, String iconPath, String txt) {
   );
 }
 
-Widget projectHourRowManager(BuildContext context, Color color, String name,
-    String startingTime, String endTime, String totalTime, Widget stepper,
-    {VoidCallback? onTap}) {
+Widget projectHourRowManager(BuildContext context, Color color, String name, String startingTime, String endTime, String totalTime, Widget stepper, {VoidCallback? onTap}) {
   return GestureDetector(
     onTap: onTap,
     child: Container(
@@ -715,9 +712,7 @@ Widget crewWidget(BuildContext context) {
   );
 }
 
-Widget userProfile(
-  BuildContext context,
-) {
+Widget userProfile(BuildContext context,) {
   return SizedBox(
     height: DimensionConstants.d468.h,
     child: ListView.builder(
@@ -728,47 +723,52 @@ Widget userProfile(
           padding: EdgeInsets.symmetric(
               horizontal: DimensionConstants.d16.w,
               vertical: DimensionConstants.d5.h),
-          child: Material(
-            elevation: 2,
-            borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
-            child: Container(
-              height: DimensionConstants.d76.h,
-              width: DimensionConstants.d343.w,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
-              ),
-              child: Padding(
-                padding:
-                    EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
-                child: Row(
-                  children: <Widget>[
-                    ImageView(
-                      path: ImageConstants.managerImage,
-                      height: DimensionConstants.d50.h,
-                      width: DimensionConstants.d50.w,
-                    ),
-                    SizedBox(
-                      width: DimensionConstants.d16.w,
-                    ),
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Text("Benjamin Poole").boldText(
-                            context, DimensionConstants.d16.sp, TextAlign.left,
-                            color: ColorConstants.deepBlue),
-                        Text("Carpenter    \$20.00/hr").regularText(
-                            context, DimensionConstants.d14.sp, TextAlign.left,
-                            color: ColorConstants.deepBlue),
-                      ],
-                    ),
-                    Expanded(child: Container()),
-                    ImageView(
-                      path: ImageConstants.arrowIcon,
-                      width: DimensionConstants.d10.w,
-                      height: DimensionConstants.d14.h,
-                    )
-                  ],
+          child: GestureDetector(
+            onTap: (){
+              Navigator.pushNamed(context, RouteConstants.timeSheetsFromCrew);
+            },
+            child: Material(
+              elevation: 2,
+              borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
+              child: Container(
+                height: DimensionConstants.d76.h,
+                width: DimensionConstants.d343.w,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
+                ),
+                child: Padding(
+                  padding:
+                      EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
+                  child: Row(
+                    children: <Widget>[
+                      ImageView(
+                        path: ImageConstants.managerImage,
+                        height: DimensionConstants.d50.h,
+                        width: DimensionConstants.d50.w,
+                      ),
+                      SizedBox(
+                        width: DimensionConstants.d16.w,
+                      ),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Text("Benjamin Poole").boldText(
+                              context, DimensionConstants.d16.sp, TextAlign.left,
+                              color: ColorConstants.deepBlue),
+                          Text("Carpenter    \$20.00/hr").regularText(
+                              context, DimensionConstants.d14.sp, TextAlign.left,
+                              color: ColorConstants.deepBlue),
+                        ],
+                      ),
+                      Expanded(child: Container()),
+                      ImageView(
+                        path: ImageConstants.arrowIcon,
+                        width: DimensionConstants.d10.w,
+                        height: DimensionConstants.d14.h,
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),

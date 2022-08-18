@@ -3,7 +3,7 @@ import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
 import 'package:beehive/helper/dialog_helper.dart';
-import 'package:beehive/provider/add_crew_page_manager.dart';
+import 'package:beehive/provider/add_crew_page_provider_manager.dart';
 import 'package:beehive/provider/add_note_page_manager_provider.dart';
 import 'package:beehive/provider/add_note_page_provider.dart';
 import 'package:beehive/view/base_view.dart';

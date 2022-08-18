@@ -58,7 +58,7 @@ class ProjectSettingsPageManager extends StatelessWidget {
                   SizedBox(
                     height: DimensionConstants.d22.h,
                   ),
-                  breakWidget(context),
+                  breakWidget(context, provider),
                   SizedBox(
                     height: DimensionConstants.d25.h,
                   ),
@@ -92,9 +92,13 @@ class ProjectSettingsPageManager extends StatelessWidget {
                   SizedBox(
                     height: DimensionConstants.d26.h,
                   ),
-                fromProjectOrCreateProject != true?  buttonsWidget(context):Container(),
+                  fromProjectOrCreateProject != true
+                      ? buttonsWidget(context)
+                      : Container(),
                   SizedBox(
-                    height:fromProjectOrCreateProject != true? DimensionConstants.d50.h:DimensionConstants.d1.h,
+                    height: fromProjectOrCreateProject != true
+                        ? DimensionConstants.d50.h
+                        : DimensionConstants.d1.h,
                   ),
                 ],
               ),
@@ -166,7 +170,8 @@ Widget workDaysWidget(
   );
 }
 
-Widget breakWidget(BuildContext context) {
+Widget breakWidget(
+    BuildContext context, ProjectSettingsManagerProvider provider) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
@@ -182,8 +187,52 @@ Widget breakWidget(BuildContext context) {
       SizedBox(
         height: DimensionConstants.d8.h,
       ),
-      hoursContainer(
-          context, DimensionConstants.d45.h, DimensionConstants.d343.w, "None"),
+
+      Container(
+        width: DimensionConstants.d343.w,
+        height: DimensionConstants.d45.h,
+        decoration: BoxDecoration(
+            color: ColorConstants.grayF2F2F2,
+            borderRadius: BorderRadius.circular(DimensionConstants.d8.r)),
+        child: DropdownButtonHideUnderline(
+          child: ButtonTheme(
+            child: DropdownButton(
+              menuMaxHeight: DimensionConstants.d400.h,
+              icon: Padding(
+                padding: EdgeInsets.only(
+                    right: DimensionConstants.d16.w,
+                    top: DimensionConstants.d10.h,
+                    bottom: DimensionConstants.d10.h),
+                child: ImageView(
+                  path: ImageConstants.downArrowIcon,
+                  width: DimensionConstants.d16.w,
+                  height: DimensionConstants.d16.h,
+                ),
+              ),
+              hint: Padding(
+                padding: EdgeInsets.only(left: DimensionConstants.d10.w),
+                child: const Text("None").regularText(
+                    context, DimensionConstants.d14.sp, TextAlign.center),
+              ),
+              //  menuMaxHeight: DimensionConstants.d414.h,
+              value: provider.dropDownValue,
+              items: provider.vehicles.map((vehicleName) {
+                return DropdownMenuItem(
+                    onTap: () {},
+                    value: vehicleName,
+                    child: Padding(
+                        padding:
+                            EdgeInsets.only(left: DimensionConstants.d10.w),
+                        child: Text(vehicleName.toString()).regularText(context,
+                            DimensionConstants.d14.sp, TextAlign.center)));
+              }).toList(),
+              onChanged: (String? value) {
+                provider.onSelected(value);
+              },
+            ),
+          ),
+        ),
+      )
     ],
   );
 }
@@ -220,7 +269,7 @@ Widget roundTimeWidget(BuildContext context) {
               SizedBox(
                 width: DimensionConstants.d15.w,
               ),
-              ImageView(
+              const ImageView(
                 path: ImageConstants.subtractIcon,
               ),
             ],
@@ -242,7 +291,7 @@ Widget roundTimeWidget(BuildContext context) {
               SizedBox(
                 width: DimensionConstants.d15.w,
               ),
-              ImageView(
+              const ImageView(
                 path: ImageConstants.subtractIcon,
               ),
             ],
@@ -270,7 +319,7 @@ Widget hoursContainer(
               context, DimensionConstants.d14.sp, TextAlign.left,
               color: ColorConstants.deepBlue),
           Expanded(child: Container()),
-          ImageView(
+          const ImageView(
             path: ImageConstants.downArrowIcon,
           ),
         ],

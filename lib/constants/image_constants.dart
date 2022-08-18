@@ -12,8 +12,8 @@ class ImageConstants{
   static const String timeSheetsIcon = "assets/images/ic_timesheets.svg";
   static const String profileIcon = "assets/images/ic_profile.svg";
   static const String dashboardAppBarIcon = "assets/images/ic_dashboard_appbar.png";
-  static const String drawerIcon = "assets/images/ic_drawer.png";
-  static const String notificationIcon = "assets/images/ic_notification.png";
+  static const String drawerIcon = "assets/images/ic_drawer.svg";
+  static const String notificationIcon = "assets/images/ic_notification.svg";
   static const String maskIcon = "assets/images/ic_mask.png";
   static const String drawerProfile = "assets/images/drawer_profile.png";
   static const String calendarIcon = "assets/images/ic_calendar.svg";
@@ -47,7 +47,7 @@ class ImageConstants{
   static const String profileBackground = "assets/images/ic_profile_back_ground.png";
   static const String penIcon = "assets/images/ic_pen_icon.svg";
   static const String lockIcon = "assets/images/ic_lock_icon.svg";
-  static const String emptyImageIcon = "assets/images/ic_profile_empty_icon.png";
+  static const String emptyImageIcon = "assets/images/ic_profile_empty_icon.svg";
   static const String galleryIcon = "assets/images/ic_gallery_icon.svg";
   static const String cameraIcon = "assets/images/ic_camera_icon.svg";
   static const String userIcon = "assets/images/ic_user_icon.png";
@@ -92,6 +92,8 @@ class ImageConstants{
   static const String hrIcon = "assets/images/ic_hr_icon.svg";
   static const String dollarIcon = "assets/images/ic_dollar_icon.svg";
   static const String ignoreIcon = "assets/images/ic_igore_icon.svg";
+  static const String billingIcon = "assets/images/ic_billing_icon.svg";
+  static const String emptyLogo = "assets/images/ic_empty_logo.svg";
 
 }
 

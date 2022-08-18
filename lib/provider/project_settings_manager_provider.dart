@@ -11,6 +11,22 @@ class ProjectSettingsManagerProvider extends BaseProvider{
     weekDays[index].selected = !weekDays[index].selected;
     notifyListeners();
   }
+  String? dropDownValue;
+  List<String> vehicles = [
+    "1.5X",
+    "2X",
+    "2.5X",
+    "3X",
+    "3.5X",
+    "4X"
+
+  ];
+  onSelected(value) {
+    dropDownValue = value;
+    notifyListeners();
+  }
+
+
 
   addModelToList(){
     for(int i = 0; i < daysName.length;i++){

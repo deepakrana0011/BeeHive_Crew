@@ -767,7 +767,7 @@ class DialogHelper {
                 SizedBox(
                   height: DimensionConstants.d23.h,
                 ),
-                Text("are_you_sure_delete".tr()).regularText(
+                Text("are_you_sure_you_want_to_archive_this_project".tr()).regularText(
                     context, DimensionConstants.d14.sp, TextAlign.center,
                     color: ColorConstants.colorBlack),
                 SizedBox(

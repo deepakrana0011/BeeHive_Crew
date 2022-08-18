@@ -1,4 +1,4 @@
-import 'package:beehive/provider/add_crew_page_manager.dart';
+import 'package:beehive/provider/add_crew_page_provider_manager.dart';
 import 'package:beehive/provider/add_note_page_manager_provider.dart';
 import 'package:beehive/provider/add_note_page_provider.dart';
 import 'package:beehive/provider/app_settings_provider.dart';
@@ -7,6 +7,7 @@ import 'package:beehive/provider/base_provider.dart';
 import 'package:beehive/provider/bottom_bar_Manager_provider.dart';
 import 'package:beehive/provider/bottom_bar_provider.dart';
 import 'package:beehive/provider/certification_page_provider.dart';
+import 'package:beehive/provider/certification_page_provider_manager.dart';
 import 'package:beehive/provider/continue_with_phone_provider.dart';
 import 'package:beehive/provider/create_project_manager_provider.dart';
 import 'package:beehive/provider/crew_member_add_by_manager_provider.dart';
@@ -18,6 +19,7 @@ import 'package:beehive/provider/introduction_provider.dart';
 import 'package:beehive/provider/login_manager_provider.dart';
 import 'package:beehive/provider/notification_provider.dart';
 import 'package:beehive/provider/login_provider.dart';
+import 'package:beehive/provider/profile_page_manager_provider.dart';
 import 'package:beehive/provider/project_details_manager_provider.dart';
 import 'package:beehive/provider/project_details_provider.dart';
 import 'package:beehive/provider/project_settings_manager_provider.dart';
@@ -29,6 +31,7 @@ import 'package:beehive/provider/set_rates_page_manager_provider.dart';
 import 'package:beehive/provider/sign_in_provider.dart';
 import 'package:beehive/provider/sign_up_manager_provider.dart';
 import 'package:beehive/provider/sign_up_provider.dart';
+import 'package:beehive/provider/timesheet_from_crew_provider.dart';
 import 'package:beehive/provider/timesheet_manager_provider.dart';
 import 'package:get_it/get_it.dart';
 
@@ -68,5 +71,8 @@ void setUpLocator(){
   locator.registerFactory(() => AddNotePageManagerProvider());
   locator.registerFactory(() => CrewProfilePageProviderManager());
   locator.registerFactory(() => TimeSheetManagerProvider());
+  locator.registerFactory(() => TimeSheetFromCrewProvider());
+  locator.registerFactory(() => CertificationPageProviderManager());
+  locator.registerFactory(() => ProfilePageManagerProvider());
 
 }

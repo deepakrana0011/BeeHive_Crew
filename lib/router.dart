@@ -23,6 +23,7 @@ import 'package:beehive/view/sign_in/sign_in_screen.dart';
 import 'package:beehive/view/timesheets/timesheets_screen.dart';
 import 'package:beehive/view/upgrade_crew_manager/payment_page.dart';
 import 'package:beehive/view/upgrade_crew_manager/upgrade_page.dart';
+import 'package:beehive/views_manager/billing_information/billing_information_page_manager.dart';
 import 'package:beehive/views_manager/bottom_bar_manager/bottom_navigation_bar_manager.dart';
 import 'package:beehive/views_manager/dashboard_manager/app_settings_manager.dart';
 import 'package:beehive/views_manager/dashboard_manager/archived_projects_screen_manager.dart';
@@ -32,6 +33,9 @@ import 'package:beehive/views_manager/light_theme_signup_login_manager/email_add
 import 'package:beehive/views_manager/light_theme_signup_login_manager/login_screen_manager.dart';
 import 'package:beehive/views_manager/light_theme_signup_login_manager/otp_verification_page_manager.dart';
 import 'package:beehive/views_manager/light_theme_signup_login_manager/sign_up_screen_manager.dart';
+import 'package:beehive/views_manager/profile_manager/certification_page_manager.dart';
+import 'package:beehive/views_manager/profile_manager/change_password_page_manager.dart';
+import 'package:beehive/views_manager/profile_manager/edit_profile_page_manager.dart';
 import 'package:beehive/views_manager/projects_manager/add_crew_page_manager.dart';
 import 'package:beehive/views_manager/projects_manager/add_note_page_manager.dart';
 import 'package:beehive/views_manager/projects_manager/archived_project_details_manager.dart';
@@ -42,6 +46,8 @@ import 'package:beehive/views_manager/projects_manager/project_details_manager.d
 import 'package:beehive/views_manager/projects_manager/project_setting_page_manager.dart';
 import 'package:beehive/views_manager/projects_manager/set_rates_page_manager.dart';
 import 'package:beehive/views_manager/projects_manager/timesheets_screen_manager.dart';
+import 'package:beehive/views_manager/billing_information/payment_page_manager.dart';
+import 'package:beehive/views_manager/timesheet_manager/timesheet_from_crew.dart';
 import 'package:flutter/material.dart';
 
 class OnGenerateRouter {
@@ -217,6 +223,29 @@ class OnGenerateRouter {
         final args = settings.arguments as TimeSheetsScreenManager;
         return MaterialPageRoute(
             builder: (_) => TimeSheetsScreenManager(removeInterruption: args.removeInterruption,), settings: settings);
+      case RouteConstants.timeSheetsFromCrew:
+        return MaterialPageRoute(
+            builder: (_) => TimeSheetFromCrew(), settings: settings);
+      case RouteConstants.billingInformationPageManager:
+        final args = settings.arguments as BillingInformationPageManager;
+        return MaterialPageRoute(
+            builder: (_) => BillingInformationPageManager(texOrNot: args.texOrNot,), settings: settings);
+      case RouteConstants.paymentPageManager:
+        return MaterialPageRoute(
+            builder: (_) => PaymentPageManager(), settings: settings);
+      case RouteConstants.certificationPageManager:
+        return MaterialPageRoute(builder: (_)=> CertificationPageManager(),settings: settings);
+      case RouteConstants.editProfilePageManager:
+        return MaterialPageRoute(builder: (_)=> EditProfilePageManager(),settings: settings);
+      case RouteConstants.changePasswordPageManager:
+        return MaterialPageRoute(builder: (_)=> ChangePasswordPageManager(),settings: settings);
+
+
+
+
+
+
+
       default:
         return _onPageNotFound();
     }

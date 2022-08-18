@@ -246,8 +246,7 @@ class _CustomTabBarState extends State<CustomTabBar>
                 color: ColorConstants.colorGreyDrawer,
                 height: 0.0,
                 thickness: 1.5),
-            projectHourRow(Color(0xFFBB6BD9), "MS", "8:50a", "10:47a", "02:57h",
-                commonStepper()),
+            projectHourRow(Color(0xFFBB6BD9), "MS", "8:50a", "10:47a", "02:57h", commonStepper()),
             const Divider(
                 color: ColorConstants.colorGreyDrawer,
                 height: 0.0,
@@ -669,13 +668,7 @@ class _CustomTabBarState extends State<CustomTabBar>
                           // Navigator.pushNamed(
                           //     context, RouteConstants.timeSheetsScreen);
                         }),
-                        projectHourRowManager(
-                            Color(0xFFBB6BD9),
-                            "MS",
-                            "Momentum Digital",
-                            "1 Crew",
-                            "12:57h",
-                            stepperLineWithOneCoolIcon(), onTap: () {
+                        projectHourRowManager(Color(0xFFBB6BD9), "MS", "Momentum Digital", "1 Crew", "12:57h", stepperLineWithOneCoolIcon(), onTap: () {
                           // Navigator.pushNamed(
                           //     context, RouteConstants.timeSheetsScreen);
                         }),
@@ -736,9 +729,7 @@ class _CustomTabBarState extends State<CustomTabBar>
     );
   }
 
-  Widget projectHourRow(Color color, String name, String startingTime,
-      String endTime, String totalTime, Widget stepper,
-      {VoidCallback? onTap}) {
+  Widget projectHourRow(Color color, String name, String startingTime, String endTime, String totalTime, Widget stepper, {VoidCallback? onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -786,9 +777,7 @@ class _CustomTabBarState extends State<CustomTabBar>
     );
   }
 
-  Widget projectHourRowManager(Color color, String name, String startingTime,
-      String endTime, String totalTime, Widget stepper,
-      {VoidCallback? onTap}) {
+  Widget projectHourRowManager(Color color, String name, String startingTime, String endTime, String totalTime, Widget stepper, {VoidCallback? onTap}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(

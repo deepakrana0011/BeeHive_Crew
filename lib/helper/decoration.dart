@@ -64,7 +64,7 @@ class ViewDecoration {
     return InputDecoration(
         contentPadding: EdgeInsets.only(
           //  top: DimensionConstants.d10.h,
-            bottom: DimensionConstants.d28.h,
+            bottom: DimensionConstants.d24.h,
             left: DimensionConstants.d25.w,
             right: DimensionConstants.d25.w
         ),

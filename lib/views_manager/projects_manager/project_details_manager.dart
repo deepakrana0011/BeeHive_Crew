@@ -6,6 +6,7 @@ import 'package:beehive/helper/common_widgets.dart';
 import 'package:beehive/provider/project_details_manager_provider.dart';
 import 'package:beehive/provider/project_details_provider.dart';
 import 'package:beehive/view/base_view.dart';
+import 'package:beehive/views_manager/projects_manager/add_note_page_manager.dart';
 import 'package:beehive/views_manager/projects_manager/project_setting_page_manager.dart';
 import 'package:beehive/widget/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -294,11 +295,7 @@ Widget tabBarView(BuildContext context, TabController controller,
         ),
       ),
       SizedBox(
-        height: controller.index == 0
-            ? DimensionConstants.d710.h
-            : projectCreate == true
-                ? 680
-                : 1145,
+        height: controller.index == 0 ? DimensionConstants.d710.h : projectCreate == true ? 780 : 1145,
         width: DimensionConstants.d343.w,
         child: TabBarView(
             physics: NeverScrollableScrollPhysics(),
@@ -353,7 +350,7 @@ Widget todayTab(
                 ? GestureDetector(
                     onTap: () {
                       Navigator.pushNamed(
-                          context, RouteConstants.addNotePageManager);
+                          context, RouteConstants.addNotePageManager,arguments: AddNotePageManager(publicOrPrivate: false));
                     },
                     child: Container(
                       height: DimensionConstants.d40.h,

@@ -56,6 +56,7 @@ bottomSheetTimeSheetTimePicker(
                             color2: ColorConstants.primaryGradient2Color,
                             fontSize: DimensionConstants.d16.sp,
                             shadowRequired: true, onBtnTap: () {
+                          Navigator.of(context).pop();
 
                         }),
                       ],
@@ -101,7 +102,7 @@ Widget timeSelector() {
               ),
             ),
             child: CupertinoDatePicker(
-              initialDateTime: DateTime.now(),
+              initialDateTime: DateFormat("hh:mm a").parse("12:00 AM"),
               mode: CupertinoDatePickerMode.time,
               use24hFormat: false,
               // This is called when the user changes the date.

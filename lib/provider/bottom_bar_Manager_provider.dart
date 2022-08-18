@@ -17,6 +17,7 @@ class BottomBarManagerProvider extends BaseProvider{
     if(index == 0){
       Navigator.pushNamed(context, RouteConstants.notificationsScreenManager);
     }else if(index == 3){
+      Navigator.pushNamed(context, RouteConstants.notificationsScreenManager);
     }
   }
 

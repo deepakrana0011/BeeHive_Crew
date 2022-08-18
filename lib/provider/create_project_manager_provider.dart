@@ -11,6 +11,7 @@ import '../constants/image_constants.dart';
 
 class CreateProjectManagerProvider extends BaseProvider {
   Completer<GoogleMapController> controller = Completer();
+  BitmapDescriptor? pinLocationIconUser;
 
   final CameraPosition kLake = const CameraPosition(
       bearing: 192.8334901395799,
@@ -26,6 +27,12 @@ class CreateProjectManagerProvider extends BaseProvider {
   var value;
   String pickUpLocation = "";
 
+
+
+
+
+
+
   Future getLngLt(context) async {
     setState(ViewState.busy);
     value = await Geolocator.getCurrentPosition();
@@ -34,7 +41,12 @@ class CreateProjectManagerProvider extends BaseProvider {
     setState(ViewState.idle);
   }
 
-  BitmapDescriptor? pinLocationIconUser;
+
+
+
+
+
+
   void setCustomMapPinUser() async {
     pinLocationIconUser = await BitmapDescriptor.fromAssetImage(
         const ImageConfiguration(), ImageConstants.locationMark);
@@ -45,7 +57,6 @@ class CreateProjectManagerProvider extends BaseProvider {
   onMapCreated(GoogleMapController controller) {
     setState(ViewState.busy);
     markers.add(Marker(
-      draggable: true,
       markerId: const MarkerId("ID1"),
       position: LatLng(latitude, longitude),
       icon: pinLocationIconUser!,
@@ -120,8 +131,8 @@ class CreateProjectManagerProvider extends BaseProvider {
     return await Geolocator.getCurrentPosition();
   }
 
-  dynamic valueFor = 0;
-  updateValue(dynamic value){
+  double valueFor = 0;
+  updateValue(double value){
     valueFor = value;
     notifyListeners();
   }

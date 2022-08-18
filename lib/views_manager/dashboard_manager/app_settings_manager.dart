@@ -177,7 +177,7 @@ class AppSettingsManager extends StatelessWidget {
           SizedBox(height: DimensionConstants.d22.h),
           policyTermsDataRow(context, "data_and_app_tracking".tr()),
           SizedBox(height: DimensionConstants.d99.h),
-          CommonWidgets.commonButton(context, "save", shadowRequired: true)
+          CommonWidgets.commonButton(context, "save", shadowRequired: true,onBtnTap: (){Navigator.pop(context);})
         ],
       ),
     );

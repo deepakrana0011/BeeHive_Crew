@@ -10,6 +10,8 @@ import 'package:beehive/view/base_view.dart';
 import 'package:beehive/widget/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -25,12 +27,25 @@ class CreateProjectManager extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+
     return BaseView<CreateProjectManagerProvider>(onModelReady: (provider) {
       provider.determinePosition().then((value) => {
             provider.getLngLt(context),
             provider.setCustomMapPinUser(),
+
           });
     }, builder: (context, provider, _) {
+      Set<Circle> mCircle = {
+        Circle(
+          strokeColor: ColorConstants.primaryGradient2Color,
+          fillColor: ColorConstants.primaryColor.withOpacity(0.2),
+          strokeWidth: 2,
+          circleId: const CircleId("id1"),
+          center: LatLng(provider.latitude, provider.longitude),
+          radius: provider.valueFor,
+        ),
+      };
       return Scaffold(
         appBar: CommonWidgets.appBarWithTitleAndAction(context,
             title: "create_a_project"),
@@ -52,7 +67,7 @@ class CreateProjectManager extends StatelessWidget {
               SizedBox(
                 height: DimensionConstants.d16.h,
               ),
-              googleMapWidget(provider),
+              googleMapWidget(provider,mCircle),
               SizedBox(
                 height: DimensionConstants.d16.h,
               ),
@@ -229,9 +244,14 @@ Widget locationFiled(
                 SizedBox(
                   height: DimensionConstants.d4.h,
                 ),
-                Text(provider.pickUpLocation).regularText(
-                    context, DimensionConstants.d14.sp, TextAlign.left,
-                    color: ColorConstants.black333333)
+                SizedBox(
+                  width: DimensionConstants.d280.w,
+                  height: DimensionConstants.d20.h,
+                  child:  Text(provider.pickUpLocation).regularText(
+                      context, DimensionConstants.d14.sp, TextAlign.left,
+                      color: ColorConstants.black333333),
+                ),
+
               ],
             )
           ],
@@ -241,7 +261,7 @@ Widget locationFiled(
   );
 }
 
-Widget googleMapWidget(CreateProjectManagerProvider provider) {
+Widget googleMapWidget(CreateProjectManagerProvider provider, Set<Circle> circle ) {
   return Padding(
     padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
     child: Container(
@@ -267,6 +287,12 @@ Widget googleMapWidget(CreateProjectManagerProvider provider) {
                       onCameraMove: (CameraPosition cameraPosition) {
                         provider.position = cameraPosition;
                       },
+                  circles: circle,
+                  gestureRecognizers: {
+                    Factory<OneSequenceGestureRecognizer>(
+                          () => EagerGestureRecognizer(),
+                    ),
+                  },
                   onCameraIdle: () => provider.cameraIdle(provider.position),
                       markers: Set<Marker>.of(provider.markers))
                   : const Center(
@@ -276,6 +302,9 @@ Widget googleMapWidget(CreateProjectManagerProvider provider) {
             top: DimensionConstants.d8.h,
             left: DimensionConstants.d85.w,
             child: ToggleSwitch(
+             activeBorders: [
+               Border.all(color: ColorConstants.colorBlack,width: DimensionConstants.d2.w)
+             ],
               minWidth: DimensionConstants.d91.w,
               minHeight: DimensionConstants.d41.h,
               fontSize: DimensionConstants.d14.sp,
@@ -323,7 +352,7 @@ Widget locationRadiusWidget(BuildContext context, CreateProjectManagerProvider p
         width: DimensionConstants.d470.w,
         child: SfSlider(
           min: 0.0,
-          max: 100.0,
+          max: 3000.0,
           value: provider.valueFor,
           activeColor: ColorConstants.primaryColor,
           inactiveColor: ColorConstants.grayF3F3F3,

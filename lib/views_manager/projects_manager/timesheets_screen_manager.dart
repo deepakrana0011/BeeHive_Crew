@@ -20,6 +20,7 @@ class TimeSheetsScreenManager extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
+        centerTitle: true,
         title: Text("time_sheets".tr())
             .semiBoldText(context, DimensionConstants.d22.sp, TextAlign.center),
         leading: GestureDetector(

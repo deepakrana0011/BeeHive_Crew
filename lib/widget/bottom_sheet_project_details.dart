@@ -9,10 +9,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../constants/image_constants.dart';
 import 'image_view.dart';
 
-bottomSheetProjectDetails(
-  BuildContext context, {
-  required VoidCallback onTap,
-      required bool timeSheetOrSchedule,
+bottomSheetProjectDetails(BuildContext context, {required VoidCallback onTap, required bool timeSheetOrSchedule,
 }) {
   showModalBottomSheet(
       isScrollControlled: true,
@@ -103,7 +100,7 @@ Widget userProfile(BuildContext context,String image, bool timeSheetOrSchedule){
     onTap: (){
       if(timeSheetOrSchedule == true){
         Navigator.of(context).pop();
-        Navigator.pushNamed(context, RouteConstants.crewPageProfileManager);
+        Navigator.pushNamed(context, RouteConstants.crewPageProfileManager,);
       }else{
         Navigator.of(context).pop();
         Navigator.pushNamed(context, RouteConstants.timeSheetScreenManager,arguments: TimeSheetsScreenManager(removeInterruption: false));

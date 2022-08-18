@@ -4,7 +4,7 @@ import 'package:beehive/constants/image_constants.dart';
 import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
-import 'package:beehive/provider/add_crew_page_manager.dart';
+import 'package:beehive/provider/add_crew_page_provider_manager.dart';
 import 'package:beehive/view/base_view.dart';
 import 'package:beehive/widget/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -28,45 +28,47 @@ class AddCrewPageManager extends StatelessWidget {
           CommonWidgets.appBarWithTitleAndAction(context, title: "add_crew"),
           body: Padding(
             padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
-            child: Column(
-              children: <Widget>[
-                SizedBox(
-                  height: DimensionConstants.d16.h,
-                ),
-                searchBarWidget(),
-                SizedBox(
-                  height: DimensionConstants.d13.h,
-                ),
-                shareWidget(context,provider),
-                SizedBox(
-                  height: DimensionConstants.d13.h,
-                ),
-                crewWidget(context,ImageConstants.userImage,ImageConstants.selectedIcon),
-                SizedBox(height: DimensionConstants.d5.h,),
-                crewWidget(context,ImageConstants.userImage2,ImageConstants.blankIcon),
-                SizedBox(height: DimensionConstants.d5.h,),
-                crewWidget(context,ImageConstants.userImage,ImageConstants.selectedIcon),
-                SizedBox(height: DimensionConstants.d5.h,),
-                crewWidget(context,ImageConstants.userImage3,ImageConstants.blankIcon),
-                SizedBox(height: DimensionConstants.d5.h,),
-                crewWidget(context,ImageConstants.userImage2,ImageConstants.selectedIcon),
-                SizedBox(height: DimensionConstants.d5.h,),
-                crewWidget(context,ImageConstants.userImage,ImageConstants.selectedIcon),
-                SizedBox(height: DimensionConstants.d5.h,),
-                crewWidget(context,ImageConstants.userImage2,ImageConstants.blankIcon),
-                SizedBox(height: DimensionConstants.d30.h,),
-                CommonWidgets.commonButton(context, "next".tr(),
-                    color1: ColorConstants.primaryGradient2Color,
-                    color2: ColorConstants.primaryGradient1Color,
-                    fontSize: DimensionConstants.d14.sp, onBtnTap: () {
+            child: SingleChildScrollView(
+              child: Column(
+                children: <Widget>[
+                  SizedBox(
+                    height: DimensionConstants.d16.h,
+                  ),
+                  searchBarWidget(),
+                  SizedBox(
+                    height: DimensionConstants.d13.h,
+                  ),
+                  shareWidget(context,provider),
+                  SizedBox(
+                    height: DimensionConstants.d13.h,
+                  ),
+                  crewWidget(context,ImageConstants.userImage,ImageConstants.selectedIcon),
+                  SizedBox(height: DimensionConstants.d5.h,),
+                  crewWidget(context,ImageConstants.userImage2,ImageConstants.blankIcon),
+                  SizedBox(height: DimensionConstants.d5.h,),
+                  crewWidget(context,ImageConstants.userImage,ImageConstants.selectedIcon),
+                  SizedBox(height: DimensionConstants.d5.h,),
+                  crewWidget(context,ImageConstants.userImage3,ImageConstants.blankIcon),
+                  SizedBox(height: DimensionConstants.d5.h,),
+                  crewWidget(context,ImageConstants.userImage2,ImageConstants.selectedIcon),
+                  SizedBox(height: DimensionConstants.d5.h,),
+                  crewWidget(context,ImageConstants.userImage,ImageConstants.selectedIcon),
+                  SizedBox(height: DimensionConstants.d5.h,),
+                  crewWidget(context,ImageConstants.userImage2,ImageConstants.blankIcon),
+                  SizedBox(height: DimensionConstants.d30.h,),
+                  CommonWidgets.commonButton(context, "next".tr(),
+                      color1: ColorConstants.primaryGradient2Color,
+                      color2: ColorConstants.primaryGradient1Color,
+                      fontSize: DimensionConstants.d14.sp, onBtnTap: () {
 
-                  Navigator.pushNamed(context, RouteConstants.setRatesManager);
+                    Navigator.pushNamed(context, RouteConstants.setRatesManager);
 
-                    },
-                    shadowRequired: true
-                ),
+                      },
+                      shadowRequired: true
+                  ),
 
-              ],
+                ],
+              ),
             ),
           ),
         );

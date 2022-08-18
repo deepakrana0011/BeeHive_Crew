@@ -442,6 +442,82 @@ class CommonWidgets {
       ),
     );
   }
+  static Widget crewTabProjectTimeSheet(BuildContext context,
+      String totalProject, String totalHours) {
+    return Container(
+      height: DimensionConstants.d72.h,
+      width: DimensionConstants.d343.w,
+      decoration: BoxDecoration(
+        color: ColorConstants.littleDarkGray,
+        borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
+      ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d58.w),
+        child: Row(
+          children: <Widget>[
+            SizedBox(
+              width: DimensionConstants.d5.w,
+            ),
+            Padding(
+              padding:
+              EdgeInsets.symmetric(vertical: DimensionConstants.d13.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text(totalProject).semiBoldText(
+                      context, DimensionConstants.d20.sp, TextAlign.left,
+                      color: ColorConstants.colorBlack),
+                  SizedBox(
+                    height: DimensionConstants.d5.h,
+                  ),
+                  Text("projects".tr()).regularText(
+                      context, DimensionConstants.d14.sp, TextAlign.left,
+                      color:ColorConstants.colorBlack),
+                ],
+              ),
+            ),
+            SizedBox(
+              width: DimensionConstants.d60.w,
+            ),
+            Container(
+              height: DimensionConstants.d72.h,
+              width: DimensionConstants.d1.w,
+              color: ColorConstants.colorGrayE8,
+            ),
+            SizedBox(
+              width: DimensionConstants.d47.w,
+            ),
+            Padding(
+              padding:
+              EdgeInsets.symmetric(vertical: DimensionConstants.d13.h),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: <Widget>[
+                  Text(totalHours).semiBoldText(
+                      context, DimensionConstants.d20.sp, TextAlign.left,
+                      color: Theme
+                          .of(context)
+                          .brightness == Brightness.dark
+                          ? ColorConstants.colorBlack
+                          : ColorConstants.colorBlack),
+                  SizedBox(
+                    height: DimensionConstants.d5.h,
+                  ),
+                  Text("total_hours".tr()).regularText(
+                      context, DimensionConstants.d14.sp, TextAlign.left,
+                      color: Theme
+                          .of(context)
+                          .brightness == Brightness.dark
+                          ? ColorConstants.colorBlack
+                          : ColorConstants.colorBlack),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
 
 
 

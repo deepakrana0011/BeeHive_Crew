@@ -43,4 +43,10 @@ class RouteConstants{
   static const String archivedProjectDetailsManager = "archivedProjectDetailsManager";
   static const String crewPageProfileManager = "crewPageProfileManager";
   static const String timeSheetScreenManager = "timeSheetScreenManager";
+  static const String timeSheetsFromCrew = "timeSheetsFromCrew";
+  static const String billingInformationPageManager = "billingInformationPageManager";
+  static const String paymentPageManager = "paymentPageManager";
+  static const String certificationPageManager = "certificationPageManager";
+  static const String editProfilePageManager = "editProfilePageManager";
+  static const String changePasswordPageManager = "changePasswordPageManager";
  }

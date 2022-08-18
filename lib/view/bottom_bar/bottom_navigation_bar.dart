@@ -77,11 +77,14 @@ class _BottomBarState extends State<BottomBar> {
               onTap: () {
                 provider.scaffoldKey.currentState!.openDrawer();
               },
-              child: ImageView(
-                path: ImageConstants.drawerIcon,
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? ColorConstants.colorWhite
-                    : ColorConstants.colorBlack,
+              child: Padding(
+                padding:  const EdgeInsets.all(DimensionConstants.d15),
+                child: ImageView(
+                  path: ImageConstants.drawerIcon,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? ColorConstants.colorWhite
+                      : ColorConstants.colorBlack,
+                ),
               )),
           actions: [
           // provider.selectedIndex == 0 ? Switch(
