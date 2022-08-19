@@ -92,7 +92,7 @@ class SignUpScreenManager extends StatelessWidget {
                                     SizedBox(height: DimensionConstants.d20.h),
                                     GestureDetector(
                                       onTap: (){
-                                        Navigator.pushNamed(context, RouteConstants.loginScreen);
+                                        Navigator.pushNamed(context, RouteConstants.loginScreenManager);
                                       },
                                       child: Align(
                                         alignment: Alignment.center,

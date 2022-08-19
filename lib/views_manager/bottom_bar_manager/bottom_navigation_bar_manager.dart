@@ -79,7 +79,7 @@ class _BottomBarManagerState extends State<BottomBarManager> {
                     provider.scaffoldKey.currentState!.openDrawer();
                   },
                   child: Padding(
-                    padding:  const EdgeInsets.all(DimensionConstants.d15),
+                    padding: const EdgeInsets.all(DimensionConstants.d15),
                     child: ImageView(
                       path: ImageConstants.drawerIcon,
                       color: Theme.of(context).brightness == Brightness.dark
@@ -87,7 +87,6 @@ class _BottomBarManagerState extends State<BottomBarManager> {
                           : ColorConstants.colorBlack,
                       height: DimensionConstants.d24.h,
                       width: DimensionConstants.d24.w,
-
                     ),
                   )),
               actions: [
@@ -243,187 +242,221 @@ class _BottomBarManagerState extends State<BottomBarManager> {
 }
 
 Widget drawer(BuildContext context, BottomBarManagerProvider provider) {
-  return Drawer(
-      width: DimensionConstants.d314.w,
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              alignment: Alignment.centerRight,
-              height: DimensionConstants.d300.h,
-              decoration: const BoxDecoration(
-                  gradient: LinearGradient(colors: [
-                ColorConstants.blueGradient1Color,
-                ColorConstants.blueGradient2Color
-              ])),
-              child: Stack(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.only(
-                        top: DimensionConstants.d15.h,
-                        left: DimensionConstants.d15.w),
-                    child: SizedBox(
-                        width: DimensionConstants.d314.w,
-                        child: const ImageView(path: ImageConstants.groupIcon)),
-                  ),
-                  Positioned(
+  return Stack(
+    children: [
+      SizedBox(
+        width: DimensionConstants.d340.w,
+        child: Padding(
+          padding: EdgeInsets.only(right: DimensionConstants.d26.w),
+          child: Drawer(
+              width: DimensionConstants.d310.w,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Container(
+                      alignment: Alignment.centerRight,
+                      height: DimensionConstants.d300.h,
+                      width: DimensionConstants.d314.w,
+                      decoration: const BoxDecoration(
+                          gradient: LinearGradient(colors: [
+                        ColorConstants.blueGradient1Color,
+                        ColorConstants.blueGradient2Color
+                      ])),
                       child: Stack(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(top: DimensionConstants.d20.h),
-                        child: const ImageView(
-                          path: ImageConstants.drawerProfile,
-                        ),
-                      ),
-                      Positioned(
-                          top: DimensionConstants.d110.h,
-                          left: DimensionConstants.d100.w,
-                          child: ImageView(
-                            path: ImageConstants.brandIocn,
-                            height: DimensionConstants.d55.h,
-                            width: DimensionConstants.d60.w,
-                          )),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            left: DimensionConstants.d35.w, top: 160),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("welcome".tr()).semiBoldText(context,
-                                DimensionConstants.d20.sp, TextAlign.center,
-                                color: ColorConstants.colorWhite),
-                            // SizedBox(height: DimensionConstants.d3.h),
-                            const Text("John Smith").boldText(context,
-                                DimensionConstants.d30.sp, TextAlign.center,
-                                color: ColorConstants.colorWhite),
-                            SizedBox(
-                              height: DimensionConstants.d8.h,
-                            ),
-                            Container(
-                              height: DimensionConstants.d27.h,
-                              width: DimensionConstants.d158.w,
-                              decoration: BoxDecoration(
-                                color: ColorConstants.deepBlue,
-                                borderRadius: BorderRadius.circular(
-                                    DimensionConstants.d8.r),
-                              ),
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: DimensionConstants.d8.w),
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: <Widget>[
-                                    ImageView(
-                                      path: ImageConstants.crewIcon,
-                                      width: DimensionConstants.d19.w,
-                                      height: DimensionConstants.d17.h,
-                                    ),
-                                    SizedBox(
-                                      width: DimensionConstants.d4.w,
-                                    ),
-                                    Text("crew_manager".tr()).semiBoldText(
-                                        context,
-                                        DimensionConstants.d14.sp,
-                                        TextAlign.left,
-                                        color: ColorConstants.colorWhite),
-                                  ],
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(
+                                top: DimensionConstants.d15.h,
+                                left: DimensionConstants.d15.w),
+                            child: SizedBox(
+                                width: DimensionConstants.d314.w,
+                                child: const ImageView(
+                                    path: ImageConstants.groupIcon)),
+                          ),
+                          Positioned(
+                              child: Stack(
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    top: DimensionConstants.d20.h),
+                                child: const ImageView(
+                                  path: ImageConstants.drawerProfile,
                                 ),
                               ),
-                            )
-                          ],
-                        ),
-                      )
-                    ],
-                  ))
-                ],
-              ),
-            ),
-            SizedBox(height: DimensionConstants.d41.h),
-            GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-                provider.onItemTapped(0);
-              },
-              child: drawerHeadingsRow(
-                  context, ImageConstants.dashboardIcon, "dashboard".tr(),
-                  active: provider.selectedIndex == 0 ? true : false),
-            ),
-            SizedBox(height: DimensionConstants.d36.h),
-            GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-                provider.onItemTapped(2);
-              },
-              child: drawerHeadingsRow(
-                  context, ImageConstants.timeSheetsIcon, "time_sheets".tr(),
-                  active: provider.selectedIndex == 2 ? true : false),
-            ),
-            SizedBox(height: DimensionConstants.d33.h),
-            GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-                provider.onItemTapped(1);
-              },
-              child: drawerHeadingsRow(
-                  context, ImageConstants.calendarIcon, "schedule".tr(),
-                  active: provider.selectedIndex == 1 ? true : false),
-            ),
-            SizedBox(height: DimensionConstants.d33.h),
-            GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.pushNamed(
-                    context, RouteConstants.archivedProjectsScreenManager);
-              },
-              child: drawerHeadingsRow(
-                context,
-                ImageConstants.openFolderIcon,
-                "archived_projects".tr(),
-              ),
-            ),
-            SizedBox(height: DimensionConstants.d30.h),
-            const Divider(
-              color: ColorConstants.colorGreyDrawer,
-              thickness: 1.5,
-              height: 0.0,
-            ),
-            SizedBox(height: DimensionConstants.d30.h),
-            GestureDetector(
-                onTap: () {
-                  Navigator.pop(context);
-                  Navigator.pushNamed(
-                      context, RouteConstants.appSettingsManager);
-                },
-                child: drawerHeadingsRow(
-                    context, ImageConstants.settingsIcon, "app_settings".tr())),
-            SizedBox(height: DimensionConstants.d37.h),
-            GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.pushNamed(
-                    context, RouteConstants.billingInformationPageManager,
-                    arguments: BillingInformationPageManager(texOrNot: true));
-              },
-              child: drawerHeadingsRow(
-                context,
-                ImageConstants.billingIcon,
-                "billing".tr(),
-              ),
-            ),
-            SizedBox(height: DimensionConstants.d34.h),
-            GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-                Navigator.pushNamed(context, RouteConstants.loginScreenManager);
-              },
-              child: drawerHeadingsRow(
-                  context, ImageConstants.logoutIcon, "logout".tr()),
-            ),
-            SizedBox(height: DimensionConstants.d19.h),
-            SizedBox(height: DimensionConstants.d20.h),
-          ],
+                              Positioned(
+                                  top: DimensionConstants.d110.h,
+                                  left: DimensionConstants.d100.w,
+                                  child: ImageView(
+                                    path: ImageConstants.brandIocn,
+                                    height: DimensionConstants.d55.h,
+                                    width: DimensionConstants.d60.w,
+                                  )),
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    left: DimensionConstants.d35.w, top: 160),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("welcome".tr()).semiBoldText(
+                                        context,
+                                        DimensionConstants.d20.sp,
+                                        TextAlign.center,
+                                        color: ColorConstants.colorWhite),
+                                    // SizedBox(height: DimensionConstants.d3.h),
+                                    const Text("John Smith").boldText(
+                                        context,
+                                        DimensionConstants.d30.sp,
+                                        TextAlign.center,
+                                        color: ColorConstants.colorWhite),
+                                    SizedBox(
+                                      height: DimensionConstants.d8.h,
+                                    ),
+                                    Container(
+                                      height: DimensionConstants.d27.h,
+                                      width: DimensionConstants.d158.w,
+                                      decoration: BoxDecoration(
+                                        color: ColorConstants.deepBlue,
+                                        borderRadius: BorderRadius.circular(
+                                            DimensionConstants.d8.r),
+                                      ),
+                                      child: Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal:
+                                                DimensionConstants.d8.w),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: <Widget>[
+                                            ImageView(
+                                              path: ImageConstants.crewIcon,
+                                              width: DimensionConstants.d19.w,
+                                              height: DimensionConstants.d17.h,
+                                            ),
+                                            SizedBox(
+                                              width: DimensionConstants.d4.w,
+                                            ),
+                                            Text("crew_manager".tr())
+                                                .semiBoldText(
+                                                    context,
+                                                    DimensionConstants.d14.sp,
+                                                    TextAlign.left,
+                                                    color: ColorConstants
+                                                        .colorWhite),
+                                          ],
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ),
+                              )
+                            ],
+                          ))
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: DimensionConstants.d41.h),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                        provider.onItemTapped(0);
+                      },
+                      child: drawerHeadingsRow(context,
+                          ImageConstants.dashboardIcon, "dashboard".tr(),
+                          active: provider.selectedIndex == 0 ? true : false),
+                    ),
+                    SizedBox(height: DimensionConstants.d36.h),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                        provider.onItemTapped(2);
+                      },
+                      child: drawerHeadingsRow(context,
+                          ImageConstants.timeSheetsIcon, "time_sheets".tr(),
+                          active: provider.selectedIndex == 2 ? true : false),
+                    ),
+                    SizedBox(height: DimensionConstants.d33.h),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                        provider.onItemTapped(1);
+                      },
+                      child: drawerHeadingsRow(
+                          context, ImageConstants.calendarIcon, "schedule".tr(),
+                          active: provider.selectedIndex == 1 ? true : false),
+                    ),
+                    SizedBox(height: DimensionConstants.d33.h),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.pushNamed(context,
+                            RouteConstants.archivedProjectsScreenManager);
+                      },
+                      child: drawerHeadingsRow(
+                        context,
+                        ImageConstants.openFolderIcon,
+                        "archived_projects".tr(),
+                      ),
+                    ),
+                    SizedBox(height: DimensionConstants.d30.h),
+                    const Divider(
+                      color: ColorConstants.colorGreyDrawer,
+                      thickness: 1.5,
+                      height: 0.0,
+                    ),
+                    SizedBox(height: DimensionConstants.d30.h),
+                    GestureDetector(
+                        onTap: () {
+                          Navigator.pop(context);
+                          Navigator.pushNamed(
+                              context, RouteConstants.appSettingsManager);
+                        },
+                        child: drawerHeadingsRow(context,
+                            ImageConstants.settingsIcon, "app_settings".tr())),
+                    SizedBox(height: DimensionConstants.d37.h),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.pushNamed(context,
+                            RouteConstants.billingInformationPageManager,
+                            arguments:
+                                BillingInformationPageManager(texOrNot: true));
+                      },
+                      child: drawerHeadingsRow(
+                        context,
+                        ImageConstants.billingIcon,
+                        "billing".tr(),
+                      ),
+                    ),
+                    SizedBox(height: DimensionConstants.d34.h),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pop(context);
+                        Navigator.pushNamed(
+                            context, RouteConstants.loginScreenManager);
+                      },
+                      child: drawerHeadingsRow(
+                          context, ImageConstants.logoutIcon, "logout".tr()),
+                    ),
+                    SizedBox(height: DimensionConstants.d19.h),
+                    SizedBox(height: DimensionConstants.d20.h),
+                  ],
+                ),
+              )),
         ),
-      ));
+      ),
+      Positioned(
+          top: DimensionConstants.d60.h,
+          left: DimensionConstants.d280.w,
+          child: GestureDetector(
+            onTap: (){
+              Navigator.pop(context);
+            },
+            child: const ImageView(
+              path: ImageConstants.crossIcon,
+            ),
+          ))
+    ],
+  );
 }
 
 Widget drawerHeadingsRow(BuildContext context, String iconPath, String heading,

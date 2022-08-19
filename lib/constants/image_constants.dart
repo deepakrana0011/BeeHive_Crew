@@ -94,6 +94,7 @@ class ImageConstants{
   static const String ignoreIcon = "assets/images/ic_igore_icon.svg";
   static const String billingIcon = "assets/images/ic_billing_icon.svg";
   static const String emptyLogo = "assets/images/ic_empty_logo.svg";
+  static const String dropDownPhoneIcon = "assets/images/ic_drop_down_phone.svg";
 
 }
 

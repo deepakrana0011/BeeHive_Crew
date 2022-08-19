@@ -52,7 +52,9 @@ class AppSettingsManager extends StatelessWidget {
               unitsTimeLanguageRow(context, "time".tr(), "am_pm".tr()),
               SizedBox(height: DimensionConstants.d10.h),
               unitsTimeLanguageRow(context, "language".tr(), "english".tr()),
-              SizedBox(height: DimensionConstants.d24.h),
+              SizedBox(height: DimensionConstants.d10.h),
+              unitsTimeLanguageRow(context, "currency".tr(), "cAD".tr()),
+              SizedBox(height: DimensionConstants.d36.h),
               fontSize(context),
               SizedBox(height: DimensionConstants.d34.h),
               const Divider(
@@ -176,8 +178,9 @@ class AppSettingsManager extends StatelessWidget {
           policyTermsDataRow(context, "terms_of_use".tr()),
           SizedBox(height: DimensionConstants.d22.h),
           policyTermsDataRow(context, "data_and_app_tracking".tr()),
-          SizedBox(height: DimensionConstants.d99.h),
-          CommonWidgets.commonButton(context, "save", shadowRequired: true,onBtnTap: (){Navigator.pop(context);})
+          SizedBox(height: DimensionConstants.d53.h),
+          CommonWidgets.commonButton(context, "save".tr(), shadowRequired: true,onBtnTap: (){Navigator.pop(context);}),
+          SizedBox(height: DimensionConstants.d49.h,)
         ],
       ),
     );

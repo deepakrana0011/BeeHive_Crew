@@ -88,7 +88,7 @@ class CreateProjectManager extends StatelessWidget {
                     shadowRequired: true),
               ),
               SizedBox(
-                height: DimensionConstants.d30.h,
+                height: DimensionConstants.d50.h,
               ),
 
             ],

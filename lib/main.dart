@@ -27,12 +27,14 @@ Future<void> main() async {
     DeviceOrientation.portraitDown,
   ]);
   setUpLocator();
+  await Future.delayed(const Duration(seconds: 2));
   runApp(EasyLocalization(
     supportedLocales: const [
       Locale('en'),
     ],
     path: 'assets/langs',
     fallbackLocale: const Locale('en'),
+
     child: ChangeNotifierProvider<AppStateNotifier>(
       create: (context) => AppStateNotifier(),
       child: MyApp(),

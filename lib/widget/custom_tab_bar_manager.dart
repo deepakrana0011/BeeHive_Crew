@@ -13,14 +13,14 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../helper/dialog_helper.dart';
 
-class CustomTabBar extends StatefulWidget {
-  const CustomTabBar({Key? key}) : super(key: key);
+class CustomTabBarManager extends StatefulWidget {
+  const CustomTabBarManager({Key? key}) : super(key: key);
 
   @override
-  _CustomTabBarState createState() => _CustomTabBarState();
+  _CustomTabBarManagerState createState() => _CustomTabBarManagerState();
 }
 
-class _CustomTabBarState extends State<CustomTabBar>
+class _CustomTabBarManagerState extends State<CustomTabBarManager>
     with TickerProviderStateMixin {
   TabController? controller;
   BaseProvider provider = locator<BaseProvider>();
@@ -87,10 +87,10 @@ class _CustomTabBarState extends State<CustomTabBar>
                     width: DimensionConstants.d114.w,
                     child: controller.index == 0
                         ? Text("today".tr()).boldText(context,
-                            DimensionConstants.d16.sp, TextAlign.center,
-                            color: ColorConstants.colorWhite)
+                        DimensionConstants.d16.sp, TextAlign.center,
+                        color: ColorConstants.colorWhite)
                         : Text("today".tr()).regularText(context,
-                            DimensionConstants.d16.sp, TextAlign.center),
+                        DimensionConstants.d16.sp, TextAlign.center),
                   ),
                   Container(
                     alignment: Alignment.center,
@@ -98,10 +98,10 @@ class _CustomTabBarState extends State<CustomTabBar>
                     width: DimensionConstants.d114.w,
                     child: controller.index == 1
                         ? Text("weekly".tr()).boldText(context,
-                            DimensionConstants.d16.sp, TextAlign.center,
-                            color: ColorConstants.colorWhite)
+                        DimensionConstants.d16.sp, TextAlign.center,
+                        color: ColorConstants.colorWhite)
                         : Text("weekly".tr()).regularText(context,
-                            DimensionConstants.d16.sp, TextAlign.center),
+                        DimensionConstants.d16.sp, TextAlign.center),
                   ),
                   Container(
                     alignment: Alignment.center,
@@ -109,10 +109,10 @@ class _CustomTabBarState extends State<CustomTabBar>
                     width: DimensionConstants.d114.w,
                     child: controller.index == 2
                         ? Text("bi_weekly".tr()).boldText(context,
-                            DimensionConstants.d16.sp, TextAlign.center,
-                            color: ColorConstants.colorWhite)
+                        DimensionConstants.d16.sp, TextAlign.center,
+                        color: ColorConstants.colorWhite)
                         : Text("bi_weekly".tr()).regularText(context,
-                            DimensionConstants.d16.sp, TextAlign.center),
+                        DimensionConstants.d16.sp, TextAlign.center),
                   ),
                 ],
               ),
@@ -123,8 +123,8 @@ class _CustomTabBarState extends State<CustomTabBar>
                 physics: NeverScrollableScrollPhysics(),
                 children: [
                   //  provider.hasProjects ? projectsAndHoursCardList() : zeroProjectZeroHourCard(),
-                  projectsAndHoursCardList(),
-                  weeklyTabBarContainer(),
+                  projectsAndHoursCardListManager(),
+                  weeklyTabBarContainerManager(),
                   Icon(Icons.directions_car, size: 350),
                 ],
               ),
@@ -207,11 +207,12 @@ class _CustomTabBarState extends State<CustomTabBar>
     );
   }
 
-  /// Today Tab bar Ui~~~~~~~~~~~~~~~~~~~~~
-  Widget projectsAndHoursCardList() {
+
+  Widget projectsAndHoursCardListManager() {
     return Padding(
       padding: EdgeInsets.only(top: DimensionConstants.d16.h),
       child: Card(
+        margin: EdgeInsets.only(bottom: DimensionConstants.d80.h),
         elevation: 2.5,
         color: (Theme.of(context).brightness == Brightness.dark
             ? ColorConstants.colorBlack
@@ -246,23 +247,37 @@ class _CustomTabBarState extends State<CustomTabBar>
                 color: ColorConstants.colorGreyDrawer,
                 height: 0.0,
                 thickness: 1.5),
-            projectHourRow(Color(0xFFBB6BD9), "MS", "8:50a", "10:47a", "02:57h", commonStepper()),
+            projectHourRowManager(Color(0xFFBB6BD9), "MS", "Momentum Digital",
+                "1 Crew", "12:57h", commonStepper()),
             const Divider(
                 color: ColorConstants.colorGreyDrawer,
                 height: 0.0,
                 thickness: 1.5),
-            projectHourRow(ColorConstants.primaryGradient1Color, "MS", "8:50a",
-                "10:47p", "02:57h", commonStepper()),
+            projectHourRowManager(ColorConstants.primaryGradient1Color, "MS",
+                "Momentum Digital", "1 Crew", "12:57h", commonStepper()),
             const Divider(
                 color: ColorConstants.colorGreyDrawer,
                 height: 0.0,
                 thickness: 1.5),
-            projectHourRow(ColorConstants.deepBlue, "AL", "8:50a", "10:47p",
-                "02:57h", stepperLineWithOneCoolIcon()),
+            projectHourRowManager(
+                ColorConstants.deepBlue,
+                "MS",
+                "Momentum Digital",
+                "4 Crew",
+                "12:57h",
+                stepperLineWithOneCoolIcon()),
             const Divider(
                 color: ColorConstants.colorGreyDrawer,
                 height: 0.0,
                 thickness: 1.5),
+            projectHourRowManager(
+                ColorConstants.deepBlue,
+                "MS",
+                "Momentum Digital",
+                "2 Crew",
+                "12:57h",
+                stepperLineWithOneCoolIcon()),
+
           ],
         ),
       ),
@@ -270,12 +285,8 @@ class _CustomTabBarState extends State<CustomTabBar>
   }
 
 
-  /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-  /// Weekly Tab Bar UI!!!!!!!!!!!!!!!!!!!!!!!!!
-  ///
-
-  Widget weeklyTabBarContainer() {
+  Widget weeklyTabBarContainerManager() {
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -284,7 +295,7 @@ class _CustomTabBarState extends State<CustomTabBar>
             decoration: BoxDecoration(
               color: ColorConstants.deepBlue,
               borderRadius:
-                  BorderRadius.all(Radius.circular(DimensionConstants.d8.r)),
+              BorderRadius.all(Radius.circular(DimensionConstants.d8.r)),
             ),
             child: SingleChildScrollView(
               child: Column(
@@ -322,9 +333,9 @@ class _CustomTabBarState extends State<CustomTabBar>
                         Container(
                           decoration: BoxDecoration(
                             color:
-                                (Theme.of(context).brightness == Brightness.dark
-                                    ? ColorConstants.colorBlack
-                                    : ColorConstants.colorWhite),
+                            (Theme.of(context).brightness == Brightness.dark
+                                ? ColorConstants.colorBlack
+                                : ColorConstants.colorWhite),
                             border: Border.all(
                               color: ColorConstants.colorLightGreyF2,
                             ),
@@ -348,119 +359,78 @@ class _CustomTabBarState extends State<CustomTabBar>
                           ),
                         ),
                         weeklyTabBarDateContainer("Tue, April 13"),
-                        projectHourRow(
+                        projectHourRowManager(
                             Color(0xFFBB6BD9),
                             "MS",
-                            "8:50a",
-                            "10:47a",
-                            "02:57h",
+                            "Momentum Digital",
+                            "1 Crew",
+                            "12:57h",
                             stepperLineWithTwoCoolIcon(), onTap: () {
-                          Navigator.pushNamed(
-                              context, RouteConstants.timeSheetsScreen);
+                          // Navigator.pushNamed(
+                          //     context, RouteConstants.timeSheetsScreen);
                         }),
                         const Divider(
                             color: ColorConstants.colorGreyDrawer,
                             height: 0.0,
                             thickness: 1.5),
-                        projectHourRow(
+                        projectHourRowManager(
                             ColorConstants.primaryGradient1Color,
                             "MD",
-                            "8:50a",
-                            "10:47p",
+                            "Momentum Digital",
+                            "1 Crew",
                             "02:57h",
                             stepperWithGrayAndGreen(), onTap: () {
-                          Navigator.pushNamed(
-                              context, RouteConstants.timeSheetsScreen);
+                          // Navigator.pushNamed(
+                          //     context, RouteConstants.timeSheetsScreen);
                         }),
                         weeklyTabBarDateContainer("Wed, April 14"),
-                        projectHourRow(Color(0xFFBB6BD9), "MS", "8:50a",
-                            "10:47p", "02:57h", commonStepper(), onTap: () {
-                          Navigator.pushNamed(
-                              context, RouteConstants.timeSheetsScreen);
-                        }),
-                        const Divider(
-                            color: ColorConstants.colorGreyDrawer,
-                            height: 0.0,
-                            thickness: 1.5),
-                        projectHourRow(
-                            ColorConstants.primaryGradient1Color,
-                            "MD",
-                            "8:50a",
-                            "10:47p",
-                            "02:57h",
-                            commonStepper(), onTap: () {
-                          Navigator.pushNamed(
-                              context, RouteConstants.timeSheetsScreen);
-                        }),
-                        projectHourRow(
+                        projectHourRowManager(
                             Color(0xFFBB6BD9),
                             "MS",
-                            "8:50a",
-                            "10:47p",
-                            "02:57h",
-                            stepperLineWithOneCoolIcon(), onTap: () {
-                          Navigator.pushNamed(
-                              context, RouteConstants.timeSheetsScreen);
+                            "Momentum Digital",
+                            "1 Crew",
+                            "12:57h",
+                            commonStepper(), onTap: () {
+                          // Navigator.pushNamed(
+                          //     context, RouteConstants.timeSheetsScreen);
                         }),
                         const Divider(
                             color: ColorConstants.colorGreyDrawer,
                             height: 0.0,
                             thickness: 1.5),
-                        projectHourRow(
+                        projectHourRowManager(
                             ColorConstants.primaryGradient1Color,
                             "MD",
-                            "8:50a",
-                            "10:47p",
-                            "02:57h",
+                            "Momentum Digital",
+                            "2 Crew",
+                            "12:57h",
                             commonStepper(), onTap: () {
-                          Navigator.pushNamed(
-                              context, RouteConstants.timeSheetsScreen);
+                          // Navigator.pushNamed(
+                          //     context, RouteConstants.timeSheetsScreen);
+                        }),
+                        projectHourRowManager(Color(0xFFBB6BD9), "MS", "Momentum Digital", "1 Crew", "12:57h", stepperLineWithOneCoolIcon(), onTap: () {
+                          // Navigator.pushNamed(
+                          //     context, RouteConstants.timeSheetsScreen);
                         }),
                         const Divider(
                             color: ColorConstants.colorGreyDrawer,
                             height: 0.0,
                             thickness: 1.5),
-                        SizedBox(height: DimensionConstants.d12.h),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: DimensionConstants.d16.w),
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text("total_hours".tr()).semiBoldText(
-                                      context,
-                                      DimensionConstants.d14.sp,
-                                      TextAlign.center),
-                                  Text("48:28 Hrs").semiBoldText(
-                                      context,
-                                      DimensionConstants.d14.sp,
-                                      TextAlign.center)
-                                ],
-                              ),
-                              SizedBox(height: DimensionConstants.d6.h),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text("x \$20.00/hr").semiBoldText(
-                                      context,
-                                      DimensionConstants.d14.sp,
-                                      TextAlign.center),
-                                  Text("\$805.00").semiBoldText(
-                                      context,
-                                      DimensionConstants.d14.sp,
-                                      TextAlign.center)
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: DimensionConstants.d16.h),
-                        exportTimeSheetBtn(),
-                        SizedBox(height: DimensionConstants.d16.h),
+                        projectHourRowManager(
+                            ColorConstants.primaryGradient1Color,
+                            "MD",
+                            "Momentum Digital",
+                            "1 Crew",
+                            "12:57h",
+                            commonStepper(), onTap: () {
+                          // Navigator.pushNamed(
+                          //     context, RouteConstants.timeSheetsScreen);
+                        }),
+                        const Divider(
+                            color: ColorConstants.colorGreyDrawer,
+                            height: 0.0,
+                            thickness: 1.5),
+                        // SizedBox(height: DimensionConstants.d60.h),
                       ],
                     ),
                   )
@@ -468,11 +438,12 @@ class _CustomTabBarState extends State<CustomTabBar>
               ),
             ),
           ),
+
+          SizedBox(height: DimensionConstants.d70.h,),
         ],
       ),
     );
   }
-
 
   Widget backNextBtn(String path) {
     return Container(
@@ -601,10 +572,10 @@ class _CustomTabBarState extends State<CustomTabBar>
         showDialog(
             context: context,
             builder: (BuildContext context) => DialogHelper.exportFileDialog(
-                  context,
-                  photoFromCamera: () {},
-                  photoFromGallery: () {},
-                ));
+              context,
+              photoFromCamera: () {},
+              photoFromGallery: () {},
+            ));
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),

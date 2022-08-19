@@ -229,138 +229,159 @@ class _BottomBarState extends State<BottomBar> {
 }
 
 Widget drawer(BuildContext context,BottomBarProvider provider) {
-  return Drawer(
-      width: DimensionConstants.d314.w,
-      child: SingleChildScrollView(
-        child: Column(
-          children: [
-            Container(
-              alignment: Alignment.centerRight,
-              height: DimensionConstants.d300.h,
-              color: ColorConstants.deepBlue,
-              child: Stack(
-                children: [
-                  SizedBox(
-                      width: DimensionConstants.d314.w,
-                      child: const ImageView(path: ImageConstants.maskIcon)),
-                  Positioned(
-                      child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(top: DimensionConstants.d56.h),
-                        child:
-                            const ImageView(path: ImageConstants.drawerProfile),
+  return Stack(
+    children: [
+      SizedBox(
+        width: DimensionConstants.d340.w,
+        child: Padding(
+          padding:  EdgeInsets.only(right: DimensionConstants.d26.w),
+          child: Drawer(
+              width: DimensionConstants.d310.w,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    Container(
+                      alignment: Alignment.centerRight,
+                      height: DimensionConstants.d300.h,
+                      color: ColorConstants.deepBlue,
+                      child: Stack(
+                        children: [
+                          SizedBox(
+                              width: DimensionConstants.d314.w,
+                              child: const ImageView(path: ImageConstants.maskIcon)),
+                          Positioned(
+                              child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(top: DimensionConstants.d56.h),
+                                child:
+                                    const ImageView(path: ImageConstants.drawerProfile),
+                              ),
+                              // SizedBox(height: DimensionConstants.d19.h),
+                              Padding(
+                                padding:
+                                    EdgeInsets.only(left: DimensionConstants.d43.w),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text("welcome".tr()).semiBoldText(context,
+                                        DimensionConstants.d20.sp, TextAlign.center,
+                                        color: ColorConstants.colorWhite),
+                                    // SizedBox(height: DimensionConstants.d3.h),
+                                    Text("John Smith").boldText(context,
+                                        DimensionConstants.d30.sp, TextAlign.center,
+                                        color: ColorConstants.colorWhite),
+                                  ],
+                                ),
+                              )
+                            ],
+                          ))
+                        ],
                       ),
-                      // SizedBox(height: DimensionConstants.d19.h),
-                      Padding(
-                        padding:
-                            EdgeInsets.only(left: DimensionConstants.d43.w),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text("welcome".tr()).semiBoldText(context,
-                                DimensionConstants.d20.sp, TextAlign.center,
-                                color: ColorConstants.colorWhite),
-                            // SizedBox(height: DimensionConstants.d3.h),
-                            Text("John Smith").boldText(context,
-                                DimensionConstants.d30.sp, TextAlign.center,
-                                color: ColorConstants.colorWhite),
-                          ],
-                        ),
-                      )
-                    ],
-                  ))
-                ],
-              ),
-            ),
-            SizedBox(height: DimensionConstants.d41.h),
-            GestureDetector(
-              onTap: (){
-                Navigator.pop(context); provider.onItemTapped(0);
-              },
-              child: drawerHeadingsRow(
-                  context, ImageConstants.dashboardIcon, "dashboard".tr(),
-                  active: provider.selectedIndex== 0?true:false),
-            ),
-            SizedBox(height: DimensionConstants.d36.h),
-            GestureDetector(
-              onTap: (){
-                Navigator.pop(context); provider.onItemTapped(2);
-              },
-              child: drawerHeadingsRow(
-                  context, ImageConstants.timeSheetsIcon, "time_sheets".tr(),active: provider.selectedIndex== 2?true:false),
-            ),
-            SizedBox(height: DimensionConstants.d33.h),
-            GestureDetector(
-              onTap: (){
-                Navigator.pop(context); provider.onItemTapped(1);
-              },
-              child: drawerHeadingsRow(
-                  context, ImageConstants.calendarIcon, "schedule".tr(),active: provider.selectedIndex== 1?true:false),
-            ),
-            SizedBox(height: DimensionConstants.d33.h),
-            GestureDetector(
-              onTap: (){
-                Navigator.pop(context);
-                Navigator.pushNamed(context, RouteConstants.archivedProjectsScreen);
-              },
-              child: drawerHeadingsRow(context, ImageConstants.openFolderIcon,
-                  "archived_projects".tr()),
-            ),
-            SizedBox(height: DimensionConstants.d30.h),
-            const Divider(
-              color: ColorConstants.colorGreyDrawer,
-              thickness: 1.5,
-              height: 0.0,
-            ),
-            SizedBox(height: DimensionConstants.d30.h),
-            GestureDetector(
-                onTap: (){
-                  Navigator.pop(context);
-                  Navigator.pushNamed(context, RouteConstants.appSettings);
-                },
-                child: drawerHeadingsRow(context, ImageConstants.settingsIcon, "app_settings".tr())),
-            SizedBox(height: DimensionConstants.d37.h),
-            GestureDetector(
-              onTap: (){
-                Navigator.pop(context); provider.onItemTapped(3);
-              },
-              child: drawerHeadingsRow(
-                  context, ImageConstants.profileIcon, "my_account".tr(),active: provider.selectedIndex== 3?true:false),
-            ),
-            SizedBox(height: DimensionConstants.d34.h),
-            GestureDetector(
-              onTap: (){
-                Navigator.pop(context);
-                Navigator.pushNamed(context, RouteConstants.signInScreen);
-              },
-              child: drawerHeadingsRow(
-                  context, ImageConstants.logoutIcon, "logout".tr()),
-            ),
-            SizedBox(height: DimensionConstants.d19.h),
-            Padding(
-              padding:
-                  EdgeInsets.symmetric(horizontal: DimensionConstants.d34.w),
-              child: CommonWidgets.commonButton(
-                  context, "upgrade_to_crew_manager".tr(),
-                  height: DimensionConstants.d50.h,
-                  color1: ColorConstants.blueGradient2Color,
-                  color2: ColorConstants.blueGradient1Color,
-                  fontSize: DimensionConstants.d14.sp,
-                onBtnTap: (){
-                    Navigator.of(context).pop();
-                  Navigator.pushNamed(context, RouteConstants.upgradePage);
-                },
-                shadowRequired: false
+                    ),
+                    SizedBox(height: DimensionConstants.d41.h),
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.pop(context); provider.onItemTapped(0);
+                      },
+                      child: drawerHeadingsRow(
+                          context, ImageConstants.dashboardIcon, "dashboard".tr(),
+                          active: provider.selectedIndex== 0?true:false),
+                    ),
+                    SizedBox(height: DimensionConstants.d36.h),
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.pop(context); provider.onItemTapped(2);
+                      },
+                      child: drawerHeadingsRow(
+                          context, ImageConstants.timeSheetsIcon, "time_sheets".tr(),active: provider.selectedIndex== 2?true:false),
+                    ),
+                    SizedBox(height: DimensionConstants.d33.h),
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.pop(context); provider.onItemTapped(1);
+                      },
+                      child: drawerHeadingsRow(
+                          context, ImageConstants.calendarIcon, "schedule".tr(),active: provider.selectedIndex== 1?true:false),
+                    ),
+                    SizedBox(height: DimensionConstants.d33.h),
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.pop(context);
+                        Navigator.pushNamed(context, RouteConstants.archivedProjectsScreen);
+                      },
+                      child: drawerHeadingsRow(context, ImageConstants.openFolderIcon,
+                          "archived_projects".tr()),
+                    ),
+                    SizedBox(height: DimensionConstants.d30.h),
+                    const Divider(
+                      color: ColorConstants.colorGreyDrawer,
+                      thickness: 1.5,
+                      height: 0.0,
+                    ),
+                    SizedBox(height: DimensionConstants.d30.h),
+                    GestureDetector(
+                        onTap: (){
+                          Navigator.pop(context);
+                          Navigator.pushNamed(context, RouteConstants.appSettings);
+                        },
+                        child: drawerHeadingsRow(context, ImageConstants.settingsIcon, "app_settings".tr())),
+                    SizedBox(height: DimensionConstants.d37.h),
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.pop(context); provider.onItemTapped(3);
+                      },
+                      child: drawerHeadingsRow(
+                          context, ImageConstants.profileIcon, "my_account".tr(),active: provider.selectedIndex== 3?true:false),
+                    ),
+                    SizedBox(height: DimensionConstants.d34.h),
+                    GestureDetector(
+                      onTap: (){
+                        Navigator.pop(context);
+                        Navigator.pushNamed(context, RouteConstants.signInScreen);
+                      },
+                      child: drawerHeadingsRow(
+                          context, ImageConstants.logoutIcon, "logout".tr()),
+                    ),
+                    SizedBox(height: DimensionConstants.d19.h),
+                    Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: DimensionConstants.d34.w),
+                      child: CommonWidgets.commonButton(
+                          context, "upgrade_to_crew_manager".tr(),
+                          height: DimensionConstants.d50.h,
+                          color1: ColorConstants.blueGradient2Color,
+                          color2: ColorConstants.blueGradient1Color,
+                          fontSize: DimensionConstants.d14.sp,
+                        onBtnTap: (){
+                            Navigator.of(context).pop();
+                          Navigator.pushNamed(context, RouteConstants.upgradePage);
+                        },
+                        shadowRequired: false
 
 
-              ),
-            ),
-            SizedBox(height: DimensionConstants.d20.h),
-          ],
+                      ),
+                    ),
+                    SizedBox(height: DimensionConstants.d20.h),
+                  ],
+                ),
+              )),
         ),
-      ));
+      ),
+      Positioned(
+          top: DimensionConstants.d60.h,
+          left: DimensionConstants.d283.w,
+          child: GestureDetector(
+            onTap: (){
+              Navigator.pop(context);
+            },
+            child: const ImageView(
+              path: ImageConstants.crossIcon,
+            ),
+          ))
+    ],
+  );
 }
 
 Widget drawerHeadingsRow(BuildContext context, String iconPath, String heading,

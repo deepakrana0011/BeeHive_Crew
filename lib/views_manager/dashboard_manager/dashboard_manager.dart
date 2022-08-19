@@ -2,6 +2,7 @@ import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/provider/dashboard_page_manager_provider.dart';
 import 'package:beehive/view/base_view.dart';
 import 'package:beehive/widget/custom_tab_bar.dart';
+import 'package:beehive/widget/custom_tab_bar_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +37,7 @@ class _DashBoardPageManagerState extends State<DashBoardPageManager> with Ticker
             body: Column(
               children:<Widget> [
                 activeProjectWidget(context),
-                CustomTabBar()
+                CustomTabBarManager()
               ],
             ),
 

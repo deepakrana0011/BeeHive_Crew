@@ -146,11 +146,20 @@ Widget phoneNumberWidget(TextEditingController controller) {
       ),
       Positioned(
           top: DimensionConstants.d12.h,
-          left: DimensionConstants.d105.w,
-          child: Container(
-            height: DimensionConstants.d25.h,
-            width: DimensionConstants.d2.w,
-            color: ColorConstants.grayD2D2D7,
+          left: DimensionConstants.d100.w,
+          child: Row(
+            children: [
+              ImageView(path: ImageConstants.dropDownPhoneIcon,
+              width: DimensionConstants.d9.w,
+                height: DimensionConstants.d6.h,
+              ),
+              SizedBox(width: DimensionConstants.d6.w,),
+              Container(
+                height: DimensionConstants.d25.h,
+                width: DimensionConstants.d2.w,
+                color: ColorConstants.grayD2D2D7,
+              ),
+            ],
           ))
     ],
   );

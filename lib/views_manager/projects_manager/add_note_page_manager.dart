@@ -110,7 +110,7 @@ class AddNotePageManager extends StatelessWidget {
                   shadowRequired: true),
                 ),
                 SizedBox(
-                  height: DimensionConstants.d40.h,
+                  height: DimensionConstants.d50.h,
                 ),
               ],
             ),

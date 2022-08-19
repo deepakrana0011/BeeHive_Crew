@@ -58,7 +58,7 @@ class ProjectSettingsPageManager extends StatelessWidget {
                   SizedBox(
                     height: DimensionConstants.d22.h,
                   ),
-                  breakWidget(context, provider),
+                  breakWidget(context, provider,fromProjectOrCreateProject),
                   SizedBox(
                     height: DimensionConstants.d25.h,
                   ),
@@ -90,7 +90,7 @@ class ProjectSettingsPageManager extends StatelessWidget {
                         ));
                   }),
                   SizedBox(
-                    height: DimensionConstants.d26.h,
+                    height: DimensionConstants.d40.h,
                   ),
                   fromProjectOrCreateProject != true
                       ? buttonsWidget(context)
@@ -170,8 +170,7 @@ Widget workDaysWidget(
   );
 }
 
-Widget breakWidget(
-    BuildContext context, ProjectSettingsManagerProvider provider) {
+Widget breakWidget(BuildContext context, ProjectSettingsManagerProvider provider, bool fromProjectOrCreateProject) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
@@ -187,7 +186,6 @@ Widget breakWidget(
       SizedBox(
         height: DimensionConstants.d8.h,
       ),
-
       Container(
         width: DimensionConstants.d343.w,
         height: DimensionConstants.d45.h,
@@ -232,7 +230,28 @@ Widget breakWidget(
             ),
           ),
         ),
-      )
+      ),
+   fromProjectOrCreateProject == false?   Padding(
+        padding:  EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
+        child: Transform.scale(
+          scale:  1.3,
+          child: CheckboxListTile(
+            dense: true,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(DimensionConstants.d8.r)
+            ),
+            checkboxShape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(DimensionConstants.d8.r)
+            ),
+            title: Transform.translate(offset: const Offset(-20, 0),child: Text("notify_me_if_crew_is_checked_in_after_hours".tr()).regularText(context, DimensionConstants.d11.sp, TextAlign.left),),
+            value: provider.value,
+            onChanged: (newValue) {
+              provider.updateValue(newValue!);
+            },
+            controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
+          ),
+        ),
+      ):Container(),
     ],
   );
 }
@@ -258,14 +277,14 @@ Widget roundTimeWidget(BuildContext context) {
           Row(
             children: <Widget>[
               hoursContainer(context, DimensionConstants.d45.h,
-                  DimensionConstants.d130.w, "9:00 AM"),
+                  DimensionConstants.d130.w, "30 mins"),
               Expanded(child: Container()),
               Text("to").regularText(
                   context, DimensionConstants.d14.sp, TextAlign.left,
                   color: ColorConstants.darkGray4F4F4F),
               Expanded(child: Container()),
               hoursContainer(context, DimensionConstants.d45.h,
-                  DimensionConstants.d130.w, "5:00 PM"),
+                  DimensionConstants.d130.w, "Any Time"),
               SizedBox(
                 width: DimensionConstants.d15.w,
               ),
@@ -280,14 +299,14 @@ Widget roundTimeWidget(BuildContext context) {
           Row(
             children: <Widget>[
               hoursContainer(context, DimensionConstants.d45.h,
-                  DimensionConstants.d130.w, "9:00 AM"),
+                  DimensionConstants.d130.w, "15 mins"),
               Expanded(child: Container()),
               Text("to").regularText(
                   context, DimensionConstants.d14.sp, TextAlign.left,
                   color: ColorConstants.darkGray4F4F4F),
               Expanded(child: Container()),
               hoursContainer(context, DimensionConstants.d45.h,
-                  DimensionConstants.d130.w, "5:00 PM"),
+                  DimensionConstants.d130.w, "3:00 PM"),
               SizedBox(
                 width: DimensionConstants.d15.w,
               ),

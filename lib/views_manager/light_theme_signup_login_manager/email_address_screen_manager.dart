@@ -48,7 +48,7 @@ class EmailAddressScreenManager extends StatelessWidget {
                             child: GestureDetector(
                               behavior: HitTestBehavior.translucent,
                               onTap: () {
-                              //  Navigator.of(context).pop();
+                                Navigator.of(context).pop();
                               },
                               child: SizedBox(
                                   width: DimensionConstants.d24.w,

@@ -290,7 +290,6 @@ Widget weeklyTabBarContainerManager(BuildContext context) {
                             itemCount: 2,
                             itemBuilder: (BuildContext context, int index){
                           return Slidable(
-
                             key: const ValueKey(0),
                             endActionPane:  ActionPane(
                               extentRatio: 0.3,
@@ -417,6 +416,7 @@ Widget weeklyTabBarContainerManager(BuildContext context) {
             ),
           ),
         ),
+        SizedBox(height: DimensionConstants.d50.h,)
       ],
     ),
   );

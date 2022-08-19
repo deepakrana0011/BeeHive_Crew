@@ -60,12 +60,12 @@ class AddCrewPageManager extends StatelessWidget {
                       color1: ColorConstants.primaryGradient2Color,
                       color2: ColorConstants.primaryGradient1Color,
                       fontSize: DimensionConstants.d14.sp, onBtnTap: () {
-
                     Navigator.pushNamed(context, RouteConstants.setRatesManager);
 
                       },
                       shadowRequired: true
                   ),
+                  SizedBox(height: DimensionConstants.d50.h,),
 
                 ],
               ),

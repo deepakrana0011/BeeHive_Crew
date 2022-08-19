@@ -191,7 +191,7 @@
   "set_one_rate_that_applies_to_entire_crew": "Set one rate that applies to entire crew.",
   "warning_text": "Changing a crew member’s rate will apply to all\nother projects that you have added them to.",
   "after_hours_rate": "After Hours Rate",
-  "increase_pay_text": "Increase pay for time worked outside regular hours/days.",
+  "increase_pay_text": "Increase pay for time worked outside regular hours.",
   "add_profile": "Add Profile",
   "work_days": "Work Days",
   "add_break": "Add Break",
@@ -240,7 +240,10 @@
   "change_logo": "Change Logo",
   "custom_colour": "Custom Colour",
   "default_blue": "Default Blue",
-  "are_you_sure_you_want_to_archive_this_project": "Are you sure you want to archive this\n project? "
+  "are_you_sure_you_want_to_archive_this_project": "Are you sure you want to archive this\n project? ",
+  "cAD": "$ CAD",
+  "currency": "Currency",
+  "notify_me_if_crew_is_checked_in_after_hours": "Notify me if crew is checked in after hours"
 
 
 

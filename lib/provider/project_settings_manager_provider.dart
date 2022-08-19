@@ -3,6 +3,12 @@ import 'package:beehive/provider/base_provider.dart';
 
 class ProjectSettingsManagerProvider extends BaseProvider{
 
+  bool value = false;
+  updateValue(bool getValue){
+    value = getValue;
+    notifyListeners();
+  }
+
   List<String> daysName = ["SU","M","TU","W","TH","F","SA"];
 
   List<DaysModel> weekDays = [];

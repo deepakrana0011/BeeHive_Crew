@@ -181,14 +181,13 @@ class TimeSheetsScreenManager extends StatelessWidget {
   Widget checkInCHeckOutStepper(BuildContext context) {
     return Column(
       children: [
-        checkInCheckOutButton(
-            context, "check_in".tr(), "8:08a", CrossAxisAlignment.center),
+        checkInButton(context, "check_in".tr(), "8:08a", CrossAxisAlignment.center),
         stepperLine(DimensionConstants.d35.h, ColorConstants.colorGreen),
         // SizedBox(height: DimensionConstants.d2.h),
         removeInterruption == false
             ? stepperLineWithRowTextButton(
                 context,
-                DimensionConstants.d13.h,
+                DimensionConstants.d25.h,
                 "15m ${"interruption".tr()}",
                 "10:15a - 10:30a",
                 ColorConstants.colorLightRed,
@@ -218,7 +217,7 @@ class TimeSheetsScreenManager extends StatelessWidget {
         //     ColorConstants.colorLightRed,
         //     ColorConstants.colorGray2),
         // stepperLine(DimensionConstants.d60.h, ColorConstants.colorGreen),
-        checkInCheckOutButton(
+        checkOutButton(
             context, "check_out".tr(), "05:00p", CrossAxisAlignment.center),
       ],
     );
@@ -260,12 +259,7 @@ class TimeSheetsScreenManager extends StatelessWidget {
     );
   }
 
-  Widget checkInCheckOutButton(
-    BuildContext context,
-    String checkText,
-    String time,
-    alignment,
-  ) {
+  Widget checkInButton(BuildContext context, String checkText, String time, alignment,) {
     return Row(
       crossAxisAlignment: alignment,
       children: [
@@ -284,7 +278,71 @@ class TimeSheetsScreenManager extends StatelessWidget {
           ],
         ),
         SizedBox(width: DimensionConstants.d10.w),
-        Expanded(
+        Padding(
+          padding:  EdgeInsets.only(top: DimensionConstants.d25.h,left: DimensionConstants.d2.w),
+          child: Container(
+            alignment: Alignment.center,
+            height: DimensionConstants.d6.h,
+            decoration: BoxDecoration(
+              color: ColorConstants.colorBlack,
+              borderRadius: BorderRadius.all(
+                Radius.circular(DimensionConstants.d4.r),
+              ),
+            ),
+            width: DimensionConstants.d10.w,
+          ),
+        ),
+        SizedBox(
+          width: DimensionConstants.d15.w,
+        ),
+        Padding(
+          padding: EdgeInsets.only(right: DimensionConstants.d73.w),
+          child: GestureDetector(
+            onTap: (){
+              bottomSheetTimeSheetTimePicker(
+                context,
+                onTap: () {}, timeSheetOrSchedule: true,
+
+              );
+            },
+            child: Container(
+                height: DimensionConstants.d32.h,
+                width: DimensionConstants.d93.w,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(DimensionConstants.d4.w),
+                    border: Border.all(
+                        color: ColorConstants.grayD2D2D2,
+                        width: DimensionConstants.d1.w)),
+                child: Center(
+                  child: Text("change".tr()).boldText(
+                      context, DimensionConstants.d13.sp, TextAlign.center),
+                )),
+          ),
+        )
+      ],
+    );
+  }
+  Widget checkOutButton(BuildContext context, String checkText, String time, alignment,) {
+    return Row(
+      crossAxisAlignment: alignment,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Container(
+              alignment: Alignment.bottomRight,
+              width: MediaQuery.of(context).size.width / 2.2,
+              child: Text(checkText).semiBoldText(
+                  context, DimensionConstants.d14.sp, TextAlign.center),
+            ),
+            Text(time).regularText(
+                context, DimensionConstants.d13.sp, TextAlign.left,
+                color: ColorConstants.darkGray4F4F4F)
+          ],
+        ),
+        SizedBox(width: DimensionConstants.d10.w),
+        Padding(
+          padding:  EdgeInsets.only(bottom: DimensionConstants.d25.h,left: DimensionConstants.d2.w),
           child: Container(
             alignment: Alignment.center,
             height: DimensionConstants.d6.h,
@@ -410,14 +468,14 @@ class TimeSheetsScreenManager extends StatelessWidget {
                     EdgeInsets.symmetric(horizontal: DimensionConstants.d10.w),
                 child: Row(
                   children: <Widget>[
-                    ImageView(
+                    const ImageView(
                       path: ImageConstants.ignoreIcon,
                     ),
                     SizedBox(
                       width: DimensionConstants.d6.w,
                     ),
                     Text("Ignore").boldText(
-                        context, DimensionConstants.d14.sp, TextAlign.left),
+                        context, DimensionConstants.d14.sp, TextAlign.left,color: ColorConstants.redColorEB5757),
                   ],
                 ),
               )),

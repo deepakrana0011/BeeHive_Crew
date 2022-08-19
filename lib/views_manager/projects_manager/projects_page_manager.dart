@@ -47,15 +47,20 @@ class _ProjectsPageManagerState extends State<ProjectsPageManager>
                             right: DimensionConstants.d18.w,
                             top: DimensionConstants.d15.h,
                             bottom: DimensionConstants.d40.h),
-                        child: CommonWidgets.commonButton(
-                            context, "create_a_new_project".tr(),
-                            color1: ColorConstants.primaryGradient1Color,
-                            color2: ColorConstants.primaryGradient2Color,
-                            fontSize: DimensionConstants.d16.sp,
-                            shadowRequired: true, onBtnTap: () {
-                          Navigator.pushNamed(
-                              context, RouteConstants.createProjectManager);
-                        }),
+                        child: Column(
+                          children: [
+                            CommonWidgets.commonButton(
+                                context, "create_a_new_project".tr(),
+                                color1: ColorConstants.primaryGradient1Color,
+                                color2: ColorConstants.primaryGradient2Color,
+                                fontSize: DimensionConstants.d16.sp,
+                                shadowRequired: true, onBtnTap: () {
+                              Navigator.pushNamed(
+                                  context, RouteConstants.createProjectManager);
+                            }),
+                            SizedBox(height: DimensionConstants.d80.h,)
+                          ],
+                        ),
                       )
                     : Container(),
                 tabController.index == 1
@@ -186,7 +191,7 @@ class _ProjectsPageManagerState extends State<ProjectsPageManager>
                               ),
                             ),
                             SizedBox(
-                              height: DimensionConstants.d40.h,
+                              height: DimensionConstants.d120.h,
                             ),
                           ],
                         ),

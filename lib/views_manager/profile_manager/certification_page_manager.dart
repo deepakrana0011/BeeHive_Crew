@@ -78,7 +78,7 @@ class CertificationPageManager extends StatelessWidget {
                       ),
                       child:provider.profileImage != " "? ClipRRect(
                           borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
-                          child: ImageView(path: provider.profileImage,fit: BoxFit.fill,)):Container(),
+                          child: ImageView(path: provider.profileImage,fit: BoxFit.cover,)):Container(),
                     ),
                     Positioned(
                         left: DimensionConstants.d280.w,
@@ -90,7 +90,7 @@ class CertificationPageManager extends StatelessWidget {
                   ],
                 ),
                 SizedBox(
-                  height: DimensionConstants.d22.h,
+                  height: DimensionConstants.d30.h,
                 ),
                 Padding(
                   padding:

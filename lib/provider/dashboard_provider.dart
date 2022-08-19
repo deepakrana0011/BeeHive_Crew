@@ -4,10 +4,9 @@ import 'package:flutter/material.dart';
 class DashboardProvider extends BaseProvider{
 
   bool checkedInNoProjects = false;
-
   bool hasCheckInCheckOut = false;
   bool isCheckedIn = false;
-  bool noProject = false;
+  bool noProject = true;
   updateNoProject(){
     noProject = !noProject;
     notifyListeners();
