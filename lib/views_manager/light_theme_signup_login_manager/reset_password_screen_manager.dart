@@ -100,6 +100,7 @@ class ResetPasswordScreenManager extends StatelessWidget {
 
   Widget newPasswordTextField(ResetPasswordManagerProvider provider){
     return  TextFormField(
+      cursorColor: ColorConstants.colorWhite70,
       controller: newPasswordController,
       obscureText: !provider.newPasswordVisible,
       style: ViewDecoration.textFieldStyle(DimensionConstants.d16.sp, FontWeight.w400, ColorConstants.colorBlack),

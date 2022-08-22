@@ -97,6 +97,7 @@ class EmailAddressScreenManager extends StatelessWidget {
 
   Widget emailTextField(BaseProvider provider){
     return  TextFormField(
+      cursorColor: ColorConstants.colorWhite70,
       focusNode: emailFocusNode,
       controller: emailController,
       style: ViewDecoration.textFieldStyle(DimensionConstants.d16.sp, FontWeight.w400, ColorConstants.colorBlack),

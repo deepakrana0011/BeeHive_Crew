@@ -17,6 +17,7 @@ class ViewDecoration {
         filled: true,
         isDense: true,
         errorMaxLines: 2,
+
         errorStyle: TextStyle(
           fontWeight: FontWeight.w400,
           fontSize: DimensionConstants.d14.sp,

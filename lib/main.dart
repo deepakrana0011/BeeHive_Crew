@@ -1,10 +1,8 @@
 
-import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/helper/shared_prefs.dart';
 import 'package:beehive/locator.dart';
 import 'package:beehive/provider/app_state_provider.dart';
-import 'package:beehive/view/base_view.dart';
 import 'package:beehive/widget/app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

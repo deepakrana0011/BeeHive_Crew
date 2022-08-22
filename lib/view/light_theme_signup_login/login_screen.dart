@@ -123,6 +123,7 @@ class LoginScreen extends StatelessWidget {
 
   Widget emailTextField(LoginProvider provider){
     return  TextFormField(
+      cursorColor: ColorConstants.colorWhite70,
       focusNode: emailFocusNode,
       controller: emailController,
       style: ViewDecoration.textFieldStyle(DimensionConstants.d16.sp, FontWeight.w400, ColorConstants.colorBlack),
@@ -152,6 +153,7 @@ class LoginScreen extends StatelessWidget {
 
   Widget passwordTextField(LoginProvider provider){
     return  TextFormField(
+      cursorColor: ColorConstants.colorWhite70,
       focusNode: passwordFocusNode,
       controller: passwordController,
       obscureText: !provider.passwordVisible,

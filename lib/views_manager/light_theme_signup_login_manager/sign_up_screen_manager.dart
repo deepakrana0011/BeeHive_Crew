@@ -87,7 +87,14 @@ class SignUpScreenManager extends StatelessWidget {
                                     passwordTextField(),
                                     SizedBox(height: DimensionConstants.d39.h),
                                     CommonWidgets.commonButton(context, "sign_up_".tr(), onBtnTap: (){
-                                      Navigator.pushNamed(context, RouteConstants.continueWithPhoneManager);
+                                      if(_formKey.currentState!.validate()){
+
+                                        Navigator.pushNamed(context, RouteConstants.continueWithPhoneManager);
+
+                                      }else{
+
+                                      }
+
                                     },shadowRequired: true),
                                     SizedBox(height: DimensionConstants.d20.h),
                                     GestureDetector(
@@ -117,6 +124,7 @@ class SignUpScreenManager extends StatelessWidget {
 
   Widget nameTextField(){
     return  TextFormField(
+      cursorColor: ColorConstants.colorWhite70,
       focusNode: nameFocusNode,
       controller: nameController,
       style: ViewDecoration.textFieldStyle(DimensionConstants.d16.sp, FontWeight.w400, ColorConstants.colorBlack),
@@ -136,6 +144,7 @@ class SignUpScreenManager extends StatelessWidget {
 
   Widget passwordTextField(){
     return  TextFormField(
+      cursorColor: ColorConstants.colorWhite70,
       focusNode: passwordFocusNode,
       controller: passwordController,
       obscureText: !provider.passwordVisible,
