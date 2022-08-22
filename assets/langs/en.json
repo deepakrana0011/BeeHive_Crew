@@ -243,7 +243,9 @@
   "are_you_sure_you_want_to_archive_this_project": "Are you sure you want to archive this\n project? ",
   "cAD": "$ CAD",
   "currency": "Currency",
-  "notify_me_if_crew_is_checked_in_after_hours": "Notify me if crew is checked in after hours"
+  "notify_me_if_crew_is_checked_in_after_hours": "Notify me if crew is checked in after hours",
+  "mobile_number_cant_be_empty": "Mobile number can't be empty",
+  "verify_email": "Verify Email"
 
 
 

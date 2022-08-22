@@ -99,13 +99,14 @@ class ResetPasswordScreen extends StatelessWidget {
 
   Widget newPasswordTextField(ResetPasswordProvider provider){
     return  TextFormField(
+      cursorColor: ColorConstants.colorWhite70,
       controller: newPasswordController,
       obscureText: !provider.newPasswordVisible,
       style: ViewDecoration.textFieldStyle(DimensionConstants.d16.sp, FontWeight.w400, ColorConstants.colorBlack),
       decoration: ViewDecoration.inputDecorationTextField(contPadding: provider.newPasswordContentPadding, suffixIcon:  IconButton(
         padding: EdgeInsets.zero,
-        icon: const ImageView(
-          path: ImageConstants.eyeIcon,
+        icon:  ImageView(
+          path: provider.newPasswordVisible ? ImageConstants.eyeIcon:ImageConstants.passwordHideIcon,
         ),
         onPressed: () {
           provider.newPasswordVisible = !provider.newPasswordVisible;
@@ -138,13 +139,14 @@ class ResetPasswordScreen extends StatelessWidget {
 
   Widget confirmPasswordTextField(ResetPasswordProvider provider){
     return  TextFormField(
+      cursorColor: ColorConstants.colorWhite70,
       controller: confirmPasswordController,
       obscureText: !provider.confirmPasswordVisible,
       style: ViewDecoration.textFieldStyle(DimensionConstants.d16.sp, FontWeight.w400, ColorConstants.colorBlack),
       decoration: ViewDecoration.inputDecorationTextField(contPadding: provider.confirmPasswordContentPadding, suffixIcon:  IconButton(
         padding: EdgeInsets.zero,
-        icon: const ImageView(
-          path: ImageConstants.eyeIcon,
+        icon:  ImageView(
+          path: provider.confirmPasswordVisible ? ImageConstants.eyeIcon :ImageConstants.passwordHideIcon,
         ),
         onPressed: () {
           provider.confirmPasswordVisible = !provider.confirmPasswordVisible;

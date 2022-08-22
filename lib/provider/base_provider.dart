@@ -1,10 +1,14 @@
 import 'package:beehive/enum/enum.dart';
 import 'package:flutter/material.dart';
 
+import '../locator.dart';
+import '../services/api_class.dart';
+
 class BaseProvider extends ChangeNotifier {
   ViewState _state = ViewState.idle;
   bool _isDisposed = false;
 
+  Api api = locator<Api>();
   ViewState get state => _state;
 
   void setState(ViewState viewState) {

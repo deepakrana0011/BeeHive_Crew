@@ -151,8 +151,8 @@ class SignUpScreen extends StatelessWidget {
       style: ViewDecoration.textFieldStyle(DimensionConstants.d16.sp, FontWeight.w400, ColorConstants.colorBlack),
       decoration: ViewDecoration.inputDecorationTextField(contPadding: provider.passwordContentPadding, suffixIcon:  IconButton(
         padding: EdgeInsets.zero,
-        icon: const ImageView(
-          path: ImageConstants.eyeIcon,
+        icon:ImageView(
+          path: provider.passwordVisible ? ImageConstants.eyeIcon:ImageConstants.passwordHideIcon,
         ),
         onPressed: () {
           provider.passwordVisible = !provider.passwordVisible;

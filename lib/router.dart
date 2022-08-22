@@ -139,8 +139,9 @@ class OnGenerateRouter {
         return MaterialPageRoute(
             builder: (_) => ContinueWithPhone(), settings: settings);
       case RouteConstants.otpVerificationPage:
+        final args = settings.arguments as OtpVerificationPage;
         return MaterialPageRoute(
-            builder: (_) => OtpVerificationPage(), settings: settings);
+            builder: (_) => OtpVerificationPage(phoneNumber: args.phoneNumber, continueWithPhoneOrEmail: args.continueWithPhoneOrEmail,), settings: settings);
       case RouteConstants.bottomBarManager:
         return MaterialPageRoute(
             builder: (_) => BottomBarManager(), settings: settings);
@@ -148,8 +149,9 @@ class OnGenerateRouter {
         return MaterialPageRoute(
             builder: (_) => ContinueWithPhoneManager(), settings: settings);
       case RouteConstants.otpVerificationPageManager:
+        final args = settings.arguments as OtpVerificationPageManager;
         return MaterialPageRoute(
-            builder: (_) => OtpVerificationPageManager(), settings: settings);
+            builder: (_) => OtpVerificationPageManager(phoneNumber: args.phoneNumber, continueWithPhoneOrEmail: args.continueWithPhoneOrEmail,), settings: settings);
       case RouteConstants.signUpScreenManager:
         final args = settings.arguments as SignUpScreenManager;
         return MaterialPageRoute(

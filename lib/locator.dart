@@ -19,6 +19,8 @@ import 'package:beehive/provider/introduction_provider.dart';
 import 'package:beehive/provider/login_manager_provider.dart';
 import 'package:beehive/provider/notification_provider.dart';
 import 'package:beehive/provider/login_provider.dart';
+import 'package:beehive/provider/otp_page_provider.dart';
+import 'package:beehive/provider/otp_page_verification_manager.dart';
 import 'package:beehive/provider/profile_page_manager_provider.dart';
 import 'package:beehive/provider/project_details_manager_provider.dart';
 import 'package:beehive/provider/project_details_provider.dart';
@@ -33,10 +35,11 @@ import 'package:beehive/provider/sign_up_manager_provider.dart';
 import 'package:beehive/provider/sign_up_provider.dart';
 import 'package:beehive/provider/timesheet_from_crew_provider.dart';
 import 'package:beehive/provider/timesheet_manager_provider.dart';
+import 'package:beehive/services/api_class.dart';
+import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 
 GetIt locator = GetIt.instance;
-
 void setUpLocator(){
 
   locator.registerFactory<IntroductionProvider>(() => IntroductionProvider());
@@ -74,5 +77,13 @@ void setUpLocator(){
   locator.registerFactory(() => TimeSheetFromCrewProvider());
   locator.registerFactory(() => CertificationPageProviderManager());
   locator.registerFactory(() => ProfilePageManagerProvider());
+  locator.registerFactory(() => OtpPageProvider());
+  locator.registerFactory(() => OtpPageProviderManager());
+  locator.registerLazySingleton(() => Api());
+  locator.registerLazySingleton<Dio>(() {
+    Dio dio = Dio();
+    dio.interceptors.add(LogInterceptor(requestBody: true, responseBody: true,request: true,requestHeader:false,responseHeader: false  ));
+    return dio;
+  });
 
 }

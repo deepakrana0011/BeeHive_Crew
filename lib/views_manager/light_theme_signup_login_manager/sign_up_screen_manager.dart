@@ -2,6 +2,7 @@ import 'package:beehive/constants/color_constants.dart';
 import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/constants/image_constants.dart';
 import 'package:beehive/constants/route_constants.dart';
+import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
 import 'package:beehive/helper/decoration.dart';
@@ -19,8 +20,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class SignUpScreenManager extends StatelessWidget {
   SignUpScreenManager({Key? key, required this.email}) : super(key: key);
   final String email;
-  final nameController = TextEditingController();
-  final passwordController = TextEditingController();
   final nameFocusNode = FocusNode();
   final passwordFocusNode = FocusNode();
   final _formKey = GlobalKey<FormState>();
@@ -81,21 +80,18 @@ class SignUpScreenManager extends StatelessWidget {
                                     Text(email).regularText(context, DimensionConstants.d16.sp, TextAlign.left, color: ColorConstants.colorBlack),
                                     SizedBox(height: DimensionConstants.d49.h),
                                     Text("your_name".tr()).boldText(context, DimensionConstants.d14.sp, TextAlign.center, color: ColorConstants.colorWhite70),
-                                    nameTextField(),
+                                    nameTextField(provider),
                                     SizedBox(height: DimensionConstants.d24.h),
                                     Text("your_password".tr()).boldText(context, DimensionConstants.d14.sp, TextAlign.center, color: ColorConstants.colorWhite70),
-                                    passwordTextField(),
+                                    passwordTextField(provider),
                                     SizedBox(height: DimensionConstants.d39.h),
-                                    CommonWidgets.commonButton(context, "sign_up_".tr(), onBtnTap: (){
+                                    provider.state ==ViewState.idle? CommonWidgets.commonButton(context, "sign_up_".tr(), onBtnTap: (){
                                       if(_formKey.currentState!.validate()){
-
-                                        Navigator.pushNamed(context, RouteConstants.continueWithPhoneManager);
-
+                                        CommonWidgets.hideKeyboard(context);
+                                        provider.signUp(context, email);
                                       }else{
-
                                       }
-
-                                    },shadowRequired: true),
+                                    },shadowRequired: true):const Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color)),
                                     SizedBox(height: DimensionConstants.d20.h),
                                     GestureDetector(
                                       onTap: (){
@@ -122,11 +118,11 @@ class SignUpScreenManager extends StatelessWidget {
     });
   }
 
-  Widget nameTextField(){
+  Widget nameTextField(SignUpManagerProvider provider){
     return  TextFormField(
       cursorColor: ColorConstants.colorWhite70,
       focusNode: nameFocusNode,
-      controller: nameController,
+      controller: provider.nameController,
       style: ViewDecoration.textFieldStyle(DimensionConstants.d16.sp, FontWeight.w400, ColorConstants.colorBlack),
       decoration: ViewDecoration.inputDecorationTextField(contPadding: provider.nameContentPadding, fillColor: ColorConstants.colorWhite),
       textInputAction: TextInputAction.next,
@@ -142,17 +138,17 @@ class SignUpScreenManager extends StatelessWidget {
     );
   }
 
-  Widget passwordTextField(){
+  Widget passwordTextField(SignUpManagerProvider provider){
     return  TextFormField(
       cursorColor: ColorConstants.colorWhite70,
       focusNode: passwordFocusNode,
-      controller: passwordController,
+      controller: provider.passwordController,
       obscureText: !provider.passwordVisible,
       style: ViewDecoration.textFieldStyle(DimensionConstants.d16.sp, FontWeight.w400, ColorConstants.colorBlack),
       decoration: ViewDecoration.inputDecorationTextField(contPadding: provider.passwordContentPadding, suffixIcon:  IconButton(
         padding: EdgeInsets.zero,
-        icon: const ImageView(
-          path: ImageConstants.eyeIcon,
+        icon:  ImageView(
+          path: provider.passwordVisible ? ImageConstants.eyeIcon:ImageConstants.passwordHideIcon,
         ),
         onPressed: () {
           provider.passwordVisible = !provider.passwordVisible;

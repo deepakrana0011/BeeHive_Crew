@@ -5,9 +5,11 @@ import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
 import 'package:beehive/helper/decoration.dart';
+import 'package:beehive/helper/dialog_helper.dart';
 import 'package:beehive/helper/validations.dart';
 import 'package:beehive/locator.dart';
 import 'package:beehive/provider/continue_with_phone_provider.dart';
+import 'package:beehive/view/%20light_theme_signup_login/otp_verification_page.dart';
 import 'package:beehive/view/base_view.dart';
 import 'package:beehive/view/light_theme_signup_login/email_address_screen.dart';
 import 'package:beehive/widget/image_view.dart';
@@ -81,7 +83,9 @@ class ContinueWithPhone extends StatelessWidget {
                               SizedBox(height: DimensionConstants.d25.h),
                               GestureDetector(
                                 onTap: (){
-                                  Navigator.pushNamed(context, RouteConstants.emailAddressScreen,arguments: EmailAddressScreen(fromForgotPassword: true,));
+
+                                    Navigator.pushNamed(context, RouteConstants.emailAddressScreen,arguments: EmailAddressScreen(fromForgotPassword: true,));
+
                                 },
                                 child: Align(
                                   alignment: Alignment.center,
@@ -95,7 +99,13 @@ class ContinueWithPhone extends StatelessWidget {
                               SizedBox(height: DimensionConstants.d50.h),
                               CommonWidgets.commonButton(context, "continue".tr(),
                                   onBtnTap: () {
-                                  Navigator.pushNamed(context, RouteConstants.otpVerificationPage);
+
+                                    if(provider.phoneNumberController.text.isEmpty){
+                                      DialogHelper.showMessage(context, "mobile_number_cant_be_empty".tr());
+                                    }else{
+                                      Navigator.pushNamed(context, RouteConstants.otpVerificationPage,arguments: OtpVerificationPage(phoneNumber: provider.phoneNumberController.text, continueWithPhoneOrEmail: true,));
+                                    }
+
                               },shadowRequired: true)
                             ],
                           ),

@@ -106,8 +106,8 @@ class ResetPasswordScreenManager extends StatelessWidget {
       style: ViewDecoration.textFieldStyle(DimensionConstants.d16.sp, FontWeight.w400, ColorConstants.colorBlack),
       decoration: ViewDecoration.inputDecorationTextField(contPadding: provider.newPasswordContentPadding, suffixIcon:  IconButton(
         padding: EdgeInsets.zero,
-        icon: const ImageView(
-          path: ImageConstants.eyeIcon,
+        icon:  ImageView(
+          path: provider.newPasswordVisible ? ImageConstants.eyeIcon:ImageConstants.passwordHideIcon,
         ),
         onPressed: () {
           provider.newPasswordVisible = !provider.newPasswordVisible;
@@ -145,8 +145,8 @@ class ResetPasswordScreenManager extends StatelessWidget {
       style: ViewDecoration.textFieldStyle(DimensionConstants.d16.sp, FontWeight.w400, ColorConstants.colorBlack),
       decoration: ViewDecoration.inputDecorationTextField(contPadding: provider.confirmPasswordContentPadding, suffixIcon:  IconButton(
         padding: EdgeInsets.zero,
-        icon: const ImageView(
-          path: ImageConstants.eyeIcon,
+        icon:  ImageView(
+          path: provider.confirmPasswordVisible ? ImageConstants.eyeIcon:ImageConstants.passwordHideIcon,
         ),
         onPressed: () {
           provider.confirmPasswordVisible = !provider.confirmPasswordVisible;

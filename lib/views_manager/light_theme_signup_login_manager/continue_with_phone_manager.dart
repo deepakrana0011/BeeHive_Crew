@@ -10,11 +10,15 @@ import 'package:beehive/locator.dart';
 import 'package:beehive/provider/continue_with_phone_provider.dart';
 import 'package:beehive/view/base_view.dart';
 import 'package:beehive/view/light_theme_signup_login/email_address_screen.dart';
+import 'package:beehive/views_manager/light_theme_signup_login_manager/email_address_screen_manager.dart';
+import 'package:beehive/views_manager/light_theme_signup_login_manager/otp_verification_page_manager.dart';
 import 'package:beehive/widget/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
+
+import '../../helper/dialog_helper.dart';
 
 class ContinueWithPhoneManager extends StatelessWidget {
   ContinueWithPhoneManager({Key? key}) : super(key: key);
@@ -81,7 +85,7 @@ class ContinueWithPhoneManager extends StatelessWidget {
                               SizedBox(height: DimensionConstants.d25.h),
                               GestureDetector(
                                 onTap: (){
-                                 // Navigator.pushNamed(context, RouteConstants.emailAddressScreen,arguments: EmailAddressScreen(fromForgotPassword: true,));
+                                  Navigator.pushNamed(context, RouteConstants.emailAddressScreenManager,arguments: EmailAddressScreenManager(fromForgotPassword: true,));
                                 },
                                 child: Align(
                                   alignment: Alignment.center,
@@ -95,7 +99,13 @@ class ContinueWithPhoneManager extends StatelessWidget {
                               SizedBox(height: DimensionConstants.d50.h),
                               CommonWidgets.commonButton(context, "continue".tr(),
                                   onBtnTap: () {
-                                  Navigator.pushNamed(context, RouteConstants.otpVerificationPageManager);
+                                if(provider.phoneNumberController.text.isEmpty){
+
+                                  DialogHelper.showMessage(context, "mobile_number_cant_be_empty".tr());
+                                }else{
+                                  Navigator.pushNamed(context, RouteConstants.otpVerificationPageManager,arguments: OtpVerificationPageManager(phoneNumber: provider.phoneNumberController.text, continueWithPhoneOrEmail: true,));
+                                }
+
                               },shadowRequired: true)
                             ],
                           ),

@@ -1,3 +1,4 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:beehive/constants/image_constants.dart';
 import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/extension/all_extensions.dart';
@@ -892,6 +893,15 @@ class DialogHelper {
         );
       },
     );
+  }
+
+ static showMessage(BuildContext context, String message) {
+    Flushbar(
+      message: message,
+      borderRadius: BorderRadius.circular(DimensionConstants.d15.r),
+   backgroundGradient: LinearGradient(colors: [ColorConstants.primaryGradient1Color,ColorConstants.primaryGradient2Color]),
+      duration: const Duration(seconds: 3),
+    ).show(context);
   }
 
   static editRateDialogBox(BuildContext context,

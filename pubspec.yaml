@@ -57,6 +57,8 @@ dependencies:
   share_plus: ^4.0.10+1
   flutter_slidable: ^2.0.0
   hsv_color_pickers: ^0.2.1
+  another_flushbar: ^1.10.29
+  dio: ^4.0.6
 
 dev_dependencies:
   flutter_test:
