@@ -1,5 +1,6 @@
  import 'dart:io';
 
+import 'package:beehive/helper/shared_prefs.dart';
 import 'package:beehive/provider/base_provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -23,6 +24,8 @@ class SignUpManagerProvider extends BaseProvider{
     try {
       var model = await api.signUp(context, nameController.text,emailController, passwordController.text);
       if (model.success == true) {
+        SharedPreference.prefs!.setString(SharedPreference.TOKEN, model.token!);
+        SharedPreference.prefs!.setString(SharedPreference.USER_ID, model.data!.sId!);
         setState(ViewState.idle);
          Navigator.pushNamed(context, RouteConstants.continueWithPhoneManager);
         DialogHelper.showMessage(context, model.message!);

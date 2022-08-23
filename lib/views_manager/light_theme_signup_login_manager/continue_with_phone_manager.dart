@@ -2,14 +2,11 @@ import 'package:beehive/constants/color_constants.dart';
 import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/constants/image_constants.dart';
 import 'package:beehive/constants/route_constants.dart';
+import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
-import 'package:beehive/helper/decoration.dart';
-import 'package:beehive/helper/validations.dart';
-import 'package:beehive/locator.dart';
-import 'package:beehive/provider/continue_with_phone_provider.dart';
+import 'package:beehive/provider/continue_with_phone_manager_provider.dart';
 import 'package:beehive/view/base_view.dart';
-import 'package:beehive/view/light_theme_signup_login/email_address_screen.dart';
 import 'package:beehive/views_manager/light_theme_signup_login_manager/email_address_screen_manager.dart';
 import 'package:beehive/views_manager/light_theme_signup_login_manager/otp_verification_page_manager.dart';
 import 'package:beehive/widget/image_view.dart';
@@ -25,7 +22,8 @@ class ContinueWithPhoneManager extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BaseView<ContinueWithPhoneProvider>(builder: (context, provider, _) {
+    return BaseView<ContinueWithPhoneManagerProvider>(
+        builder: (context, provider, _) {
       return GestureDetector(
         onTap: () {
           CommonWidgets.hideKeyboard(context);
@@ -81,32 +79,38 @@ class ContinueWithPhoneManager extends StatelessWidget {
                                   DimensionConstants.d14.sp, TextAlign.center,
                                   color: ColorConstants.colorWhite70),
                               SizedBox(height: DimensionConstants.d42.h),
-                              phoneNumberWidget(provider.phoneNumberController),
+                              phoneNumberWidget(provider.phoneNumberController,provider),
                               SizedBox(height: DimensionConstants.d25.h),
                               GestureDetector(
-                                onTap: (){
-                                  Navigator.pushNamed(context, RouteConstants.emailAddressScreenManager,arguments: EmailAddressScreenManager(fromForgotPassword: true,));
+                                onTap: () {
+                                  Navigator.pushNamed(context,
+                                      RouteConstants.emailAddressScreenManager,
+                                      arguments: EmailAddressScreenManager(
+                                        fromForgotPassword: true,
+                                      ));
                                 },
                                 child: Align(
                                   alignment: Alignment.center,
-                                  child: Text("continue_with_email".tr()).regularText(context,
-                                      DimensionConstants.d14.sp, TextAlign.center,
-                                      color: ColorConstants.colorBlack,
-                                      decoration: TextDecoration.underline
-                                  ),
+                                  child: Text("continue_with_email".tr())
+                                      .regularText(
+                                          context,
+                                          DimensionConstants.d14.sp,
+                                          TextAlign.center,
+                                          color: ColorConstants.colorBlack,
+                                          decoration: TextDecoration.underline),
                                 ),
                               ),
                               SizedBox(height: DimensionConstants.d50.h),
-                              CommonWidgets.commonButton(context, "continue".tr(),
-                                  onBtnTap: () {
-                                if(provider.phoneNumberController.text.isEmpty){
-
-                                  DialogHelper.showMessage(context, "mobile_number_cant_be_empty".tr());
-                                }else{
-                                  Navigator.pushNamed(context, RouteConstants.otpVerificationPageManager,arguments: OtpVerificationPageManager(phoneNumber: provider.phoneNumberController.text, continueWithPhoneOrEmail: true,));
+                            provider.state == ViewState.idle?  CommonWidgets.commonButton(
+                                  context, "continue".tr(), onBtnTap: () {
+                                if (provider
+                                    .phoneNumberController.text.isEmpty) {
+                                  DialogHelper.showMessage(context,
+                                      "mobile_number_cant_be_empty".tr());
+                                } else {
+                                  provider.phoneVerification(context);
                                 }
-
-                              },shadowRequired: true)
+                              }, shadowRequired: true):Center(child: const CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,),)
                             ],
                           ),
                         )
@@ -123,7 +127,7 @@ class ContinueWithPhoneManager extends StatelessWidget {
   }
 }
 
-Widget phoneNumberWidget(TextEditingController controller) {
+Widget phoneNumberWidget(TextEditingController controller, ContinueWithPhoneManagerProvider provider) {
   return Stack(
     children: [
       Container(
@@ -134,11 +138,13 @@ Widget phoneNumberWidget(TextEditingController controller) {
                     width: DimensionConstants.d2.w))),
         child: InternationalPhoneNumberInput(
           textFieldController: controller,
-          onInputChanged: (value) {},
-          formatInput: true,
+          onInputChanged: (value) {
+            provider.getDialCode(value.dialCode!);
+          },
           selectorConfig: const SelectorConfig(
             selectorType: PhoneInputSelectorType.DIALOG,
           ),
+          formatInput: false,
           selectorTextStyle: TextStyle(
               fontSize: DimensionConstants.d20.sp, fontWeight: FontWeight.w700),
           inputDecoration: InputDecoration(
@@ -159,11 +165,14 @@ Widget phoneNumberWidget(TextEditingController controller) {
           left: DimensionConstants.d100.w,
           child: Row(
             children: [
-              ImageView(path: ImageConstants.dropDownPhoneIcon,
-              width: DimensionConstants.d9.w,
+              ImageView(
+                path: ImageConstants.dropDownPhoneIcon,
+                width: DimensionConstants.d9.w,
                 height: DimensionConstants.d6.h,
               ),
-              SizedBox(width: DimensionConstants.d6.w,),
+              SizedBox(
+                width: DimensionConstants.d6.w,
+              ),
               Container(
                 height: DimensionConstants.d25.h,
                 width: DimensionConstants.d2.w,

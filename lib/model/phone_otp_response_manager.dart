@@ -1,44 +1,51 @@
-class SignUpResponse {
+class PhoneOtpResponseManager {
   bool? success;
   String? message;
   Data? data;
-  String? token;
 
-  SignUpResponse({this.success, this.message, this.data, this.token});
+  PhoneOtpResponseManager({this.success, this.message, this.data});
 
-  SignUpResponse.fromJson(Map<String, dynamic> json) {
+  PhoneOtpResponseManager.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     message = json['message'];
     data = json['data'] != null ? new Data.fromJson(json['data']) : null;
-    token = json['Token'];
   }
 
 
 }
 
 class Data {
+  String? sId;
   String? email;
   String? password;
   int? status;
-  String? sId;
   String? createdAt;
   int? iV;
+  String? countryCode;
+  int? phoneNumber;
+  int? verifyCode;
 
   Data(
-      {this.email,
+      {this.sId,
+        this.email,
         this.password,
         this.status,
-        this.sId,
         this.createdAt,
-        this.iV});
+        this.iV,
+        this.countryCode,
+        this.phoneNumber,
+        this.verifyCode});
 
   Data.fromJson(Map<String, dynamic> json) {
+    sId = json['_id'];
     email = json['email'];
     password = json['password'];
     status = json['status'];
-    sId = json['_id'];
     createdAt = json['createdAt'];
     iV = json['__v'];
+    countryCode = json['countryCode'];
+    phoneNumber = json['phoneNumber'];
+    verifyCode = json['verifyCode'];
   }
 
 

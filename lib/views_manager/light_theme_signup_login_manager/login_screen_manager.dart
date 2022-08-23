@@ -2,6 +2,7 @@ import 'package:beehive/constants/color_constants.dart';
 import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/constants/image_constants.dart';
 import 'package:beehive/constants/route_constants.dart';
+import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
 import 'package:beehive/helper/decoration.dart';
@@ -93,16 +94,13 @@ class LoginScreenManager extends StatelessWidget {
                                           ),
                                         ),
                                         SizedBox(height: DimensionConstants.d29.h),
-                                        CommonWidgets.commonButton(context, "login".tr(), onBtnTap: (){
+                                       provider.state == ViewState.idle? CommonWidgets.commonButton(context, "login".tr(), onBtnTap: (){
                                           CommonWidgets.hideKeyboard(context);
                                           if(_formKey.currentState!.validate()){
-                                            Navigator.pushNamed(context, RouteConstants.bottomBarManager,);
+                                           provider.loginManager(context, emailController.text, passwordController.text);
                                           }else{
-
-
                                           }
-
-                                        },shadowRequired: true),
+                                        },shadowRequired: true):Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient1Color,),),
                                         SizedBox(height: DimensionConstants.d16.h),
                                         GestureDetector(
                                           onTap: (){

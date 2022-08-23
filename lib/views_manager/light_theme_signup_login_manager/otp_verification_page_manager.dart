@@ -88,7 +88,7 @@ class OtpVerificationPageManager extends StatelessWidget {
                                         if(provider.otp == ""){
                                           DialogHelper.showMessage(context, "Please enter OTP");
                                         }else{
-                                        Navigator.pushNamed(context, RouteConstants.bottomBarManager);
+                                         continueWithPhoneOrEmail== true? provider.otpVerification(context, phoneNumber):provider.verifyEmailForOtp(context, phoneNumber);
                                         }
                                       }, shadowRequired: true)
                                 ],
@@ -122,8 +122,10 @@ Widget optFiled(BuildContext context, OtpPageProviderManager provider,) {
     focusedBorderColor: ColorConstants.primaryColor,
     borderRadius: BorderRadius.circular(DimensionConstants.d20.r),
     onCodeChanged: (String code) {
-      provider.updateProvider(code);
+
     },
-    onSubmit: (String verificationCode) {}, // end onSubmit
+    onSubmit: (String verificationCode) {
+      provider.updateProvider(verificationCode);
+    }, // end onSubmit
   );
 }

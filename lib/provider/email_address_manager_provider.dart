@@ -3,32 +3,26 @@ import 'dart:io';
 import 'package:beehive/provider/base_provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:share_plus/share_plus.dart';
 
+import '../constants/route_constants.dart';
 import '../enum/enum.dart';
 import '../helper/dialog_helper.dart';
 import '../services/fetch_data_expection.dart';
+import '../views_manager/light_theme_signup_login_manager/otp_verification_page_manager.dart';
 
-class AddCrewPageManagerProvider extends BaseProvider{
-  void onShare(BuildContext context) async {
-    final box = context.findRenderObject() as RenderBox?;
-    await Share.share("Beehive Network",
-        sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size);
-  }
+class EmailAddressScreenManagerProvider extends BaseProvider{
 
-
-
-
-
-  Future getCrewList(BuildContext context,) async {
+  Future emailVerificationManager(BuildContext context, String email) async {
     setState(ViewState.busy);
     try {
-      var model = await api.getCrewList(context);
+      var model = await api.verifyManagerEmail(context,email );
       if (model.success == true) {
         setState(ViewState.idle);
+        Navigator.pushNamed(context, RouteConstants.otpVerificationPageManager,arguments: OtpVerificationPageManager(phoneNumber: email, continueWithPhoneOrEmail: false));
+        DialogHelper.showMessage(context, model.message!);
       } else {
         setState(ViewState.idle);
-
+        DialogHelper.showMessage(context, model.message!);
       }
     } on FetchDataException catch (e) {
       setState(ViewState.idle);
@@ -42,4 +36,9 @@ class AddCrewPageManagerProvider extends BaseProvider{
 
 
 
+
+
+
+
 }
+

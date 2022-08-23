@@ -8,6 +8,7 @@ import 'package:beehive/provider/bottom_bar_Manager_provider.dart';
 import 'package:beehive/provider/bottom_bar_provider.dart';
 import 'package:beehive/provider/certification_page_provider.dart';
 import 'package:beehive/provider/certification_page_provider_manager.dart';
+import 'package:beehive/provider/continue_with_phone_manager_provider.dart';
 import 'package:beehive/provider/continue_with_phone_provider.dart';
 import 'package:beehive/provider/create_project_manager_provider.dart';
 import 'package:beehive/provider/crew_member_add_by_manager_provider.dart';
@@ -15,6 +16,7 @@ import 'package:beehive/provider/crew_profile_page_provider_manager.dart';
 import 'package:beehive/provider/dashboard_page_manager_provider.dart';
 import 'package:beehive/provider/dashboard_provider.dart';
 import 'package:beehive/provider/edit_profile_provider.dart';
+import 'package:beehive/provider/email_address_manager_provider.dart';
 import 'package:beehive/provider/introduction_provider.dart';
 import 'package:beehive/provider/login_manager_provider.dart';
 import 'package:beehive/provider/notification_provider.dart';
@@ -79,6 +81,8 @@ void setUpLocator(){
   locator.registerFactory(() => ProfilePageManagerProvider());
   locator.registerFactory(() => OtpPageProvider());
   locator.registerFactory(() => OtpPageProviderManager());
+  locator.registerFactory(() => ContinueWithPhoneManagerProvider());
+  locator.registerFactory(() => EmailAddressScreenManagerProvider());
   locator.registerLazySingleton(() => Api());
   locator.registerLazySingleton<Dio>(() {
     Dio dio = Dio();

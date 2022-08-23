@@ -2,6 +2,7 @@ import 'package:beehive/constants/color_constants.dart';
 import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/extension/all_extensions.dart';
+import 'package:beehive/helper/shared_prefs.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -28,6 +29,7 @@ class CommonWidgets {
         children: [
           GestureDetector(
             onTap: () {
+              SharedPreference.prefs!.setBool(SharedPreference.INTRODUCTION_COMPLETE, true);
               Navigator.of(context)
                   .pushNamedAndRemoveUntil(
                   RouteConstants.selectToContinueScreen,
@@ -39,6 +41,7 @@ class CommonWidgets {
           ),
           GestureDetector(
             onTap: () {
+              SharedPreference.prefs!.setBool(SharedPreference.INTRODUCTION_COMPLETE, true);
               Navigator.of(context)
                   .pushNamedAndRemoveUntil(
                   RouteConstants.selectToContinueScreen,

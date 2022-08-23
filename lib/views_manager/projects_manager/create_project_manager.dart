@@ -55,7 +55,7 @@ class CreateProjectManager extends StatelessWidget {
               SizedBox(
                 height: DimensionConstants.d16.h,
               ),
-              titleWidget(context),
+              titleWidget(context,provider),
               SizedBox(
                 height: DimensionConstants.d20.h,
               ),
@@ -77,15 +77,14 @@ class CreateProjectManager extends StatelessWidget {
               ),
               Padding(
                 padding:  EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
-                child: CommonWidgets.commonButton(context, "next".tr(),
+                child: provider.state == ViewState.idle? CommonWidgets.commonButton(context, "next".tr(),
                     color1: ColorConstants.primaryGradient2Color,
                     color2: ColorConstants.primaryGradient1Color,
                     fontSize: DimensionConstants.d16.sp,
                     onBtnTap: () {
-                  Navigator.pushNamed(context, RouteConstants.addCrewPageManager);
-
+                 provider.createProjectManager(context,);
                     },
-                    shadowRequired: true),
+                    shadowRequired: true):const Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient1Color,),),
               ),
               SizedBox(
                 height: DimensionConstants.d50.h,
@@ -99,7 +98,7 @@ class CreateProjectManager extends StatelessWidget {
   }
 }
 
-Widget titleWidget(BuildContext context) {
+Widget titleWidget(BuildContext context, CreateProjectManagerProvider provider) {
   return Padding(
     padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
     child: Column(
@@ -128,6 +127,7 @@ Widget titleWidget(BuildContext context) {
             borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
           ),
           child: TextFormField(
+            controller: provider.projectNameController,
             maxLines: 10,
             decoration: ViewDecoration.inputDecorationBox(
               fieldName: "project_name".tr(),

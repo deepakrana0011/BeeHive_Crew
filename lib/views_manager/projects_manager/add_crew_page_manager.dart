@@ -22,7 +22,6 @@ class AddCrewPageManager extends StatelessWidget {
     return BaseView<AddCrewPageManagerProvider>(
       onModelReady: (provider){},
       builder: (context,provider,_){
-
         return Scaffold(
           appBar:
           CommonWidgets.appBarWithTitleAndAction(context, title: "add_crew"),
@@ -60,7 +59,7 @@ class AddCrewPageManager extends StatelessWidget {
                       color1: ColorConstants.primaryGradient2Color,
                       color2: ColorConstants.primaryGradient1Color,
                       fontSize: DimensionConstants.d14.sp, onBtnTap: () {
-                    Navigator.pushNamed(context, RouteConstants.setRatesManager);
+                       provider.getCrewList(context);
 
                       },
                       shadowRequired: true

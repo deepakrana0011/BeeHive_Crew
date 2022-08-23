@@ -1,15 +1,21 @@
 import 'dart:async';
+import 'dart:io';
 
+import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/enum/enum.dart';
 import 'package:beehive/provider/base_provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../constants/image_constants.dart';
+import '../helper/dialog_helper.dart';
+import '../services/fetch_data_expection.dart';
 
 class CreateProjectManagerProvider extends BaseProvider {
+  final projectNameController = TextEditingController();
   Completer<GoogleMapController> controller = Completer();
   BitmapDescriptor? pinLocationIconUser;
 
@@ -26,13 +32,6 @@ class CreateProjectManagerProvider extends BaseProvider {
   double longitude = 0;
   var value;
   String pickUpLocation = "";
-
-
-
-
-
-
-
   Future getLngLt(context) async {
     setState(ViewState.busy);
     value = await Geolocator.getCurrentPosition();
@@ -40,13 +39,6 @@ class CreateProjectManagerProvider extends BaseProvider {
     longitude = value.longitude;
     setState(ViewState.idle);
   }
-
-
-
-
-
-
-
   void setCustomMapPinUser() async {
     pinLocationIconUser = await BitmapDescriptor.fromAssetImage(
         const ImageConfiguration(), ImageConstants.locationMark);
@@ -69,7 +61,6 @@ class CreateProjectManagerProvider extends BaseProvider {
     setState(ViewState.idle);
   }
   CameraPosition? position;
-
   Future<void> cameraIdle(position) async {
     List<Placemark> placeMark = await placemarkFromCoordinates(position!.target.latitude, position!.target.longitude);
 
@@ -79,12 +70,7 @@ class CreateProjectManagerProvider extends BaseProvider {
         placeMark.first.subLocality.toString() +
         placeMark.first.country.toString() + placeMark.first.administrativeArea.toString();
     notifyListeners();
-
-
-
-
   }
-
   Future<void> getPickUpAddress() async {
     List<Placemark> placeMark =
         await placemarkFromCoordinates(latitude, longitude);
@@ -136,6 +122,30 @@ class CreateProjectManagerProvider extends BaseProvider {
     valueFor = value;
     notifyListeners();
   }
+
+
+  Future createProjectManager(BuildContext context,) async {
+    setState(ViewState.busy);
+    try {
+      var model = await api.createProjectManager(context, projectName: projectNameController.text, longitude: longitude.toString(), locationRadius: valueFor.toString(), latitude: latitude.toString(), address: pickUpLocation,);
+      if (model.success == true) {
+        setState(ViewState.idle);
+        Navigator.pushNamed(context, RouteConstants.addCrewPageManager);
+        DialogHelper.showMessage(context, model.message!);
+      } else {
+        setState(ViewState.idle);
+        DialogHelper.showMessage(context, model.message!);
+      }
+    } on FetchDataException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, e.toString());
+    } on SocketException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, "internet_connection".tr());
+    }
+  }
+
+
 
 
 

@@ -72,7 +72,11 @@ class MyApp extends StatelessWidget {
                     //   primarySwatch: color,
                     // ),
                     onGenerateRoute: router.OnGenerateRouter.onGenerate,
-                    initialRoute: RouteConstants.beehiveIntro
+                    initialRoute:SharedPreference.prefs!.getBool(SharedPreference.INTRODUCTION_COMPLETE ) == true ?
+                    (SharedPreference.prefs!.getBool(SharedPreference.IS_LOGIN)== true?
+                    (SharedPreference.prefs!.getBool(SharedPreference.ISMANAGER_LOGIN)== true? RouteConstants.bottomBarManager:RouteConstants.bottomNavigationBar):RouteConstants.selectToContinueScreen):
+                    RouteConstants.beehiveIntro,
+
                 );
         });
       },
