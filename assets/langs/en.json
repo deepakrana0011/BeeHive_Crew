@@ -245,7 +245,9 @@
   "currency": "Currency",
   "notify_me_if_crew_is_checked_in_after_hours": "Notify me if crew is checked in after hours",
   "mobile_number_cant_be_empty": "Mobile number can't be empty",
-  "verify_email": "Verify Email"
+  "verify_email": "Verify Email",
+  "please_enter_project_name": "Please name can't be empty",
+  "internet_connection": "Internet Connection"
 
 
 

@@ -2,6 +2,7 @@ import 'package:beehive/constants/color_constants.dart';
 import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/constants/image_constants.dart';
 import 'package:beehive/constants/route_constants.dart';
+import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
 import 'package:beehive/helper/decoration.dart';
@@ -19,7 +20,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
 class ContinueWithPhone extends StatelessWidget {
-  ContinueWithPhone({Key? key}) : super(key: key);
+  bool routeForResetPassword;
+  ContinueWithPhone({Key? key,required this.routeForResetPassword}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -79,13 +81,11 @@ class ContinueWithPhone extends StatelessWidget {
                                   DimensionConstants.d14.sp, TextAlign.center,
                                   color: ColorConstants.colorWhite70),
                               SizedBox(height: DimensionConstants.d42.h),
-                              phoneNumberWidget(provider.phoneNumberController),
+                              phoneNumberWidget(provider.phoneNumberController,provider),
                               SizedBox(height: DimensionConstants.d25.h),
                               GestureDetector(
                                 onTap: (){
-
                                     Navigator.pushNamed(context, RouteConstants.emailAddressScreen,arguments: EmailAddressScreen(fromForgotPassword: true,));
-
                                 },
                                 child: Align(
                                   alignment: Alignment.center,
@@ -97,16 +97,14 @@ class ContinueWithPhone extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(height: DimensionConstants.d50.h),
-                              CommonWidgets.commonButton(context, "continue".tr(),
+                           provider.state == ViewState.idle?  CommonWidgets.commonButton(context, "continue".tr(),
                                   onBtnTap: () {
-
                                     if(provider.phoneNumberController.text.isEmpty){
                                       DialogHelper.showMessage(context, "mobile_number_cant_be_empty".tr());
                                     }else{
-                                      Navigator.pushNamed(context, RouteConstants.otpVerificationPage,arguments: OtpVerificationPage(phoneNumber: provider.phoneNumberController.text, continueWithPhoneOrEmail: true,));
+                                     provider.phoneVerificationCrew(context, routeForResetPassword);
                                     }
-
-                              },shadowRequired: true)
+                              },shadowRequired: true):Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,),)
                             ],
                           ),
                         )
@@ -123,7 +121,7 @@ class ContinueWithPhone extends StatelessWidget {
   }
 }
 
-Widget phoneNumberWidget(TextEditingController controller) {
+Widget phoneNumberWidget(TextEditingController controller, ContinueWithPhoneProvider provider) {
   return Stack(
     children: [
       Container(
@@ -134,8 +132,10 @@ Widget phoneNumberWidget(TextEditingController controller) {
                     width: DimensionConstants.d2.w))),
         child: InternationalPhoneNumberInput(
           textFieldController: controller,
-          onInputChanged: (value) {},
-          formatInput: true,
+          onInputChanged: (value) {
+            provider.getDialCode(value.dialCode!);
+          },
+          formatInput: false,
           selectorConfig: const SelectorConfig(
             selectorType: PhoneInputSelectorType.DIALOG,
           ),

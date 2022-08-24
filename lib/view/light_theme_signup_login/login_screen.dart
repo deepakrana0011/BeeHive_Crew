@@ -2,12 +2,14 @@ import 'package:beehive/constants/color_constants.dart';
 import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/constants/image_constants.dart';
 import 'package:beehive/constants/route_constants.dart';
+import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
 import 'package:beehive/helper/decoration.dart';
 import 'package:beehive/helper/validations.dart';
 import 'package:beehive/locator.dart';
 import 'package:beehive/provider/login_provider.dart';
+import 'package:beehive/view/%20light_theme_signup_login/continue_with_phone.dart';
 import 'package:beehive/view/base_view.dart';
 import 'package:beehive/view/light_theme_signup_login/email_address_screen.dart';
 import 'package:beehive/widget/image_view.dart';
@@ -83,7 +85,7 @@ class LoginScreen extends StatelessWidget {
                                         SizedBox(height: DimensionConstants.d16.h),
                                         GestureDetector(
                                           onTap: (){
-                                            Navigator.pushNamed(context, RouteConstants.resetPasswordScreen);
+                                            Navigator.pushNamed(context, RouteConstants.continueWithPhone,arguments: ContinueWithPhone(routeForResetPassword: true));
                                           },
                                           child: Align(
                                             alignment: Alignment.center,
@@ -91,10 +93,13 @@ class LoginScreen extends StatelessWidget {
                                           ),
                                         ),
                                         SizedBox(height: DimensionConstants.d29.h),
-                                        CommonWidgets.commonButton(context, "login".tr(), onBtnTap: (){
+                                      provider.state == ViewState.idle?  CommonWidgets.commonButton(context, "login".tr(), onBtnTap: (){
                                           CommonWidgets.hideKeyboard(context);
-                                          Navigator.pushNamed(context, RouteConstants.bottomNavigationBar,);
-                                        },shadowRequired: true),
+                                          if(_formKey.currentState!.validate()){
+                                            provider.loginCrew(context, emailController.text, passwordController.text);
+                                          }else{
+                                          }
+                                        },shadowRequired: true):Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,),),
                                         SizedBox(height: DimensionConstants.d16.h),
                                         GestureDetector(
                                           onTap: (){

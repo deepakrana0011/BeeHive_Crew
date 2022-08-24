@@ -136,12 +136,13 @@ class OnGenerateRouter {
         return MaterialPageRoute(
             builder: (_) => ResetPasswordScreen(), settings: settings);
       case RouteConstants.continueWithPhone:
+        final args = settings.arguments as ContinueWithPhone;
         return MaterialPageRoute(
-            builder: (_) => ContinueWithPhone(), settings: settings);
+            builder: (_) => ContinueWithPhone(routeForResetPassword: args.routeForResetPassword,), settings: settings);
       case RouteConstants.otpVerificationPage:
         final args = settings.arguments as OtpVerificationPage;
         return MaterialPageRoute(
-            builder: (_) => OtpVerificationPage(phoneNumber: args.phoneNumber, continueWithPhoneOrEmail: args.continueWithPhoneOrEmail,), settings: settings);
+            builder: (_) => OtpVerificationPage(phoneNumber: args.phoneNumber, continueWithPhoneOrEmail: args.continueWithPhoneOrEmail, routeForResetPassword: args.routeForResetPassword,), settings: settings);
       case RouteConstants.bottomBarManager:
         return MaterialPageRoute(
             builder: (_) => BottomBarManager(), settings: settings);

@@ -9,7 +9,7 @@ class AddCrewResponseManager {
     if (json['data'] != null) {
       data = <AddCrewData>[];
       json['data'].forEach((v) {
-        data!.add(new AddCrewData.fromJson(v));
+        data!.add(AddCrewData.fromJson(v));
       });
     }
   }
@@ -25,6 +25,7 @@ class AddCrewData {
   String? countryCode;
   int? phoneNumber;
   int? verifyCode;
+  bool isSelected= false;
   AddCrewData(
       {this.sId,
         this.email,

@@ -17,6 +17,7 @@ import 'package:beehive/provider/dashboard_page_manager_provider.dart';
 import 'package:beehive/provider/dashboard_provider.dart';
 import 'package:beehive/provider/edit_profile_provider.dart';
 import 'package:beehive/provider/email_address_manager_provider.dart';
+import 'package:beehive/provider/email_address_screen_provider.dart';
 import 'package:beehive/provider/introduction_provider.dart';
 import 'package:beehive/provider/login_manager_provider.dart';
 import 'package:beehive/provider/notification_provider.dart';
@@ -83,7 +84,9 @@ void setUpLocator(){
   locator.registerFactory(() => OtpPageProviderManager());
   locator.registerFactory(() => ContinueWithPhoneManagerProvider());
   locator.registerFactory(() => EmailAddressScreenManagerProvider());
-  locator.registerLazySingleton(() => Api());
+  locator.registerFactory(() => EmailAddressScreenProvider());
+  locator.registerLazySingleton(() => ApiManager());
+  locator.registerLazySingleton(() => ApiCrew());
   locator.registerLazySingleton<Dio>(() {
     Dio dio = Dio();
     dio.interceptors.add(LogInterceptor(requestBody: true, responseBody: true,request: true,requestHeader:false,responseHeader: false  ));

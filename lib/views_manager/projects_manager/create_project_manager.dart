@@ -5,6 +5,7 @@ import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
+import 'package:beehive/helper/dialog_helper.dart';
 import 'package:beehive/provider/create_project_manager_provider.dart';
 import 'package:beehive/view/base_view.dart';
 import 'package:beehive/widget/image_view.dart';
@@ -82,7 +83,15 @@ class CreateProjectManager extends StatelessWidget {
                     color2: ColorConstants.primaryGradient1Color,
                     fontSize: DimensionConstants.d16.sp,
                     onBtnTap: () {
-                 provider.createProjectManager(context,);
+                      Navigator.pushNamed(context, RouteConstants.addCrewPageManager);
+                  // if(provider.projectNameController.text.isEmpty){
+                  //   DialogHelper.showMessage(context, "please_enter_project_name".tr());
+                  //
+                  // }else{
+                  //   CommonWidgets.hideKeyboard(context);
+                  //   provider.createProjectManager(context);
+                  // }
+
                     },
                     shadowRequired: true):const Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient1Color,),),
               ),

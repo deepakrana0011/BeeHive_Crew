@@ -2,6 +2,7 @@ import 'package:beehive/constants/color_constants.dart';
 import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/constants/image_constants.dart';
 import 'package:beehive/extension/all_extensions.dart';
+import 'package:beehive/helper/shared_prefs.dart';
 import 'package:beehive/provider/bottom_bar_provider.dart';
 import 'package:beehive/provider/dashboard_provider.dart';
 import 'package:beehive/view/base_view.dart';
@@ -339,7 +340,8 @@ Widget drawer(BuildContext context,BottomBarProvider provider) {
                     GestureDetector(
                       onTap: (){
                         Navigator.pop(context);
-                        Navigator.pushNamed(context, RouteConstants.signInScreen);
+                        SharedPreference.clearSharedPrefs();
+                        Navigator.pushNamed(context, RouteConstants.loginScreen);
                       },
                       child: drawerHeadingsRow(
                           context, ImageConstants.logoutIcon, "logout".tr()),

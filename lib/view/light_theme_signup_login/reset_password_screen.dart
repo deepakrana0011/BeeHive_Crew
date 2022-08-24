@@ -79,6 +79,7 @@ class ResetPasswordScreen extends StatelessWidget {
                                         CommonWidgets.commonButton(context, "reset_password".tr(), onBtnTap: (){
                                           if(_formKey.currentState!.validate()){
                                             CommonWidgets.hideKeyboard(context);
+
                                           }
                                         },shadowRequired: true)
                                       ],

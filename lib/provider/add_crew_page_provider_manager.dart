@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:beehive/model/add_crew_response_manager.dart';
 import 'package:beehive/provider/base_provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -16,7 +17,29 @@ class AddCrewPageManagerProvider extends BaseProvider{
         sharePositionOrigin: box!.localToGlobal(Offset.zero) & box.size);
   }
 
+  List<AddCrewData> crewList = [];
 
+  List<AddCrewData> selectedCrew = [];
+
+  addSelectedCrewToTheList(int index){
+  AddCrewData addCrewData = AddCrewData();
+    if (crewList[index].isSelected == true) {
+      addCrewData.sId = crewList[index].sId;
+      selectedCrew.add(addCrewData);
+      notifyListeners();
+    } else {
+      selectedCrew.removeWhere((element) =>
+      crewList[index].sId == element.sId);
+      notifyListeners();
+    }
+
+
+  }
+
+  updateValue(int index) {
+    crewList[index].isSelected = !crewList[index].isSelected;
+    notifyListeners();
+  }
 
 
 
@@ -25,6 +48,8 @@ class AddCrewPageManagerProvider extends BaseProvider{
     try {
       var model = await api.getCrewList(context);
       if (model.success == true) {
+        crewList.clear();
+        crewList.addAll(model.data!);
         setState(ViewState.idle);
       } else {
         setState(ViewState.idle);

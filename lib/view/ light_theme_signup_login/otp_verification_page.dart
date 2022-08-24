@@ -1,4 +1,5 @@
 import 'package:beehive/constants/route_constants.dart';
+import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/dialog_helper.dart';
 import 'package:beehive/provider/otp_page_provider.dart';
@@ -18,7 +19,8 @@ import '../../widget/image_view.dart';
 class OtpVerificationPage extends StatelessWidget {
   String phoneNumber;
   bool continueWithPhoneOrEmail;
-   OtpVerificationPage({Key? key,required this.phoneNumber,required this.continueWithPhoneOrEmail}) : super(key: key);
+  bool routeForResetPassword;
+   OtpVerificationPage({Key? key,required this.phoneNumber,required this.continueWithPhoneOrEmail,required this.routeForResetPassword}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -88,15 +90,15 @@ class OtpVerificationPage extends StatelessWidget {
                                     decoration: TextDecoration.underline),
                               ),
                               SizedBox(height: DimensionConstants.d35.h),
-                              CommonWidgets.commonButton(
+                             provider.state == ViewState.idle? CommonWidgets.commonButton(
                                   context, continueWithPhoneOrEmail == true?"verify_phone".tr():"verify_email".tr(), onBtnTap: () {
                                     if(provider.otp == ""){
                                       DialogHelper.showMessage(context, "Please enter OTP");
                                     }else{
-                                      Navigator.pushNamed(context, RouteConstants.bottomNavigationBar);
+                                    continueWithPhoneOrEmail == true? provider.otpVerificationCrew(context, phoneNumber,routeForResetPassword):provider.verifyEmailForOtp(context, phoneNumber);
                                     }
 
-                              }, shadowRequired: true)
+                              }, shadowRequired: true):Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,),),
                             ],
                           ),
                         )
@@ -130,9 +132,10 @@ Widget optFiled(
     enabled: true,
     borderRadius: BorderRadius.circular(DimensionConstants.d20.r),
     onCodeChanged: (String code) {
-      provider.updateProvider(code);
+
     },
     onSubmit: (String verificationCode) {
+      provider.updateProvider(verificationCode);
   }, // end onSubmit
   );
 }

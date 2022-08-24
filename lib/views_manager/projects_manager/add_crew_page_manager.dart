@@ -41,19 +41,8 @@ class AddCrewPageManager extends StatelessWidget {
                   SizedBox(
                     height: DimensionConstants.d13.h,
                   ),
-                  crewWidget(context,ImageConstants.userImage,ImageConstants.selectedIcon),
-                  SizedBox(height: DimensionConstants.d5.h,),
-                  crewWidget(context,ImageConstants.userImage2,ImageConstants.blankIcon),
-                  SizedBox(height: DimensionConstants.d5.h,),
-                  crewWidget(context,ImageConstants.userImage,ImageConstants.selectedIcon),
-                  SizedBox(height: DimensionConstants.d5.h,),
-                  crewWidget(context,ImageConstants.userImage3,ImageConstants.blankIcon),
-                  SizedBox(height: DimensionConstants.d5.h,),
-                  crewWidget(context,ImageConstants.userImage2,ImageConstants.selectedIcon),
-                  SizedBox(height: DimensionConstants.d5.h,),
-                  crewWidget(context,ImageConstants.userImage,ImageConstants.selectedIcon),
-                  SizedBox(height: DimensionConstants.d5.h,),
-                  crewWidget(context,ImageConstants.userImage2,ImageConstants.blankIcon),
+                  crewWidget(context,provider),
+
                   SizedBox(height: DimensionConstants.d30.h,),
                   CommonWidgets.commonButton(context, "next".tr(),
                       color1: ColorConstants.primaryGradient2Color,
@@ -189,31 +178,43 @@ Widget shareWidget(BuildContext context,AddCrewPageManagerProvider provider) {
   );
 }
 
-Widget crewWidget(BuildContext context,String image,String selected){
+Widget crewWidget(BuildContext context, AddCrewPageManagerProvider provider,){
   return Container(
     height: DimensionConstants.d60.h,
     width: double.infinity,
-    child: Row(
-      children:<Widget> [
-        ImageView(path: image ),
-        SizedBox(width: DimensionConstants.d16.w,),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisAlignment: MainAxisAlignment.center,
+    child: ListView.builder(
+      itemBuilder: (BuildContext context , int index){
+        return  Row(
           children:<Widget> [
-            Text("Jason Smith").boldText(context, DimensionConstants.d16.sp, TextAlign.left,color: ColorConstants.deepBlue),
-            Text("Carpenter").regularText(context, DimensionConstants.d14.sp, TextAlign.left,color: ColorConstants.deepBlue),
-            Text("Belleville, ON").regularText(context, DimensionConstants.d14.sp, TextAlign.left,color: ColorConstants.deepBlue),
+            //  ImageView(path: image ),
+            SizedBox(width: DimensionConstants.d16.w,),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children:<Widget> [
+               // Text(provider.crewList[index].).boldText(context, DimensionConstants.d16.sp, TextAlign.left,color: ColorConstants.deepBlue),
+                Text("Carpenter").regularText(context, DimensionConstants.d14.sp, TextAlign.left,color: ColorConstants.deepBlue),
+                Text("Belleville, ON").regularText(context, DimensionConstants.d14.sp, TextAlign.left,color: ColorConstants.deepBlue),
+
+              ],
+            ),
+            Expanded(child: Container()),
+            ImageView(path: provider.crewList[index].isSelected == false ?ImageConstants.blankIcon:ImageConstants.selectedIcon,),
 
           ],
-        ),
-        Expanded(child: Container()),
-        ImageView(path: selected,),
+        );
 
-      ],
+
+
+      },
+
     ),
 
 
   );
 
 }
+/*
+crewWidget(context,ImageConstants.userImage,ImageConstants.selectedIcon),
+SizedBox(height: DimensionConstants.d5.h,),
+crewWidget(context,ImageConstants.userImage2,ImageConstants.blankIcon),*/

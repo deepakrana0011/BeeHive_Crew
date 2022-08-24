@@ -9,6 +9,7 @@ import 'package:beehive/helper/common_widgets.dart';
 import 'package:beehive/helper/decoration.dart';
 import 'package:beehive/helper/validations.dart';
 import 'package:beehive/provider/base_provider.dart';
+import 'package:beehive/provider/email_address_screen_provider.dart';
 import 'package:beehive/view/%20light_theme_signup_login/otp_verification_page.dart';
 import 'package:beehive/view/base_view.dart';
 import 'package:beehive/view/light_theme_signup_login/sign_up_screen.dart';
@@ -26,7 +27,7 @@ class EmailAddressScreen extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
-    return BaseView<BaseProvider>(builder: (context, provider, _){
+    return BaseView<EmailAddressScreenProvider>(builder: (context, provider, _){
       return Scaffold(
         backgroundColor: ColorConstants.colorWhite,
         body: Form(
@@ -76,7 +77,7 @@ class EmailAddressScreen extends StatelessWidget {
                                 CommonWidgets.commonButton(context, "continue".tr(), onBtnTap: (){
                                   if(_formKey.currentState!.validate()){
                                     if(fromForgotPassword == true){
-                                      Navigator.pushNamed(context, RouteConstants.otpVerificationPage,arguments: OtpVerificationPage(phoneNumber: emailController.text, continueWithPhoneOrEmail: false));
+                                     provider.emailVerificationCrew(context, emailController.text);
                                     }else{
                                       Navigator.pushNamed(context, RouteConstants.signUpScreen, arguments: SignUpScreen(email: emailController.text));
                                     }

@@ -8,7 +8,8 @@ class BaseProvider extends ChangeNotifier {
   ViewState _state = ViewState.idle;
   bool _isDisposed = false;
 
-  Api api = locator<Api>();
+  ApiManager api = locator<ApiManager>();
+  ApiCrew apiCrew = locator<ApiCrew>();
   ViewState get state => _state;
 
   void setState(ViewState viewState) {
