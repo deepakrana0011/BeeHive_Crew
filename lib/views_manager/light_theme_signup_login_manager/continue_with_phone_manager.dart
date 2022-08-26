@@ -10,6 +10,7 @@ import 'package:beehive/locator.dart';
 import 'package:beehive/provider/continue_with_phone_provider.dart';
 import 'package:beehive/view/base_view.dart';
 import 'package:beehive/view/light_theme_signup_login/email_address_screen.dart';
+import 'package:beehive/views_manager/light_theme_signup_login_manager/email_address_screen_manager.dart';
 import 'package:beehive/widget/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,6 @@ class ContinueWithPhoneManager extends StatelessWidget {
           CommonWidgets.hideKeyboard(context);
         },
         child: Scaffold(
-          backgroundColor: ColorConstants.colorWhite,
           body: Form(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,23 +80,26 @@ class ContinueWithPhoneManager extends StatelessWidget {
                               phoneNumberWidget(provider.phoneNumberController),
                               SizedBox(height: DimensionConstants.d25.h),
                               GestureDetector(
-                                onTap: (){
-                                 // Navigator.pushNamed(context, RouteConstants.emailAddressScreen,arguments: EmailAddressScreen(fromForgotPassword: true,));
+                                onTap: () {
+                                   Navigator.pushNamed(context, RouteConstants.emailAddressScreenManager,arguments: EmailAddressScreenManager(fromForgotPassword: true,));
                                 },
                                 child: Align(
                                   alignment: Alignment.center,
-                                  child: Text("continue_with_email".tr()).regularText(context,
-                                      DimensionConstants.d14.sp, TextAlign.center,
-                                      color: ColorConstants.colorBlack,
-                                      decoration: TextDecoration.underline
-                                  ),
+                                  child: Text("continue_with_email".tr())
+                                      .regularText(
+                                          context,
+                                          DimensionConstants.d14.sp,
+                                          TextAlign.center,
+                                          color: ColorConstants.colorBlack,
+                                          decoration: TextDecoration.underline),
                                 ),
                               ),
                               SizedBox(height: DimensionConstants.d50.h),
-                              CommonWidgets.commonButton(context, "continue".tr(),
-                                  onBtnTap: () {
-                                  Navigator.pushNamed(context, RouteConstants.otpVerificationPageManager);
-                              },shadowRequired: true)
+                              CommonWidgets.commonButton(
+                                  context, "continue".tr(), onBtnTap: () {
+                                Navigator.pushNamed(context,
+                                    RouteConstants.otpVerificationPageManager);
+                              }, shadowRequired: true)
                             ],
                           ),
                         )
@@ -122,26 +125,33 @@ Widget phoneNumberWidget(TextEditingController controller) {
                 bottom: BorderSide(
                     color: ColorConstants.grayD2D2D7,
                     width: DimensionConstants.d2.w))),
-        child: InternationalPhoneNumberInput(
-          textFieldController: controller,
-          onInputChanged: (value) {},
-          formatInput: true,
-          selectorConfig: const SelectorConfig(
-            selectorType: PhoneInputSelectorType.DIALOG,
+        child: Theme(
+          data: ThemeData(
+            primarySwatch: color
           ),
-          selectorTextStyle: TextStyle(
-              fontSize: DimensionConstants.d20.sp, fontWeight: FontWeight.w700),
-          inputDecoration: InputDecoration(
-              contentPadding: EdgeInsets.only(
-                bottom: DimensionConstants.d15.h,
-                right: DimensionConstants.d10.w,
-              ),
-              border: InputBorder.none,
-              hintText: "mobileNumber".tr(),
-              hintStyle: TextStyle(
-                color: ColorConstants.colorBlack,
-                fontSize: DimensionConstants.d18.sp,
-              )),
+          child: InternationalPhoneNumberInput(
+            textFieldController: controller,
+            onInputChanged: (value) {},
+            formatInput: true,
+            selectorConfig: const SelectorConfig(
+              selectorType: PhoneInputSelectorType.DIALOG,
+            ),
+            selectorTextStyle: TextStyle(
+              fontSize: DimensionConstants.d20.sp,
+              fontWeight: FontWeight.w700,
+            ),
+            inputDecoration: InputDecoration(
+                contentPadding: EdgeInsets.only(
+                  bottom: DimensionConstants.d15.h,
+                  right: DimensionConstants.d10.w,
+                ),
+                border: InputBorder.none,
+                hintText: "mobileNumber".tr(),
+                hintStyle: TextStyle(
+                  color: ColorConstants.colorBlack,
+                  fontSize: DimensionConstants.d18.sp,
+                )),
+          ),
         ),
       ),
       Positioned(
@@ -149,11 +159,14 @@ Widget phoneNumberWidget(TextEditingController controller) {
           left: DimensionConstants.d100.w,
           child: Row(
             children: [
-              ImageView(path: ImageConstants.dropDownPhoneIcon,
-              width: DimensionConstants.d9.w,
+              ImageView(
+                path: ImageConstants.dropDownPhoneIcon,
+                width: DimensionConstants.d9.w,
                 height: DimensionConstants.d6.h,
               ),
-              SizedBox(width: DimensionConstants.d6.w,),
+              SizedBox(
+                width: DimensionConstants.d6.w,
+              ),
               Container(
                 height: DimensionConstants.d25.h,
                 width: DimensionConstants.d2.w,
@@ -164,3 +177,16 @@ Widget phoneNumberWidget(TextEditingController controller) {
     ],
   );
 }
+ MaterialColor color = const MaterialColor(0xFFFDB726, <int, Color>{
+  50: Color(0xFFFDB726),
+  100: Color(0xFFFDB726),
+  200: Color(0xFFFDB726),
+  300: Color(0xFFFDB726),
+  400: Color(0xFFFDB726),
+  500: Color(0xFFFDB726),
+  600: Color(0xFFFDB726),
+  700: Color(0xFFFDB726),
+  800: Color(0xFFFDB726),
+  900: Color(0xFFFDB726),
+});
+

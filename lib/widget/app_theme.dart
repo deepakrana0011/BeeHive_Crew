@@ -8,7 +8,11 @@ class AppTheme {
   AppTheme._();
 
   static final ThemeData lightTheme = ThemeData(
-    primarySwatch: color,
+      textSelectionTheme: const TextSelectionThemeData(
+        cursorColor: ColorConstants.grayD2D2D7,
+        selectionHandleColor: Colors.transparent,
+      ),
+    primarySwatch:color,
     scaffoldBackgroundColor: ColorConstants.colorWhite,
     appBarTheme: const AppBarTheme(
       color: ColorConstants.colorWhite,
@@ -40,6 +44,7 @@ class AppTheme {
         color: ColorConstants.colorWhite,
         fontSize: 18.0,
       ),
+
     ),
       drawerTheme: const DrawerThemeData(
           backgroundColor: ColorConstants.colorWhite
@@ -59,9 +64,12 @@ class AppTheme {
       ),
       selectedItemColor: ColorConstants.colorBlack,
       unselectedItemColor: ColorConstants.colorBlack,
-    )
-  );
+    ),
+    dialogTheme: const DialogTheme(
+     backgroundColor: ColorConstants.grayF2F2F2,
 
+    ),
+  );
   static final ThemeData darkTheme = ThemeData(
     primarySwatch: color,
     scaffoldBackgroundColor: ColorConstants.colorBlack,
@@ -114,7 +122,8 @@ class AppTheme {
         ),
         selectedItemColor: ColorConstants.colorWhite,
         unselectedItemColor: ColorConstants.colorWhite,
-      )
+      ),
+
   );
 
  static MaterialColor color = const MaterialColor(0xFFFDB726, <int, Color>{

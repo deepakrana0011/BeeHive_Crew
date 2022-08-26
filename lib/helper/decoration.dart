@@ -11,6 +11,7 @@ class ViewDecoration {
 
   static InputDecoration inputDecorationTextField({bool contPadding = false, Widget? suffixIcon, Color? fillColor, Color? focusColor, Widget? suffix}) {
     return InputDecoration(
+
       suffixIconConstraints: const BoxConstraints(maxHeight: 15),
         suffixIcon: suffixIcon,
         suffix: suffix,
@@ -22,6 +23,7 @@ class ViewDecoration {
           fontSize: DimensionConstants.d14.sp,
           fontFamily: StringConstants.fontFamily
         ),
+
         fillColor: fillColor,
         focusColor: focusColor,
         contentPadding: contPadding ?

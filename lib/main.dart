@@ -1,4 +1,5 @@
 
+import 'package:beehive/constants/color_constants.dart';
 import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/helper/shared_prefs.dart';
@@ -82,3 +83,4 @@ class MyApp extends StatelessWidget {
   }
 
 }
+

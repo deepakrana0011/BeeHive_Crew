@@ -339,7 +339,7 @@ Widget drawer(BuildContext context,BottomBarProvider provider) {
                     GestureDetector(
                       onTap: (){
                         Navigator.pop(context);
-                        Navigator.pushNamed(context, RouteConstants.signInScreen);
+                        Navigator.pushNamed(context, RouteConstants.selectToContinueScreen);
                       },
                       child: drawerHeadingsRow(
                           context, ImageConstants.logoutIcon, "logout".tr()),

@@ -122,26 +122,32 @@ Widget phoneNumberWidget(TextEditingController controller) {
                 bottom: BorderSide(
                     color: ColorConstants.grayD2D2D7,
                     width: DimensionConstants.d2.w))),
-        child: InternationalPhoneNumberInput(
-          textFieldController: controller,
-          onInputChanged: (value) {},
-          formatInput: true,
-          selectorConfig: const SelectorConfig(
-            selectorType: PhoneInputSelectorType.DIALOG,
+        child: Theme(
+          data: ThemeData(
+            primarySwatch: color
           ),
-          selectorTextStyle: TextStyle(
-              fontSize: DimensionConstants.d20.sp, fontWeight: FontWeight.w700),
-          inputDecoration: InputDecoration(
-              contentPadding: EdgeInsets.only(
-                bottom: DimensionConstants.d15.h,
-                right: DimensionConstants.d10.w,
-              ),
-              border: InputBorder.none,
-              hintText: "mobileNumber".tr(),
-              hintStyle: TextStyle(
-                color: ColorConstants.colorBlack,
-                fontSize: DimensionConstants.d18.sp,
-              )),
+          child: InternationalPhoneNumberInput(
+            cursorColor: ColorConstants.darkGray4F4F4F,
+            textFieldController: controller,
+            onInputChanged: (value) {},
+            formatInput: false,
+            selectorConfig: const SelectorConfig(
+              selectorType: PhoneInputSelectorType.DIALOG,
+            ),
+            selectorTextStyle: TextStyle(
+                fontSize: DimensionConstants.d20.sp, fontWeight: FontWeight.w700),
+            inputDecoration: InputDecoration(
+                contentPadding: EdgeInsets.only(
+                  bottom: DimensionConstants.d15.h,
+                  right: DimensionConstants.d10.w,
+                ),
+                border: InputBorder.none,
+                hintText: "mobileNumber".tr(),
+                hintStyle: TextStyle(
+                  color: ColorConstants.colorBlack,
+                  fontSize: DimensionConstants.d18.sp,
+                )),
+          ),
         ),
       ),
       Positioned(
@@ -164,3 +170,15 @@ Widget phoneNumberWidget(TextEditingController controller) {
     ],
   );
 }
+MaterialColor color = const MaterialColor(0xFFFDB726, <int, Color>{
+  50: Color(0xFFFDB726),
+  100: Color(0xFFFDB726),
+  200: Color(0xFFFDB726),
+  300: Color(0xFFFDB726),
+  400: Color(0xFFFDB726),
+  500: Color(0xFFFDB726),
+  600: Color(0xFFFDB726),
+  700: Color(0xFFFDB726),
+  800: Color(0xFFFDB726),
+  900: Color(0xFFFDB726),
+});

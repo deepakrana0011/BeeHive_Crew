@@ -99,6 +99,7 @@ Widget optFiled(
   BuildContext context,
 ) {
   return OtpTextField(
+
     fieldWidth: DimensionConstants.d60.w,
     numberOfFields: 4,
     cursorColor: ColorConstants.primaryColor,
