@@ -24,15 +24,12 @@ class AddCrewPageManagerProvider extends BaseProvider{
   addSelectedCrewToTheList(int index){
   AddCrewData addCrewData = AddCrewData();
     if (crewList[index].isSelected == true) {
-      addCrewData.sId = crewList[index].sId;
-      selectedCrew.add(addCrewData);
+      addCrewData.sId = crewList[index].sId;selectedCrew.add(addCrewData);
       notifyListeners();
     } else {
-      selectedCrew.removeWhere((element) =>
-      crewList[index].sId == element.sId);
+      selectedCrew.removeWhere((element) => crewList[index].sId == element.sId);
       notifyListeners();
     }
-
 
   }
 
@@ -53,7 +50,6 @@ class AddCrewPageManagerProvider extends BaseProvider{
         setState(ViewState.idle);
       } else {
         setState(ViewState.idle);
-
       }
     } on FetchDataException catch (e) {
       setState(ViewState.idle);

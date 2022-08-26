@@ -11,6 +11,7 @@ class ApiConstantsManager{
 }
 class ApiConstantsCrew{
   static const String BASEURL = "http://3.235.151.126:8081/Crew/";
+  static const String BASE_URL_IMAGE = "http://3.235.151.126:8081/";
   static const String SIGNUP = "crewsignup";
   static const String PHONE_VERIFICATION = "sendingotp";
   static const String VERIFY_OTP = "verifyingotp";
@@ -18,6 +19,8 @@ class ApiConstantsCrew{
   static const String RESET_PASSWORD = "resetpassword";
   static const String VERIFY_CREW_EMAIL = "verifyemail";
   static const String VERIFY_EMAIL_OTP = "verifyingemail";
+  static const String GET_CREW_PROFILE = "getuserprofile";
+  static const String UPDATE_CREW_PROFILE = "updateprofile/";
 
 
 

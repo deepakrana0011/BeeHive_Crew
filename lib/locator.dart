@@ -25,6 +25,7 @@ import 'package:beehive/provider/login_provider.dart';
 import 'package:beehive/provider/otp_page_provider.dart';
 import 'package:beehive/provider/otp_page_verification_manager.dart';
 import 'package:beehive/provider/profile_page_manager_provider.dart';
+import 'package:beehive/provider/profile_page_provider.dart';
 import 'package:beehive/provider/project_details_manager_provider.dart';
 import 'package:beehive/provider/project_details_provider.dart';
 import 'package:beehive/provider/project_settings_manager_provider.dart';
@@ -85,6 +86,7 @@ void setUpLocator(){
   locator.registerFactory(() => ContinueWithPhoneManagerProvider());
   locator.registerFactory(() => EmailAddressScreenManagerProvider());
   locator.registerFactory(() => EmailAddressScreenProvider());
+  locator.registerFactory(() => ProfilePageProvider());
   locator.registerLazySingleton(() => ApiManager());
   locator.registerLazySingleton(() => ApiCrew());
   locator.registerLazySingleton<Dio>(() {

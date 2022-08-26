@@ -50,7 +50,7 @@ class OtpPageProvider extends BaseProvider{
       var model = await apiCrew.verifyEmailForOtp(context,email ,otp);
       if (model.success == true) {
         setState(ViewState.idle);
-        Navigator.pushNamedAndRemoveUntil(context, RouteConstants.bottomNavigationBar, (route) => false);
+        Navigator.pushNamed(context, RouteConstants.bottomNavigationBar, );
         DialogHelper.showMessage(context, model.message!);
       } else {
         setState(ViewState.idle);

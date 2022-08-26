@@ -38,7 +38,6 @@ class BaseProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
-
   @override
   void dispose() {
     _isDisposed = true;

@@ -1,8 +1,12 @@
+import 'package:beehive/constants/api_constants.dart';
 import 'package:beehive/constants/color_constants.dart';
 import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/constants/image_constants.dart';
 import 'package:beehive/constants/route_constants.dart';
+import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
+import 'package:beehive/provider/profile_page_provider.dart';
+import 'package:beehive/view/base_view.dart';
 import 'package:beehive/widget/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -15,76 +19,87 @@ class Profile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            profileWidget(context, () {
-              Navigator.pushNamed(context, RouteConstants.editProfilePage);
-            }),
-            SizedBox(
-              height: DimensionConstants.d38.h,
+    return BaseView<ProfilePageProvider>(
+        onModelReady: (provider){
+          provider.getCrewProfile(context);
+        },
+        builder: (context,provider,_){
+          return Scaffold(
+            body: SingleChildScrollView(
+              child:provider.state == ViewState.idle? Column(
+                children: <Widget>[
+                  profileWidget(context, () {
+                    Navigator.pushNamed(context, RouteConstants.editProfilePage).then((value) {
+                      provider.getCrewProfile(context);
+                    });
+                  },provider),
+                  SizedBox(
+                    height: DimensionConstants.d38.h,
+                  ),
+                  profileDetailsWidget(context, ImageConstants.companyIcon, provider.getObj!.data!.company == null?"xyz Company":provider.getObj!.data!.company!, false),
+                  SizedBox(
+                    height: DimensionConstants.d38.h,
+                  ),
+                  profileDetailsWidget(
+                      context, ImageConstants.callerIcon, provider.getObj!.data!.phoneNumber == null?"123-555-2514":provider.getObj!.data!.phoneNumber!.toString(), false),
+                  SizedBox(
+                    height: DimensionConstants.d38.h,
+                  ),
+                  profileDetailsWidget(context, ImageConstants.mailerIcon, provider.getObj!.data!.email == null?"johnsmith@gmail.comxxx":provider.getObj!.data!.email!, false),
+                  SizedBox(
+                    height: DimensionConstants.d38.h,
+                  ),
+                  profileDetailsWidget(context, ImageConstants.locationIcon, provider.getObj!.data!.address == null?"88 Bloor St E. Toronto ONM4W3G9":provider.getObj!.data!.address!, false),
+                  SizedBox(
+                    height: DimensionConstants.d38.h,
+                  ),
+                  GestureDetector(
+                      onTap: () {
+                        Navigator.pushNamed(
+                            context, RouteConstants.changePasswordPage);
+                      },
+                      child: profileDetailsWidget(context, ImageConstants.lockIcon,
+                          "change_password".tr(), true)),
+                  SizedBox(
+                    height: DimensionConstants.d50.h,
+                  ),
+                  certificationAndAddButtonWidget(context),
+                  SizedBox(
+                    height: DimensionConstants.d25.h,
+                  ),
+                  scaleNotesWidget(context),
+                  SizedBox(
+                    height: DimensionConstants.d25.h,
+                  ),
+                  Padding(
+                    padding:
+                    EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
+                    child: CommonWidgets.commonButton(
+                        context, "upgrade_to_crew_manager".tr(),
+                        color1: ColorConstants.blueGradient2Color,
+                        color2: ColorConstants.blueGradient1Color,
+                        fontSize: DimensionConstants.d14.sp, onBtnTap: () {
+                      Navigator.pushNamed(context, RouteConstants.upgradePage);
+                    }),
+                  ),
+                  SizedBox(
+                    height: DimensionConstants.d40.h,
+                  ),
+                ],
+              ):Padding(
+                padding: EdgeInsets.only(top: DimensionConstants.d300.h),
+                child: const Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,)),
+              ),
             ),
-            profileDetailsWidget(
-                context, ImageConstants.companyIcon, "xyz Company", false),
-            SizedBox(
-              height: DimensionConstants.d38.h,
-            ),
-            profileDetailsWidget(
-                context, ImageConstants.callerIcon, "123-555-2514", false),
-            SizedBox(
-              height: DimensionConstants.d38.h,
-            ),
-            profileDetailsWidget(context, ImageConstants.mailerIcon,
-                "johnsmith@gmail.com", false),
-            SizedBox(
-              height: DimensionConstants.d38.h,
-            ),
-            profileDetailsWidget(context, ImageConstants.locationIcon,
-                "88 Bloor St E. Toronto ONM4W3G9", false),
-            SizedBox(
-              height: DimensionConstants.d38.h,
-            ),
-            GestureDetector(
-                onTap: () {
-                  Navigator.pushNamed(
-                      context, RouteConstants.changePasswordPage);
-                },
-                child: profileDetailsWidget(context, ImageConstants.lockIcon,
-                    "change_password".tr(), true)),
-            SizedBox(
-              height: DimensionConstants.d50.h,
-            ),
-            certificationAndAddButtonWidget(context),
-            SizedBox(
-              height: DimensionConstants.d25.h,
-            ),
-            scaleNotesWidget(context),
-            SizedBox(
-              height: DimensionConstants.d25.h,
-            ),
-            Padding(
-              padding:
-                  EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
-              child: CommonWidgets.commonButton(
-                  context, "upgrade_to_crew_manager".tr(),
-                  color1: ColorConstants.blueGradient2Color,
-                  color2: ColorConstants.blueGradient1Color,
-                  fontSize: DimensionConstants.d14.sp, onBtnTap: () {
-               Navigator.pushNamed(context, RouteConstants.upgradePage);
-              }),
-            ),
-            SizedBox(
-              height: DimensionConstants.d40.h,
-            ),
-          ],
-        ),
-      ),
-    );
+          );
+
+
+
+        });
   }
 }
 
-Widget profileWidget(BuildContext context, VoidCallback onTapOnEditButton) {
+Widget profileWidget(BuildContext context, VoidCallback onTapOnEditButton, ProfilePageProvider provider) {
   return Stack(
     children: <Widget>[
       Container(
@@ -144,32 +159,48 @@ Widget profileWidget(BuildContext context, VoidCallback onTapOnEditButton) {
         ),
       ),
       Positioned(
-          left: DimensionConstants.d120.w,
+          left: DimensionConstants.d110.w,
           top: DimensionConstants.d58.h,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              ImageView(
-                path: ImageConstants.personIcon,
+              Container(
                 height: DimensionConstants.d150.h,
                 width: DimensionConstants.d150.w,
+                decoration: BoxDecoration(
+                  color: ColorConstants.colorWhite,
+                  borderRadius: BorderRadius.circular(DimensionConstants.d75.r)
+                ),
+                child: Padding(
+                  padding:  const EdgeInsets.all(DimensionConstants.d3),
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(DimensionConstants.d75.r),
+                    child: ImageView(
+                      path: provider.getObj!.data!.profileImage ==null ? ImageConstants.personIcon: "http://3.235.151.126:8081/"+provider.getObj!.data!.profileImage!,
+                      height: DimensionConstants.d150.h,
+                      width: DimensionConstants.d150.w,
+                      radius: DimensionConstants.d75.r,
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
               ),
               SizedBox(
                 height: DimensionConstants.d20.h,
               ),
-              const Text("John Smith").boldText(
+               Text(provider.getObj!.data!.name == null?"Namexxx":provider.getObj!.data!.name!).boldText(
                   context, DimensionConstants.d30.sp, TextAlign.center,
                   color: ColorConstants.colorWhite),
               SizedBox(
                 height: DimensionConstants.d8.h,
               ),
-              Text("carpenter".tr()).semiBoldText(
+              Text(provider.getObj!.data!.position == null?"Positionxx".tr():provider.getObj!.data!.position!).semiBoldText(
                   context, DimensionConstants.d20.sp, TextAlign.center,
                   color: ColorConstants.colorWhite),
               SizedBox(
                 height: DimensionConstants.d4.h,
               ),
-              Text("Framing & Finishing").regularText(
+              Text(provider.getObj!.data!.speciality == null?"Specialityxx":provider.getObj!.data!.speciality!).regularText(
                   context, DimensionConstants.d14.sp, TextAlign.center,
                   color: ColorConstants.colorWhite),
             ],

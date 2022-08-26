@@ -1,3 +1,4 @@
+import 'package:beehive/constants/api_constants.dart';
 import 'package:beehive/constants/color_constants.dart';
 import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/constants/image_constants.dart';
@@ -20,7 +21,10 @@ class AddCrewPageManager extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BaseView<AddCrewPageManagerProvider>(
-      onModelReady: (provider){},
+      onModelReady: (provider){
+        provider.getCrewList(context);
+
+      },
       builder: (context,provider,_){
         return Scaffold(
           appBar:
@@ -42,14 +46,11 @@ class AddCrewPageManager extends StatelessWidget {
                     height: DimensionConstants.d13.h,
                   ),
                   crewWidget(context,provider),
-
                   SizedBox(height: DimensionConstants.d30.h,),
                   CommonWidgets.commonButton(context, "next".tr(),
                       color1: ColorConstants.primaryGradient2Color,
                       color2: ColorConstants.primaryGradient1Color,
                       fontSize: DimensionConstants.d14.sp, onBtnTap: () {
-                       provider.getCrewList(context);
-
                       },
                       shadowRequired: true
                   ),
@@ -180,28 +181,47 @@ Widget shareWidget(BuildContext context,AddCrewPageManagerProvider provider) {
 
 Widget crewWidget(BuildContext context, AddCrewPageManagerProvider provider,){
   return Container(
-    height: DimensionConstants.d60.h,
+    height: DimensionConstants.d420.h,
     width: double.infinity,
     child: ListView.builder(
+      itemCount: provider.crewList.length,
       itemBuilder: (BuildContext context , int index){
-        return  Row(
-          children:<Widget> [
-            //  ImageView(path: image ),
-            SizedBox(width: DimensionConstants.d16.w,),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
+        return  Padding(
+          padding:  EdgeInsets.symmetric(vertical: DimensionConstants.d8.h),
+          child: Container(
+            height: DimensionConstants.d60.h,
+            width: double.infinity,
+            child: Row(
               children:<Widget> [
-               // Text(provider.crewList[index].).boldText(context, DimensionConstants.d16.sp, TextAlign.left,color: ColorConstants.deepBlue),
-                Text("Carpenter").regularText(context, DimensionConstants.d14.sp, TextAlign.left,color: ColorConstants.deepBlue),
-                Text("Belleville, ON").regularText(context, DimensionConstants.d14.sp, TextAlign.left,color: ColorConstants.deepBlue),
+                 ClipRRect(
+                   borderRadius: BorderRadius.circular(DimensionConstants.d30.r),
+                   child: ImageView(path: "${ApiConstantsCrew.BASE_URL_IMAGE}""${provider.crewList[index].profileImage}",height: DimensionConstants.d60.h,
+                   width: DimensionConstants.d60.w,
+                   radius: DimensionConstants.d30.r,
+                   fit: BoxFit.cover,
+                   ),
+                 ),
+                SizedBox(width: DimensionConstants.d16.w,),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children:<Widget> [
+                    Text(provider.crewList[index].name.toString()).boldText(context, DimensionConstants.d16.sp, TextAlign.left,color: ColorConstants.deepBlue),
+                    Text(provider.crewList[index].position!).regularText(context, DimensionConstants.d14.sp, TextAlign.left,color: ColorConstants.deepBlue),
+                    Text(provider.crewList[index].address.toString()).regularText(context, DimensionConstants.d14.sp, TextAlign.left,color: ColorConstants.deepBlue),
+                  ],
+                ),
+                Expanded(child: Container()),
+                GestureDetector(
+                    onTap: (){
+                      provider.updateValue(index);
+                      provider.addSelectedCrewToTheList(index);
+                    },
+                    child: ImageView(path: provider.crewList[index].isSelected == false ?ImageConstants.blankIcon:ImageConstants.selectedIcon,)),
 
               ],
             ),
-            Expanded(child: Container()),
-            ImageView(path: provider.crewList[index].isSelected == false ?ImageConstants.blankIcon:ImageConstants.selectedIcon,),
-
-          ],
+          ),
         );
 
 

@@ -341,7 +341,7 @@ Widget drawer(BuildContext context,BottomBarProvider provider) {
                       onTap: (){
                         Navigator.pop(context);
                         SharedPreference.clearSharedPrefs();
-                        Navigator.pushNamed(context, RouteConstants.loginScreen);
+                        Navigator.pushNamed(context, RouteConstants.selectToContinueScreen);
                       },
                       child: drawerHeadingsRow(
                           context, ImageConstants.logoutIcon, "logout".tr()),

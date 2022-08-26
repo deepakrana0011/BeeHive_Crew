@@ -1,6 +1,7 @@
 import 'package:beehive/constants/color_constants.dart';
 import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/constants/image_constants.dart';
+import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
 import 'package:beehive/provider/edit_profile_provider.dart';
@@ -20,13 +21,16 @@ class EditProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BaseView<EditProfileProvider>(
-      onModelReady: (provider) {},
+      onModelReady: (provider) async {
+       await provider.getCrewProfile(context);
+          provider.setAllController();
+      },
       builder: (context, provider, _) {
         return Scaffold(
           appBar: CommonWidgets.appBarWithTitleAndAction(context,
               title: "edit_profile", actionButtonRequired: false),
           body: SingleChildScrollView(
-            child: Column(
+            child:provider.state == ViewState.idle? Column(
               children: <Widget>[
                 SizedBox(
                   height: DimensionConstants.d17.h,
@@ -38,9 +42,11 @@ class EditProfilePage extends StatelessWidget {
                           DialogHelper.getPhotoDialog(
                             context,
                             photoFromCamera: () {
+                              provider.upDateImageChanged();
                               provider.addProfilePic(context, 1);
                             },
                             photoFromGallery: () {
+                              provider.upDateImageChanged();
                               provider.addProfilePic(context, 2);
                             },
                           ));
@@ -48,15 +54,15 @@ class EditProfilePage extends StatelessWidget {
                 SizedBox(
                   height: DimensionConstants.d24.h,
                 ),
-                textFiledName(context, "name", "John Smith"),
+                textFiledName(context, "name", "John Smith",provider.nameController),
                 SizedBox(
                   height: DimensionConstants.d16.h,
                 ),
-                textFiledName(context, "title", "Carpenter"),
+                textFiledName(context, "title", "Carpenter",provider.titleController),
                 SizedBox(
                   height: DimensionConstants.d16.h,
                 ),
-                textFiledName(context, "specialty", "Framing & Finishing"),
+                textFiledName(context, "specialty", "Framing & Finishing",provider.specialityController),
                 SizedBox(
                   height: DimensionConstants.d24.h,
                 ),
@@ -69,20 +75,20 @@ class EditProfilePage extends StatelessWidget {
                 SizedBox(
                   height: DimensionConstants.d24.h,
                 ),
-                textFiledName(context, "company", "xyz Company"),
+                textFiledName(context, "company", "xyz Company",provider.companyNameController),
                 SizedBox(
                   height: DimensionConstants.d16.h,
                 ),
-                textFiledName(context, "phone", "123-555-2514"),
+                textFiledName(context, "phone", "123-555-2514",provider.phoneNumberController),
                 SizedBox(
                   height: DimensionConstants.d16.h,
                 ),
-                textFiledName(context, "email", "johnsmith@gmail.com"),
+                textFiledName(context, "email", "johnsmith@gmail.com",provider.emailController),
                 SizedBox(
                   height: DimensionConstants.d16.h,
                 ),
                 textFiledName(
-                    context, "address", "88 Bloor St E. Toronto, ON, M4W3G9"),
+                    context, "address", "88 Bloor St E. Toronto, ON, M4W3G9",provider.addressController),
                 SizedBox(
                   height: DimensionConstants.d38.h,
                 ),
@@ -93,7 +99,7 @@ class EditProfilePage extends StatelessWidget {
                       color1: ColorConstants.primaryGradient2Color,
                       color2: ColorConstants.primaryGradient1Color,
                       fontSize: DimensionConstants.d14.sp, onBtnTap: () {
-                    Navigator.of(context).pop();
+                   provider.updateCrewProfile(context);
                   },
                     shadowRequired: true
                   ),
@@ -102,7 +108,10 @@ class EditProfilePage extends StatelessWidget {
                   height: DimensionConstants.d50.h,
                 ),
               ],
-            ),
+            ):Padding(
+              padding:  EdgeInsets.only(top: DimensionConstants.d300.h),
+              child: const Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,),),
+            )
           ),
         );
       },
@@ -141,7 +150,7 @@ Widget profilePic(BuildContext context, VoidCallback changePhotoTap,
   );
 }
 
-Widget textFiledName(BuildContext context, String title, String hintName) {
+Widget textFiledName(BuildContext context, String title, String hintName, TextEditingController controller) {
   return Padding(
     padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
     child: Column(
@@ -170,6 +179,7 @@ Widget textFiledName(BuildContext context, String title, String hintName) {
             borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
           ),
           child: TextFormField(
+            controller: controller,
             cursorColor: Theme.of(context).brightness == Brightness.dark
                 ? ColorConstants.colorWhite
                 : ColorConstants.colorBlack,
