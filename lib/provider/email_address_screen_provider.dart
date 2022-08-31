@@ -11,13 +11,13 @@ import '../view/ light_theme_signup_login/otp_verification_page.dart';
 class EmailAddressScreenProvider extends BaseProvider{
 
 
-  Future emailVerificationCrew(BuildContext context, String email) async {
+  Future emailVerifcationCrew(BuildContext context, String email) async {
     setState(ViewState.busy);
     try {
       var model = await apiCrew.verifyCrewEmail(context,email );
       if (model.success == true) {
         setState(ViewState.idle);
-        Navigator.pushNamed(context, RouteConstants.otpVerificationPage,arguments: OtpVerificationPage(phoneNumber: email, continueWithPhoneOrEmail: false, routeForResetPassword: false,));
+        Navigator.pushNamed(context, RouteConstants.otpVerificationPage,arguments: OtpVerificationPage(phoneNumber: email, continueWithPhoneOrEmail: false, routeForResetPassword: 2,));
         DialogHelper.showMessage(context, model.message!);
       } else {
         setState(ViewState.idle);
@@ -31,6 +31,32 @@ class EmailAddressScreenProvider extends BaseProvider{
       DialogHelper.showMessage(context, "internet_connection".tr());
     }
   }
+
+
+  Future verifyEmailForOtp(BuildContext context, String email,) async {
+    setState(ViewState.busy);
+    try {
+      var model = await apiCrew.getOtpForPasswordResetCrew(context,email );
+      if (model.success == true) {
+        setState(ViewState.idle);
+        Navigator.pushNamed(context, RouteConstants.otpVerificationPage,arguments: OtpVerificationPage(phoneNumber: email, continueWithPhoneOrEmail: false, routeForResetPassword: 3,));
+        DialogHelper.showMessage(context, model.message!);
+      } else {
+        setState(ViewState.idle);
+        DialogHelper.showMessage(context, model.message!);
+      }
+    } on FetchDataException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, e.toString());
+    } on SocketException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, "internet_connection".tr());
+    }
+  }
+
+
+
+
 
 
 

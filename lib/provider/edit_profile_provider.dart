@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:beehive/constants/api_constants.dart';
+import 'package:beehive/constants/image_constants.dart';
 import 'package:beehive/provider/base_provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -52,12 +53,12 @@ class EditProfileProvider extends BaseProvider {
   }
 
   setAllController() {
-    profileImage = "${ApiConstantsCrew.BASE_URL_IMAGE}${getObj!.data!.profileImage== null?" ":getObj!.data!.profileImage}";
+    profileImage = "${ApiConstantsCrew.BASE_URL_IMAGE}${getObj!.data!.profileImage== null?ImageConstants.personIcon:getObj!.data!.profileImage}";
     nameController.text = getObj!.data!.name == null? " ":getObj!.data!.name!;
     titleController.text = getObj!.data!.position == null? " ":getObj!.data!.position!;
     specialityController.text = getObj!.data!.speciality == null? " ":getObj!.data!.speciality!;
     companyNameController.text = getObj!.data!.company == null? " ":getObj!.data!.company! ;
-    phoneNumberController.text = getObj!.data!.phoneNumber!.toString() == null? " ": getObj!.data!.phoneNumber!.toString();
+    phoneNumberController.text = getObj!.data!.phoneNumber == null? " ": getObj!.data!.phoneNumber.toString();
     emailController.text = getObj!.data!.email  == null? " ":getObj!.data!.email! ;
     addressController.text = getObj!.data!.address  == null? " ":getObj!.data!.address! ;
     notifyListeners();

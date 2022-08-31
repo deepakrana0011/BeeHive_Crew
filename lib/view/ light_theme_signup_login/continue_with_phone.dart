@@ -20,9 +20,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 
 class ContinueWithPhone extends StatelessWidget {
-  bool routeForResetPassword;
+  int routeForResetPassword;
   ContinueWithPhone({Key? key,required this.routeForResetPassword}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return BaseView<ContinueWithPhoneProvider>(builder: (context, provider, _) {
@@ -85,7 +84,7 @@ class ContinueWithPhone extends StatelessWidget {
                               SizedBox(height: DimensionConstants.d25.h),
                               GestureDetector(
                                 onTap: (){
-                                    Navigator.pushNamed(context, RouteConstants.emailAddressScreen,arguments: EmailAddressScreen(fromForgotPassword: true,));
+                                    Navigator.pushNamed(context, RouteConstants.emailAddressScreen,arguments: EmailAddressScreen(fromForgotPassword: true, routeForResetPassword: 1,));
                                 },
                                 child: Align(
                                   alignment: Alignment.center,
@@ -101,8 +100,10 @@ class ContinueWithPhone extends StatelessWidget {
                                   onBtnTap: () {
                                     if(provider.phoneNumberController.text.isEmpty){
                                       DialogHelper.showMessage(context, "mobile_number_cant_be_empty".tr());
-                                    }else{
+                                    }else if(routeForResetPassword == 1){
                                      provider.phoneVerificationCrew(context, routeForResetPassword);
+                                    }else if(routeForResetPassword == 2){
+                                      provider.resetPasswordByPhone(context, provider.phoneNumberController.text);
                                     }
                               },shadowRequired: true):Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,),)
                             ],

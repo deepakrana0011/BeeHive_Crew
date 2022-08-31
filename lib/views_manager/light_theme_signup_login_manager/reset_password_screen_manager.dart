@@ -1,6 +1,7 @@
 import 'package:beehive/constants/color_constants.dart';
 import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/constants/image_constants.dart';
+import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
 import 'package:beehive/helper/decoration.dart';
@@ -15,7 +16,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ResetPasswordScreenManager extends StatelessWidget {
-  ResetPasswordScreenManager({Key? key}) : super(key: key);
+  String email;
+  ResetPasswordScreenManager({Key? key,required this.email}) : super(key: key);
 
   final newPasswordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
@@ -77,11 +79,12 @@ class ResetPasswordScreenManager extends StatelessWidget {
                                         Text("confirm_new_password".tr()).boldText(context, DimensionConstants.d14.sp, TextAlign.center, color: ColorConstants.colorWhite70),
                                         confirmPasswordTextField(provider),
                                         SizedBox(height: DimensionConstants.d64.h),
-                                        CommonWidgets.commonButton(context, "reset_password".tr(), onBtnTap: (){
-                                          if(_formKey.currentState!.validate()){
+                                    provider.state == ViewState.idle?    CommonWidgets.commonButton(context, "reset_password".tr(), onBtnTap: (){
+                                          if(_formKey.currentState!.validate() && newPasswordController.text == confirmPasswordController.text){
                                             CommonWidgets.hideKeyboard(context);
+                                            provider.resetPassword(context, confirmPasswordController.text,email);
                                           }
-                                        },shadowRequired: true)
+                                        },shadowRequired: true):const Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,),)
                                       ],
                                     ),
                                   )

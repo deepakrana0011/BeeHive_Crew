@@ -185,7 +185,6 @@ Widget textFiledName(BuildContext context, String title, String hintName, TextEd
                 : ColorConstants.colorBlack,
             maxLines: 1,
             decoration: ViewDecoration.inputDecorationBox(
-              fieldName: hintName.tr(),
               radius: DimensionConstants.d8.r,
               fillColor: Theme.of(context).brightness == Brightness.dark
                   ? ColorConstants.colorWhite
@@ -196,7 +195,7 @@ Widget textFiledName(BuildContext context, String title, String hintName, TextEd
               hintTextColor: Theme.of(context).brightness == Brightness.dark
                   ? ColorConstants.colorWhite
                   : ColorConstants.colorBlack,
-              hintTextSize: DimensionConstants.d16.sp,
+              hintTextSize: DimensionConstants.d16.sp, fieldName: '',
             ),
           ),
         )

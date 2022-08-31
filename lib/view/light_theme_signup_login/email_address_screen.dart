@@ -4,6 +4,7 @@ import 'package:beehive/constants/color_constants.dart';
 import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/constants/image_constants.dart';
 import 'package:beehive/constants/route_constants.dart';
+import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
 import 'package:beehive/helper/decoration.dart';
@@ -19,8 +20,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class EmailAddressScreen extends StatelessWidget {
-  EmailAddressScreen({Key? key, this.fromForgotPassword}) : super(key: key);
-  bool? fromForgotPassword;
+  EmailAddressScreen({Key? key, required this.fromForgotPassword,required this.routeForResetPassword}) : super(key: key);
+  bool fromForgotPassword;
+  int routeForResetPassword;
   final emailController = TextEditingController();
   final emailFocusNode = FocusNode();
   bool contPadding = false;
@@ -74,16 +76,19 @@ class EmailAddressScreen extends StatelessWidget {
                                    : Text("your_email".tr()).boldText(context, DimensionConstants.d14.sp, TextAlign.center, color: ColorConstants.colorWhite70),
                                 emailTextField(provider),
                                 SizedBox(height: DimensionConstants.d39.h),
-                                CommonWidgets.commonButton(context, "continue".tr(), onBtnTap: (){
+                             provider.state == ViewState.idle?   CommonWidgets.commonButton(context, "continue".tr(), onBtnTap: (){
                                   if(_formKey.currentState!.validate()){
                                     if(fromForgotPassword == true){
-                                     provider.emailVerificationCrew(context, emailController.text);
+                                      if(routeForResetPassword == 1){
+                                        provider.emailVerifcationCrew(context, emailController.text);
+                                      }else{
+                                        provider.verifyEmailForOtp(context, emailController.text);
+                                      }
                                     }else{
                                       Navigator.pushNamed(context, RouteConstants.signUpScreen, arguments: SignUpScreen(email: emailController.text));
                                     }
-
                                   }
-                                },shadowRequired: true)
+                                },shadowRequired: true):Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,),)
                               ],
                             ),
                           )

@@ -383,19 +383,19 @@ Widget drawer(BuildContext context, BottomBarManagerProvider provider) {
                       },
                       child: drawerHeadingsRow(
                           context, ImageConstants.calendarIcon, "schedule".tr(),
-                          active: provider.selectedIndex == 1 ? true : false),
+                          ),
                     ),
                     SizedBox(height: DimensionConstants.d33.h),
                     GestureDetector(
                       onTap: () {
                         Navigator.pop(context);
-                        Navigator.pushNamed(context,
-                            RouteConstants.archivedProjectsScreenManager);
+                        provider.onItemTapped(1);
                       },
                       child: drawerHeadingsRow(
                         context,
                         ImageConstants.openFolderIcon,
                         "archived_projects".tr(),
+
                       ),
                     ),
                     SizedBox(height: DimensionConstants.d30.h),

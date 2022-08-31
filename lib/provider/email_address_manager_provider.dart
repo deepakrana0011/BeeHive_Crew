@@ -18,7 +18,29 @@ class EmailAddressScreenManagerProvider extends BaseProvider{
       var model = await api.verifyManagerEmail(context,email );
       if (model.success == true) {
         setState(ViewState.idle);
-        Navigator.pushNamed(context, RouteConstants.otpVerificationPageManager,arguments: OtpVerificationPageManager(phoneNumber: email, continueWithPhoneOrEmail: false));
+        Navigator.pushNamed(context, RouteConstants.otpVerificationPageManager,arguments: OtpVerificationPageManager(phoneNumber: email, continueWithPhoneOrEmail: false, resetPasswordWithEmail: 2,));
+        DialogHelper.showMessage(context, model.message!);
+      } else {
+        setState(ViewState.idle);
+        DialogHelper.showMessage(context, model.message!);
+      }
+    } on FetchDataException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, e.toString());
+    } on SocketException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, "internet_connection".tr());
+    }
+  }
+
+
+  Future verifyEmailForOtp(BuildContext context, String email,) async {
+    setState(ViewState.busy);
+    try {
+      var model = await api.getOtpForPasswordReset(context,email );
+      if (model.success == true) {
+        setState(ViewState.idle);
+        Navigator.pushNamed(context, RouteConstants.otpVerificationPageManager,arguments: OtpVerificationPageManager(phoneNumber: email, resetPasswordWithEmail: 3,continueWithPhoneOrEmail: false,));
         DialogHelper.showMessage(context, model.message!);
       } else {
         setState(ViewState.idle);

@@ -12,6 +12,7 @@ import 'package:beehive/provider/login_manager_provider.dart';
 import 'package:beehive/provider/login_provider.dart';
 import 'package:beehive/view/base_view.dart';
 import 'package:beehive/view/light_theme_signup_login/email_address_screen.dart';
+import 'package:beehive/views_manager/light_theme_signup_login_manager/continue_with_phone_manager.dart';
 import 'package:beehive/views_manager/light_theme_signup_login_manager/email_address_screen_manager.dart';
 import 'package:beehive/widget/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -86,7 +87,7 @@ class LoginScreenManager extends StatelessWidget {
                                         SizedBox(height: DimensionConstants.d16.h),
                                         GestureDetector(
                                           onTap: (){
-                                            Navigator.pushNamed(context, RouteConstants.resetPasswordScreen);
+                                          Navigator.pushNamed(context, RouteConstants.continueWithPhoneManager,arguments: ContinueWithPhoneManager(routeForResetPassword: true,));
                                           },
                                           child: Align(
                                             alignment: Alignment.center,
@@ -104,7 +105,7 @@ class LoginScreenManager extends StatelessWidget {
                                         SizedBox(height: DimensionConstants.d16.h),
                                         GestureDetector(
                                           onTap: (){
-                                            Navigator.pushNamed(context, RouteConstants.emailAddressScreenManager,arguments: EmailAddressScreenManager(fromForgotPassword: false,));
+                                            Navigator.pushNamed(context, RouteConstants.emailAddressScreenManager,arguments: EmailAddressScreenManager(fromForgotPassword: false, routeForResetPassword: false,));
                                           },
                                           child: Align(
                                             alignment: Alignment.center,

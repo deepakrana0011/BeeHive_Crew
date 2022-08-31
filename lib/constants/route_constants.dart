@@ -49,4 +49,5 @@ class RouteConstants{
   static const String certificationPageManager = "certificationPageManager";
   static const String editProfilePageManager = "editProfilePageManager";
   static const String changePasswordPageManager = "changePasswordPageManager";
+  static const String resetPasswordScreenManager = "resetPasswordScreenManager";
  }

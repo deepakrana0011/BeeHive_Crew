@@ -85,7 +85,7 @@ class LoginScreen extends StatelessWidget {
                                         SizedBox(height: DimensionConstants.d16.h),
                                         GestureDetector(
                                           onTap: (){
-                                            Navigator.pushNamed(context, RouteConstants.continueWithPhone,arguments: ContinueWithPhone(routeForResetPassword: true));
+                                            Navigator.pushNamed(context, RouteConstants.continueWithPhone,arguments: ContinueWithPhone(routeForResetPassword: 2));
                                           },
                                           child: Align(
                                             alignment: Alignment.center,
@@ -103,7 +103,7 @@ class LoginScreen extends StatelessWidget {
                                         SizedBox(height: DimensionConstants.d16.h),
                                         GestureDetector(
                                           onTap: (){
-                                            Navigator.pushNamed(context, RouteConstants.emailAddressScreen,arguments: EmailAddressScreen(fromForgotPassword: false,));
+                                            Navigator.pushNamed(context, RouteConstants.emailAddressScreen,arguments: EmailAddressScreen(fromForgotPassword: false, routeForResetPassword: 1,));
                                           },
                                           child: Align(
                                             alignment: Alignment.center,

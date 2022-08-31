@@ -32,14 +32,10 @@ class AddCrewPageManagerProvider extends BaseProvider{
     }
 
   }
-
   updateValue(int index) {
     crewList[index].isSelected = !crewList[index].isSelected;
     notifyListeners();
   }
-
-
-
   Future getCrewList(BuildContext context,) async {
     setState(ViewState.busy);
     try {

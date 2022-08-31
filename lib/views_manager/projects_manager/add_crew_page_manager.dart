@@ -192,6 +192,7 @@ Widget crewWidget(BuildContext context, AddCrewPageManagerProvider provider,){
             height: DimensionConstants.d60.h,
             width: double.infinity,
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
               children:<Widget> [
                  ClipRRect(
                    borderRadius: BorderRadius.circular(DimensionConstants.d30.r),
@@ -204,11 +205,10 @@ Widget crewWidget(BuildContext context, AddCrewPageManagerProvider provider,){
                 SizedBox(width: DimensionConstants.d16.w,),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
                   children:<Widget> [
-                    Text(provider.crewList[index].name.toString()).boldText(context, DimensionConstants.d16.sp, TextAlign.left,color: ColorConstants.deepBlue),
-                    Text(provider.crewList[index].position!).regularText(context, DimensionConstants.d14.sp, TextAlign.left,color: ColorConstants.deepBlue),
-                    Text(provider.crewList[index].address.toString()).regularText(context, DimensionConstants.d14.sp, TextAlign.left,color: ColorConstants.deepBlue),
+                    Text(provider.crewList[index].name.toString()).boldText(context, DimensionConstants.d14.sp, TextAlign.center,color: ColorConstants.deepBlue),
+                    Text(provider.crewList[index].position == null ? "" :provider.crewList[index].position!).regularText(context, DimensionConstants.d14.sp, TextAlign.center,color: ColorConstants.deepBlue),
+                    Text(provider.crewList[index].address.toString()).regularText(context, DimensionConstants.d14.sp, TextAlign.center,color: ColorConstants.deepBlue),
                   ],
                 ),
                 Expanded(child: Container()),

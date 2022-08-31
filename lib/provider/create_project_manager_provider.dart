@@ -24,10 +24,8 @@ class CreateProjectManagerProvider extends BaseProvider {
       target: LatLng(30.7333, 76.7794),
       tilt: 20,
       zoom: 10);
-
   int initialIndex = 0;
   MapType mapType = MapType.terrain;
-
   double latitude = 0;
   double longitude = 0;
   var value;
@@ -49,33 +47,26 @@ class CreateProjectManagerProvider extends BaseProvider {
   onMapCreated(GoogleMapController controller) {
     setState(ViewState.busy);
     markers.add(Marker(
+      draggable:  true,
       markerId: const MarkerId("ID1"),
       position: LatLng(latitude, longitude),
       icon: pinLocationIconUser!,
+      onDragEnd: (newLocation){
+      getPickUpAddress(newLocation.latitude, newLocation.longitude);
+      longitude = newLocation.longitude;
+      latitude = newLocation.latitude;
+      notifyListeners();
+      },
       flat: true,
       anchor: const Offset(0.5, 0.5),
     ));
-    getPickUpAddress();
-    notifyListeners();
-
     setState(ViewState.idle);
   }
   CameraPosition? position;
-  Future<void> cameraIdle(position) async {
-    List<Placemark> placeMark = await placemarkFromCoordinates(position!.target.latitude, position!.target.longitude);
 
-    pickUpLocation = placeMark.first.street.toString() +
-        " " +
-        placeMark.first.thoroughfare.toString() +
-        placeMark.first.subLocality.toString() +
-        placeMark.first.country.toString() + placeMark.first.administrativeArea.toString();
-    notifyListeners();
-  }
-  Future<void> getPickUpAddress() async {
-    List<Placemark> placeMark =
-        await placemarkFromCoordinates(latitude, longitude);
-    pickUpLocation = placeMark.first.street.toString() +
-        " " +
+  Future<void> getPickUpAddress(double lat, double long) async {
+    List<Placemark> placeMark = await placemarkFromCoordinates(lat, long);
+    pickUpLocation = placeMark.first.street.toString() + " " +
         placeMark.first.thoroughfare.toString() +
         placeMark.first.subLocality.toString();
     notifyListeners();
@@ -116,12 +107,12 @@ class CreateProjectManagerProvider extends BaseProvider {
 
     return await Geolocator.getCurrentPosition();
   }
-
   double valueFor = 0;
   updateValue(double value){
     valueFor = value;
     notifyListeners();
   }
+
 
 
   Future createProjectManager(BuildContext context,) async {

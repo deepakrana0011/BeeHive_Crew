@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:beehive/provider/base_provider.dart';
+import 'package:beehive/view/%20light_theme_signup_login/continue_with_phone.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -26,9 +27,9 @@ class LoginProvider extends BaseProvider{
         if(model.data!.status == 0){
           SharedPreference.prefs!.setBool(SharedPreference.IS_LOGIN , true);
           SharedPreference.prefs!.setBool(SharedPreference.ISMANAGER_LOGIN , true);
-          Navigator.pushNamedAndRemoveUntil(context, RouteConstants.bottomNavigationBar, (route) => false);
+          Navigator.pushNamed(context, RouteConstants.continueWithPhone, arguments: ContinueWithPhone(routeForResetPassword: 1));
         }else{
-          Navigator.pushNamedAndRemoveUntil(context, RouteConstants.continueWithPhone, (route) => false);
+          Navigator.pushNamedAndRemoveUntil(context, RouteConstants.bottomNavigationBar, (route) => false);
         }
         DialogHelper.showMessage(context, model.message!);
       } else {

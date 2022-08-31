@@ -47,12 +47,12 @@ class SelectToContinueScreen extends StatelessWidget {
               SizedBox(height: DimensionConstants.d60.h),
               CommonWidgets.commonButton(context, "crew".tr(), fontSize: DimensionConstants.d20.sp, onBtnTap: (){
                 SharedPreference.prefs!.setBool(SharedPreference.INTRODUCTION_COMPLETE, true);
-                Navigator.pushNamed(context, RouteConstants.emailAddressScreen,arguments: EmailAddressScreen(fromForgotPassword: false,));
+                Navigator.pushNamed(context, RouteConstants.emailAddressScreen,arguments: EmailAddressScreen(fromForgotPassword: false, routeForResetPassword: 1,));
               }),
               SizedBox(height: DimensionConstants.d25.h),
               CommonWidgets.commonButton(context, "manager".tr(), fontSize: DimensionConstants.d20.sp,onBtnTap: (){
                 SharedPreference.prefs!.setBool(SharedPreference.INTRODUCTION_COMPLETE, true);
-                Navigator.pushNamed(context, RouteConstants.emailAddressScreenManager,arguments: EmailAddressScreenManager(fromForgotPassword: false,));
+                Navigator.pushNamed(context, RouteConstants.emailAddressScreenManager,arguments: EmailAddressScreenManager(fromForgotPassword: false, routeForResetPassword: true,));
               }),
             ],
           ),

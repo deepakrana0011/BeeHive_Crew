@@ -26,7 +26,7 @@ class SignUpProvider extends BaseProvider{
         SharedPreference.prefs!.setString(SharedPreference.TOKEN, model.token!);
         SharedPreference.prefs!.setString(SharedPreference.USER_ID, model.data!.sId!);
         setState(ViewState.idle);
-        Navigator.pushNamed(context, RouteConstants.continueWithPhone,arguments: ContinueWithPhone(routeForResetPassword: false));
+        Navigator.pushNamed(context, RouteConstants.continueWithPhone,arguments: ContinueWithPhone(routeForResetPassword: 1));
         DialogHelper.showMessage(context, model.message!);
       } else {
         setState(ViewState.idle);

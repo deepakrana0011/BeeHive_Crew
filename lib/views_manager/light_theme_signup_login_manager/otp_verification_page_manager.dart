@@ -1,4 +1,5 @@
 import 'package:beehive/constants/route_constants.dart';
+import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/provider/otp_page_verification_manager.dart';
 import 'package:beehive/view/base_view.dart';
@@ -18,7 +19,8 @@ import '../../widget/image_view.dart';
 class OtpVerificationPageManager extends StatelessWidget {
   String phoneNumber;
   bool continueWithPhoneOrEmail;
-  OtpVerificationPageManager({Key? key,required this.phoneNumber,required this.continueWithPhoneOrEmail}) : super(key: key);
+  int resetPasswordWithEmail;
+  OtpVerificationPageManager({Key? key,required this.phoneNumber,required this.continueWithPhoneOrEmail,required this.resetPasswordWithEmail, }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -83,14 +85,20 @@ class OtpVerificationPageManager extends StatelessWidget {
                                         decoration: TextDecoration.underline),
                                   ),
                                   SizedBox(height: DimensionConstants.d35.h),
-                                  CommonWidgets.commonButton(context,  continueWithPhoneOrEmail == true?"verify_phone".tr():"verify_email".tr(),
+                             provider.state == ViewState.idle?     CommonWidgets.commonButton(context,  continueWithPhoneOrEmail == true?"verify_phone".tr():"verify_email".tr(),
                                       onBtnTap: () {
                                         if(provider.otp == ""){
                                           DialogHelper.showMessage(context, "Please enter OTP");
                                         }else{
-                                         continueWithPhoneOrEmail== true? provider.otpVerification(context, phoneNumber):provider.verifyEmailForOtp(context, phoneNumber);
+                                          if(resetPasswordWithEmail == 1){
+                                            provider.otpVerificationPhone(context, phoneNumber);
+                                          } else if(resetPasswordWithEmail == 2){
+                                            provider.verifyEmailForOtp(context, phoneNumber);
+                                          }else if(resetPasswordWithEmail == 3){
+                                            provider.verifyEmailForOtpResetPassword(context, phoneNumber);
+                                          }
                                         }
-                                      }, shadowRequired: true)
+                                      }, shadowRequired: true):Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,),)
                                 ],
                               ),
                             )

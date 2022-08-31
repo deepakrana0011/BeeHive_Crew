@@ -19,15 +19,13 @@ getDialCode(String code){
   notifyListeners();
 
 }
-
-
 Future phoneVerification(BuildContext context,) async {
   setState(ViewState.busy);
   try {
     var model = await api.phoneNumberVerification(context,dialCode,phoneNumberController.text );
     if (model.success == true) {
       setState(ViewState.idle);
-      Navigator.pushNamed(context, RouteConstants.otpVerificationPageManager,arguments: OtpVerificationPageManager(phoneNumber: phoneNumberController.text, continueWithPhoneOrEmail: true));
+      Navigator.pushNamed(context, RouteConstants.otpVerificationPageManager,arguments: OtpVerificationPageManager(phoneNumber: phoneNumberController.text, continueWithPhoneOrEmail: true, resetPasswordWithEmail: 1,));
       DialogHelper.showMessage(context, model.message!);
     } else {
       setState(ViewState.idle);

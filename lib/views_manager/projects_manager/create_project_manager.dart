@@ -83,14 +83,13 @@ class CreateProjectManager extends StatelessWidget {
                     color2: ColorConstants.primaryGradient1Color,
                     fontSize: DimensionConstants.d16.sp,
                     onBtnTap: () {
-                      Navigator.pushNamed(context, RouteConstants.addCrewPageManager);
-                  // if(provider.projectNameController.text.isEmpty){
-                  //   DialogHelper.showMessage(context, "please_enter_project_name".tr());
-                  //
-                  // }else{
-                  //   CommonWidgets.hideKeyboard(context);
-                  //   provider.createProjectManager(context);
-                  // }
+                  if(provider.projectNameController.text.isEmpty){
+                    DialogHelper.showMessage(context, "please_enter_project_name".tr());
+
+                  }else{
+                    CommonWidgets.hideKeyboard(context);
+                    provider.createProjectManager(context);
+                  }
 
                     },
                     shadowRequired: true):const Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient1Color,),),
@@ -302,7 +301,7 @@ Widget googleMapWidget(CreateProjectManagerProvider provider, Set<Circle> circle
                           () => EagerGestureRecognizer(),
                     ),
                   },
-                  onCameraIdle: () => provider.cameraIdle(provider.position),
+                 // onCameraIdle: () => provider.cameraIdle(provider.position),
                       markers: Set<Marker>.of(provider.markers))
                   : const Center(
                       child: CircularProgressIndicator(),

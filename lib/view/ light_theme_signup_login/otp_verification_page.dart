@@ -19,9 +19,8 @@ import '../../widget/image_view.dart';
 class OtpVerificationPage extends StatelessWidget {
   String phoneNumber;
   bool continueWithPhoneOrEmail;
-  bool routeForResetPassword;
-   OtpVerificationPage({Key? key,required this.phoneNumber,required this.continueWithPhoneOrEmail,required this.routeForResetPassword}) : super(key: key);
-
+  int routeForResetPassword;
+   OtpVerificationPage({Key? key,required this.phoneNumber,required this.continueWithPhoneOrEmail,required this.routeForResetPassword, }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return BaseView<OtpPageProvider>(
@@ -95,7 +94,15 @@ class OtpVerificationPage extends StatelessWidget {
                                     if(provider.otp == ""){
                                       DialogHelper.showMessage(context, "Please enter OTP");
                                     }else{
-                                    continueWithPhoneOrEmail == true? provider.otpVerificationCrew(context, phoneNumber,routeForResetPassword):provider.verifyEmailForOtp(context, phoneNumber);
+                                  if(routeForResetPassword ==1){
+                                    provider.otpVerificationCrewPhone(context, phoneNumber);
+                                  }else if(routeForResetPassword ==2){
+                                    provider.verifyEmailForOtp(context, phoneNumber);
+                                  } else if(routeForResetPassword == 3){
+                                    provider.verifyEmailForOtpResetPassword(context, phoneNumber);
+                                  }else if(routeForResetPassword == 4){
+                                    provider.verifyingOtpByPhone(context, phoneNumber);
+                                  }
                                     }
 
                               }, shadowRequired: true):Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,),),

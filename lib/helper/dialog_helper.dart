@@ -903,7 +903,6 @@ class DialogHelper {
       duration: const Duration(seconds: 3),
     ).show(context);
   }
-
   static editRateDialogBox(BuildContext context,
       {required VoidCallback cancel, required VoidCallback delete}) {
     FocusNode focusNode  = FocusNode ();

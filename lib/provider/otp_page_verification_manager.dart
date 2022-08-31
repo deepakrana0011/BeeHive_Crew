@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:beehive/provider/base_provider.dart';
+import 'package:beehive/views_manager/light_theme_signup_login_manager/reset_password_screen_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import '../constants/route_constants.dart';
@@ -16,7 +17,7 @@ class OtpPageProviderManager extends BaseProvider{
     notifyListeners();
   }
 
-  Future otpVerification(BuildContext context, String phoneNumber) async {
+  Future otpVerificationPhone(BuildContext context, String phoneNumber) async {
     setState(ViewState.busy);
     try {
       var model = await api.verifyOtp(context,phoneNumber,otp );
@@ -44,6 +45,27 @@ class OtpPageProviderManager extends BaseProvider{
       if (model.success == true) {
         setState(ViewState.idle);
         Navigator.pushNamedAndRemoveUntil(context, RouteConstants.bottomBarManager, (route) => false);
+        DialogHelper.showMessage(context, model.message!);
+      } else {
+        setState(ViewState.idle);
+        DialogHelper.showMessage(context, model.message!);
+      }
+    } on FetchDataException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, e.toString());
+    } on SocketException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, "internet_connection".tr());
+    }
+  }
+
+  Future verifyEmailForOtpResetPassword(BuildContext context, String email,) async {
+    setState(ViewState.busy);
+    try {
+      var model = await api.verifyEmailForResetPassword(context,email ,otp);
+      if (model.success == true) {
+        setState(ViewState.idle);
+        Navigator.pushNamedAndRemoveUntil(context, RouteConstants.resetPasswordScreenManager,arguments: ResetPasswordScreenManager(email: email,), (route) => false);
         DialogHelper.showMessage(context, model.message!);
       } else {
         setState(ViewState.idle);

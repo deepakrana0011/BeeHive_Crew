@@ -20,7 +20,8 @@ getDialCode(String code){
 
 }
 
-Future phoneVerificationCrew(BuildContext context, bool routeForResetPassword,) async {
+
+Future phoneVerificationCrew(BuildContext context, int routeForResetPassword,) async {
   setState(ViewState.busy);
   try {
     var model = await apiCrew.phoneNumberVerificationCrew(context,dialCode,phoneNumberController.text );
@@ -40,6 +41,30 @@ Future phoneVerificationCrew(BuildContext context, bool routeForResetPassword,) 
     DialogHelper.showMessage(context, "internet_connection".tr());
   }
 }
+
+Future resetPasswordByPhone(BuildContext context, String phoneNumber,) async {
+  setState(ViewState.busy);
+  try {
+    var model = await apiCrew.resetPasswordByPhone(context,phoneNumber);
+    if (model.success == true) {
+      setState(ViewState.idle);
+      Navigator.pushNamed(context, RouteConstants.otpVerificationPage,arguments: OtpVerificationPage(phoneNumber: phoneNumber, continueWithPhoneOrEmail: true, routeForResetPassword: 4));
+      DialogHelper.showMessage(context, model.message!);
+    } else {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, model.message!);
+    }
+  } on FetchDataException catch (e) {
+    setState(ViewState.idle);
+    DialogHelper.showMessage(context, e.toString());
+  } on SocketException catch (e) {
+    setState(ViewState.idle);
+    DialogHelper.showMessage(context, "internet_connection".tr());
+  }
+}
+
+
+
 
 
 

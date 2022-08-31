@@ -32,6 +32,7 @@ import 'package:beehive/views_manager/light_theme_signup_login_manager/continue_
 import 'package:beehive/views_manager/light_theme_signup_login_manager/email_address_screen_manager.dart';
 import 'package:beehive/views_manager/light_theme_signup_login_manager/login_screen_manager.dart';
 import 'package:beehive/views_manager/light_theme_signup_login_manager/otp_verification_page_manager.dart';
+import 'package:beehive/views_manager/light_theme_signup_login_manager/reset_password_screen_manager.dart';
 import 'package:beehive/views_manager/light_theme_signup_login_manager/sign_up_screen_manager.dart';
 import 'package:beehive/views_manager/profile_manager/certification_page_manager.dart';
 import 'package:beehive/views_manager/profile_manager/change_password_page_manager.dart';
@@ -121,7 +122,7 @@ class OnGenerateRouter {
         final args = settings.arguments as EmailAddressScreen;
         return MaterialPageRoute(
             builder: (_) => EmailAddressScreen(
-                  fromForgotPassword: args.fromForgotPassword,
+                  fromForgotPassword: args.fromForgotPassword, routeForResetPassword: args.routeForResetPassword,
                 ),
             settings: settings);
       case RouteConstants.signUpScreen:
@@ -133,8 +134,9 @@ class OnGenerateRouter {
         return MaterialPageRoute(
             builder: (_) => LoginScreen(), settings: settings);
       case RouteConstants.resetPasswordScreen:
+        final args = settings.arguments as ResetPasswordScreen;
         return MaterialPageRoute(
-            builder: (_) => ResetPasswordScreen(), settings: settings);
+            builder: (_) => ResetPasswordScreen(email: args.email, byPhoneOrEmail: args.byPhoneOrEmail,), settings: settings);
       case RouteConstants.continueWithPhone:
         final args = settings.arguments as ContinueWithPhone;
         return MaterialPageRoute(
@@ -147,12 +149,13 @@ class OnGenerateRouter {
         return MaterialPageRoute(
             builder: (_) => BottomBarManager(), settings: settings);
       case RouteConstants.continueWithPhoneManager:
+        final args = settings.arguments as ContinueWithPhoneManager;
         return MaterialPageRoute(
-            builder: (_) => ContinueWithPhoneManager(), settings: settings);
+            builder: (_) => ContinueWithPhoneManager(routeForResetPassword: args.routeForResetPassword,), settings: settings);
       case RouteConstants.otpVerificationPageManager:
         final args = settings.arguments as OtpVerificationPageManager;
         return MaterialPageRoute(
-            builder: (_) => OtpVerificationPageManager(phoneNumber: args.phoneNumber, continueWithPhoneOrEmail: args.continueWithPhoneOrEmail,), settings: settings);
+            builder: (_) => OtpVerificationPageManager(phoneNumber: args.phoneNumber, continueWithPhoneOrEmail: args.continueWithPhoneOrEmail, resetPasswordWithEmail: args.resetPasswordWithEmail,), settings: settings);
       case RouteConstants.signUpScreenManager:
         final args = settings.arguments as SignUpScreenManager;
         return MaterialPageRoute(
@@ -162,7 +165,7 @@ class OnGenerateRouter {
         final args = settings.arguments as EmailAddressScreenManager;
         return MaterialPageRoute(
             builder: (_) => EmailAddressScreenManager(
-                  fromForgotPassword: args.fromForgotPassword,
+                  fromForgotPassword: args.fromForgotPassword, routeForResetPassword: args.routeForResetPassword,
                 ),
             settings: settings);
       case RouteConstants.notificationsScreenManager:
@@ -242,10 +245,9 @@ class OnGenerateRouter {
         return MaterialPageRoute(builder: (_)=> EditProfilePageManager(),settings: settings);
       case RouteConstants.changePasswordPageManager:
         return MaterialPageRoute(builder: (_)=> ChangePasswordPageManager(),settings: settings);
-
-
-
-
+      case RouteConstants.resetPasswordScreenManager:
+        final args = settings.arguments as ResetPasswordScreenManager;
+        return MaterialPageRoute(builder: (_)=> ResetPasswordScreenManager(email: args.email,),settings: settings);
 
 
 

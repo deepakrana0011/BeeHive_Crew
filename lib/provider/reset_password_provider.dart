@@ -16,13 +16,34 @@ class ResetPasswordProvider extends BaseProvider{
   bool confirmPasswordContentPadding = false;
 
 
-  Future resetPasswordCrew(BuildContext context,String password) async {
+  Future resetPasswordCrew(BuildContext context,String password,String email) async {
     setState(ViewState.busy);
     try {
-      var model = await apiCrew.resetPasswordCrew(context,password);
+      var model = await apiCrew.resetPasswordCrew(context,password, email);
       if (model.success == true) {
         setState(ViewState.idle);
-        Navigator.pushNamedAndRemoveUntil(context, RouteConstants.bottomNavigationBar, (route) => false);
+        Navigator.pushNamedAndRemoveUntil(context, RouteConstants.loginScreen, (route) => false);
+        DialogHelper.showMessage(context, model.message!);
+      } else {
+        setState(ViewState.idle);
+        DialogHelper.showMessage(context, model.message!);
+      }
+    } on FetchDataException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, e.toString());
+    } on SocketException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, "internet_connection".tr());
+    }
+  }
+
+  Future resetPasswordCrewByPhone(BuildContext context,String password,String phone) async {
+    setState(ViewState.busy);
+    try {
+      var model = await apiCrew.resetPasswordByPhoneNumber(context,password, phone);
+      if (model.success == true) {
+        setState(ViewState.idle);
+        Navigator.pushNamedAndRemoveUntil(context, RouteConstants.loginScreen, (route) => false);
         DialogHelper.showMessage(context, model.message!);
       } else {
         setState(ViewState.idle);
