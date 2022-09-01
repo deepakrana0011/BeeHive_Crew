@@ -34,7 +34,8 @@ class _TimeSheetFromCrewState extends State<TimeSheetFromCrew>with TickerProvide
         builder: (context,provider,_){
           return Scaffold(
             appBar: CommonWidgets.appBarWithTitleAndAction(context,
-                title: "timesheets".tr(), actionButtonRequired: false),
+                title: "timesheets".tr(), actionButtonRequired: false,popFunction: () { CommonWidgets.hideKeyboard(context);
+                Navigator.pop(context);}),
             body: Column(
               children: <Widget>[
                 SizedBox(

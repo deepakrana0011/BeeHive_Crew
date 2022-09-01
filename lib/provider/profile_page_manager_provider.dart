@@ -1,4 +1,5 @@
 import 'package:beehive/constants/color_constants.dart';
+import 'package:beehive/helper/shared_prefs.dart';
 import 'package:beehive/provider/base_provider.dart';
 import 'package:beehive/views_manager/profile_manager/edit_profile_page_manager.dart';
 import 'package:flutter/cupertino.dart';
@@ -53,7 +54,7 @@ class ProfilePageManagerProvider extends BaseProvider {
       profileImage = image.path.toString();
       notifyListeners();
     } else {
-      companyIcon = image.path.toString();
+      SharedPreference.prefs!.setString(SharedPreference.DashBoardIcon, image.path.toString());
       notifyListeners();
     }
   }

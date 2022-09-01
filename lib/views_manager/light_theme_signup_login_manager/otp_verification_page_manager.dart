@@ -1,5 +1,6 @@
 import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/extension/all_extensions.dart';
+import 'package:beehive/views_manager/bottom_bar_manager/bottom_navigation_bar_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -80,7 +81,7 @@ class OtpVerificationPageManager extends StatelessWidget {
                         CommonWidgets.commonButton(context, "verify_phone".tr(),
                             onBtnTap: () {
                           Navigator.pushNamed(
-                              context, RouteConstants.bottomBarManager);
+                              context, RouteConstants.bottomBarManager,arguments: BottomBarManager(fromBottomNav: 1, pageIndex: 0));
                         }, shadowRequired: true)
                       ],
                     ),

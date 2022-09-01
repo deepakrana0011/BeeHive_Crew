@@ -46,10 +46,8 @@ Future<void> main() async {
 
 class MyApp extends StatelessWidget {
   MyApp({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
-
     return Consumer<AppStateNotifier>(
         builder: (context, appState, _) {
           return ScreenUtilInit(
@@ -63,9 +61,9 @@ class MyApp extends StatelessWidget {
                     themeMode: SharedPreference.prefs!.getBool(SharedPreference.THEME_STATUS) == true ? ThemeMode.dark : ThemeMode.light,
                     // themeMode: ThemeMode.dark,
                     /* ThemeMode.system to follow system theme,
-         ThemeMode.light for light theme,
-         ThemeMode.dark for dark theme
-      */
+                      ThemeMode.light for light theme,
+                       ThemeMode.dark for dark theme
+                    */
                     debugShowCheckedModeBanner: false,
                     title: 'beehive'.tr(),
                     localizationsDelegates: context.localizationDelegates,

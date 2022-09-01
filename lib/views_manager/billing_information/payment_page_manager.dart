@@ -15,7 +15,8 @@ class PaymentPageManager extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CommonWidgets.appBarWithTitleAndAction(context, title: "payment"),
+      appBar: CommonWidgets.appBarWithTitleAndAction(context, title: "payment",popFunction: () { CommonWidgets.hideKeyboard(context);
+      Navigator.pop(context);}),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d38.w),
         child: Column(

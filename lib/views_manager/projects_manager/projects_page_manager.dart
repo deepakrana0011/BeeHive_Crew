@@ -11,8 +11,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 import '../../constants/color_constants.dart';
+import '../../provider/bottom_bar_Manager_provider.dart';
 import '../../widget/bottom_sheet_project_details.dart';
 
 class ProjectsPageManager extends StatefulWidget {
@@ -440,6 +442,7 @@ Widget allProjects(BuildContext context) {
 }
 
 Widget projectDetails(BuildContext context) {
+  final dashBoardProvider = Provider.of<BottomBarManagerProvider>(context, listen: false);
   return Container(
     height: DimensionConstants.d410.h,
     width: DimensionConstants.d343.w,
@@ -454,12 +457,14 @@ Widget projectDetails(BuildContext context) {
             padding: EdgeInsets.symmetric(vertical: DimensionConstants.d5.h),
             child: GestureDetector(
               onTap: () {
-                Navigator.pushNamed(
+                dashBoardProvider.onItemTapped(1);
+                dashBoardProvider.updateNavigationValue(4);
+               /* Navigator.pushNamed(
                     context, RouteConstants.archivedProjectDetailsManager,
                     arguments: ArchivedProjectDetailsManager(
                       archivedOrProject: false,
                       fromProject: true,
-                    ));
+                    ));*/
               },
               child: Material(
                 elevation: 2,

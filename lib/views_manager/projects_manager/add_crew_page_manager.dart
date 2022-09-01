@@ -5,7 +5,9 @@ import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
 import 'package:beehive/provider/add_crew_page_provider_manager.dart';
+import 'package:beehive/provider/bottom_bar_Manager_provider.dart';
 import 'package:beehive/view/base_view.dart';
+import 'package:beehive/views_manager/projects_manager/set_rates_page_manager.dart';
 import 'package:beehive/widget/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,17 +17,17 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../helper/decoration.dart';
 
 class AddCrewPageManager extends StatelessWidget {
-  const AddCrewPageManager({Key? key}) : super(key: key);
-
+  BottomBarManagerProvider barManagerProvider;
+   AddCrewPageManager({Key? key,required this.barManagerProvider}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return BaseView<AddCrewPageManagerProvider>(
       onModelReady: (provider){},
       builder: (context,provider,_){
-
         return Scaffold(
           appBar:
-          CommonWidgets.appBarWithTitleAndAction(context, title: "add_crew"),
+          CommonWidgets.appBarWithTitleAndAction(context, title: "add_crew", popFunction: () { CommonWidgets.hideKeyboard(context);
+          Navigator.pop(context);}),
           body: Padding(
             padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
             child: SingleChildScrollView(
@@ -60,7 +62,7 @@ class AddCrewPageManager extends StatelessWidget {
                       color1: ColorConstants.primaryGradient2Color,
                       color2: ColorConstants.primaryGradient1Color,
                       fontSize: DimensionConstants.d14.sp, onBtnTap: () {
-                    Navigator.pushNamed(context, RouteConstants.setRatesManager);
+                    Navigator.pushNamed(context, RouteConstants.setRatesManager,arguments:SetRatesPageManager(barManagerProvider: barManagerProvider));
 
                       },
                       shadowRequired: true

@@ -142,8 +142,9 @@ class OnGenerateRouter {
         return MaterialPageRoute(
             builder: (_) => OtpVerificationPage(), settings: settings);
       case RouteConstants.bottomBarManager:
+        final args = settings.arguments as BottomBarManager;
         return MaterialPageRoute(
-            builder: (_) => BottomBarManager(), settings: settings);
+            builder: (_) => BottomBarManager(fromBottomNav: args.fromBottomNav, pageIndex: args.pageIndex,), settings: settings);
       case RouteConstants.continueWithPhoneManager:
         return MaterialPageRoute(
             builder: (_) => ContinueWithPhoneManager(), settings: settings);
@@ -186,14 +187,16 @@ class OnGenerateRouter {
         return MaterialPageRoute(
             builder: (_) => CreateProjectManager(), settings: settings);
       case RouteConstants.addCrewPageManager:
+        final args = settings.arguments as AddCrewPageManager;
         return MaterialPageRoute(
-            builder: (_) => AddCrewPageManager(), settings: settings);
+            builder: (_) => AddCrewPageManager(barManagerProvider: args.barManagerProvider,), settings: settings);
       case RouteConstants.crewMemberAddByManager:
         return MaterialPageRoute(
             builder: (_) => CrewMemberAddByManager(), settings: settings);
       case RouteConstants.setRatesManager:
+        final args = settings.arguments as SetRatesPageManager;
         return MaterialPageRoute(
-            builder: (_) => SetRatesPageManager(), settings: settings);
+            builder: (_) => SetRatesPageManager(barManagerProvider: args.barManagerProvider,), settings: settings);
       case RouteConstants.projectSettingsPageManager:
         final args = settings.arguments as ProjectSettingsPageManager;
         return MaterialPageRoute(

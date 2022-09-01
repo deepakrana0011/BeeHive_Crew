@@ -1,17 +1,19 @@
 import 'dart:async';
-
 import 'package:beehive/enum/enum.dart';
 import 'package:beehive/provider/base_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
+import 'package:google_place/google_place.dart';
 import '../constants/image_constants.dart';
 
 class CreateProjectManagerProvider extends BaseProvider {
+final addressController = TextEditingController();
+  var googlePlace = GooglePlace("AIzaSyBbB0q8XDKmqaC75io1xYPsrDD6DvllHhI");
   Completer<GoogleMapController> controller = Completer();
   BitmapDescriptor? pinLocationIconUser;
+  bool locationAddressValue = false;
 
   final CameraPosition kLake = const CameraPosition(
       bearing: 192.8334901395799,
@@ -27,10 +29,49 @@ class CreateProjectManagerProvider extends BaseProvider {
   var value;
   String pickUpLocation = "";
 
+  String? dropDownValue;
+  List<String> vehicles = [
+    "1.5X",
+    "2X",
+    "2.5X",
+    "3X",
+    "3.5X",
+    "4X"
 
+  ];
+  onSelected(value) {
+    dropDownValue = value;
+    notifyListeners();
+  }
 
+  // getAddressBySearch(BuildContext context) async {
+  //   Prediction  p = await PlacesAutocomplete.show(
+  //       context: context,
+  //       types: [],
+  //       language: "en",
+  //       apiKey: "AIzaSyBbB0q8XDKmqaC75io1xYPsrDD6DvllHhI",
+  //       mode: Mode.overlay,
+  //       strictbounds: true,
+  //       components: [],// Mode.fullscreen
+  //      );
+  // }
+List<AutocompletePrediction> lisOfPrediction = [];
+  getAddress(String address) async {
+    var result = await googlePlace.autocomplete.get(address);
+    lisOfPrediction=(result!.predictions!.toList());
+  }
+  updateLocationAddress(){
+    locationAddressValue = !locationAddressValue;
+    notifyListeners();
 
+  }
 
+  List<String> listOfLocations=[
+    "123 Main St., Toronto, ON",
+    "123 Main Summer Drive, Chicago, IL",
+    "123 Main Street, Kingston, ON",
+    "123 Main Street, Ottawa, ON"
+  ];
 
 
   Future getLngLt(context) async {
@@ -71,7 +112,7 @@ class CreateProjectManagerProvider extends BaseProvider {
   CameraPosition? position;
 
   Future<void> cameraIdle(position) async {
-    List<Placemark> placeMark = await placemarkFromCoordinates(position!.target.latitude, position!.target.longitude);
+    List<Placemark> placeMark = await placemarkFromCoordinates(position.target.latitude, position.target.longitude);
 
     pickUpLocation = placeMark.first.street.toString() +
         " " +

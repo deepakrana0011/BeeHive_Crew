@@ -43,7 +43,8 @@ class _ProjectDetailsPageManagerState extends State<ProjectDetailsPageManager>
               actionButtonRequired: true, onTapAction: () {
             Navigator.pushNamed(
                 context, RouteConstants.projectSettingsPageManager, arguments: ProjectSettingsPageManager(fromProjectOrCreateProject: false));
-          }),
+          },popFunction: () { CommonWidgets.hideKeyboard(context);
+              Navigator.pop(context);}),
           body: Padding(
             padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
             child: SingleChildScrollView(
@@ -315,12 +316,7 @@ Widget tabBarView(BuildContext context, TabController controller,
   );
 }
 
-Widget todayTab(
-  BuildContext context,
-  bool todayOrWeekly,
-  ProjectDetailsManagerProvider provider,
-  bool projectCreate,
-) {
+Widget todayTab(BuildContext context, bool todayOrWeekly, ProjectDetailsManagerProvider provider, bool projectCreate,) {
   return SizedBox(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,

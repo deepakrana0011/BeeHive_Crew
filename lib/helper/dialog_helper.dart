@@ -880,7 +880,9 @@ class DialogHelper {
                             color1: ColorConstants.redColorEB5757,
                             color2: ColorConstants.redColorEB5757,
                             fontSize: DimensionConstants.d16.sp,
-                            onBtnTap: () {},
+                            onBtnTap: () {
+                              Navigator.of(context).pop();
+                            },
                             shadowRequired: false),
                       ),
                     ],

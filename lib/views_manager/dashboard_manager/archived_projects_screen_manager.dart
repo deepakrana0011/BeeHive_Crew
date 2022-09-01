@@ -4,61 +4,77 @@ import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/constants/image_constants.dart';
 import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/extension/all_extensions.dart';
+import 'package:beehive/view/base_view.dart';
 import 'package:beehive/view/projects/project_details_page.dart';
+import 'package:beehive/views_manager/bottom_bar_manager/bottom_navigation_bar_manager.dart';
 import 'package:beehive/views_manager/projects_manager/archived_project_details_manager.dart';
 import 'package:beehive/views_manager/projects_manager/project_details_manager.dart';
 import 'package:beehive/widget/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 import '../../constants/color_constants.dart';
 import '../../helper/common_widgets.dart';
+import '../../provider/bottom_bar_Manager_provider.dart';
 
-class ArchivedProjectsScreenManager extends StatelessWidget {
+class ArchivedProjectsScreenManager extends StatefulWidget {
   const ArchivedProjectsScreenManager({Key? key}) : super(key: key);
 
+  @override
+  State<ArchivedProjectsScreenManager> createState() => _ArchivedProjectsScreenManagerState();
+}
+
+class _ArchivedProjectsScreenManagerState extends State<ArchivedProjectsScreenManager> {
   get ommonWidgets => null;
+
+
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0.0,
-        centerTitle: true,
-        title: Text("archived_projects".tr()).semiBoldText(context, DimensionConstants.d22.sp, TextAlign.center),
-        leading: GestureDetector(
-            onTap: (){
-              Navigator.of(context).pop();
-            },
-            child: Icon(Icons.keyboard_backspace, color: Theme.of(context).iconTheme.color, size: 28,)),
-        actions: [
-          ImageView(path: ImageConstants.searchIcon, color: Theme.of(context).iconTheme.color,
-          height: DimensionConstants.d24.h,
-            width: DimensionConstants.d24.w,
+ final dashBoardProvider = Provider.of<BottomBarManagerProvider>(context, listen: false);
+    return BaseView<BottomBarManagerProvider>(onModelReady: (provider){}, builder: (context,provider,_){
+      return Scaffold(
+        appBar: AppBar(
+          elevation: 0.0,
+          centerTitle: true,
+          title: Text("archived_projects".tr()).semiBoldText(context, DimensionConstants.d22.sp, TextAlign.center),
+          leading: GestureDetector(
+              onTap: (){
+               Navigator.pushNamed(context, RouteConstants.bottomBarManager,arguments: BottomBarManager(fromBottomNav: 1, pageIndex: 0));
+              },
+              child: Icon(Icons.keyboard_backspace, color: Theme.of(context).iconTheme.color, size: 28,)),
+          actions: [
+            ImageView(path: ImageConstants.searchIcon, color: Theme.of(context).iconTheme.color,
+              height: DimensionConstants.d24.h,
+              width: DimensionConstants.d24.w,
+            ),
+            SizedBox(width: DimensionConstants.d20.w)
+          ],
+        ),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              SizedBox(height: DimensionConstants.d5.h),
+              const Divider(color: ColorConstants.colorGreyDrawer, height: 0.0, thickness: 1.5),
+              SizedBox(height: DimensionConstants.d11.h),
+              archivedProjectCard(context, "Momentum Digital", "200", "3",dashBoardProvider),
+              archivedProjectCard(context, "Momentum Smart House Project", "1200", "5",dashBoardProvider),
+              archivedProjectCard(context, "Momentum Smart House Project", "543", "3",dashBoardProvider),
+              SizedBox(height: DimensionConstants.d128.h,),
+            ],
           ),
-          SizedBox(width: DimensionConstants.d20.w)
-        ],
-      ),
-      body: Column(
-        children: [
-          SizedBox(height: DimensionConstants.d5.h),
-          const Divider(color: ColorConstants.colorGreyDrawer, height: 0.0, thickness: 1.5),
-          SizedBox(height: DimensionConstants.d11.h),
-          archivedProjectCard(context, "Momentum Digital", "200", "3"),
-          archivedProjectCard(context, "Momentum Smart House Project", "1200", "5"),
-          archivedProjectCard(context, "Momentum Smart House Project", "543", "3"),
-          SizedBox(height: DimensionConstants.d128.h,),
-
-        ],
-      ),
-    );
+        ),
+      );
+    });
   }
 
-  Widget archivedProjectCard(BuildContext context, String projectName, String totalHours, String crew){
+  Widget archivedProjectCard(BuildContext context, String projectName, String totalHours, String crew, BottomBarManagerProvider provider){
     return GestureDetector(
       onTap: (){
-        Navigator.pushNamed(context, RouteConstants.archivedProjectDetailsManager,arguments: ArchivedProjectDetailsManager(archivedOrProject: true, fromProject: false,));
+        provider.onItemTapped(1);
+        provider.updateNavigationValue(2);
       },
       child: Container(
         margin: EdgeInsets.only(left: DimensionConstants.d16.w, right: DimensionConstants.d16.w, top: DimensionConstants.d16.h),

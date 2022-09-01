@@ -221,64 +221,66 @@ class _CustomTabBarManagerState extends State<CustomTabBarManager>
           side: const BorderSide(color: ColorConstants.colorWhite, width: 1.0),
           borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
         ),
-        child: Column(
-          children: [
-            Container(
-              color: (Theme.of(context).brightness == Brightness.dark
-                  ? ColorConstants.colorBlack
-                  : ColorConstants.colorWhite),
-              height: DimensionConstants.d70.h,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  projectsHoursRow(
-                      ImageConstants.mapIcon, "4 ${"projects".tr()}"),
-                  Container(
-                    height: DimensionConstants.d70.h,
-                    width: DimensionConstants.d1.w,
-                    color: ColorConstants.colorLightGrey,
-                  ),
-                  projectsHoursRow(
-                      ImageConstants.clockIcon, "07.28 ${"hours".tr()}")
-                ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Container(
+                color: (Theme.of(context).brightness == Brightness.dark
+                    ? ColorConstants.colorBlack
+                    : ColorConstants.colorWhite),
+                height: DimensionConstants.d70.h,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    projectsHoursRow(
+                        ImageConstants.mapIcon, "4 ${"projects".tr()}"),
+                    Container(
+                      height: DimensionConstants.d70.h,
+                      width: DimensionConstants.d1.w,
+                      color: ColorConstants.colorLightGrey,
+                    ),
+                    projectsHoursRow(
+                        ImageConstants.clockIcon, "07.28 ${"hours".tr()}")
+                  ],
+                ),
               ),
-            ),
-            const Divider(
-                color: ColorConstants.colorGreyDrawer,
-                height: 0.0,
-                thickness: 1.5),
-            projectHourRowManager(Color(0xFFBB6BD9), "MS", "Momentum Digital",
-                "1 Crew", "12:57h", commonStepper()),
-            const Divider(
-                color: ColorConstants.colorGreyDrawer,
-                height: 0.0,
-                thickness: 1.5),
-            projectHourRowManager(ColorConstants.primaryGradient1Color, "MS",
-                "Momentum Digital", "1 Crew", "12:57h", commonStepper()),
-            const Divider(
-                color: ColorConstants.colorGreyDrawer,
-                height: 0.0,
-                thickness: 1.5),
-            projectHourRowManager(
-                ColorConstants.deepBlue,
-                "MS",
-                "Momentum Digital",
-                "4 Crew",
-                "12:57h",
-                stepperLineWithOneCoolIcon()),
-            const Divider(
-                color: ColorConstants.colorGreyDrawer,
-                height: 0.0,
-                thickness: 1.5),
-            projectHourRowManager(
-                ColorConstants.deepBlue,
-                "MS",
-                "Momentum Digital",
-                "2 Crew",
-                "12:57h",
-                stepperLineWithOneCoolIcon()),
+              const Divider(
+                  color: ColorConstants.colorGreyDrawer,
+                  height: 0.0,
+                  thickness: 1.5),
+              projectHourRowManager(Color(0xFFBB6BD9), "MS", "Momentum Digital",
+                  "1 Crew", "12:57h", commonStepper()),
+              const Divider(
+                  color: ColorConstants.colorGreyDrawer,
+                  height: 0.0,
+                  thickness: 1.5),
+              projectHourRowManager(ColorConstants.primaryGradient1Color, "MS",
+                  "Momentum Digital", "1 Crew", "12:57h", commonStepper()),
+              const Divider(
+                  color: ColorConstants.colorGreyDrawer,
+                  height: 0.0,
+                  thickness: 1.5),
+              projectHourRowManager(
+                  ColorConstants.deepBlue,
+                  "MS",
+                  "Momentum Digital",
+                  "4 Crew",
+                  "12:57h",
+                  stepperLineWithOneCoolIcon()),
+              const Divider(
+                  color: ColorConstants.colorGreyDrawer,
+                  height: 0.0,
+                  thickness: 1.5),
+              projectHourRowManager(
+                  ColorConstants.deepBlue,
+                  "MS",
+                  "Momentum Digital",
+                  "2 Crew",
+                  "12:57h",
+                  stepperLineWithOneCoolIcon()),
 
-          ],
+            ],
+          ),
         ),
       ),
     );

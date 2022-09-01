@@ -19,7 +19,8 @@ class BillingInformationPageManager extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CommonWidgets.appBarWithTitleAndAction(context,
-          title: "billing_information".tr(), actionButtonRequired: false),
+          title: "billing_information".tr(), actionButtonRequired: false,popFunction: () { CommonWidgets.hideKeyboard(context);
+          Navigator.pop(context);}),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

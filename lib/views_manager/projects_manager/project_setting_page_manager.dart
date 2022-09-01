@@ -3,26 +3,31 @@ import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
+import 'package:beehive/locator.dart';
+import 'package:beehive/provider/base_provider.dart';
 import 'package:beehive/provider/project_details_manager_provider.dart';
 import 'package:beehive/provider/project_settings_manager_provider.dart';
 import 'package:beehive/provider/project_settings_provider.dart';
 import 'package:beehive/view/base_view.dart';
+import 'package:beehive/views_manager/bottom_bar_manager/bottom_navigation_bar_manager.dart';
 import 'package:beehive/views_manager/projects_manager/project_details_manager.dart';
 import 'package:beehive/widget/custom_switcher.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 import '../../constants/image_constants.dart';
 import '../../helper/dialog_helper.dart';
+import '../../provider/bottom_bar_Manager_provider.dart';
 import '../../widget/image_view.dart';
 
 class ProjectSettingsPageManager extends StatelessWidget {
   bool fromProjectOrCreateProject;
-  ProjectSettingsPageManager(
-      {Key? key, required this.fromProjectOrCreateProject})
-      : super(key: key);
+  BottomBarManagerProvider providerManager = locator<BottomBarManagerProvider>();
+
+  ProjectSettingsPageManager({Key? key, required this.fromProjectOrCreateProject}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +38,10 @@ class ProjectSettingsPageManager extends StatelessWidget {
       builder: (context, provider, _) {
         return Scaffold(
           appBar: CommonWidgets.appBarWithTitleAndAction(context,
-              title: "project_settings"),
+              title: "project_settings", popFunction: () {
+            CommonWidgets.hideKeyboard(context);
+            Navigator.pushNamed(context, RouteConstants.bottomBarManager,arguments: BottomBarManager(fromBottomNav: 1, pageIndex: 1));
+          }),
           body: SingleChildScrollView(
             child: Padding(
               padding:
@@ -58,7 +66,7 @@ class ProjectSettingsPageManager extends StatelessWidget {
                   SizedBox(
                     height: DimensionConstants.d22.h,
                   ),
-                  breakWidget(context, provider,fromProjectOrCreateProject),
+                  breakWidget(context, provider, fromProjectOrCreateProject),
                   SizedBox(
                     height: DimensionConstants.d25.h,
                   ),
@@ -74,21 +82,16 @@ class ProjectSettingsPageManager extends StatelessWidget {
                   SizedBox(
                     height: DimensionConstants.d40.h,
                   ),
-                  CommonWidgets.commonButton(
-                      context,
-                      fromProjectOrCreateProject == true
+                  CommonWidgets.commonButton(context, fromProjectOrCreateProject == true
                           ? "create_project".tr()
                           : "save".tr(),
                       color1: ColorConstants.primaryGradient2Color,
                       color2: ColorConstants.primaryGradient1Color,
                       fontSize: DimensionConstants.d16.sp,
-                      shadowRequired: true, onBtnTap: () {
-                    Navigator.pushNamed(
-                        context, RouteConstants.projectDetailsPageManager,
-                        arguments: ProjectDetailsPageManager(
-                          createProject: true,
-                        ));
-                  }),
+                      shadowRequired: true,
+                      onBtnTap: () {
+                       Navigator.pushNamed(context, RouteConstants.bottomBarManager,arguments: BottomBarManager(fromBottomNav: 5, pageIndex: 1));
+                      }),
                   SizedBox(
                     height: DimensionConstants.d40.h,
                   ),
@@ -170,7 +173,8 @@ Widget workDaysWidget(
   );
 }
 
-Widget breakWidget(BuildContext context, ProjectSettingsManagerProvider provider, bool fromProjectOrCreateProject) {
+Widget breakWidget(BuildContext context,
+    ProjectSettingsManagerProvider provider, bool fromProjectOrCreateProject) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
@@ -231,27 +235,37 @@ Widget breakWidget(BuildContext context, ProjectSettingsManagerProvider provider
           ),
         ),
       ),
-   fromProjectOrCreateProject == false?   Padding(
-        padding:  EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
-        child: Transform.scale(
-          scale:  1.3,
-          child: CheckboxListTile(
-            dense: true,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(DimensionConstants.d8.r)
-            ),
-            checkboxShape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(DimensionConstants.d8.r)
-            ),
-            title: Transform.translate(offset: const Offset(-20, 0),child: Text("notify_me_if_crew_is_checked_in_after_hours".tr()).regularText(context, DimensionConstants.d11.sp, TextAlign.left),),
-            value: provider.value,
-            onChanged: (newValue) {
-              provider.updateValue(newValue!);
-            },
-            controlAffinity: ListTileControlAffinity.leading,  //  <-- leading Checkbox
-          ),
-        ),
-      ):Container(),
+      fromProjectOrCreateProject == false
+          ? Padding(
+              padding:
+                  EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
+              child: Transform.scale(
+                scale: 1.3,
+                child: CheckboxListTile(
+                  dense: true,
+                  shape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(DimensionConstants.d8.r)),
+                  checkboxShape: RoundedRectangleBorder(
+                      borderRadius:
+                          BorderRadius.circular(DimensionConstants.d8.r)),
+                  title: Transform.translate(
+                    offset: const Offset(-20, 0),
+                    child:
+                        Text("notify_me_if_crew_is_checked_in_after_hours".tr())
+                            .regularText(context, DimensionConstants.d11.sp,
+                                TextAlign.left),
+                  ),
+                  value: provider.value,
+                  onChanged: (newValue) {
+                    provider.updateValue(newValue!);
+                  },
+                  controlAffinity:
+                      ListTileControlAffinity.leading, //  <-- leading Checkbox
+                ),
+              ),
+            )
+          : Container(),
     ],
   );
 }

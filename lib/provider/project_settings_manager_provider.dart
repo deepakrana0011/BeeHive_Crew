@@ -32,8 +32,6 @@ class ProjectSettingsManagerProvider extends BaseProvider{
     notifyListeners();
   }
 
-
-
   addModelToList(){
     for(int i = 0; i < daysName.length;i++){
       DaysModel daysModel = DaysModel();

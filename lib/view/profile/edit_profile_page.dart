@@ -24,7 +24,8 @@ class EditProfilePage extends StatelessWidget {
       builder: (context, provider, _) {
         return Scaffold(
           appBar: CommonWidgets.appBarWithTitleAndAction(context,
-              title: "edit_profile", actionButtonRequired: false),
+              title: "edit_profile", actionButtonRequired: false,popFunction: () { CommonWidgets.hideKeyboard(context);
+              Navigator.pop(context);}),
           body: SingleChildScrollView(
             child: Column(
               children: <Widget>[

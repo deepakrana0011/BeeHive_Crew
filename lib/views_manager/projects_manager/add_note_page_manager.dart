@@ -28,9 +28,12 @@ class AddNotePageManager extends StatelessWidget {
       builder: (context, provider, _) {
         return Scaffold(
           appBar: CommonWidgets.appBarWithTitleAndAction(
+
             context,
             actionButtonRequired: false,
             title: publicOrPrivate == false ?"add_note":"add_private_note",
+              popFunction: () { CommonWidgets.hideKeyboard(context);
+              Navigator.pop(context);}
           ),
           body: SingleChildScrollView(
             child: Column(

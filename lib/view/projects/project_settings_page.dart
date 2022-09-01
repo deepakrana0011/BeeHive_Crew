@@ -24,7 +24,9 @@ class ProjectSettingsPage extends StatelessWidget {
       builder: (context, provider, _) {
         return Scaffold(
           appBar: CommonWidgets.appBarWithTitleAndAction(context,
-              title: "project_settings"),
+              title: "project_settings",
+              popFunction: () { CommonWidgets.hideKeyboard(context);
+              Navigator.pop(context);}),
           body: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

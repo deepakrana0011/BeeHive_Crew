@@ -16,9 +16,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 
 import '../../constants/route_constants.dart';
 import '../../helper/dialog_helper.dart';
+import '../../provider/bottom_bar_Manager_provider.dart';
 
 class ArchivedProjectDetailsManager extends StatefulWidget {
   bool archivedOrProject;
@@ -28,14 +30,14 @@ class ArchivedProjectDetailsManager extends StatefulWidget {
       : super(key: key);
 
   @override
-  State<ArchivedProjectDetailsManager> createState() =>
-      _ArchivedProjectDetailsManagerState();
+  State<ArchivedProjectDetailsManager> createState() => _ArchivedProjectDetailsManagerState();
 }
 
 class _ArchivedProjectDetailsManagerState
     extends State<ArchivedProjectDetailsManager> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
+    final dashBoardProvider = Provider.of<BottomBarManagerProvider>(context, listen: false);
     return BaseView<ProjectDetailsManagerProvider>(
       onModelReady: (provider) {
         provider.tabController = TabController(length: 3, vsync: this);
@@ -52,6 +54,10 @@ class _ArchivedProjectDetailsManagerState
                 context, RouteConstants.projectSettingsPageManager,
                 arguments: ProjectSettingsPageManager(
                     fromProjectOrCreateProject: false));
+          }, popFunction: () {
+            CommonWidgets.hideKeyboard(context);
+            dashBoardProvider.onItemTapped(1);
+           widget.archivedOrProject == true? dashBoardProvider.updateNavigationValue(3):dashBoardProvider.updateNavigationValue(1);
           }),
           body: Padding(
             padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
@@ -785,7 +791,7 @@ Widget crewWidget(BuildContext context, bool archivedOrNot, bool fromProject) {
             Navigator.pushNamed(context, RouteConstants.crewPageProfileManager);
           },
           child:
-              managerDetails(context, false, "Benjamin Poole", archivedOrNot)),
+              singleCrew(context, false, "Benjamin Poole", archivedOrNot)),
       SizedBox(
         height: DimensionConstants.d8.h,
       ),
@@ -794,8 +800,7 @@ Widget crewWidget(BuildContext context, bool archivedOrNot, bool fromProject) {
   );
 }
 
-Widget managerDetails(
-    BuildContext context, bool managerOrNot, String name, bool archivedOrNot) {
+Widget managerDetails(BuildContext context, bool managerOrNot, String name, bool archivedOrNot) {
   return Card(
     elevation: 1,
     shape: RoundedRectangleBorder(
@@ -915,6 +920,143 @@ Widget managerDetails(
                           )
                         ],
                       )
+              ],
+            ),
+            Expanded(child: Container()),
+            ImageView(
+              path: ImageConstants.arrowIcon,
+              height: DimensionConstants.d16.h,
+              width: DimensionConstants.d16.w,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? ColorConstants.colorWhite
+                  : ColorConstants.colorBlack,
+            ),
+          ],
+        ),
+      ),
+    ),
+  );
+}
+Widget singleCrew(BuildContext context, bool managerOrNot, String name, bool archivedOrNot) {
+  return Card(
+    elevation: 1,
+    shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(DimensionConstants.d8.r)),
+    child: Container(
+      height: DimensionConstants.d76.h,
+      decoration: BoxDecoration(
+          color: ColorConstants.colorWhite,
+          borderRadius: BorderRadius.circular(DimensionConstants.d8.r)),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
+        child: Row(
+          children: <Widget>[
+            Stack(
+              children: <Widget>[
+                Padding(
+                  padding: managerOrNot == false
+                      ? EdgeInsets.only(top: DimensionConstants.d15.h)
+                      : EdgeInsets.all(0),
+                  child: SizedBox(
+                    width: DimensionConstants.d70.w,
+                    child: ImageView(
+                      path: ImageConstants.managerImage,
+                      height: DimensionConstants.d50.h,
+                      width: DimensionConstants.d50.w,
+                    ),
+                  ),
+                ),
+                managerOrNot == true
+                    ? Positioned(
+                    top: DimensionConstants.d23.h,
+                    left: DimensionConstants.d38.w,
+                    child: ImageView(
+                      path: ImageConstants.brandIocn,
+                      height: DimensionConstants.d27.h,
+                      width: DimensionConstants.d29.w,
+                    ))
+                    : Container(),
+              ],
+            ),
+            SizedBox(
+              width: DimensionConstants.d13.w,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                SizedBox(
+                  height: DimensionConstants.d12.h,
+                ),
+                Text(name).boldText(
+                  context,
+                  DimensionConstants.d16.sp,
+                  TextAlign.left,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? ColorConstants.colorWhite
+                      : ColorConstants.deepBlue,
+                ),
+                SizedBox(
+                  height: DimensionConstants.d5.h,
+                ),
+                managerOrNot == true
+                    ? Container(
+                  height: DimensionConstants.d21.h,
+                  width: DimensionConstants.d120.w,
+                  decoration: BoxDecoration(
+                    border:
+                    Theme.of(context).brightness == Brightness.dark
+                        ? Border.all(
+                        color: Theme.of(context).brightness ==
+                            Brightness.dark
+                            ? ColorConstants.colorWhite
+                            : ColorConstants.deepBlue,
+                        width: DimensionConstants.d1.w)
+                        : null,
+                    color: ColorConstants.deepBlue,
+                    borderRadius:
+                    BorderRadius.circular(DimensionConstants.d8.r),
+                  ),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: DimensionConstants.d10.w),
+                    child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        const ImageView(
+                          path: ImageConstants.crewIcon,
+                        ),
+                        SizedBox(
+                          width: DimensionConstants.d4.w,
+                        ),
+                        Text("crew_manager".tr()).semiBoldText(context,
+                            DimensionConstants.d10.sp, TextAlign.left,
+                            color: ColorConstants.colorWhite),
+                      ],
+                    ),
+                  ),
+                )
+                    : Row(
+                  children: <Widget>[
+                    Text("carpenter".tr()).regularText(
+                      context,
+                      DimensionConstants.d14.sp,
+                      TextAlign.left,
+                      color:
+                      Theme.of(context).brightness == Brightness.dark
+                          ? ColorConstants.colorWhite
+                          : ColorConstants.deepBlue,
+                    ),
+                    const Text("   Removed").regularText(
+                      context,
+                      DimensionConstants.d14.sp,
+                      TextAlign.left,
+                      color:
+                      Theme.of(context).brightness == Brightness.dark
+                          ? ColorConstants.colorWhite
+                          : ColorConstants.redColorEB5757,
+                    )
+                  ],
+                )
               ],
             ),
             Expanded(child: Container()),

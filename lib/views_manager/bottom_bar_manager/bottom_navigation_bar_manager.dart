@@ -2,9 +2,12 @@ import 'package:beehive/constants/color_constants.dart';
 import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/constants/image_constants.dart';
 import 'package:beehive/extension/all_extensions.dart';
+import 'package:beehive/helper/shared_prefs.dart';
 import 'package:beehive/provider/bottom_bar_Manager_provider.dart';
+import 'package:beehive/provider/profile_page_manager_provider.dart';
 import 'package:beehive/view/base_view.dart';
 import 'package:beehive/views_manager/billing_information/billing_information_page_manager.dart';
+import 'package:beehive/views_manager/profile_manager/edit_profile_page_manager.dart';
 import 'package:beehive/views_manager/profile_manager/profile_page_manager.dart';
 import 'package:beehive/views_manager/projects_manager/projects_page_manager.dart';
 import 'package:beehive/views_manager/timesheet_manager/timesheet_page_manager.dart';
@@ -14,58 +17,50 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import '../../constants/route_constants.dart';
+import '../../locator.dart';
 import '../../provider/app_state_provider.dart';
 import '../dashboard_manager/dashboard_manager.dart';
 
 class BottomBarManager extends StatefulWidget {
-  const BottomBarManager({Key? key}) : super(key: key);
+  int pageIndex;
+  int fromBottomNav;
+  BottomBarManager({Key? key,required this.fromBottomNav,required this.pageIndex}) : super(key: key);
 
   @override
   _BottomBarManagerState createState() => _BottomBarManagerState();
 }
 
 class _BottomBarManagerState extends State<BottomBarManager> {
-  static final List<Widget> _widgetOptions = <Widget>[
-    const DashBoardPageManager(),
-    const ProjectsPageManager(),
-    const TimeSheetPageManager(),
-    const ProfilePageManager(),
-  ];
-  List<String> menuName = [
-    ImageConstants.dashBoardIcon,
-    "Projects",
-    "Timesheets",
-    "Profile"
-  ];
-  List<String> actionIcon = [
-    ImageConstants.notificationIcon,
-    ImageConstants.searchIcon,
-    ImageConstants.searchIcon,
-    ImageConstants.notificationIconBell
-  ];
+  ProfilePageManagerProvider providerManager = locator<ProfilePageManagerProvider>();
+
+
   @override
   Widget build(BuildContext context) {
     final themeChange = Provider.of<AppStateNotifier>(context);
     return BaseView<BottomBarManagerProvider>(
-        onModelReady: (provider) {},
+        onModelReady: (provider) {
+          provider.onItemTapped(widget.pageIndex);
+          provider.updateNavigationValue(widget.fromBottomNav);
+        },
         builder: (context, provider, _) {
           return Scaffold(
             key: provider.scaffoldKey,
             drawer: drawer(context, provider),
-            appBar: AppBar(
+            appBar: provider.fromBottomNav == 1? AppBar(
               centerTitle: true,
               elevation: 1,
               backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
               title: provider.selectedIndex == 0
-                  ? ImageView(
-                      path: menuName.elementAt(
-                        provider.selectedIndex,
+                  ? ClipRRect(
+                borderRadius: BorderRadius.circular(DimensionConstants.d24.r),
+                    child: ImageView(
+                        path:SharedPreference.prefs!.getString(SharedPreference.DashBoardIcon) == null? provider.menuName.elementAt(provider.selectedIndex,):SharedPreference.prefs!.getString(SharedPreference.DashBoardIcon),
+                        height: DimensionConstants.d48.h,
+                        width: DimensionConstants.d48.w,
+                        fit: BoxFit.cover,
                       ),
-                      height: DimensionConstants.d48.h,
-                      width: DimensionConstants.d48.w,
-                      fit: BoxFit.cover,
-                    )
-                  : Text(menuName.elementAt(provider.selectedIndex))
+                  )
+                  : Text(provider.menuName.elementAt(provider.selectedIndex))
                       .semiBoldText(
                       context,
                       DimensionConstants.d22.sp,
@@ -90,13 +85,13 @@ class _BottomBarManagerState extends State<BottomBarManager> {
                     ),
                   )),
               actions: [
-                // provider.selectedIndex == 0 ? Switch(
-                //     value: themeChange.isDarkModeOn,
-                //     onChanged: (boolVal) {
-                //       themeChange.updateTheme(boolVal);
-                //       provider.updateLoadingStatus(true);
-                //     },
-                //   ):Container(),
+// provider.selectedIndex == 0 ? Switch(
+//     value: themeChange.isDarkModeOn,
+//     onChanged: (boolVal) {
+//       themeChange.updateTheme(boolVal);
+//       provider.updateLoadingStatus(true);
+//     },
+//   ):Container(),
                 Padding(
                   padding: provider.selectedIndex == 0
                       ? EdgeInsets.only(right: DimensionConstants.d20.w)
@@ -108,7 +103,7 @@ class _BottomBarManagerState extends State<BottomBarManager> {
                       provider.routeNavigation(context, provider.selectedIndex);
                     },
                     child: ImageView(
-                      path: actionIcon.elementAt(provider.selectedIndex),
+                      path: provider.actionIcon.elementAt(provider.selectedIndex),
                       height: DimensionConstants.d24.h,
                       width: DimensionConstants.d24.w,
                       color: provider.selectedIndex != 0
@@ -120,9 +115,13 @@ class _BottomBarManagerState extends State<BottomBarManager> {
                   ),
                 ),
               ],
-            ),
-            body: Center(
-              child: _widgetOptions.elementAt(provider.selectedIndex),
+            ):null,
+            body: Builder(
+              builder: (context) {
+                return Center(
+                  child: provider.pageView(provider.selectedIndex,),
+                );
+              }
             ),
             bottomNavigationBar: BottomNavigationBar(
               items: <BottomNavigationBarItem>[
@@ -382,19 +381,19 @@ Widget drawer(BuildContext context, BottomBarManagerProvider provider) {
                       },
                       child: drawerHeadingsRow(
                           context, ImageConstants.calendarIcon, "schedule".tr(),
-                          active: provider.selectedIndex == 1 ? true : false),
+                          ),
                     ),
                     SizedBox(height: DimensionConstants.d33.h),
                     GestureDetector(
                       onTap: () {
                         Navigator.pop(context);
-                        Navigator.pushNamed(context,
-                            RouteConstants.archivedProjectsScreenManager);
+                        provider.onItemTapped(1);
+                        provider.updateNavigationValue(3);
                       },
                       child: drawerHeadingsRow(
                         context,
                         ImageConstants.openFolderIcon,
-                        "archived_projects".tr(),
+                        "archived_projects".tr(), active: provider.selectedIndex == 1 ? true : false
                       ),
                     ),
                     SizedBox(height: DimensionConstants.d30.h),
@@ -448,7 +447,7 @@ Widget drawer(BuildContext context, BottomBarManagerProvider provider) {
           top: DimensionConstants.d60.h,
           left: DimensionConstants.d280.w,
           child: GestureDetector(
-            onTap: (){
+            onTap: () {
               Navigator.pop(context);
             },
             child: const ImageView(
@@ -485,3 +484,194 @@ Widget drawerHeadingsRow(BuildContext context, String iconPath, String heading,
     ),
   );
 }
+
+/*
+Scaffold(
+key: provider.scaffoldKey,
+drawer: drawer(context, provider),
+appBar: AppBar(
+centerTitle: true,
+elevation: 1,
+backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+title: provider.selectedIndex == 0
+? ImageView(
+path: menuName.elementAt(
+provider.selectedIndex,
+),
+height: DimensionConstants.d48.h,
+width: DimensionConstants.d48.w,
+fit: BoxFit.cover,
+)
+: Text(menuName.elementAt(provider.selectedIndex))
+.semiBoldText(
+context,
+DimensionConstants.d22.sp,
+TextAlign.center,
+color: Theme.of(context).brightness == Brightness.dark
+? ColorConstants.colorWhite
+    : ColorConstants.colorBlack,
+),
+leading: GestureDetector(
+onTap: () {
+provider.scaffoldKey.currentState!.openDrawer();
+},
+child: Padding(
+padding: const EdgeInsets.all(DimensionConstants.d15),
+child: ImageView(
+path: ImageConstants.drawerIcon,
+color: Theme.of(context).brightness == Brightness.dark
+? ColorConstants.colorWhite
+    : ColorConstants.colorBlack,
+height: DimensionConstants.d24.h,
+width: DimensionConstants.d24.w,
+),
+)),
+actions: [
+// provider.selectedIndex == 0 ? Switch(
+//     value: themeChange.isDarkModeOn,
+//     onChanged: (boolVal) {
+//       themeChange.updateTheme(boolVal);
+//       provider.updateLoadingStatus(true);
+//     },
+//   ):Container(),
+Padding(
+padding: provider.selectedIndex == 0
+? EdgeInsets.only(right: DimensionConstants.d20.w)
+: EdgeInsets.only(
+right: DimensionConstants.d10.w,
+top: DimensionConstants.d10.h),
+child: GestureDetector(
+onTap: () {
+provider.routeNavigation(context, provider.selectedIndex);
+},
+child: ImageView(
+path: actionIcon.elementAt(provider.selectedIndex),
+height: DimensionConstants.d24.h,
+width: DimensionConstants.d24.w,
+color: provider.selectedIndex != 0
+? Theme.of(context).brightness == Brightness.dark
+? ColorConstants.colorWhite
+    : ColorConstants.colorBlack
+    : null,
+),
+),
+),
+],
+),
+body: Center(
+child: _widgetOptions.elementAt(provider.selectedIndex),
+),
+bottomNavigationBar: BottomNavigationBar(
+items: <BottomNavigationBarItem>[
+BottomNavigationBarItem(
+icon: Padding(
+padding: EdgeInsets.only(
+top: DimensionConstants.d8.h,
+bottom: DimensionConstants.d3.h),
+child: const ImageView(
+path: ImageConstants.bottomBarDashBoardInActive,
+),
+),
+activeIcon: Padding(
+padding: EdgeInsets.only(
+top: DimensionConstants.d8.h,
+bottom: DimensionConstants.d3.h),
+child: const ImageView(
+path: ImageConstants.dashboardIcon,
+color: ColorConstants.primaryColor,
+),
+),
+label: 'Dashboard',
+),
+BottomNavigationBarItem(
+icon: Padding(
+padding: EdgeInsets.only(
+top: DimensionConstants.d8.h,
+bottom: DimensionConstants.d3.h),
+child: ImageView(
+path: ImageConstants.projectsIcon,
+color: (Theme.of(context).brightness == Brightness.dark
+? ColorConstants.colorWhite
+    : ColorConstants.colorBlack),
+),
+),
+activeIcon: Padding(
+padding: EdgeInsets.only(
+top: DimensionConstants.d8.h,
+bottom: DimensionConstants.d3.h),
+child: const ImageView(
+path: ImageConstants.bottomBarProjectActive,
+color: ColorConstants.primaryColor,
+),
+),
+label: 'Projects',
+),
+BottomNavigationBarItem(
+icon: Padding(
+padding: EdgeInsets.only(
+top: DimensionConstants.d8.h,
+bottom: DimensionConstants.d3.h),
+child: ImageView(
+path: ImageConstants.timeSheetsIcon,
+color: (Theme.of(context).brightness == Brightness.dark
+? ColorConstants.colorWhite
+    : ColorConstants.colorBlack),
+),
+),
+activeIcon: Padding(
+padding: EdgeInsets.only(
+top: DimensionConstants.d8.h,
+bottom: DimensionConstants.d3.h),
+child: const ImageView(
+path: ImageConstants.bottomBarTimeSheetActive,
+color: ColorConstants.primaryColor,
+),
+),
+label: 'Timesheets',
+),
+BottomNavigationBarItem(
+icon: Padding(
+padding: EdgeInsets.only(
+top: DimensionConstants.d8.h,
+bottom: DimensionConstants.d3.h),
+child: ImageView(
+path: ImageConstants.profileIcon,
+color: (Theme.of(context).brightness == Brightness.dark
+? ColorConstants.colorWhite
+    : ColorConstants.colorBlack),
+),
+),
+activeIcon: Padding(
+padding: EdgeInsets.only(
+top: DimensionConstants.d8.h,
+bottom: DimensionConstants.d3.h),
+child: const ImageView(
+path: ImageConstants.bottomBarProfileActive,
+color: ColorConstants.primaryColor,
+),
+),
+label: 'Profile',
+),
+],
+selectedLabelStyle:
+Theme.of(context).bottomNavigationBarTheme.selectedLabelStyle,
+unselectedLabelStyle: Theme.of(context)
+.bottomNavigationBarTheme
+    .unselectedLabelStyle,
+type: BottomNavigationBarType.fixed,
+backgroundColor:
+Theme.of(context).bottomNavigationBarTheme.backgroundColor,
+currentIndex: provider.selectedIndex,
+selectedItemColor:
+Theme.of(context).bottomNavigationBarTheme.selectedItemColor,
+unselectedItemColor: Theme.of(context)
+.bottomNavigationBarTheme
+    .unselectedItemColor,
+iconSize: 25,
+onTap: provider.onItemTapped,
+elevation: 5,
+showSelectedLabels: true,
+showUnselectedLabels: true,
+),
+);
+*/

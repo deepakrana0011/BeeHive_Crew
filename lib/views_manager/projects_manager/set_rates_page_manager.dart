@@ -2,6 +2,7 @@ import 'package:beehive/constants/image_constants.dart';
 import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
+import 'package:beehive/provider/bottom_bar_Manager_provider.dart';
 import 'package:beehive/provider/set_rates_page_manager_provider.dart';
 import 'package:beehive/view/base_view.dart';
 import 'package:beehive/views_manager/projects_manager/project_setting_page_manager.dart';
@@ -17,7 +18,8 @@ import '../../helper/decoration.dart';
 import '../../widget/custom_switcher.dart';
 
 class SetRatesPageManager extends StatelessWidget {
-  const SetRatesPageManager({Key? key}) : super(key: key);
+  BottomBarManagerProvider barManagerProvider;
+  SetRatesPageManager({Key? key,required this.barManagerProvider}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +28,8 @@ class SetRatesPageManager extends StatelessWidget {
       builder: (context, provider, _) {
         return Scaffold(
           appBar: CommonWidgets.appBarWithTitleAndAction(context,
-              title: "set_rates"),
+              title: "set_rates",popFunction: () { CommonWidgets.hideKeyboard(context);
+              Navigator.pop(context);}),
           body: SingleChildScrollView(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,

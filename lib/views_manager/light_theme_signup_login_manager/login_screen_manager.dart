@@ -11,6 +11,7 @@ import 'package:beehive/provider/login_manager_provider.dart';
 import 'package:beehive/provider/login_provider.dart';
 import 'package:beehive/view/base_view.dart';
 import 'package:beehive/view/light_theme_signup_login/email_address_screen.dart';
+import 'package:beehive/views_manager/bottom_bar_manager/bottom_navigation_bar_manager.dart';
 import 'package:beehive/widget/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -94,7 +95,7 @@ class LoginScreenManager extends StatelessWidget {
                                         SizedBox(height: DimensionConstants.d29.h),
                                         CommonWidgets.commonButton(context, "login".tr(), onBtnTap: (){
                                           CommonWidgets.hideKeyboard(context);
-                                          Navigator.pushNamed(context, RouteConstants.bottomBarManager,);
+                                          Navigator.pushNamed(context, RouteConstants.bottomBarManager,arguments: BottomBarManager(fromBottomNav: 1, pageIndex: 0));
                                         },shadowRequired: true),
                                         SizedBox(height: DimensionConstants.d16.h),
                                         GestureDetector(

@@ -1,12 +1,13 @@
-
-
 import 'package:beehive/constants/image_constants.dart';
 import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
+import 'package:beehive/locator.dart';
 import 'package:beehive/provider/create_project_manager_provider.dart';
 import 'package:beehive/view/base_view.dart';
+import 'package:beehive/views_manager/projects_manager/add_crew_page_manager.dart';
+import 'package:beehive/views_manager/projects_manager/set_rates_page_manager.dart';
 import 'package:beehive/widget/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -15,25 +16,26 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 import 'package:toggle_switch/toggle_switch.dart';
 
 import '../../constants/color_constants.dart';
 import '../../constants/dimension_constants.dart';
 import '../../helper/decoration.dart';
+import '../../provider/bottom_bar_Manager_provider.dart';
 
 class CreateProjectManager extends StatelessWidget {
-  const CreateProjectManager({Key? key}) : super(key: key);
+  BottomBarManagerProvider dashBoardProvider =
+      locator<BottomBarManagerProvider>();
+  CreateProjectManager({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-
-
     return BaseView<CreateProjectManagerProvider>(onModelReady: (provider) {
       provider.determinePosition().then((value) => {
             provider.getLngLt(context),
             provider.setCustomMapPinUser(),
-
           });
     }, builder: (context, provider, _) {
       Set<Circle> mCircle = {
@@ -48,7 +50,10 @@ class CreateProjectManager extends StatelessWidget {
       };
       return Scaffold(
         appBar: CommonWidgets.appBarWithTitleAndAction(context,
-            title: "create_a_project"),
+            title: "create_a_project", popFunction: () {
+          CommonWidgets.hideKeyboard(context);
+          Navigator.pop(context);
+        }),
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[
@@ -59,7 +64,7 @@ class CreateProjectManager extends StatelessWidget {
               SizedBox(
                 height: DimensionConstants.d20.h,
               ),
-              projectLocation(context),
+              projectLocation(context, provider, provider.addressController),
               SizedBox(
                 height: DimensionConstants.d16.h,
               ),
@@ -67,30 +72,30 @@ class CreateProjectManager extends StatelessWidget {
               SizedBox(
                 height: DimensionConstants.d16.h,
               ),
-              googleMapWidget(provider,mCircle),
+              googleMapWidget(provider, mCircle),
               SizedBox(
                 height: DimensionConstants.d16.h,
               ),
-              locationRadiusWidget(context,provider),
+              locationRadiusWidget(context, provider),
               SizedBox(
                 height: DimensionConstants.d30.h,
               ),
               Padding(
-                padding:  EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
+                padding:
+                    EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
                 child: CommonWidgets.commonButton(context, "next".tr(),
                     color1: ColorConstants.primaryGradient2Color,
                     color2: ColorConstants.primaryGradient1Color,
-                    fontSize: DimensionConstants.d16.sp,
-                    onBtnTap: () {
-                  Navigator.pushNamed(context, RouteConstants.addCrewPageManager);
-
-                    },
-                    shadowRequired: true),
+                    fontSize: DimensionConstants.d16.sp, onBtnTap: () {
+                  Navigator.pushNamed(
+                      context, RouteConstants.addCrewPageManager,
+                      arguments: AddCrewPageManager(
+                          barManagerProvider: dashBoardProvider));
+                }, shadowRequired: true),
               ),
               SizedBox(
                 height: DimensionConstants.d50.h,
               ),
-
             ],
           ),
         ),
@@ -150,7 +155,10 @@ Widget titleWidget(BuildContext context) {
   );
 }
 
-Widget projectLocation(BuildContext context) {
+Widget projectLocation(
+    BuildContext context,
+    CreateProjectManagerProvider provider,
+    TextEditingController addressController) {
   return Padding(
     padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
     child: Column(
@@ -187,6 +195,10 @@ Widget projectLocation(BuildContext context) {
             borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
           ),
           child: TextFormField(
+            onTap: () {
+              provider.updateLocationAddress();
+            },
+            controller: addressController,
             maxLines: 10,
             decoration: ViewDecoration.inputDecorationBox(
               fieldName: "enter_address".tr(),
@@ -203,7 +215,46 @@ Widget projectLocation(BuildContext context) {
               hintTextSize: DimensionConstants.d16.sp,
             ),
           ),
-        )
+        ),
+        provider.locationAddressValue == true
+            ? Card(
+                elevation: 2,
+                shape: RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.circular(DimensionConstants.d8.r)),
+                child: Container(
+                    height: DimensionConstants.d192.h,
+                    width: DimensionConstants.d343.w,
+                    decoration: BoxDecoration(
+                        borderRadius:
+                            BorderRadius.circular(DimensionConstants.d8.r)),
+                    child: ListView.builder(
+                      itemCount: provider.listOfLocations.length,
+                        itemBuilder: (BuildContext context, int index) {
+                      return GestureDetector(
+                        onTap: (){
+                          provider.addressController.text = provider.listOfLocations[index];
+                          provider.updateLocationAddress();
+                          CommonWidgets.hideKeyboard(context);
+                        },
+                        child: Column(
+                          children: [
+                            SizedBox(
+                                height: DimensionConstants.d45.h,
+                                width: double.infinity,
+                                child: Padding(
+                                  padding: EdgeInsets.only(
+                                      top: DimensionConstants.d16.h,
+                                      left: DimensionConstants.d16.w),
+                                  child: Text(provider.listOfLocations[index]).semiBoldText(context,
+                                      DimensionConstants.d14.sp, TextAlign.left),
+                                )),
+                            Divider(height: DimensionConstants.d1.h,color: ColorConstants.grayD2D2D7,)
+                          ],
+                        ),
+                      );
+                    })))
+            : Container()
       ],
     ),
   );
@@ -247,11 +298,10 @@ Widget locationFiled(
                 SizedBox(
                   width: DimensionConstants.d280.w,
                   height: DimensionConstants.d20.h,
-                  child:  Text(provider.pickUpLocation).regularText(
+                  child: Text(provider.pickUpLocation).regularText(
                       context, DimensionConstants.d14.sp, TextAlign.left,
                       color: ColorConstants.black333333),
                 ),
-
               ],
             )
           ],
@@ -261,7 +311,8 @@ Widget locationFiled(
   );
 }
 
-Widget googleMapWidget(CreateProjectManagerProvider provider, Set<Circle> circle ) {
+Widget googleMapWidget(
+    CreateProjectManagerProvider provider, Set<Circle> circle) {
   return Padding(
     padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
     child: Container(
@@ -287,13 +338,14 @@ Widget googleMapWidget(CreateProjectManagerProvider provider, Set<Circle> circle
                       onCameraMove: (CameraPosition cameraPosition) {
                         provider.position = cameraPosition;
                       },
-                  circles: circle,
-                  gestureRecognizers: {
-                    Factory<OneSequenceGestureRecognizer>(
+                      circles: circle,
+                      gestureRecognizers: {
+                        Factory<OneSequenceGestureRecognizer>(
                           () => EagerGestureRecognizer(),
-                    ),
-                  },
-                  onCameraIdle: () => provider.cameraIdle(provider.position),
+                        ),
+                      },
+                      onCameraIdle: () =>
+                          provider.cameraIdle(provider.position),
                       markers: Set<Marker>.of(provider.markers))
                   : const Center(
                       child: CircularProgressIndicator(),
@@ -302,9 +354,11 @@ Widget googleMapWidget(CreateProjectManagerProvider provider, Set<Circle> circle
             top: DimensionConstants.d8.h,
             left: DimensionConstants.d85.w,
             child: ToggleSwitch(
-             activeBorders: [
-               Border.all(color: ColorConstants.colorBlack,width: DimensionConstants.d2.w)
-             ],
+              activeBorders: [
+                Border.all(
+                    color: ColorConstants.colorBlack,
+                    width: DimensionConstants.d2.w)
+              ],
               minWidth: DimensionConstants.d91.w,
               minHeight: DimensionConstants.d41.h,
               fontSize: DimensionConstants.d14.sp,
@@ -330,21 +384,34 @@ Widget googleMapWidget(CreateProjectManagerProvider provider, Set<Circle> circle
     ),
   );
 }
-Widget locationRadiusWidget(BuildContext context, CreateProjectManagerProvider provider){
+
+Widget locationRadiusWidget(
+    BuildContext context, CreateProjectManagerProvider provider) {
   return Column(
     children: [
       Padding(
-        padding:  EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
+        padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
         child: Row(
-          children:<Widget> [
-            Text("location_radius".tr()).boldText(context, DimensionConstants.d16.sp, TextAlign.left,color: ColorConstants.deepBlue),
+          children: <Widget>[
+            Text("location_radius".tr()).boldText(
+                context, DimensionConstants.d16.sp, TextAlign.left,
+                color: ColorConstants.deepBlue),
             Expanded(child: Container()),
-            Text("<".tr()).boldText(context, DimensionConstants.d16.sp, TextAlign.left,color: ColorConstants.deepBlue),
-            SizedBox(width: DimensionConstants.d5.w,),
-            Text(provider.valueFor.toStringAsFixed(0)).boldText(context, DimensionConstants.d16.sp, TextAlign.left,color: ColorConstants.deepBlue),
-            SizedBox(width: DimensionConstants.d5.w,),
-            Text("m".tr()).boldText(context, DimensionConstants.d16.sp, TextAlign.left,color: ColorConstants.deepBlue),
-
+            Text("<".tr()).boldText(
+                context, DimensionConstants.d16.sp, TextAlign.left,
+                color: ColorConstants.deepBlue),
+            SizedBox(
+              width: DimensionConstants.d5.w,
+            ),
+            Text(provider.valueFor.toStringAsFixed(0)).boldText(
+                context, DimensionConstants.d16.sp, TextAlign.left,
+                color: ColorConstants.deepBlue),
+            SizedBox(
+              width: DimensionConstants.d5.w,
+            ),
+            Text("m".tr()).boldText(
+                context, DimensionConstants.d16.sp, TextAlign.left,
+                color: ColorConstants.deepBlue),
           ],
         ),
       ),
@@ -363,13 +430,18 @@ Widget locationRadiusWidget(BuildContext context, CreateProjectManagerProvider p
           },
         ),
       ),
-
-
     ],
   );
+}
 
-
-
-
-
+Widget locationName(BuildContext context, String name) {
+  return Container(
+      height: DimensionConstants.d45.h,
+      width: double.infinity,
+      child: Padding(
+        padding: EdgeInsets.only(
+            top: DimensionConstants.d16.h, left: DimensionConstants.d16.w),
+        child: Text(name)
+            .semiBoldText(context, DimensionConstants.d14.sp, TextAlign.left),
+      ));
 }
