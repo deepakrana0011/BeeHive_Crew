@@ -39,5 +39,29 @@ class ResetPasswordManagerProvider extends BaseProvider{
     }
   }
 
+  Future resetPasswordManagerByPhone(BuildContext context,
+      {required String phone, required String password}) async {
+    setState(ViewState.busy);
+    try {
+      var model = await api.resetPasswordByPhoneNumber(context, phoneNumber: phone, password: password,);
+      if (model.success == true) {
+        setState(ViewState.idle);
+        Navigator.pushNamedAndRemoveUntil(context, RouteConstants.loginScreenManager, (route) => false);
+        DialogHelper.showMessage(context, model.message!);
+      } else {
+        setState(ViewState.idle);
+        DialogHelper.showMessage(context, model.message!);
+      }
+    } on FetchDataException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, e.toString());
+    } on SocketException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, "internet_connection".tr());
+    }
+  }
+
+
+
 
 }

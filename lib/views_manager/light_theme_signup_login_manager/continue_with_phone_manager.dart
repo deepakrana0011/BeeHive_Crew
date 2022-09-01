@@ -17,7 +17,7 @@ import 'package:intl_phone_number_input/intl_phone_number_input.dart';
 import '../../helper/dialog_helper.dart';
 
 class ContinueWithPhoneManager extends StatelessWidget {
-  bool routeForResetPassword;
+  int routeForResetPassword;
   ContinueWithPhoneManager({Key? key,required this.routeForResetPassword}) : super(key: key);
   @override
   Widget build(BuildContext context) {
@@ -107,7 +107,7 @@ class ContinueWithPhoneManager extends StatelessWidget {
                                   DialogHelper.showMessage(context,
                                       "mobile_number_cant_be_empty".tr());
                                 } else {
-                                 routeForResetPassword != true? provider.phoneVerification(context):null;
+                                 routeForResetPassword == 1? provider.phoneVerification(context):provider.resetPasswordByPhone(context);
                                 }
                               }, shadowRequired: true):Center(child: const CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,),)
                             ],

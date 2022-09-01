@@ -2,6 +2,7 @@
 
 import 'package:beehive/helper/shared_prefs.dart';
 import 'package:beehive/provider/base_provider.dart';
+import 'package:beehive/views_manager/light_theme_signup_login_manager/continue_with_phone_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -27,7 +28,7 @@ class SignUpManagerProvider extends BaseProvider{
         SharedPreference.prefs!.setString(SharedPreference.TOKEN, model.token!);
         SharedPreference.prefs!.setString(SharedPreference.USER_ID, model.data!.sId!);
         setState(ViewState.idle);
-         Navigator.pushNamed(context, RouteConstants.continueWithPhoneManager);
+         Navigator.pushNamed(context, RouteConstants.continueWithPhoneManager,arguments: ContinueWithPhoneManager(routeForResetPassword: 1));
         DialogHelper.showMessage(context, model.message!);
       } else {
         setState(ViewState.idle);

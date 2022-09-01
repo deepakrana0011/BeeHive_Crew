@@ -247,7 +247,7 @@ class OnGenerateRouter {
         return MaterialPageRoute(builder: (_)=> ChangePasswordPageManager(),settings: settings);
       case RouteConstants.resetPasswordScreenManager:
         final args = settings.arguments as ResetPasswordScreenManager;
-        return MaterialPageRoute(builder: (_)=> ResetPasswordScreenManager(email: args.email,),settings: settings);
+        return MaterialPageRoute(builder: (_)=> ResetPasswordScreenManager(email: args.email, byPhoneOrEmail: args.byPhoneOrEmail,),settings: settings);
 
 
 

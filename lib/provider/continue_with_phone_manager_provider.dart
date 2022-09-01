@@ -42,6 +42,32 @@ Future phoneVerification(BuildContext context,) async {
 
 
 
+Future resetPasswordByPhone(BuildContext context,) async {
+  setState(ViewState.busy);
+  try {
+    var model = await api.resetPasswordByPhone(context,phoneNumberController.text );
+    if (model.success == true) {
+      setState(ViewState.idle);
+      Navigator.pushNamed(context, RouteConstants.otpVerificationPageManager,arguments: OtpVerificationPageManager(phoneNumber: phoneNumberController.text, continueWithPhoneOrEmail: true, resetPasswordWithEmail: 4));
+      DialogHelper.showMessage(context, model.message!);
+    } else {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, model.message!);
+    }
+  } on FetchDataException catch (e) {
+    setState(ViewState.idle);
+    DialogHelper.showMessage(context, e.toString());
+  } on SocketException catch (e) {
+    setState(ViewState.idle);
+    DialogHelper.showMessage(context, "internet_connection".tr());
+  }
+}
+
+
+
+
+
+
 
 
 }

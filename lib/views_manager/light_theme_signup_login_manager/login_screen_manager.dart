@@ -87,7 +87,7 @@ class LoginScreenManager extends StatelessWidget {
                                         SizedBox(height: DimensionConstants.d16.h),
                                         GestureDetector(
                                           onTap: (){
-                                          Navigator.pushNamed(context, RouteConstants.continueWithPhoneManager,arguments: ContinueWithPhoneManager(routeForResetPassword: true,));
+                                          Navigator.pushNamed(context, RouteConstants.continueWithPhoneManager,arguments: ContinueWithPhoneManager(routeForResetPassword: 2,));
                                           },
                                           child: Align(
                                             alignment: Alignment.center,

@@ -23,12 +23,7 @@ import 'fetch_data_expection.dart';
 
 class ApiManager {
   Dio dio = Dio();
-  Future<SignUpResponse> signUp(
-    BuildContext context,
-    String name,
-    String email,
-    password,
-  ) async {
+  Future<SignUpResponse> signUp(BuildContext context, String name, String email, password,) async {
     try {
       var map = {"name": name, "email": email, "password": password};
       var response = await dio.post(
@@ -258,6 +253,68 @@ class ApiManager {
       }
     }
   }
+
+
+
+  Future<ResetPasswordByPhoneResponse> resetPasswordByPhone(BuildContext context, String phoneNumber,) async {
+    try {
+      var map = {
+        "phoneNumber": phoneNumber,
+      };
+      var response = await dio.post(ApiConstantsManager.BASEURL + ApiConstantsManager.FORGOT_PASSWORD_BY_PHONE, data: map);
+      return ResetPasswordByPhoneResponse.fromJson(json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+
+
+  Future<EmailVerifiedResponseManager> verifyingOtpByPhone(BuildContext context, String phoneNumber,String otp) async {
+    try {
+      var map ={
+        "phoneNumber":phoneNumber,
+        "forgotOTP":otp
+      };
+      var response = await dio.post(ApiConstantsManager.BASEURL + ApiConstantsManager.VERIFY_OTP_BY_PHONE, data: map);
+      return EmailVerifiedResponseManager.fromJson(json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+
+  Future<EmailVerifiedResponseManager> resetPasswordByPhoneNumber(BuildContext context,
+      {required String phoneNumber,
+      required String password}) async {
+    try {
+      var map ={
+        "phoneNumber":phoneNumber,
+        "password":password
+      };
+      var response = await dio.post(ApiConstantsManager.BASEURL + ApiConstantsManager.RESET_PASSWORD_BY_PHONE, data: map);
+      return EmailVerifiedResponseManager.fromJson(json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+
 
   // Future<AssignProjectResponse> assignProject(BuildContext context, List,) async {
   //   try {

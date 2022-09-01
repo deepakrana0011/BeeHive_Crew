@@ -96,6 +96,8 @@ class OtpVerificationPageManager extends StatelessWidget {
                                             provider.verifyEmailForOtp(context, phoneNumber);
                                           }else if(resetPasswordWithEmail == 3){
                                             provider.verifyEmailForOtpResetPassword(context, phoneNumber);
+                                          }else if(resetPasswordWithEmail == 4){
+                                            provider.verifyingOtpByPhone(context, phoneNumber);
                                           }
                                         }
                                       }, shadowRequired: true):Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,),)

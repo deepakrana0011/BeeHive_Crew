@@ -17,7 +17,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ResetPasswordScreenManager extends StatelessWidget {
   String email;
-  ResetPasswordScreenManager({Key? key,required this.email}) : super(key: key);
+  bool byPhoneOrEmail;
+  ResetPasswordScreenManager({Key? key,required this.email,required this.byPhoneOrEmail}) : super(key: key);
 
   final newPasswordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
@@ -82,7 +83,7 @@ class ResetPasswordScreenManager extends StatelessWidget {
                                     provider.state == ViewState.idle?    CommonWidgets.commonButton(context, "reset_password".tr(), onBtnTap: (){
                                           if(_formKey.currentState!.validate() && newPasswordController.text == confirmPasswordController.text){
                                             CommonWidgets.hideKeyboard(context);
-                                            provider.resetPassword(context, confirmPasswordController.text,email);
+                                           byPhoneOrEmail == true? provider.resetPassword(context, confirmPasswordController.text,email):provider.resetPasswordManagerByPhone(context, password: confirmPasswordController.text, phone: email, );
                                           }
                                         },shadowRequired: true):const Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,),)
                                       ],

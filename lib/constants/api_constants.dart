@@ -12,6 +12,9 @@ class ApiConstantsManager{
   static const String VERIFY_OTP_RESETPASSWORD = "verifyforgot";
   static const String RESET_PASSWORD = "resettpassword";
   static const String ASSIGN_PROJECT = "assignproject";
+  static const String FORGOT_PASSWORD_BY_PHONE = "forgotPbyphone";
+  static const String VERIFY_OTP_BY_PHONE = "verifymanagerbyphone";
+  static const String RESET_PASSWORD_BY_PHONE = "resettpasswordbyphone";
 }
 class ApiConstantsCrew{
   static const String BASEURL = "http://3.235.151.126:8081/Crew/";
