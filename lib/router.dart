@@ -192,14 +192,16 @@ class OnGenerateRouter {
         return MaterialPageRoute(
             builder: (_) => CreateProjectManager(), settings: settings);
       case RouteConstants.addCrewPageManager:
+        final args = settings.arguments as AddCrewPageManager;
         return MaterialPageRoute(
-            builder: (_) => AddCrewPageManager(), settings: settings);
+            builder: (_) => AddCrewPageManager(projectId: args.projectId,), settings: settings);
       case RouteConstants.crewMemberAddByManager:
         return MaterialPageRoute(
             builder: (_) => CrewMemberAddByManager(), settings: settings);
       case RouteConstants.setRatesManager:
+        final args = settings.arguments as SetRatesPageManager;
         return MaterialPageRoute(
-            builder: (_) => SetRatesPageManager(), settings: settings);
+            builder: (_) => SetRatesPageManager(projectId: args.projectId,), settings: settings);
       case RouteConstants.projectSettingsPageManager:
         final args = settings.arguments as ProjectSettingsPageManager;
         return MaterialPageRoute(

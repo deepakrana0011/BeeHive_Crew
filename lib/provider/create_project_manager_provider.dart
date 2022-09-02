@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/enum/enum.dart';
 import 'package:beehive/provider/base_provider.dart';
+import 'package:beehive/views_manager/projects_manager/add_crew_page_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:geocoding/geocoding.dart';
@@ -37,6 +38,7 @@ class CreateProjectManagerProvider extends BaseProvider {
     longitude = value.longitude;
     setState(ViewState.idle);
   }
+
   void setCustomMapPinUser() async {
     pinLocationIconUser = await BitmapDescriptor.fromAssetImage(
         const ImageConfiguration(), ImageConstants.locationMark);
@@ -47,26 +49,28 @@ class CreateProjectManagerProvider extends BaseProvider {
   onMapCreated(GoogleMapController controller) {
     setState(ViewState.busy);
     markers.add(Marker(
-      draggable:  true,
+      draggable: true,
       markerId: const MarkerId("ID1"),
       position: LatLng(latitude, longitude),
       icon: pinLocationIconUser!,
-      onDragEnd: (newLocation){
-      getPickUpAddress(newLocation.latitude, newLocation.longitude);
-      longitude = newLocation.longitude;
-      latitude = newLocation.latitude;
-      notifyListeners();
+      onDragEnd: (newLocation) {
+        getPickUpAddress(newLocation.latitude, newLocation.longitude);
+        longitude = newLocation.longitude;
+        latitude = newLocation.latitude;
+        notifyListeners();
       },
       flat: true,
       anchor: const Offset(0.5, 0.5),
     ));
     setState(ViewState.idle);
   }
+
   CameraPosition? position;
 
   Future<void> getPickUpAddress(double lat, double long) async {
     List<Placemark> placeMark = await placemarkFromCoordinates(lat, long);
-    pickUpLocation = placeMark.first.street.toString() + " " +
+    pickUpLocation = placeMark.first.street.toString() +
+        " " +
         placeMark.first.thoroughfare.toString() +
         placeMark.first.subLocality.toString();
     notifyListeners();
@@ -107,21 +111,30 @@ class CreateProjectManagerProvider extends BaseProvider {
 
     return await Geolocator.getCurrentPosition();
   }
+
   double valueFor = 0;
-  updateValue(double value){
+  updateValue(double value) {
     valueFor = value;
     notifyListeners();
   }
 
-
-
-  Future createProjectManager(BuildContext context,) async {
+  Future createProjectManager(
+    BuildContext context,
+  ) async {
     setState(ViewState.busy);
     try {
-      var model = await api.createProjectManager(context, projectName: projectNameController.text, longitude: longitude.toString(), locationRadius: valueFor.toString(), latitude: latitude.toString(), address: pickUpLocation,);
+      var model = await api.createProjectManager(
+        context,
+        projectName: projectNameController.text,
+        longitude: longitude.toString(),
+        locationRadius: valueFor.toString(),
+        latitude: latitude.toString(),
+        address: pickUpLocation,
+      );
       if (model.success == true) {
         setState(ViewState.idle);
-        Navigator.pushNamed(context, RouteConstants.addCrewPageManager);
+        Navigator.pushNamed(context, RouteConstants.addCrewPageManager,
+            arguments: AddCrewPageManager(projectId: model.data!.sId!));
         DialogHelper.showMessage(context, model.message!);
       } else {
         setState(ViewState.idle);
@@ -135,21 +148,4 @@ class CreateProjectManagerProvider extends BaseProvider {
       DialogHelper.showMessage(context, "internet_connection".tr());
     }
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

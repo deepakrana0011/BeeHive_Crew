@@ -53,7 +53,7 @@ class ProjectSettingsPageManager extends StatelessWidget {
                     height: DimensionConstants.d22.h,
                   ),
                   fromProjectOrCreateProject == true
-                      ? hoursWidget(context)
+                      ? hoursWidget(context,provider)
                       : managerSetting(context),
                   SizedBox(
                     height: DimensionConstants.d22.h,
@@ -62,11 +62,11 @@ class ProjectSettingsPageManager extends StatelessWidget {
                   SizedBox(
                     height: DimensionConstants.d25.h,
                   ),
-                  roundTimeWidget(context),
+                  roundTimeWidget(context,provider),
                   SizedBox(
                     height: DimensionConstants.d8.h,
                   ),
-                  addBreakButton(context),
+                  addBreakButton(context, onBreakButtonTapped: () { provider.breakWidget.length == 2 ?"":provider.addIndexToList(); }),
                   SizedBox(
                     height: DimensionConstants.d26.h,
                   ),
@@ -110,8 +110,7 @@ class ProjectSettingsPageManager extends StatelessWidget {
   }
 }
 
-Widget workDaysWidget(
-    BuildContext context, ProjectSettingsManagerProvider provider) {
+Widget workDaysWidget(BuildContext context, ProjectSettingsManagerProvider provider) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
@@ -256,7 +255,7 @@ Widget breakWidget(BuildContext context, ProjectSettingsManagerProvider provider
   );
 }
 
-Widget roundTimeWidget(BuildContext context) {
+Widget roundTimeWidget(BuildContext context,ProjectSettingsManagerProvider provider) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
@@ -274,46 +273,47 @@ Widget roundTimeWidget(BuildContext context) {
       ),
       Column(
         children: <Widget>[
-          Row(
-            children: <Widget>[
-              hoursContainer(context, DimensionConstants.d45.h,
-                  DimensionConstants.d130.w, "30 mins"),
-              Expanded(child: Container()),
-              Text("to").regularText(
-                  context, DimensionConstants.d14.sp, TextAlign.left,
-                  color: ColorConstants.darkGray4F4F4F),
-              Expanded(child: Container()),
-              hoursContainer(context, DimensionConstants.d45.h,
-                  DimensionConstants.d130.w, "Any Time"),
-              SizedBox(
-                width: DimensionConstants.d15.w,
-              ),
-              const ImageView(
-                path: ImageConstants.subtractIcon,
-              ),
-            ],
-          ),
-          SizedBox(
-            height: DimensionConstants.d8.h,
-          ),
-          Row(
-            children: <Widget>[
-              hoursContainer(context, DimensionConstants.d45.h,
-                  DimensionConstants.d130.w, "15 mins"),
-              Expanded(child: Container()),
-              Text("to").regularText(
-                  context, DimensionConstants.d14.sp, TextAlign.left,
-                  color: ColorConstants.darkGray4F4F4F),
-              Expanded(child: Container()),
-              hoursContainer(context, DimensionConstants.d45.h,
-                  DimensionConstants.d130.w, "3:00 PM"),
-              SizedBox(
-                width: DimensionConstants.d15.w,
-              ),
-              const ImageView(
-                path: ImageConstants.subtractIcon,
-              ),
-            ],
+          Container(
+            height: DimensionConstants.d110.h,
+            width: DimensionConstants.d400.w,
+            child:ListView.builder(
+              itemCount: provider.breakWidget.isEmpty ? 1:provider.breakWidget.length,
+                itemBuilder: (BuildContext context,int index){
+              return  Padding(
+                padding:  EdgeInsets.symmetric(vertical: DimensionConstants.d5.h),
+                child: Row(
+                  children: <Widget>[
+                    hoursContainerBreakTimeTo(context, DimensionConstants.d45.h,
+                        DimensionConstants.d130.w, "30 mins",provider,index),
+                    Expanded(child: Container()),
+                    Text("to").regularText(
+                        context, DimensionConstants.d14.sp, TextAlign.left,
+                        color: ColorConstants.darkGray4F4F4F),
+                    Expanded(child: Container()),
+                    hoursContainerBreakTimeOnTime(context, DimensionConstants.d45.h,
+                        DimensionConstants.d130.w, "Any Time",provider,index),
+                    SizedBox(
+                      width: DimensionConstants.d15.w,
+                    ),
+                    GestureDetector(
+                      onTap:(){
+                        provider.removeImageFromList(index);
+                      },
+                      child: const ImageView(
+                        path: ImageConstants.subtractIcon,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+
+
+
+  })
+
+
+
+
           ),
         ],
       )
@@ -346,8 +346,262 @@ Widget hoursContainer(
     ),
   );
 }
+Widget hoursContainerBreakTimeForm(BuildContext context, double height, double width, String filedName,ProjectSettingsManagerProvider provider) {
+  return Container(
+    height: height,
+    width: width,
+    decoration: BoxDecoration(
+      color: ColorConstants.grayF2F2F2,
+      borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
+    ),
+    child: DropdownButtonHideUnderline(
+      child: ButtonTheme(
+        child: DropdownButton(
+          menuMaxHeight: DimensionConstants.d400.h,
+          icon: Padding(
+            padding: EdgeInsets.only(
+                right: DimensionConstants.d16.w,
+                top: DimensionConstants.d10.h,
+                bottom: DimensionConstants.d10.h),
+            child: ImageView(
+              path: ImageConstants.downArrowIcon,
+              width: DimensionConstants.d16.w,
+              height: DimensionConstants.d16.h,
+            ),
+          ),
+          hint: Padding(
+            padding: EdgeInsets.only(left: DimensionConstants.d10.w),
+            child: const Text("None").regularText(
+                context, DimensionConstants.d14.sp, TextAlign.center),
+          ),
+          //  menuMaxHeight: DimensionConstants.d414.h,
+          value: provider.dropDownValueFromTime,
+          items: provider.fromTimeListPM.map((vehicleName) {
+            return DropdownMenuItem(
+                onTap: () {},
+                value: vehicleName,
+                child: Padding(
+                    padding:
+                    EdgeInsets.only(left: DimensionConstants.d10.w),
+                    child: Text(vehicleName.toString()).regularText(context,
+                        DimensionConstants.d14.sp, TextAlign.center)));
+          }).toList(),
+          onChanged: (String? value) {
+            provider.onSelectedFromValue(value);
+          },
+        ),
+      ),
+    ),
+  );
+}
+Widget hoursContainerBreakTimeTo(BuildContext context, double height, double width, String filedName,ProjectSettingsManagerProvider provider, int index) {
+  return Container(
+    height: height,
+    width: width,
+    decoration: BoxDecoration(
+      color: ColorConstants.grayF2F2F2,
+      borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
+    ),
+    child: DropdownButtonHideUnderline(
+      child: ButtonTheme(
+        child: DropdownButton(
+          menuMaxHeight: DimensionConstants.d400.h,
+          icon: Padding(
+            padding: EdgeInsets.only(
+                right: DimensionConstants.d16.w,
+                top: DimensionConstants.d10.h,
+                bottom: DimensionConstants.d10.h),
+            child: ImageView(
+              path: ImageConstants.downArrowIcon,
+              width: DimensionConstants.d16.w,
+              height: DimensionConstants.d16.h,
+            ),
+          ),
+          hint: Padding(
+            padding: EdgeInsets.only(left: DimensionConstants.d10.w),
+            child: const Text("None").regularText(
+                context, DimensionConstants.d14.sp, TextAlign.center),
+          ),
+          //  menuMaxHeight: DimensionConstants.d414.h,
+          value: provider.dropDownValueFromTimeBreakTime,
+          items: provider.fromTimeListBreakTime.map((vehicleName) {
+            return DropdownMenuItem(
+                onTap: () {
+                  if(index == 1){
+                    provider.breakTime0 = vehicleName;
+                  }else{
+                    provider.breakTime1 = vehicleName;
+                  }
 
-Widget hoursWidget(BuildContext context) {
+                },
+                value: vehicleName,
+                child: Padding(
+                    padding:
+                    EdgeInsets.only(left: DimensionConstants.d10.w),
+                    child: Text(vehicleName.toString()).regularText(context,
+                        DimensionConstants.d14.sp, TextAlign.center)));
+          }).toList(),
+          onChanged: (String? value) {
+            provider.onSelectedFromValueBreakTime(value);
+          },
+        ),
+      ),
+    ),
+  );
+}
+Widget hoursContainerBreakTimeOnTime(BuildContext context, double height, double width, String filedName,ProjectSettingsManagerProvider provider, int index) {
+  return Container(
+    height: height,
+    width: width,
+    decoration: BoxDecoration(
+      color: ColorConstants.grayF2F2F2,
+      borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
+    ),
+    child: DropdownButtonHideUnderline(
+      child: ButtonTheme(
+        child: DropdownButton(
+          menuMaxHeight: DimensionConstants.d400.h,
+          icon: Padding(
+            padding: EdgeInsets.only(
+                right: DimensionConstants.d13.w,
+                top: DimensionConstants.d10.h,
+                bottom: DimensionConstants.d10.h),
+            child: ImageView(
+              path: ImageConstants.downArrowIcon,
+              width: DimensionConstants.d16.w,
+              height: DimensionConstants.d16.h,
+            ),
+          ),
+          hint: Padding(
+            padding: EdgeInsets.only(left: DimensionConstants.d10.w),
+            child: const Text("None").regularText(
+                context, DimensionConstants.d14.sp, TextAlign.center),
+          ),
+          //  menuMaxHeight: DimensionConstants.d414.h,
+          value: provider.dropDownValueFromTimeBreakOnTime,
+          items: provider.fromTimeListAMOnTime.map((vehicleName) {
+            return DropdownMenuItem(
+                onTap: () {
+                  if(index == 1){
+                    provider.onTime0 = vehicleName;
+                  }else{
+                    provider.onTime2 = vehicleName;
+                  }
+                },
+                value: vehicleName,
+                child: Padding(
+                    padding:
+                    EdgeInsets.only(left: DimensionConstants.d10.w),
+                    child: Text(vehicleName.toString()).regularText(context,
+                        DimensionConstants.d14.sp, TextAlign.center)));
+          }).toList(),
+          onChanged: (String? value) {
+            provider.onSelectedFromValueBreakOnTime(value);
+          },
+        ),
+      ),
+    ),
+  );
+}
+Widget hoursDropDownFrom(BuildContext context, double height, double width, String filedName,ProjectSettingsManagerProvider provider ) {
+  return Container(
+    height: height,
+    width: width,
+    decoration: BoxDecoration(
+      color: ColorConstants.grayF2F2F2,
+      borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
+    ),
+    child: DropdownButtonHideUnderline(
+      child: ButtonTheme(
+        child: DropdownButton(
+          menuMaxHeight: DimensionConstants.d400.h,
+          icon: Padding(
+            padding: EdgeInsets.only(
+                right: DimensionConstants.d16.w,
+                top: DimensionConstants.d10.h,
+                bottom: DimensionConstants.d10.h),
+            child: ImageView(
+              path: ImageConstants.downArrowIcon,
+              width: DimensionConstants.d16.w,
+              height: DimensionConstants.d16.h,
+            ),
+          ),
+          hint: Padding(
+            padding: EdgeInsets.only(left: DimensionConstants.d10.w),
+            child: const Text("None").regularText(
+                context, DimensionConstants.d14.sp, TextAlign.center),
+          ),
+          //  menuMaxHeight: DimensionConstants.d414.h,
+          value: provider.dropDownValueFromTime,
+          items: provider.fromTimeListPM.map((vehicleName) {
+            return DropdownMenuItem(
+                onTap: () {},
+                value: vehicleName,
+                child: Padding(
+                    padding:
+                    EdgeInsets.only(left: DimensionConstants.d10.w),
+                    child: Text(vehicleName.toString()).regularText(context,
+                        DimensionConstants.d14.sp, TextAlign.center)));
+          }).toList(),
+          onChanged: (String? value) {
+            provider.onSelectedFromValue(value);
+          },
+        ),
+      ),
+    ),
+  );
+}
+Widget hoursDropDownTo(BuildContext context, double height, double width, String filedName,ProjectSettingsManagerProvider provider ) {
+  return Container(
+    height: height,
+    width: width,
+    decoration: BoxDecoration(
+      color: ColorConstants.grayF2F2F2,
+      borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
+    ),
+    child: DropdownButtonHideUnderline(
+      child: ButtonTheme(
+        child: DropdownButton(
+          menuMaxHeight: DimensionConstants.d400.h,
+          icon: Padding(
+            padding: EdgeInsets.only(
+                right: DimensionConstants.d16.w,
+                top: DimensionConstants.d10.h,
+                bottom: DimensionConstants.d10.h),
+            child: ImageView(
+              path: ImageConstants.downArrowIcon,
+              width: DimensionConstants.d16.w,
+              height: DimensionConstants.d16.h,
+            ),
+          ),
+          hint: Padding(
+            padding: EdgeInsets.only(left: DimensionConstants.d10.w),
+            child: const Text("None").regularText(
+                context, DimensionConstants.d14.sp, TextAlign.center),
+          ),
+          //  menuMaxHeight: DimensionConstants.d414.h,
+          value: provider.dropDownValueToTime,
+          items: provider.fromTimeListAM.map((vehicleName) {
+            return DropdownMenuItem(
+                onTap: () {},
+                value: vehicleName,
+                child: Padding(
+                    padding:
+                    EdgeInsets.only(left: DimensionConstants.d10.w),
+                    child: Text(vehicleName.toString()).regularText(context,
+                        DimensionConstants.d14.sp, TextAlign.center)));
+          }).toList(),
+          onChanged: (String? value) {
+            provider.onSelectedToValue(value);
+          },
+        ),
+      ),
+    ),
+  );
+}
+
+
+Widget hoursWidget(BuildContext context,ProjectSettingsManagerProvider provider) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
@@ -359,45 +613,49 @@ Widget hoursWidget(BuildContext context) {
       ),
       Row(
         children: [
-          hoursContainer(context, DimensionConstants.d45.h,
-              DimensionConstants.d142.w, "9:00 AM"),
+          hoursDropDownTo(context, DimensionConstants.d45.h,
+              DimensionConstants.d142.w, "5:00 PM",provider),
           Expanded(child: Container()),
           Text("to").regularText(
               context, DimensionConstants.d14.sp, TextAlign.left,
               color: ColorConstants.darkGray4F4F4F),
           Expanded(child: Container()),
-          hoursContainer(context, DimensionConstants.d45.h,
-              DimensionConstants.d142.w, "5:00 PM"),
+          hoursDropDownFrom(context, DimensionConstants.d45.h,
+              DimensionConstants.d142.w, "9:00 AM",provider),
+
         ],
       ),
     ],
   );
 }
 
-Widget addBreakButton(BuildContext context) {
-  return Container(
-    height: DimensionConstants.d40.h,
-    width: DimensionConstants.d130,
-    decoration: BoxDecoration(
-      color: ColorConstants.deepBlue,
-      borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
-    ),
-    child: Padding(
-      padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d12.w),
-      child: Row(
-        children: <Widget>[
-          ImageView(
-            path: ImageConstants.addNotesIcon,
-            height: DimensionConstants.d16.h,
-            width: DimensionConstants.d16.w,
-          ),
-          SizedBox(
-            width: DimensionConstants.d7.w,
-          ),
-          Text("add_break".tr()).semiBoldText(
-              context, DimensionConstants.d14.sp, TextAlign.left,
-              color: ColorConstants.colorWhite),
-        ],
+Widget addBreakButton(BuildContext context, {required VoidCallback onBreakButtonTapped}) {
+  return GestureDetector(
+    onTap: onBreakButtonTapped,
+    child: Container(
+      height: DimensionConstants.d40.h,
+      width: DimensionConstants.d130,
+      decoration: BoxDecoration(
+        color: ColorConstants.deepBlue,
+        borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
+      ),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d12.w),
+        child: Row(
+          children: <Widget>[
+            ImageView(
+              path: ImageConstants.addNotesIcon,
+              height: DimensionConstants.d16.h,
+              width: DimensionConstants.d16.w,
+            ),
+            SizedBox(
+              width: DimensionConstants.d7.w,
+            ),
+            Text("add_break".tr()).semiBoldText(
+                context, DimensionConstants.d14.sp, TextAlign.left,
+                color: ColorConstants.colorWhite),
+          ],
+        ),
       ),
     ),
   );

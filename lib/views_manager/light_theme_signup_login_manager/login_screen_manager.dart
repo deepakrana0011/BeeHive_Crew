@@ -101,7 +101,7 @@ class LoginScreenManager extends StatelessWidget {
                                            provider.loginManager(context, emailController.text, passwordController.text);
                                           }else{
                                           }
-                                        },shadowRequired: true):Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient1Color,),),
+                                        },shadowRequired: true):Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,),),
                                         SizedBox(height: DimensionConstants.d16.h),
                                         GestureDetector(
                                           onTap: (){

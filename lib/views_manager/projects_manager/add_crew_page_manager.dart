@@ -3,6 +3,7 @@ import 'package:beehive/constants/color_constants.dart';
 import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/constants/image_constants.dart';
 import 'package:beehive/constants/route_constants.dart';
+import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
 import 'package:beehive/provider/add_crew_page_provider_manager.dart';
@@ -16,7 +17,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../helper/decoration.dart';
 
 class AddCrewPageManager extends StatelessWidget {
-  const AddCrewPageManager({Key? key}) : super(key: key);
+
+  String projectId;
+   AddCrewPageManager({Key? key,required this.projectId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -47,13 +50,14 @@ class AddCrewPageManager extends StatelessWidget {
                   ),
                   crewWidget(context,provider),
                   SizedBox(height: DimensionConstants.d30.h,),
-                  CommonWidgets.commonButton(context, "next".tr(),
+                provider.state == ViewState.idle?  CommonWidgets.commonButton(context, "next".tr(),
                       color1: ColorConstants.primaryGradient2Color,
                       color2: ColorConstants.primaryGradient1Color,
                       fontSize: DimensionConstants.d14.sp, onBtnTap: () {
+                    provider.assignCrewToProject(context, projectId);
                       },
                       shadowRequired: true
-                  ),
+                  ):Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,),),
                   SizedBox(height: DimensionConstants.d50.h,),
 
                 ],

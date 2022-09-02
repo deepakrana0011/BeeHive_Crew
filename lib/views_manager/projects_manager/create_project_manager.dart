@@ -92,7 +92,7 @@ class CreateProjectManager extends StatelessWidget {
                   }
 
                     },
-                    shadowRequired: true):const Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient1Color,),),
+                    shadowRequired: true):const Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,),),
               ),
               SizedBox(
                 height: DimensionConstants.d50.h,
