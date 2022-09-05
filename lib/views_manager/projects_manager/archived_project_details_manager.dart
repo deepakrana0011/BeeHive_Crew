@@ -51,7 +51,7 @@ class _ArchivedProjectDetailsManagerState
             Navigator.pushNamed(
                 context, RouteConstants.projectSettingsPageManager,
                 arguments: ProjectSettingsPageManager(
-                    fromProjectOrCreateProject: false));
+                    fromProjectOrCreateProject: false,projectId: "1232113",));
           }),
           body: Padding(
             padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
@@ -366,7 +366,7 @@ Widget todayTab(
                       Navigator.pushNamed(
                           context, RouteConstants.addNotePageManager,
                           arguments:
-                              AddNotePageManager(publicOrPrivate: false));
+                              AddNotePageManager(publicOrPrivate: false, projectId: '3212',));
                     },
                     child: Container(
                       height: DimensionConstants.d40.h,

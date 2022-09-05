@@ -1,3 +1,4 @@
+import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/provider/dashboard_page_manager_provider.dart';
 import 'package:beehive/view/base_view.dart';
@@ -31,22 +32,23 @@ class _DashBoardPageManagerState extends State<DashBoardPageManager> with Ticker
     return BaseView<DashBoardPageManagerProvider>(
         onModelReady: (provider) {
           this.provider = provider;
+          provider.dashBoardApi(context,);
         },
         builder: (context, provider, _) {
           return Scaffold(
-            body: Column(
+            body:provider.state == ViewState.idle? Column(
               children:<Widget> [
-                activeProjectWidget(context),
+                activeProjectWidget(context,provider),
                 CustomTabBarManager()
               ],
-            ),
+            ):Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,),),
 
           );
         });
   }
 }
 
-Widget activeProjectWidget(BuildContext context){
+Widget activeProjectWidget(BuildContext context, DashBoardPageManagerProvider provider){
   return Container(
     height: DimensionConstants.d151.h,
     width: double.infinity,
@@ -63,9 +65,9 @@ Widget activeProjectWidget(BuildContext context){
           SizedBox(height: DimensionConstants.d10.h,),
           Row(
             children:<Widget> [
-              crewAndActiveProject(context,"4","active_projects"),
+              crewAndActiveProject(context,provider.responseManager!.data.toString(),"active_projects"),
               Expanded(child: Container()),
-              crewAndActiveProject(context,"7","crew_members"),
+              crewAndActiveProject(context,provider.responseManager!.crewMembers.toString(),"crew_members"),
             ],
           ),
 

@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../helper/dialog_helper.dart';
+import '../provider/dashboard_page_manager_provider.dart';
 
 class CustomTabBarManager extends StatefulWidget {
   const CustomTabBarManager({Key? key}) : super(key: key);

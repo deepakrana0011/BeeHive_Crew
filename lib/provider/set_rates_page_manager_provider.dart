@@ -57,7 +57,7 @@ class SetRatesPageManageProvider extends BaseProvider{
       var model = await api.setProjectRate(context,crewList,projectId,rateList,sameRate,status);
       if (model.success == true) {
         setState(ViewState.idle);
-        Navigator.pushNamed(context, RouteConstants.projectSettingsPageManager,arguments: ProjectSettingsPageManager(fromProjectOrCreateProject: true));
+        Navigator.pushNamed(context, RouteConstants.projectSettingsPageManager,arguments: ProjectSettingsPageManager(fromProjectOrCreateProject: true, projectId: projectId,));
         DialogHelper.showMessage(context, model.message!);
       } else {
         setState(ViewState.idle);

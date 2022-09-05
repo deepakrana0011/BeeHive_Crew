@@ -1,11 +1,11 @@
-class ProjectSettingsResponse {
+class ProjectSettingsResponseManager {
   bool? success;
   String? message;
   Data? data;
 
-  ProjectSettingsResponse({this.success, this.message, this.data});
+  ProjectSettingsResponseManager({this.success, this.message, this.data});
 
-  ProjectSettingsResponse.fromJson(Map<String, dynamic> json) {
+  ProjectSettingsResponseManager.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     message = json['message'];
     data = json['data'] != null ? new Data.fromJson(json['data']) : null;
@@ -27,7 +27,7 @@ class Data {
   List<String>? workDays;
   String? hours;
   String? afterHoursRate;
-  String? breaks;
+  List<Breaks>? breaks;
   int? status;
   String? sId;
   String? createdAt;
@@ -49,7 +49,12 @@ class Data {
     workDays = json['workDays'].cast<String>();
     hours = json['hours'];
     afterHoursRate = json['afterHoursRate'];
-    breaks = json['breaks'];
+    if (json['breaks'] != null) {
+      breaks = <Breaks>[];
+      json['breaks'].forEach((v) {
+        breaks!.add(new Breaks.fromJson(v));
+      });
+    }
     status = json['status'];
     sId = json['_id'];
     createdAt = json['createdAt'];
@@ -62,11 +67,35 @@ class Data {
     data['workDays'] = this.workDays;
     data['hours'] = this.hours;
     data['afterHoursRate'] = this.afterHoursRate;
-    data['breaks'] = this.breaks;
+    if (this.breaks != null) {
+      data['breaks'] = this.breaks!.map((v) => v.toJson()).toList();
+    }
     data['status'] = this.status;
     data['_id'] = this.sId;
     data['createdAt'] = this.createdAt;
     data['__v'] = this.iV;
+    return data;
+  }
+}
+
+class Breaks {
+  String? from;
+  String? to;
+  String? sId;
+
+  Breaks({this.from, this.to, this.sId});
+
+  Breaks.fromJson(Map<String, dynamic> json) {
+    from = json['from'];
+    to = json['to'];
+    sId = json['_id'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['from'] = this.from;
+    data['to'] = this.to;
+    data['_id'] = this.sId;
     return data;
   }
 }

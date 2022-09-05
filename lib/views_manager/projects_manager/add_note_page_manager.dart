@@ -1,5 +1,6 @@
 import 'package:beehive/constants/color_constants.dart';
 import 'package:beehive/constants/dimension_constants.dart';
+import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
 import 'package:beehive/helper/dialog_helper.dart';
@@ -19,7 +20,8 @@ import '../../widget/image_view.dart';
 class AddNotePageManager extends StatelessWidget {
 
   bool publicOrPrivate;
-   AddNotePageManager({Key? key,required this.publicOrPrivate}) : super(key: key);
+  String projectId;
+   AddNotePageManager({Key? key,required this.publicOrPrivate,required this.projectId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -39,11 +41,11 @@ class AddNotePageManager extends StatelessWidget {
                 SizedBox(
                   height: DimensionConstants.d37.h,
                 ),
-                titleWidget(context),
+                titleWidget(context,provider),
                 SizedBox(
                   height: DimensionConstants.d24.h,
                 ),
-                noteWidget(context),
+                noteWidget(context,provider),
                 SizedBox(
                   height: DimensionConstants.d16.h,
                 ),
@@ -75,12 +77,12 @@ class AddNotePageManager extends StatelessWidget {
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(
                                       DimensionConstants.d8.r),
-                                  child: Image.file(
-                                    provider.allImageList[index]!,
+                                  child:ImageView(
+                                    path:  provider.allImageList[index],
                                     height: DimensionConstants.d149.h,
                                     width: DimensionConstants.d163.w,
                                     fit: BoxFit.cover,
-                                  ),
+                                  )
                                 ),
                               ),
                               Positioned(
@@ -101,13 +103,13 @@ class AddNotePageManager extends StatelessWidget {
                 ),
                 Padding(
                   padding:  EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
-                  child: CommonWidgets.commonButton(context, "add_note".tr(),
+                  child:provider.state ==ViewState.idle? CommonWidgets.commonButton(context, "add_note".tr(),
                       color1: ColorConstants.primaryGradient1Color,
                       color2: ColorConstants.primaryGradient2Color,
                       fontSize: DimensionConstants.d16.sp, onBtnTap: () {
-                    Navigator.of(context).pop();
+                    provider.addNoteManager(context, projectId);
                   },
-                  shadowRequired: true),
+                  shadowRequired: true):Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,),),
                 ),
                 SizedBox(
                   height: DimensionConstants.d50.h,
@@ -121,7 +123,7 @@ class AddNotePageManager extends StatelessWidget {
   }
 }
 
-Widget noteWidget(BuildContext context) {
+Widget noteWidget(BuildContext context, AddNotePageManagerProvider provider) {
   return Padding(
     padding:  EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
     child: Column(
@@ -141,6 +143,7 @@ Widget noteWidget(BuildContext context) {
             borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
           ),
           child: TextFormField(
+            controller:  provider.noteController,
             maxLines: 10,
             decoration: ViewDecoration.inputDecorationBox(
               fieldName: "".tr(),
@@ -163,7 +166,7 @@ Widget noteWidget(BuildContext context) {
   );
 }
 
-Widget titleWidget(BuildContext context) {
+Widget titleWidget(BuildContext context, AddNotePageManagerProvider provider) {
   return Padding(
     padding:  EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
     child: Column(
@@ -183,6 +186,7 @@ Widget titleWidget(BuildContext context) {
             borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
           ),
           child: TextFormField(
+            controller:  provider.titleController,
             maxLines: 10,
             decoration: ViewDecoration.inputDecorationBox(
               fieldName: "note_title_here".tr(),

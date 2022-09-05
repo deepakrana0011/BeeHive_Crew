@@ -454,12 +454,7 @@ Widget projectDetails(BuildContext context) {
             padding: EdgeInsets.symmetric(vertical: DimensionConstants.d5.h),
             child: GestureDetector(
               onTap: () {
-                Navigator.pushNamed(
-                    context, RouteConstants.archivedProjectDetailsManager,
-                    arguments: ArchivedProjectDetailsManager(
-                      archivedOrProject: false,
-                      fromProject: true,
-                    ));
+                Navigator.pushNamed(context, RouteConstants.archivedProjectDetailsManager, arguments: ArchivedProjectDetailsManager(archivedOrProject: false, fromProject: true,));
               },
               child: Material(
                 elevation: 2,

@@ -181,7 +181,7 @@ class OnGenerateRouter {
         final args = settings.arguments as ProjectDetailsPageManager;
         return MaterialPageRoute(
             builder: (_) => ProjectDetailsPageManager(
-                  createProject: args.createProject,
+                  createProject: args.createProject, projectId: args.projectId,
                 ),
             settings: settings);
       case RouteConstants.archivedProjectsScreenManager:
@@ -207,6 +207,7 @@ class OnGenerateRouter {
         return MaterialPageRoute(
             builder: (_) => ProjectSettingsPageManager(
                   fromProjectOrCreateProject: args.fromProjectOrCreateProject,
+              projectId: args.projectId,
                 ),
             settings: settings);
       case RouteConstants.addNotePageManager:
@@ -214,6 +215,7 @@ class OnGenerateRouter {
         return MaterialPageRoute(
             builder: (_) => AddNotePageManager(
                   publicOrPrivate: args.publicOrPrivate,
+              projectId: args.projectId,
                 ),
             settings: settings);
       case RouteConstants.archivedProjectDetailsManager:

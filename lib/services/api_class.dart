@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:beehive/helper/shared_prefs.dart';
-import 'package:beehive/model/add_crew_request.dart';
 import 'package:beehive/model/add_crew_response_manager.dart';
+import 'package:beehive/model/add_note_manager_response.dart';
 import 'package:beehive/model/assign_project_response_manager.dart';
+import 'package:beehive/model/dashboard_manager_response.dart';
 import 'package:beehive/model/email_verification_response_manager.dart';
 import 'package:beehive/model/email_verified_response_manager.dart';
 import 'package:beehive/model/get_assinged_crew_manager.dart';
@@ -11,6 +12,9 @@ import 'package:beehive/model/get_crew_profile_response.dart';
 import 'package:beehive/model/get_otp_fro_password.dart';
 import 'package:beehive/model/login_response_manager.dart';
 import 'package:beehive/model/phone_otp_response_manager.dart';
+import 'package:beehive/model/project_details_response_manager.dart';
+import 'package:beehive/model/project_settings_break_request_manager.dart';
+import 'package:beehive/model/project_settings_response_manager.dart';
 import 'package:beehive/model/reset_password_by_phone_response.dart';
 import 'package:beehive/model/reset_password_response_crew.dart';
 import 'package:beehive/model/set_crew_rate_Manger_response.dart';
@@ -18,6 +22,7 @@ import 'package:beehive/model/set_project_rate_request.dart';
 import 'package:beehive/model/update_crew_profile_response.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:syncfusion_flutter_sliders/sliders.dart';
 import '../constants/api_constants.dart';
 import '../model/create_project_response_manager.dart';
 import '../model/get_otp_response_manager.dart';
@@ -453,7 +458,114 @@ class ApiManager {
     }
   }
 
+  Future<ProjectSettingsResponseManager> projectSettingsApi(
+      BuildContext context,
+      {required List<String> workdays,
+      required String projectId,
+      required String hours,
+      required String afterHourRate,
+      required String breakFrom,
+      required String breakTo,
+      required String roundTimeSheetValue}) async {
+    try {
+      var breakRequest = ProjectSettingsBreakRequestManager();
+      breakRequest.from = breakFrom;
+      breakRequest.to = breakTo;
+      var map = {
+        "assignProjectId": projectId,
+        "workDays": workdays,
+        "hours": hours,
+        "afterHoursRate": afterHourRate,
+        "breaks": breakRequest,
+        "roundTimesheets": roundTimeSheetValue
+      };
+      dio.options.headers["Authorization"] =
+          SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var response = await dio.post(
+          ApiConstantsManager.BASEURL + ApiConstantsManager.PROJECT_SETTINGS,
+          data: map);
+      return ProjectSettingsResponseManager.fromJson(
+          json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
 
+  Future<ProjectDetailsResponseManager> getCreatedProjectDetails(
+      BuildContext context, String projectId) async {
+    try {
+      dio.options.headers["Authorization"] =
+          SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var response = await dio.get(
+        ApiConstantsManager.BASEURL +
+            ApiConstantsManager.GET_PROJECT_DETAILS +
+            projectId,
+      );
+      return ProjectDetailsResponseManager.fromJson(
+          json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+
+  Future<AddNoteManagerResponse> addNoteApi(BuildContext context,
+      {
+      required String assignProjectId,
+      required String title,
+      required String note,
+      required List<String> image}) async {
+    try {
+      List<MultipartFile> imageToUpload =[];
+      for(int i =0; i < image.length;i++){
+      imageToUpload.add(MultipartFile.fromFileSync(image[i], filename: "image.jpg"));
+      }
+      var map = {
+        "assignProjectId": assignProjectId,
+        "title": title,
+        "note": note,
+        "image": imageToUpload,
+      };
+      var response = await dio.post(ApiConstantsManager.BASEURL + ApiConstantsManager.ADD_NOTE_MANAGER, data: FormData.fromMap(map));
+      return AddNoteManagerResponse.fromJson(json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+
+
+  Future<DashBoardResponseManager> dashBoardApi(BuildContext context, ) async {
+    try {
+      dio.options.headers["Authorization"] = SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var response = await dio.get(ApiConstantsManager.BASEURL + ApiConstantsManager.DASHBOARD_API ,);
+      return DashBoardResponseManager.fromJson(json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
 
 
 
