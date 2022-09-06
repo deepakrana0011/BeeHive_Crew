@@ -4,6 +4,7 @@ import 'package:beehive/helper/shared_prefs.dart';
 import 'package:beehive/model/add_crew_response_manager.dart';
 import 'package:beehive/model/add_note_manager_response.dart';
 import 'package:beehive/model/assign_project_response_manager.dart';
+import 'package:beehive/model/check_in_response_crew.dart';
 import 'package:beehive/model/dashboard_manager_response.dart';
 import 'package:beehive/model/email_verification_response_manager.dart';
 import 'package:beehive/model/email_verified_response_manager.dart';
@@ -25,6 +26,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 import '../constants/api_constants.dart';
 import '../model/create_project_response_manager.dart';
+import '../model/dash_board_page_response_crew.dart';
 import '../model/get_otp_response_manager.dart';
 import '../model/sign_up_manager_response.dart';
 import '../model/verify_otp_response_manager.dart';
@@ -462,7 +464,8 @@ class ApiManager {
       BuildContext context,
       {required List<String> workdays,
       required String projectId,
-      required String hours,
+      required String hoursStarting,
+      required String endingHours,
       required String afterHourRate,
       required String breakFrom,
       required String breakTo,
@@ -471,21 +474,20 @@ class ApiManager {
       var breakRequest = ProjectSettingsBreakRequestManager();
       breakRequest.from = breakFrom;
       breakRequest.to = breakTo;
+      var hoursRequest = ProjectSettingsBreakRequestManager();
+      hoursRequest.from = hoursStarting;
+      hoursRequest.to = endingHours;
       var map = {
         "assignProjectId": projectId,
         "workDays": workdays,
-        "hours": hours,
+        "hours": hoursRequest,
         "afterHoursRate": afterHourRate,
         "breaks": breakRequest,
         "roundTimesheets": roundTimeSheetValue
       };
-      dio.options.headers["Authorization"] =
-          SharedPreference.prefs!.getString(SharedPreference.TOKEN);
-      var response = await dio.post(
-          ApiConstantsManager.BASEURL + ApiConstantsManager.PROJECT_SETTINGS,
-          data: map);
-      return ProjectSettingsResponseManager.fromJson(
-          json.decode(response.toString()));
+      dio.options.headers["Authorization"] = SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var response = await dio.post(ApiConstantsManager.BASEURL + ApiConstantsManager.PROJECT_SETTINGS, data: map);
+      return ProjectSettingsResponseManager.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());
@@ -593,12 +595,7 @@ class ApiManager {
 class ApiCrew {
   var profileImage;
   Dio dio = Dio();
-  Future<SignUpResponse> signUpCrew(
-    BuildContext context,
-    String name,
-    String email,
-    password,
-  ) async {
+  Future<SignUpResponse> signUpCrew(BuildContext context, String name, String email, password,) async {
     try {
       var map = {"name": name, "email": email, "password": password};
       var response = await dio
@@ -923,12 +920,8 @@ class ApiCrew {
       BuildContext context, String phoneNumber, String password) async {
     try {
       var map = {"phoneNumber": phoneNumber, "password": password};
-      var response = await dio.post(
-          ApiConstantsCrew.BASEURL +
-              ApiConstantsCrew.RESET_PASSWORD_BY_PHONE_NUMBER,
-          data: map);
-      return EmailVerifiedResponseManager.fromJson(
-          json.decode(response.toString()));
+      var response = await dio.post(ApiConstantsCrew.BASEURL + ApiConstantsCrew.RESET_PASSWORD_BY_PHONE_NUMBER, data: map);
+      return EmailVerifiedResponseManager.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());
@@ -939,4 +932,55 @@ class ApiCrew {
       }
     }
   }
+  Future<DashBoardPageResponseCrew> dashBoardApi(BuildContext context, ) async {
+    try {
+      dio.options.headers["Authorization"] = SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var response = await dio.get(ApiConstantsCrew.BASEURL + ApiConstantsCrew.DASHBOARD_API ,);
+      return DashBoardPageResponseCrew.fromJson(json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+
+  Future<CheckInResponseCrew> checkInApi(BuildContext context, String assignProjectId, String checkInTime) async {
+    try {
+      var map = {"assignProjectId": assignProjectId, "checkInTime": checkInTime};
+      dio.options.headers["Authorization"] = SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var response = await dio.post(ApiConstantsCrew.BASEURL + ApiConstantsCrew.CHECK_IN_CREW, data: map);
+      return CheckInResponseCrew.fromJson(json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

@@ -134,12 +134,14 @@ class ProjectSettingsManagerProvider extends BaseProvider{
     loading = val;
     notifyListeners();
   }
+  String startingHour = "";
+  String endingHours = "";
 
 
   Future projectSettingsApi(BuildContext context, String projectId,) async {
     setState(ViewState.busy);
     try {
-      var model = await api.projectSettingsApi(context,breakTo: breakWidgetBreakTimeToTime, hours: dropDownValueToTime!, afterHourRate: dropDownValue!, projectId: projectId, breakFrom: breakWidgetBreakTime, workdays: selectedDays, roundTimeSheetValue:roundTimeSheet[selectedIndex] );
+      var model = await api.projectSettingsApi(context,breakTo: breakWidgetBreakTimeToTime,  afterHourRate: dropDownValue!, projectId: projectId, breakFrom: breakWidgetBreakTime, workdays: selectedDays, roundTimeSheetValue:roundTimeSheet[selectedIndex], endingHours: endingHours, hoursStarting: startingHour );
       if (model.success == true) {
         setState(ViewState.idle);
         Navigator.pushNamed(context, RouteConstants.projectDetailsPageManager, arguments: ProjectDetailsPageManager(createProject: true, projectId: model.data!.assignProjectId!,));

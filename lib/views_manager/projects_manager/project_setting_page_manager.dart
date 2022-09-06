@@ -549,7 +549,7 @@ Widget hoursDropDownFrom(BuildContext context, double height, double width,
           items:  provider.fromTimeListPM.map((vehicleName) {
             return DropdownMenuItem(
                 onTap: () {
-
+                  provider.endingHours = vehicleName;
                 },
                 value: vehicleName,
                 child: Padding(
@@ -600,10 +600,7 @@ Widget hoursDropDownTo(BuildContext context, double height, double width,
           items: provider.fromTimeListAM.map((vehicleName) {
             return DropdownMenuItem(
                 onTap: () {
-
-
-                  provider.shiftStartingTime = vehicleName;
-
+                provider.startingHour = vehicleName;
                 },
                 value: vehicleName,
                 child: Padding(

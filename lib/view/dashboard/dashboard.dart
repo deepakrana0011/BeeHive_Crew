@@ -1,4 +1,6 @@
+import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
+import 'package:beehive/model/check_box_model_crew.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -34,79 +36,21 @@ class _DashBoardPageState extends State<DashBoardPage>
   Widget build(BuildContext context) {
     final bottomBarProvider =
         Provider.of<BottomBarProvider>(context, listen: false);
-    return BaseView<DashboardProvider>(onModelReady: (provider) {
+    return BaseView<DashboardProvider>(
+        onModelReady: (provider) {
       this.provider = provider;
+      provider.dashBoardApi(context);
     }, builder: (context, provider, _) {
       return Scaffold(
           key: _scaffoldKey,
-          body: Column(
+          body: provider.state == ViewState.idle? Column(
             children: [
-              provider.hasCheckInCheckOut
-                  ? (provider.isCheckedIn
-                      ? projectsCheckOutContainer(
-                          "Momentum Smart House Project")
-                      : projectsCheckInContainer(
-                          "Momentum Smart House Project"))
-                  : noProjectNotCheckedInContainer(
-                      context, "you_are_not_checked_in".tr(), onTap: () {
-                      checkInAlert();
-                    }),
-              // provider.hasProjects ? (!provider.hasCheckInCheckOut ? noProjectNotCheckedInContainer(context, "you_are_not_checked_in".tr(), onTap: (){
-              //   checkInAlert();
-              // }) :
-              // projectsCheckInCheckoutContainer("Momentum Smart House Project")) : noProjectNotCheckedInContainer(context, "you_are_not_checked_in".tr()),
-              provider.noProject == false
-                  ? CustomTabBar()
-                  : whenDoNotHaveProject(),
+              provider.crewResponse!.myProject!.isEmpty? noProjectNotCheckedInContainer(context, "you_have_no_projects".tr(),false):noProjectNotCheckedInContainer(context, "you_are_not_checked_in".tr(),true, onTap: () {checkInAlert(context,provider);}),
+              provider.crewResponse!.myProject!.isEmpty? whenDoNotHaveProject()  : CustomTabBar(notCheckedIn: provider.notCheckedIn,),
               SizedBox(height: DimensionConstants.d20.h),
             ],
-          ));
-      // provider.checkedInNoProjects ? Column(
-      //   children: [
-      //   provider.hasCheckInCheckOut ? (provider.isCheckedIn ? projectsCheckOutContainer("Momentum Smart House Project") : projectsCheckInContainer("Momentum Smart House Project")) :  noProjectNotCheckedInContainer(context, "you_are_not_checked_in".tr(), onTap: (){
-      //       checkInAlert();
-      //     }),
-      //    // provider.hasProjects ? (!provider.hasCheckInCheckOut ? noProjectNotCheckedInContainer(context, "you_are_not_checked_in".tr(), onTap: (){
-      //    //   checkInAlert();
-      //    // }) :
-      //    // projectsCheckInCheckoutContainer("Momentum Smart House Project")) : noProjectNotCheckedInContainer(context, "you_are_not_checked_in".tr()),
-      //     CustomTabBar(),
-      //     SizedBox(height: DimensionConstants.d20.h),
-      //   ],
-      // ) : SingleChildScrollView(
-      //   child: Column(
-      //      children: [
-      //      noProjectNotCheckedInContainer(context, "you_have_no_projects".tr()),
-      //        SizedBox(height: DimensionConstants.d61.h),
-      //        GestureDetector(
-      //            onTap: (){
-      //              provider.checkedInNoProjects = true;
-      //              provider.updateLoadingStatus(true);
-      //            },
-      //            child: const ImageView(path: ImageConstants.noProject,)),
-      //        SizedBox(height: DimensionConstants.d17.h),
-      //        Text("you_have_no_projects_dot".tr()).boldText(context, DimensionConstants.d18.sp, TextAlign.center),
-      //        SizedBox(
-      //          width: DimensionConstants.d207.w,
-      //          child: Text("to_join_a_project".tr()).regularText(context, DimensionConstants.d14.sp, TextAlign.center),
-      //        ),
-      //        SizedBox(height: DimensionConstants.d47.h),
-      //        Text("in_the_meantime_update_your_project".tr()).regularText(context, DimensionConstants.d14.sp, TextAlign.center),
-      //        SizedBox(height: DimensionConstants.d13.h),
-      //        Padding(
-      //          padding: EdgeInsets.only(left: DimensionConstants.d20.w , right: DimensionConstants.d25.w),
-      //          child: CommonWidgets.commonButton(context, "update_my_profile".tr(), height: DimensionConstants.d50.h,
-      //          onBtnTap: (){ Navigator.pushNamed(context, RouteConstants.editProfilePage);},
-      //            shadowRequired: false
-      //          ),
-      //        ),
-      //        SizedBox(height: DimensionConstants.d35.h),
-      //        createYourOwnProjectCard(context),
-      //        SizedBox(height: DimensionConstants.d20.h),
-      //      ],
-      //    ),
-      //  ),
-      //  );
+          ):Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,),));
+
     });
   }
 
@@ -153,10 +97,7 @@ class _DashBoardPageState extends State<DashBoardPage>
       ),
     );
   }
-
-  Widget drawerHeadingsRow(
-      BuildContext context, String iconPath, String heading,
-      {bool active = false, Color? color, required VoidCallback onTapButton}) {
+  Widget drawerHeadingsRow(BuildContext context, String iconPath, String heading, {bool active = false, Color? color, required VoidCallback onTapButton}) {
     return GestureDetector(
       onTap: onTapButton,
       child: Padding(
@@ -181,9 +122,7 @@ class _DashBoardPageState extends State<DashBoardPage>
       ),
     );
   }
-
-  Widget noProjectNotCheckedInContainer(BuildContext context, String txt,
-      {VoidCallback? onTap}) {
+  Widget noProjectNotCheckedInContainer(BuildContext context, String txt,bool checkInButton, {VoidCallback? onTap}) {
     return Container(
       width: double.infinity,
       color: ColorConstants.deepBlue,
@@ -201,20 +140,28 @@ class _DashBoardPageState extends State<DashBoardPage>
             children: [
               GestureDetector(
                 onTap: () {
-                  provider.updateNoProject();
+                 // provider.updateNoProject();
                 },
-                child: Text("hey_john".tr()).boldText(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Hey ""${provider.crewResponse!.user!.name},").boldText(
                     context, DimensionConstants.d18.sp, TextAlign.left,
                     color: ColorConstants.colorWhite),
+                    Text("hey_john".tr()).boldText(
+                        context, DimensionConstants.d18.sp, TextAlign.left,
+                        color: ColorConstants.colorWhite),
+                  ],
+                )
               ),
-              checkInCheckOutBtn(
+            checkInButton == true?  checkInCheckOutBtn(
                 "check_in".tr(),
                 ColorConstants.colorWhite,
                 onBtnTap: () {
-                  checkInAlert();
-                  provider.notifyListeners();
+                  checkInAlert(context,provider);
+                 provider.notifyListeners();
                 },
-              )
+              ):Container()
             ],
           ),
           SizedBox(height: DimensionConstants.d12.h),
@@ -225,9 +172,7 @@ class _DashBoardPageState extends State<DashBoardPage>
       ),
     );
   }
-
-  Widget noProjectCheckedInLocationContainer(BuildContext context, String txt,
-      {bool forwardIcon = false}) {
+  Widget noProjectCheckedInLocationContainer(BuildContext context, String txt, {bool forwardIcon = false}) {
     return Container(
       alignment: Alignment.centerLeft,
       height: DimensionConstants.d48.h,
@@ -256,9 +201,7 @@ class _DashBoardPageState extends State<DashBoardPage>
       ),
     );
   }
-
-  Widget checkInCheckOutBtn(String btnText, Color color,
-      {VoidCallback? onBtnTap}) {
+  Widget checkInCheckOutBtn(String btnText, Color color, {VoidCallback? onBtnTap}) {
     return GestureDetector(
       onTap: onBtnTap,
       child: Container(
@@ -277,7 +220,6 @@ class _DashBoardPageState extends State<DashBoardPage>
       ),
     );
   }
-
   Widget projectsCheckInContainer(String location) {
     return Container(
       width: double.infinity,
@@ -337,7 +279,6 @@ class _DashBoardPageState extends State<DashBoardPage>
       ),
     );
   }
-
   Widget projectsCheckOutContainer(String location) {
     return Container(
       width: double.infinity,
@@ -397,9 +338,7 @@ class _DashBoardPageState extends State<DashBoardPage>
       ),
     );
   }
-
-  Widget lastCheckInTotalHoursColumn(
-      String time, String timeFormat, String txt) {
+  Widget lastCheckInTotalHoursColumn(String time, String timeFormat, String txt) {
     return Column(
       children: [
         Row(
@@ -421,7 +360,6 @@ class _DashBoardPageState extends State<DashBoardPage>
       ],
     );
   }
-
   Widget createYourOwnProjectCard(BuildContext context) {
     return Card(
       shape: RoundedRectangleBorder(
@@ -462,7 +400,7 @@ class _DashBoardPageState extends State<DashBoardPage>
   }
 
   /// Dashboard Alerts ~~~~~~~~~~~~~~~~~~~~~~~~
-  checkInAlert() {
+  checkInAlert(BuildContext context , DashboardProvider provider) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -501,108 +439,117 @@ class _DashBoardPageState extends State<DashBoardPage>
                   Text("check_in".tr()).boldText(
                       context, DimensionConstants.d18.sp, TextAlign.center),
                   SizedBox(height: DimensionConstants.d23.h),
-                  DropdownButtonHideUnderline(
-                    child: DropdownButton2(
-                      isExpanded: true,
-                      hint: Container(
-                        alignment: Alignment.centerLeft,
-                        height: DimensionConstants.d45.h,
-                        decoration: BoxDecoration(
-                          color: ColorConstants.colorLightGreyF2,
-                          borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(DimensionConstants.d8.r),
-                              bottomLeft:
-                                  Radius.circular(DimensionConstants.d8.r)),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: ColorConstants.colorLightGreyF2,
+                      borderRadius: BorderRadius.all(Radius.circular(DimensionConstants.d8.r)
+                         ),
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton2(
+                        isExpanded: true,
+                        hint: Container(
+                          alignment: Alignment.centerLeft,
+                          height: DimensionConstants.d45.h,
+                          decoration: BoxDecoration(
+                            color: ColorConstants.colorLightGreyF2,
+                            borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(DimensionConstants.d8.r),
+                                bottomLeft:
+                                    Radius.circular(DimensionConstants.d8.r)),
+                          ),
+                          child: Row(
+                            children: [
+                              SizedBox(width: DimensionConstants.d12.w),
+                              const ImageView(
+                                  path: ImageConstants.locationIcon,
+                                  color: ColorConstants.colorBlack),
+                              SizedBox(width: DimensionConstants.d8.w),
+                              Text("").semiBoldText(
+                                  context,
+                                  DimensionConstants.d14.sp,
+                                  TextAlign.left,
+                                  color: ColorConstants.colorBlack),
+                              SizedBox(width: DimensionConstants.d29.w),
+                            ],
+                          ),
                         ),
-                        child: Row(
-                          children: [
-                            SizedBox(width: DimensionConstants.d12.w),
-                            const ImageView(
-                                path: ImageConstants.locationIcon,
-                                color: ColorConstants.colorBlack),
-                            SizedBox(width: DimensionConstants.d8.w),
-                            Text("Momentum Smart House Project").semiBoldText(
-                                context,
-                                DimensionConstants.d14.sp,
-                                TextAlign.left,
-                                color: ColorConstants.colorBlack),
-                            SizedBox(width: DimensionConstants.d29.w),
-                          ],
-                        ),
-                      ),
-                      items: provider.checkInItems
-                          .map((item) => DropdownMenuItem<String>(
-                                value: item,
-                                child: Column(
-                                  children: [
-                                    SizedBox(height: DimensionConstants.d10.h),
-                                    Padding(
-                                      padding: EdgeInsets.symmetric(
-                                          horizontal: DimensionConstants.d8.w),
-                                      child: Row(
-                                        children: [
-                                          const ImageView(
-                                              path:
-                                                  ImageConstants.locationIcon),
-                                          SizedBox(
-                                              width: DimensionConstants.d8.w),
-                                          Text(item).regularText(
-                                              context,
-                                              DimensionConstants.d14.sp,
-                                              TextAlign.center)
-                                        ],
+                        items: provider.checkInItems.toSet().map(( CheckBoxModelCrew item) => DropdownMenuItem<String>(
+                                  value: item.projectName,
+                                  onTap: (){
+                                    provider.assignProjectId = item.projectId!;
+                                  },
+                                  child: Column(
+                                    children: [
+                                      SizedBox(height: DimensionConstants.d10.h),
+                                      Padding(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: DimensionConstants.d8.w),
+                                        child: Row(
+                                          children: [
+                                            const ImageView(
+                                                path:
+                                                    ImageConstants.locationIcon),
+                                            SizedBox(
+                                                width: DimensionConstants.d8.w),
+                                            Text(item.projectName!).regularText(
+                                                context,
+                                                DimensionConstants.d14.sp,
+                                                TextAlign.center)
+                                          ],
+                                        ),
                                       ),
-                                    ),
-                                    SizedBox(height: DimensionConstants.d10.h),
-                                    const Divider(
-                                        color: ColorConstants.colorGreyDrawer,
-                                        thickness: 1.5,
-                                        height: 0.0)
-                                  ],
-                                ),
-                              ))
-                          .toList(),
-                      value: provider.checkIn,
-                      onChanged: (value) {
-                        setState(() {
-                          provider.checkIn = value as String;
-                        });
-                      },
-                      icon: Container(
-                        height: DimensionConstants.d42.h,
-                        decoration: BoxDecoration(
-                          color: ColorConstants.colorLightGreyF2,
-                          borderRadius: BorderRadius.only(
-                              topRight:
-                                  Radius.circular(DimensionConstants.d8.r),
-                              bottomRight:
-                                  Radius.circular(DimensionConstants.d8.r)),
+                                      SizedBox(height: DimensionConstants.d10.h),
+                                      const Divider(
+                                          color: ColorConstants.colorGreyDrawer,
+                                          thickness: 1.5,
+                                          height: 0.0)
+                                    ],
+                                  ),
+                                ))
+                            .toList(),
+                        value: provider.checkIn,
+                        onChanged: ( String? value) {
+                         provider.updateDropDownValueOfCheckBox(value!);
+                        },
+                        icon: Container(
+                          height: DimensionConstants.d42.h,
+                          decoration: BoxDecoration(
+                            color: ColorConstants.colorLightGreyF2,
+                            borderRadius: BorderRadius.only(
+                                topRight:
+                                    Radius.circular(DimensionConstants.d8.r),
+                                bottomRight:
+                                    Radius.circular(DimensionConstants.d8.r)),
+                          ),
+                          child: Row(
+                            children: [
+                              const ImageView(path: ImageConstants.downArrowIcon),
+                              SizedBox(width: DimensionConstants.d4.w),
+                            ],
+                          ),
                         ),
-                        child: Row(
-                          children: [
-                            const ImageView(path: ImageConstants.downArrowIcon),
-                            SizedBox(width: DimensionConstants.d4.w),
-                          ],
-                        ),
+                        itemPadding: EdgeInsets.zero,
+                        dropdownPadding: null,
+                        dropdownDecoration: BoxDecoration(
+                            borderRadius:
+                                BorderRadius.circular(DimensionConstants.d8.r),
+                            border: Border.all(
+                                color: ColorConstants.colorLightGreyF2,
+                                width: 1.0)),
+                        dropdownMaxHeight: DimensionConstants.d142.h,
+                        dropdownWidth: DimensionConstants.d293.w,
+                        offset: const Offset(0.0, -10),
                       ),
-                      itemPadding: EdgeInsets.zero,
-                      dropdownPadding: null,
-                      dropdownDecoration: BoxDecoration(
-                          borderRadius:
-                              BorderRadius.circular(DimensionConstants.d8.r),
-                          border: Border.all(
-                              color: ColorConstants.colorLightGreyF2,
-                              width: 1.0)),
-                      dropdownMaxHeight: DimensionConstants.d142.h,
-                      dropdownWidth: DimensionConstants.d293.w,
-                      offset: const Offset(0.0, -10),
+
                     ),
                   ),
                   SizedBox(height: DimensionConstants.d14.h),
                   CommonWidgets.commonButton(context, "check_in".tr(),
                       height: DimensionConstants.d50.h, onBtnTap: () {
-                    Navigator.of(context).pop();
-                    whenDidYouCheckOutAlert();
+                    Navigator.pop(context);
+                    provider.getCheckInTime();
+                    provider.checkInApi(context);
                   })
                 ],
               ),

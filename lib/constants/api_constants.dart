@@ -39,6 +39,8 @@ class ApiConstantsCrew{
   static const String RESET_PASSWORD_BY_PHONE = "forgotbyphone";
   static const String VERIFYINNG_BY_PHONE = "verifyingbyphone";
   static const String RESET_PASSWORD_BY_PHONE_NUMBER = "resettbyphone";
+  static const String DASHBOARD_API = "dashboard";
+  static const String CHECK_IN_CREW = "checkintime";
 
 
 

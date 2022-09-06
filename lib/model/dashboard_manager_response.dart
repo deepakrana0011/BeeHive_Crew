@@ -1,20 +1,31 @@
 class DashBoardResponseManager {
   bool? success;
-  int? data;
+  Manager? manager;
+  int? activeProject;
   int? crewMembers;
+  List<Null>? allProjects;
   List<CrewOnProject>? crewOnProject;
 
   DashBoardResponseManager(
       {this.success,
-        this.data,
+        this.manager,
+        this.activeProject,
         this.crewMembers,
+        this.allProjects,
         this.crewOnProject});
 
   DashBoardResponseManager.fromJson(Map<String, dynamic> json) {
     success = json['success'];
-    data = json['data'];
+    manager =
+    json['Manager'] != null ? new Manager.fromJson(json['Manager']) : null;
+    activeProject = json['activeProject'];
     crewMembers = json['crewMembers'];
-
+    // if (json['allProjects'] != null) {
+    //   allProjects = <Null>[];
+    //   json['allProjects'].forEach((v) {
+    //     allProjects!.add(new Null.fromJson(v));
+    //   });
+    // }
     if (json['crewOnProject'] != null) {
       crewOnProject = <CrewOnProject>[];
       json['crewOnProject'].forEach((v) {
@@ -23,39 +34,121 @@ class DashBoardResponseManager {
     }
   }
 
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['success'] = this.success;
+    if (this.manager != null) {
+      data['Manager'] = this.manager!.toJson();
+    }
+    data['activeProject'] = this.activeProject;
+    data['crewMembers'] = this.crewMembers;
+    // if (this.allProjects != null) {
+    //   data['allProjects'] = this.allProjects!.map((v) => v.toJson()).toList();
+    // }
+    if (this.crewOnProject != null) {
+      data['crewOnProject'] =
+          this.crewOnProject!.map((v) => v.toJson()).toList();
+    }
+    return data;
+  }
+}
 
+class Manager {
+  String? sId;
+  String? email;
+  String? name;
+  String? password;
+  int? status;
+  String? createdAt;
+  int? iV;
+  String? countryCode;
+  int? phoneNumber;
+  int? verifyCode;
+
+  Manager(
+      {this.sId,
+        this.email,
+        this.name,
+        this.password,
+        this.status,
+        this.createdAt,
+        this.iV,
+        this.countryCode,
+        this.phoneNumber,
+        this.verifyCode});
+
+  Manager.fromJson(Map<String, dynamic> json) {
+    sId = json['_id'];
+    email = json['email'];
+    name = json['name'];
+    password = json['password'];
+    status = json['status'];
+    createdAt = json['createdAt'];
+    iV = json['__v'];
+    countryCode = json['countryCode'];
+    phoneNumber = json['phoneNumber'];
+    verifyCode = json['verifyCode'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['_id'] = this.sId;
+    data['email'] = this.email;
+    data['name'] = this.name;
+    data['password'] = this.password;
+    data['status'] = this.status;
+    data['createdAt'] = this.createdAt;
+    data['__v'] = this.iV;
+    data['countryCode'] = this.countryCode;
+    data['phoneNumber'] = this.phoneNumber;
+    data['verifyCode'] = this.verifyCode;
+    return data;
+  }
 }
 
 class CrewOnProject {
   String? sId;
   ProjectId? projectId;
+  String? managerId;
   List<String>? crewId;
   int? status;
   String? createdAt;
   int? iV;
-  String? managerId;
 
   CrewOnProject(
       {this.sId,
         this.projectId,
+        this.managerId,
         this.crewId,
         this.status,
         this.createdAt,
-        this.iV,
-        this.managerId});
+        this.iV});
 
   CrewOnProject.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     projectId = json['projectId'] != null
         ? new ProjectId.fromJson(json['projectId'])
         : null;
+    managerId = json['managerId'];
     crewId = json['crewId'].cast<String>();
     status = json['status'];
     createdAt = json['createdAt'];
     iV = json['__v'];
-    managerId = json['managerId'];
   }
 
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['_id'] = this.sId;
+    if (this.projectId != null) {
+      data['projectId'] = this.projectId!.toJson();
+    }
+    data['managerId'] = this.managerId;
+    data['crewId'] = this.crewId;
+    data['status'] = this.status;
+    data['createdAt'] = this.createdAt;
+    data['__v'] = this.iV;
+    return data;
+  }
 }
 
 class ProjectId {
@@ -92,5 +185,17 @@ class ProjectId {
     iV = json['__v'];
   }
 
-
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['_id'] = this.sId;
+    data['projectName'] = this.projectName;
+    data['address'] = this.address;
+    data['latitude'] = this.latitude;
+    data['longitude'] = this.longitude;
+    data['locationRadius'] = this.locationRadius;
+    data['status'] = this.status;
+    data['createdAt'] = this.createdAt;
+    data['__v'] = this.iV;
+    return data;
+  }
 }

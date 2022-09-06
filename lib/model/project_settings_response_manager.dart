@@ -25,7 +25,7 @@ class ProjectSettingsResponseManager {
 class Data {
   String? assignProjectId;
   List<String>? workDays;
-  String? hours;
+  List<Hours>? hours;
   String? afterHoursRate;
   List<Breaks>? breaks;
   int? status;
@@ -47,7 +47,13 @@ class Data {
   Data.fromJson(Map<String, dynamic> json) {
     assignProjectId = json['assignProjectId'];
     workDays = json['workDays'].cast<String>();
-    hours = json['hours'];
+    if (json['hours'] != null) {
+      hours = <Hours>[];
+      json['hours'].forEach((v) {
+        hours!.add(new Hours.fromJson(v));
+      });
+    }
+
     afterHoursRate = json['afterHoursRate'];
     if (json['breaks'] != null) {
       breaks = <Breaks>[];
@@ -65,7 +71,9 @@ class Data {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['assignProjectId'] = this.assignProjectId;
     data['workDays'] = this.workDays;
-    data['hours'] = this.hours;
+    if (this.hours != null) {
+      data['hours'] = this.hours!.map((v) => v.toJson()).toList();
+    }
     data['afterHoursRate'] = this.afterHoursRate;
     if (this.breaks != null) {
       data['breaks'] = this.breaks!.map((v) => v.toJson()).toList();
@@ -86,6 +94,27 @@ class Breaks {
   Breaks({this.from, this.to, this.sId});
 
   Breaks.fromJson(Map<String, dynamic> json) {
+    from = json['from'];
+    to = json['to'];
+    sId = json['_id'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['from'] = this.from;
+    data['to'] = this.to;
+    data['_id'] = this.sId;
+    return data;
+  }
+}
+class Hours {
+  String? from;
+  String? to;
+  String? sId;
+
+  Hours({this.from, this.to, this.sId});
+
+  Hours.fromJson(Map<String, dynamic> json) {
     from = json['from'];
     to = json['to'];
     sId = json['_id'];

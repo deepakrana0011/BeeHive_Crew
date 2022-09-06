@@ -14,7 +14,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../helper/dialog_helper.dart';
 
 class CustomTabBar extends StatefulWidget {
-  const CustomTabBar({Key? key}) : super(key: key);
+  bool notCheckedIn;
+  CustomTabBar({Key? key,required this.notCheckedIn}) : super(key: key);
 
   @override
   _CustomTabBarState createState() => _CustomTabBarState();
@@ -123,7 +124,7 @@ class _CustomTabBarState extends State<CustomTabBar>
                 physics: NeverScrollableScrollPhysics(),
                 children: [
                   //  provider.hasProjects ? projectsAndHoursCardList() : zeroProjectZeroHourCard(),
-                  projectsAndHoursCardList(),
+                 widget.notCheckedIn == false? projectsAndHoursCardList():zeroProjectZeroHourCard(),
                   weeklyTabBarContainer(),
                   Icon(Icons.directions_car, size: 350),
                 ],

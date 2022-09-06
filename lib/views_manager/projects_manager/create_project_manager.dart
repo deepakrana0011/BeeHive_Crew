@@ -28,8 +28,6 @@ class CreateProjectManager extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-
     return BaseView<CreateProjectManagerProvider>(onModelReady: (provider) {
       provider.determinePosition().then((value) => {
             provider.getLngLt(context),

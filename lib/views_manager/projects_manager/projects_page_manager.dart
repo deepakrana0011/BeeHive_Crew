@@ -55,8 +55,7 @@ class _ProjectsPageManagerState extends State<ProjectsPageManager>
                                 color2: ColorConstants.primaryGradient2Color,
                                 fontSize: DimensionConstants.d16.sp,
                                 shadowRequired: true, onBtnTap: () {
-                              Navigator.pushNamed(
-                                  context, RouteConstants.createProjectManager);
+                              Navigator.pushNamed(context, RouteConstants.createProjectManager);
                             }),
                             SizedBox(height: DimensionConstants.d80.h,)
                           ],

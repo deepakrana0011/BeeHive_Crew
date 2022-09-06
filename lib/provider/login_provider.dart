@@ -26,7 +26,7 @@ class LoginProvider extends BaseProvider{
         SharedPreference.prefs!.setString(SharedPreference.USER_ID, model.data!.sId!);
         if(model.data!.status == 0){
           SharedPreference.prefs!.setBool(SharedPreference.IS_LOGIN , true);
-          SharedPreference.prefs!.setBool(SharedPreference.ISMANAGER_LOGIN , true);
+          SharedPreference.prefs!.setBool(SharedPreference.ISCREW_LOGIN , true);
           Navigator.pushNamed(context, RouteConstants.continueWithPhone, arguments: ContinueWithPhone(routeForResetPassword: 1));
         }else{
           Navigator.pushNamedAndRemoveUntil(context, RouteConstants.bottomNavigationBar, (route) => false);
