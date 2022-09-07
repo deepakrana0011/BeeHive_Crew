@@ -38,7 +38,8 @@ class _DashBoardPageState extends State<DashBoardPage>
     final bottomBarProvider = Provider.of<BottomBarProvider>(context, listen: false);
     return BaseView<DashboardProvider>(
         onModelReady: (provider) {
-          this.provider = provider;provider.dashBoardApi(context);
+          this.provider = provider;
+          provider.dashBoardApi(context);
           SharedPreference.prefs!.setInt(SharedPreference.IS_CHECK_IN, 1);
     }, builder: (context, provider, _) {
       return Scaffold(
@@ -299,7 +300,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                 children: [
                   const ImageView(path: ImageConstants.checkedInIcon),
                   SizedBox(width: DimensionConstants.d12.w),
-                  Text("${"checked_in".tr()} 3h 31m").regularText(
+                  Text("${"checked_in".tr()} ${provider.timerHour}h ${provider.minuteCount}m").regularText(
                       context, DimensionConstants.d16.sp, TextAlign.left,
                       color: ColorConstants.colorLightGreen),
                 ],
@@ -443,32 +444,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                     child: DropdownButtonHideUnderline(
                       child: DropdownButtonFormField(
                         isExpanded: true,
-                       /* hint: Container(
-                          alignment: Alignment.centerLeft,
-                          height: DimensionConstants.d45.h,
-                          decoration: BoxDecoration(
-                            color: ColorConstants.colorLightGreyF2,
-                            borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(DimensionConstants.d8.r),
-                                bottomLeft:
-                                    Radius.circular(DimensionConstants.d8.r)),
-                          ),
-                          child: Row(
-                            children: [
-                              SizedBox(width: DimensionConstants.d12.w),
-                              const ImageView(
-                                  path: ImageConstants.locationIcon,
-                                  color: ColorConstants.colorBlack),
-                              SizedBox(width: DimensionConstants.d8.w),
-                              Text("").semiBoldText(
-                                  context,
-                                  DimensionConstants.d14.sp,
-                                  TextAlign.left,
-                                  color: ColorConstants.colorBlack),
-                              SizedBox(width: DimensionConstants.d29.w),
-                            ],
-                          ),
-                        ),*/
+
                         items: provider.checkInItems.toSet().map(( CheckBoxModelCrew item) => DropdownMenuItem<String>(
                                   value: item.projectName,
                                   onTap: (){
@@ -526,17 +502,6 @@ class _DashBoardPageState extends State<DashBoardPage>
                             ],
                           ),
                         ), onChanged: (String? value) {  },
-                      /*  itemPadding: EdgeInsets.zero,
-                        dropdownPadding: null,
-                        dropdownDecoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.circular(DimensionConstants.d8.r),
-                            border: Border.all(
-                                color: ColorConstants.colorLightGreyF2,
-                                width: 1.0)),
-                        dropdownMaxHeight: DimensionConstants.d142.h,
-                        dropdownWidth: DimensionConstants.d293.w,
-                        offset: const Offset(0.0, -10),*/
                       ),
 
                     ),

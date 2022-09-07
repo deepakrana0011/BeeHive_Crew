@@ -5,11 +5,13 @@ import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/locator.dart';
 import 'package:beehive/provider/base_provider.dart';
+import 'package:beehive/provider/dashboard_provider.dart';
 import 'package:beehive/view/base_view.dart';
 import 'package:beehive/widget/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 import '../helper/dialog_helper.dart';
 
@@ -22,8 +24,7 @@ class CustomTabBar extends StatefulWidget {
   _CustomTabBarState createState() => _CustomTabBarState();
 }
 
-class _CustomTabBarState extends State<CustomTabBar>
-    with TickerProviderStateMixin {
+class _CustomTabBarState extends State<CustomTabBar> with TickerProviderStateMixin {
   TabController? controller;
   BaseProvider provider = locator<BaseProvider>();
 
@@ -35,18 +36,19 @@ class _CustomTabBarState extends State<CustomTabBar>
 
   @override
   Widget build(BuildContext context) {
+   final  dashBoardProvider = Provider.of<DashboardProvider>(context, listen: false);
     return BaseView<BaseProvider>(
       onModelReady: (provider) {
         this.provider = provider;
         controller = TabController(length: 3, vsync: this);
       },
       builder: (context, provider, _) {
-        return tabBarView(controller!);
+        return tabBarView(controller!,dashBoardProvider);
       },
     );
   }
 
-  Widget tabBarView(TabController controller) {
+  Widget tabBarView(TabController controller,DashboardProvider provider) {
     return Expanded(
       child: Padding(
         padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
@@ -125,8 +127,8 @@ class _CustomTabBarState extends State<CustomTabBar>
                 physics: NeverScrollableScrollPhysics(),
                 children: [
                   //  provider.hasProjects ? projectsAndHoursCardList() : zeroProjectZeroHourCard(),
-                 widget.notCheckedIn == false? projectsAndHoursCardList():widget.navigationValue ==2?projectsAndHoursCardList(): zeroProjectZeroHourCard(),
-                  weeklyTabBarContainer(),
+                 widget.notCheckedIn == false? projectsAndHoursCardList(provider):widget.navigationValue ==2?projectsAndHoursCardList(provider): zeroProjectZeroHourCard(),
+                  weeklyTabBarContainer(provider),
                   Icon(Icons.directions_car, size: 350),
                 ],
               ),
@@ -210,7 +212,7 @@ class _CustomTabBarState extends State<CustomTabBar>
   }
 
   /// Today Tab bar Ui~~~~~~~~~~~~~~~~~~~~~
-  Widget projectsAndHoursCardList() {
+  Widget projectsAndHoursCardList(DashboardProvider provider) {
     return Padding(
       padding: EdgeInsets.only(top: DimensionConstants.d16.h),
       child: Card(
@@ -233,7 +235,7 @@ class _CustomTabBarState extends State<CustomTabBar>
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   projectsHoursRow(
-                      ImageConstants.mapIcon, "4 ${"projects".tr()}"),
+                      ImageConstants.mapIcon, "${provider.crewResponse!.totalProjects} ${"projects".tr()}"),
                   Container(
                     height: DimensionConstants.d70.h,
                     width: DimensionConstants.d1.w,
@@ -277,7 +279,7 @@ class _CustomTabBarState extends State<CustomTabBar>
   /// Weekly Tab Bar UI!!!!!!!!!!!!!!!!!!!!!!!!!
   ///
 
-  Widget weeklyTabBarContainer() {
+  Widget weeklyTabBarContainer(DashboardProvider provider) {
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -338,7 +340,7 @@ class _CustomTabBarState extends State<CustomTabBar>
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               projectsHoursRow(ImageConstants.mapIcon,
-                                  "4 ${"projects".tr()}"),
+                                  "${provider.crewResponse!.totalProjects} ${"projects".tr()}"),
                               Container(
                                 height: DimensionConstants.d70.h,
                                 width: DimensionConstants.d1.w,

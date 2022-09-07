@@ -35,7 +35,7 @@ class _IntroductionPagesState extends State<IntroductionPages> {
             backgroundColor: ColorConstants.deepBlue,
             body: SafeArea(
               child: Padding(
-                padding: EdgeInsets.only(left: DimensionConstants.d32.w, right: DimensionConstants.d32.w),
+                padding: EdgeInsets.only(left: DimensionConstants.d32.w, right: DimensionConstants.d32.w,bottom: DimensionConstants.d32.h),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisSize: MainAxisSize.min,
@@ -64,7 +64,7 @@ class _IntroductionPagesState extends State<IntroductionPages> {
                           dotWidth: DimensionConstants.d8.w,
                           dotHeight: DimensionConstants.d9.h),
                     ),
-                    SizedBox(height: DimensionConstants.d113.h),
+                   Expanded(child: Container()),
                     CommonWidgets.signInCreateAccountRow(context)
                   ],
                 ),

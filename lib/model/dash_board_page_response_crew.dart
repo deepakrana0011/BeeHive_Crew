@@ -2,8 +2,17 @@ class DashBoardPageResponseCrew {
   bool? success;
   List<MyProject>? myProject;
   User? user;
+  int? totalProjects;
+  List<CheckIn>? checkIn;
+  List<LastClockIn>? lastClockIn;
 
-  DashBoardPageResponseCrew({this.success, this.myProject, this.user});
+  DashBoardPageResponseCrew(
+      {this.success,
+        this.myProject,
+        this.user,
+        this.totalProjects,
+        this.checkIn,
+        this.lastClockIn});
 
   DashBoardPageResponseCrew.fromJson(Map<String, dynamic> json) {
     success = json['success'];
@@ -14,6 +23,19 @@ class DashBoardPageResponseCrew {
       });
     }
     user = json['user'] != null ? new User.fromJson(json['user']) : null;
+    totalProjects = json['totalProjects'];
+    if (json['checkIn'] != null) {
+      checkIn = <CheckIn>[];
+      json['checkIn'].forEach((v) {
+        checkIn!.add(new CheckIn.fromJson(v));
+      });
+    }
+    if (json['lastClockIn'] != null) {
+      lastClockIn = <LastClockIn>[];
+      json['lastClockIn'].forEach((v) {
+        lastClockIn!.add(new LastClockIn.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
@@ -24,6 +46,13 @@ class DashBoardPageResponseCrew {
     }
     if (this.user != null) {
       data['user'] = this.user!.toJson();
+    }
+    data['totalProjects'] = this.totalProjects;
+    if (this.checkIn != null) {
+      data['checkIn'] = this.checkIn!.map((v) => v.toJson()).toList();
+    }
+    if (this.lastClockIn != null) {
+      data['lastClockIn'] = this.lastClockIn!.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -184,6 +213,70 @@ class User {
     data['position'] = this.position;
     data['profileImage'] = this.profileImage;
     data['speciality'] = this.speciality;
+    return data;
+  }
+}
+
+class CheckIn {
+  String? sId;
+  String? crewId;
+  Null? assignProjectId;
+  String? checkInTime;
+  int? status;
+  String? createdAt;
+  String? lastCheckIn;
+  int? iV;
+
+  CheckIn(
+      {this.sId,
+        this.crewId,
+        this.assignProjectId,
+        this.checkInTime,
+        this.status,
+        this.createdAt,
+        this.lastCheckIn,
+        this.iV});
+
+  CheckIn.fromJson(Map<String, dynamic> json) {
+    sId = json['_id'];
+    crewId = json['crewId'];
+    assignProjectId = json['assignProjectId'];
+    checkInTime = json['checkInTime'];
+    status = json['status'];
+    createdAt = json['createdAt'];
+    lastCheckIn = json['lastCheckIn'];
+    iV = json['__v'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['_id'] = this.sId;
+    data['crewId'] = this.crewId;
+    data['assignProjectId'] = this.assignProjectId;
+    data['checkInTime'] = this.checkInTime;
+    data['status'] = this.status;
+    data['createdAt'] = this.createdAt;
+    data['lastCheckIn'] = this.lastCheckIn;
+    data['__v'] = this.iV;
+    return data;
+  }
+}
+
+class LastClockIn {
+  String? sId;
+  String? checkInTime;
+
+  LastClockIn({this.sId, this.checkInTime});
+
+  LastClockIn.fromJson(Map<String, dynamic> json) {
+    sId = json['_id'];
+    checkInTime = json['checkInTime'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['_id'] = this.sId;
+    data['checkInTime'] = this.checkInTime;
     return data;
   }
 }

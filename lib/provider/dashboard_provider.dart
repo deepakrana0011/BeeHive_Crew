@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:beehive/helper/shared_prefs.dart';
@@ -55,13 +56,28 @@ class DashboardProvider extends BaseProvider{
     }else{
       return "PM";
     }
-
-
+  }
+  getTimeDifferenceBetweenTime( String timeDifference){
+    DateTime time = DateTime.parse(timeDifference);
+    var getDifference = time.difference(DateTime.now()).inHours;
+    print(getDifference);
   }
 
-
-
-
+  int timerHour = 0;
+  int minuteCount = 0;
+  Timer? timer;
+  twoMinTimer() {
+    timer = Timer.periodic(
+      const Duration(minutes: 1), (timer) {
+        minuteCount++;
+        if(minuteCount == 60){
+          timerHour +1;
+          minuteCount = 0;
+        }
+     notifyListeners();
+      },
+    );
+  }
 DashBoardPageResponseCrew? crewResponse;
 
   Future dashBoardApi(BuildContext context,) async {
@@ -77,6 +93,8 @@ DashBoardPageResponseCrew? crewResponse;
           checkInItems.add(crewModel);
         }
         checkIn = model.myProject![0].projectId!.projectName!;
+        convertTime(model.lastClockIn![0].checkInTime!);
+        getTimeDifferenceBetweenTime(model.lastClockIn![0].checkInTime!);
         setState(ViewState.idle);
       } else {
         setState(ViewState.idle);
@@ -99,6 +117,7 @@ DashBoardPageResponseCrew? crewResponse;
         checkInResponse = model;
        SharedPreference.prefs!.setInt(SharedPreference.IS_CHECK_IN , 2);
         convertTime(model.data!.lastCheckIn!);
+        twoMinTimer();
         setState(ViewState.idle);
         DialogHelper.showMessage(context, model.message!);
       } else {
