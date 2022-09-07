@@ -35,18 +35,17 @@ class _DashBoardPageState extends State<DashBoardPage>
 
   @override
   Widget build(BuildContext context) {
-    final bottomBarProvider =
-        Provider.of<BottomBarProvider>(context, listen: false);
+    final bottomBarProvider = Provider.of<BottomBarProvider>(context, listen: false);
     return BaseView<DashboardProvider>(
         onModelReady: (provider) {
-      this.provider = provider;
-      provider.dashBoardApi(context);
+          this.provider = provider;provider.dashBoardApi(context);
+          SharedPreference.prefs!.setInt(SharedPreference.IS_CHECK_IN, 1);
     }, builder: (context, provider, _) {
       return Scaffold(
           key: _scaffoldKey,
           body: provider.state == ViewState.idle? Column(
             children: [
-              provider.crewResponse!.myProject!.isEmpty? noProjectNotCheckedInContainer(context, "you_have_no_projects".tr(),false): SharedPreference.prefs!.getInt(SharedPreference.IS_CHECK_IN) == 2 ? projectsCheckOutContainer(provider.projectName,provider): noProjectNotCheckedInContainer(context, "you_are_not_checked_in".tr(),true, onTap: () {checkInAlert(context,provider);}),
+              provider.crewResponse!.myProject!.isEmpty? noProjectNotCheckedInContainer(context, "you_have_no_projects".tr(),false): SharedPreference.prefs!.getInt(SharedPreference.IS_CHECK_IN) == 2 ? projectsCheckOutContainer(SharedPreference.prefs!.getString(SharedPreference.CHECKED_PROJECT)!,provider): noProjectNotCheckedInContainer(context, "you_are_not_checked_in".tr(),true, onTap: () {checkInAlert(context,provider);}),
               provider.crewResponse!.myProject!.isEmpty? whenDoNotHaveProject()  : CustomTabBar(notCheckedIn: provider.notCheckedIn, navigationValue: SharedPreference.prefs!.getInt(SharedPreference.IS_CHECK_IN)!,),
               SizedBox(height: DimensionConstants.d20.h),
             ],
@@ -326,7 +325,7 @@ class _DashBoardPageState extends State<DashBoardPage>
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                lastCheckInTotalHoursColumn("${provider.hour! < 9 ? 0 :""}${provider.hour}:${provider.minutes! < 9? 0 : ""}${provider.minutes}", "${provider.getAmAndPm(provider.hour!)}", "last_check_in".tr()),
+                lastCheckInTotalHoursColumn("${provider.hour <= 9 ? 0 :""}${provider.hour}:${provider.minutes <= 9? 0 : ""}${provider.minutes}", "${provider.getAmAndPm(provider.hour!)}", "last_check_in".tr()),
                 lastCheckInTotalHoursColumn("08:23", "HR", "total_hours".tr()),
               ],
             ),
@@ -474,7 +473,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                                   value: item.projectName,
                                   onTap: (){
                                     provider.assignProjectId = item.projectId!;
-                                    provider.projectName = item.projectName!;
+                                    SharedPreference.prefs!.setString(SharedPreference.CHECKED_PROJECT, item.projectName!);
                                   },
                                   child: Column(
                                     children: [

@@ -14,12 +14,6 @@ import '../services/fetch_data_expection.dart';
 
 class DashboardProvider extends BaseProvider{
   String projectName = '';
-  int navigationValue = 1;
-  updateNavigation(int value){
-    SharedPreference.prefs!.setInt(SharedPreference.IS_CHECK_IN,value);
-    notifyListeners();
-  }
-
   bool checkedInNoProjects = false;
   bool hasCheckInCheckOut = false;
   bool isCheckedIn = false;
@@ -47,8 +41,8 @@ class DashboardProvider extends BaseProvider{
     checkInTime =  DateFormat("yyyy-MM-dd hh:mm:ss").format(DateTime.now());
     notifyListeners();
   }
-  int? hour;
-  int? minutes;
+  int hour =0;
+  int minutes =0;
   convertTime(String timeToConvert){
      DateTime time = DateTime.parse(timeToConvert);
      hour = time.hour;
@@ -102,10 +96,10 @@ DashBoardPageResponseCrew? crewResponse;
     try {
       var model = await apiCrew.checkInApi(context,assignProjectId, checkInTime!);
       if (model.success == true) {
-        setState(ViewState.idle);
         checkInResponse = model;
-        updateNavigation(2);
+       SharedPreference.prefs!.setInt(SharedPreference.IS_CHECK_IN , 2);
         convertTime(model.data!.lastCheckIn!);
+        setState(ViewState.idle);
         DialogHelper.showMessage(context, model.message!);
       } else {
         setState(ViewState.idle);
