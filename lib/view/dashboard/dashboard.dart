@@ -1,5 +1,6 @@
 import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
+import 'package:beehive/helper/shared_prefs.dart';
 import 'package:beehive/model/check_box_model_crew.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -45,8 +46,8 @@ class _DashBoardPageState extends State<DashBoardPage>
           key: _scaffoldKey,
           body: provider.state == ViewState.idle? Column(
             children: [
-              provider.crewResponse!.myProject!.isEmpty? noProjectNotCheckedInContainer(context, "you_have_no_projects".tr(),false):noProjectNotCheckedInContainer(context, "you_are_not_checked_in".tr(),true, onTap: () {checkInAlert(context,provider);}),
-              provider.crewResponse!.myProject!.isEmpty? whenDoNotHaveProject()  : CustomTabBar(notCheckedIn: provider.notCheckedIn,),
+              provider.crewResponse!.myProject!.isEmpty? noProjectNotCheckedInContainer(context, "you_have_no_projects".tr(),false): SharedPreference.prefs!.getInt(SharedPreference.IS_CHECK_IN) == 2 ? projectsCheckOutContainer(provider.projectName,provider): noProjectNotCheckedInContainer(context, "you_are_not_checked_in".tr(),true, onTap: () {checkInAlert(context,provider);}),
+              provider.crewResponse!.myProject!.isEmpty? whenDoNotHaveProject()  : CustomTabBar(notCheckedIn: provider.notCheckedIn, navigationValue: SharedPreference.prefs!.getInt(SharedPreference.IS_CHECK_IN)!,),
               SizedBox(height: DimensionConstants.d20.h),
             ],
           ):Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,),));
@@ -172,8 +173,7 @@ class _DashBoardPageState extends State<DashBoardPage>
       ),
     );
   }
-  Widget noProjectCheckedInLocationContainer(BuildContext context, String txt, {bool forwardIcon = false}) {
-    return Container(
+  Widget noProjectCheckedInLocationContainer(BuildContext context, String txt, {bool forwardIcon = false}) {return Container(
       alignment: Alignment.centerLeft,
       height: DimensionConstants.d48.h,
       decoration: BoxDecoration(
@@ -181,26 +181,27 @@ class _DashBoardPageState extends State<DashBoardPage>
           border: Border.all(color: ColorConstants.colorWhite30, width: 1),
           borderRadius:
               BorderRadius.all(Radius.circular(DimensionConstants.d8.r))),
-      child: Row(
-        children: [
-          SizedBox(width: DimensionConstants.d14.w),
-          const ImageView(path: ImageConstants.locationIcon),
-          SizedBox(width: DimensionConstants.d11.w),
-          Text(txt).boldText(context, DimensionConstants.d16.sp, TextAlign.left,
-              color: ColorConstants.colorWhite),
-          SizedBox(width: DimensionConstants.d30.w),
-          forwardIcon
-              ? ImageView(
-                  path: ImageConstants.forwardArrowIcon,
-                  color: ColorConstants.colorWhite,
-                  height: DimensionConstants.d10.h,
-                  width: DimensionConstants.d5.w,
-                )
-              : Container()
-        ],
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d14.w),
+        child: Row(
+          children: [
+            const ImageView(path: ImageConstants.locationIcon),
+            SizedBox(width: DimensionConstants.d11.w),
+            Text(txt).boldText(context, DimensionConstants.d16.sp, TextAlign.left,
+                color: ColorConstants.colorWhite),
+           Expanded(child: Container()),
+            forwardIcon
+                ? ImageView(
+                    path: ImageConstants.forwardArrowIcon,
+                    color: ColorConstants.colorWhite,
+                    height: DimensionConstants.d10.h,
+                    width: DimensionConstants.d5.w,
+                  )
+                : Container()
+          ],
+        ),
       ),
-    );
-  }
+    );}
   Widget checkInCheckOutBtn(String btnText, Color color, {VoidCallback? onBtnTap}) {
     return GestureDetector(
       onTap: onBtnTap,
@@ -279,7 +280,7 @@ class _DashBoardPageState extends State<DashBoardPage>
       ),
     );
   }
-  Widget projectsCheckOutContainer(String location) {
+  Widget projectsCheckOutContainer(String location,DashboardProvider provider) {
     return Container(
       width: double.infinity,
       color: ColorConstants.deepBlue,
@@ -308,6 +309,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                 "check_out".tr(),
                 ColorConstants.colorLightGreen,
                 onBtnTap: () {
+                  stillCheckedInAlert();
                   provider.isCheckedIn = false;
                   provider.updateLoadingStatus(true);
                 },
@@ -324,12 +326,7 @@ class _DashBoardPageState extends State<DashBoardPage>
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                GestureDetector(
-                    onTap: () {
-                      stillCheckedInAlert();
-                    },
-                    child: lastCheckInTotalHoursColumn(
-                        "12:50", "PM", "last_check_in".tr())),
+                lastCheckInTotalHoursColumn("${provider.hour! < 9 ? 0 :""}${provider.hour}:${provider.minutes! < 9? 0 : ""}${provider.minutes}", "${provider.getAmAndPm(provider.hour!)}", "last_check_in".tr()),
                 lastCheckInTotalHoursColumn("08:23", "HR", "total_hours".tr()),
               ],
             ),
@@ -398,7 +395,6 @@ class _DashBoardPageState extends State<DashBoardPage>
       ),
     );
   }
-
   /// Dashboard Alerts ~~~~~~~~~~~~~~~~~~~~~~~~
   checkInAlert(BuildContext context , DashboardProvider provider) {
     showDialog(
@@ -446,9 +442,9 @@ class _DashBoardPageState extends State<DashBoardPage>
                          ),
                     ),
                     child: DropdownButtonHideUnderline(
-                      child: DropdownButton2(
+                      child: DropdownButtonFormField(
                         isExpanded: true,
-                        hint: Container(
+                       /* hint: Container(
                           alignment: Alignment.centerLeft,
                           height: DimensionConstants.d45.h,
                           decoration: BoxDecoration(
@@ -473,15 +469,16 @@ class _DashBoardPageState extends State<DashBoardPage>
                               SizedBox(width: DimensionConstants.d29.w),
                             ],
                           ),
-                        ),
+                        ),*/
                         items: provider.checkInItems.toSet().map(( CheckBoxModelCrew item) => DropdownMenuItem<String>(
                                   value: item.projectName,
                                   onTap: (){
                                     provider.assignProjectId = item.projectId!;
+                                    provider.projectName = item.projectName!;
                                   },
                                   child: Column(
                                     children: [
-                                      SizedBox(height: DimensionConstants.d10.h),
+                                     // SizedBox(height: DimensionConstants.d10.h),
                                       Padding(
                                         padding: EdgeInsets.symmetric(
                                             horizontal: DimensionConstants.d8.w),
@@ -499,18 +496,19 @@ class _DashBoardPageState extends State<DashBoardPage>
                                           ],
                                         ),
                                       ),
-                                      SizedBox(height: DimensionConstants.d10.h),
-                                      const Divider(
+                                    //  SizedBox(height: DimensionConstants.d10.h),
+                                      /*const Divider(
                                           color: ColorConstants.colorGreyDrawer,
                                           thickness: 1.5,
-                                          height: 0.0)
+                                          height: 0.0)*/
                                     ],
                                   ),
                                 ))
                             .toList(),
                         value: provider.checkIn,
-                        onChanged: ( String? value) {
+                        onSaved: (String? value) {
                          provider.updateDropDownValueOfCheckBox(value!);
+                         provider.updateLoadingStatus(true);
                         },
                         icon: Container(
                           height: DimensionConstants.d42.h,
@@ -528,8 +526,8 @@ class _DashBoardPageState extends State<DashBoardPage>
                               SizedBox(width: DimensionConstants.d4.w),
                             ],
                           ),
-                        ),
-                        itemPadding: EdgeInsets.zero,
+                        ), onChanged: (String? value) {  },
+                      /*  itemPadding: EdgeInsets.zero,
                         dropdownPadding: null,
                         dropdownDecoration: BoxDecoration(
                             borderRadius:
@@ -539,7 +537,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                                 width: 1.0)),
                         dropdownMaxHeight: DimensionConstants.d142.h,
                         dropdownWidth: DimensionConstants.d293.w,
-                        offset: const Offset(0.0, -10),
+                        offset: const Offset(0.0, -10),*/
                       ),
 
                     ),
@@ -559,7 +557,6 @@ class _DashBoardPageState extends State<DashBoardPage>
       },
     );
   }
-
   stillCheckedInAlert() {
     showDialog(
         context: context,
@@ -644,7 +641,6 @@ class _DashBoardPageState extends State<DashBoardPage>
               }));
         });
   }
-
   whenDidYouCheckOutAlert() {
     showDialog(
         context: context,

@@ -1,6 +1,8 @@
 import 'dart:io';
 
+import 'package:beehive/helper/shared_prefs.dart';
 import 'package:beehive/model/check_box_model_crew.dart';
+import 'package:beehive/model/check_in_response_crew.dart';
 import 'package:beehive/model/dash_board_page_response_crew.dart';
 import 'package:beehive/provider/base_provider.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -11,6 +13,12 @@ import '../helper/dialog_helper.dart';
 import '../services/fetch_data_expection.dart';
 
 class DashboardProvider extends BaseProvider{
+  String projectName = '';
+  int navigationValue = 1;
+  updateNavigation(int value){
+    SharedPreference.prefs!.setInt(SharedPreference.IS_CHECK_IN,value);
+    notifyListeners();
+  }
 
   bool checkedInNoProjects = false;
   bool hasCheckInCheckOut = false;
@@ -39,6 +47,25 @@ class DashboardProvider extends BaseProvider{
     checkInTime =  DateFormat("yyyy-MM-dd hh:mm:ss").format(DateTime.now());
     notifyListeners();
   }
+  int? hour;
+  int? minutes;
+  convertTime(String timeToConvert){
+     DateTime time = DateTime.parse(timeToConvert);
+     hour = time.hour;
+     minutes = time.minute;
+     notifyListeners();
+  }
+  getAmAndPm(int hours){
+    if(hours> 12){
+      return "AM";
+    }else{
+      return "PM";
+    }
+
+
+  }
+
+
 
 
 DashBoardPageResponseCrew? crewResponse;
@@ -56,7 +83,6 @@ DashBoardPageResponseCrew? crewResponse;
           checkInItems.add(crewModel);
         }
         checkIn = model.myProject![0].projectId!.projectName!;
-
         setState(ViewState.idle);
       } else {
         setState(ViewState.idle);
@@ -69,12 +95,17 @@ DashBoardPageResponseCrew? crewResponse;
       DialogHelper.showMessage(context, "internet_connection".tr());
     }
   }
+
+  CheckInResponseCrew? checkInResponse;
   Future checkInApi(BuildContext context,) async {
     setState(ViewState.busy);
     try {
       var model = await apiCrew.checkInApi(context,assignProjectId, checkInTime!);
       if (model.success == true) {
         setState(ViewState.idle);
+        checkInResponse = model;
+        updateNavigation(2);
+        convertTime(model.data!.lastCheckIn!);
         DialogHelper.showMessage(context, model.message!);
       } else {
         setState(ViewState.idle);

@@ -17,7 +17,7 @@ class TimeSheetsTabBar extends StatelessWidget {
         children: [
           SizedBox(height: DimensionConstants.d24.h),
           CommonWidgets.totalProjectsTotalHoursRow(context, "4", "564"),
-          CustomTabBar(notCheckedIn: false,)
+          CustomTabBar(notCheckedIn: false, navigationValue: 1,)
         ],
       ),
     );
