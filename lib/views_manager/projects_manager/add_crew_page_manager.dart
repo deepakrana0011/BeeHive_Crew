@@ -8,6 +8,7 @@ import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
 import 'package:beehive/provider/add_crew_page_provider_manager.dart';
 import 'package:beehive/view/base_view.dart';
+import 'package:beehive/views_manager/projects_manager/crew_mamber_add_by_manager.dart';
 import 'package:beehive/widget/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -17,8 +18,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../helper/decoration.dart';
 
 class AddCrewPageManager extends StatelessWidget {
-
-  String projectId;
+   String projectId;
    AddCrewPageManager({Key? key,required this.projectId}) : super(key: key);
 
   @override
@@ -26,7 +26,6 @@ class AddCrewPageManager extends StatelessWidget {
     return BaseView<AddCrewPageManagerProvider>(
       onModelReady: (provider){
         provider.getCrewList(context);
-
       },
       builder: (context,provider,_){
         return Scaffold(
@@ -44,7 +43,7 @@ class AddCrewPageManager extends StatelessWidget {
                   SizedBox(
                     height: DimensionConstants.d13.h,
                   ),
-                  shareWidget(context,provider),
+                  shareWidget(context,provider,projectId),
                   SizedBox(
                     height: DimensionConstants.d13.h,
                   ),
@@ -113,7 +112,7 @@ Widget searchBarWidget() {
   );
 }
 
-Widget shareWidget(BuildContext context,AddCrewPageManagerProvider provider) {
+Widget shareWidget(BuildContext context,AddCrewPageManagerProvider provider,String projectId) {
   return Row(
     children: <Widget>[
       Card(
@@ -164,7 +163,9 @@ Widget shareWidget(BuildContext context,AddCrewPageManagerProvider provider) {
             borderRadius: BorderRadius.circular(DimensionConstants.d8.r)),
         child: GestureDetector(
           onTap: () {
-            Navigator.pushNamed(context, RouteConstants.crewMemberAddByManager);
+            Navigator.pushNamed(context, RouteConstants.crewMemberAddByManager,arguments: CrewMemberAddByManager(projectId:projectId)).then((value)  {
+              provider.getCrewList(context);
+            });
           },
           child: Container(
             height: DimensionConstants.d50.h,

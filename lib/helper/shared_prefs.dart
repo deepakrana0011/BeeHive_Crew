@@ -11,9 +11,11 @@ class SharedPreference {
   static const IS_LOGIN = "isLogin";
   static const IS_CHECK_IN = "1";
   static const CHECKED_PROJECT = "something";
+  static const USER_PROFILE = "profile";
+  static const USER_LOGO = "logo";
+  static const USER_NAME = "name";
 
  static SharedPreferences? prefs;
-
   static clearSharedPrefs() async {
     prefs!.remove(TOKEN);
     prefs!.remove(USER_ID);
@@ -24,7 +26,6 @@ class SharedPreference {
   static clearCheckIn(){
     prefs!.remove(IS_CHECK_IN);
     prefs!.remove(CHECKED_PROJECT);
-
   }
 
 

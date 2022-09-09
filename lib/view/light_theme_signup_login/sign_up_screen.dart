@@ -87,6 +87,7 @@ class SignUpScreen extends StatelessWidget {
                                     SizedBox(height: DimensionConstants.d39.h),
                                    provider.state == ViewState.idle? CommonWidgets.commonButton(context, "sign_up_".tr(), onBtnTap: (){
                                       if(_formKey.currentState!.validate()){
+                                        CommonWidgets.hideKeyboard(context);
                                       provider.signUpCrew(context, email);
                                       }else{
                                       }

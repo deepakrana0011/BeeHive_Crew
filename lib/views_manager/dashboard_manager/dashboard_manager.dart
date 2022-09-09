@@ -13,6 +13,7 @@ import '../../constants/color_constants.dart';
 import '../../constants/dimension_constants.dart';
 import '../../constants/image_constants.dart';
 import '../../locator.dart';
+import '../../provider/bottom_bar_Manager_provider.dart';
 import '../../provider/bottom_bar_provider.dart';
 import '../../widget/image_view.dart';
 
@@ -27,24 +28,26 @@ class DashBoardPageManager extends StatefulWidget {
 
 class _DashBoardPageManagerState extends State<DashBoardPageManager> with TickerProviderStateMixin {
 
-  DashBoardPageManagerProvider provider = locator<DashBoardPageManagerProvider>();
+  DashBoardPageManagerProvider provider= locator<DashBoardPageManagerProvider>();
 
   @override
   Widget build(BuildContext context) {
+
+
     return BaseView<DashBoardPageManagerProvider>(
         onModelReady: (provider) {this.provider = provider;provider.dashBoardApi(context,);
        provider.controller = TabController(length: 3, vsync: this);
         },
         builder: (context, provider, _) {
-          return Scaffold(
-            body:provider.state == ViewState.idle? Column(
+          return provider.state == ViewState.idle?Scaffold(
+            body: Column(
               children:<Widget> [
                 activeProjectWidget(context,provider),
                 tabBarView(provider.controller!, context, provider)
               ],
-            ):Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,),),
+            )
 
-          );
+          ):Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,));
         });
   }
 }

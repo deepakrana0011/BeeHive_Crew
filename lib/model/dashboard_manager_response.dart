@@ -3,7 +3,6 @@ class DashBoardResponseManager {
   Manager? manager;
   int? activeProject;
   int? crewMembers;
-  List<Null>? allProjects;
   List<CrewOnProject>? crewOnProject;
 
   DashBoardResponseManager(
@@ -11,7 +10,6 @@ class DashBoardResponseManager {
         this.manager,
         this.activeProject,
         this.crewMembers,
-        this.allProjects,
         this.crewOnProject});
 
   DashBoardResponseManager.fromJson(Map<String, dynamic> json) {
@@ -20,12 +18,6 @@ class DashBoardResponseManager {
     json['Manager'] != null ? new Manager.fromJson(json['Manager']) : null;
     activeProject = json['activeProject'];
     crewMembers = json['crewMembers'];
-    // if (json['allProjects'] != null) {
-    //   allProjects = <Null>[];
-    //   json['allProjects'].forEach((v) {
-    //     allProjects!.add(new Null.fromJson(v));
-    //   });
-    // }
     if (json['crewOnProject'] != null) {
       crewOnProject = <CrewOnProject>[];
       json['crewOnProject'].forEach((v) {
@@ -42,9 +34,6 @@ class DashBoardResponseManager {
     }
     data['activeProject'] = this.activeProject;
     data['crewMembers'] = this.crewMembers;
-    // if (this.allProjects != null) {
-    //   data['allProjects'] = this.allProjects!.map((v) => v.toJson()).toList();
-    // }
     if (this.crewOnProject != null) {
       data['crewOnProject'] =
           this.crewOnProject!.map((v) => v.toJson()).toList();
@@ -64,6 +53,12 @@ class Manager {
   String? countryCode;
   int? phoneNumber;
   int? verifyCode;
+  String? address;
+  String? company;
+  String? customColor;
+  String? profileImage;
+  String? title;
+  String? companyLogo;
 
   Manager(
       {this.sId,
@@ -75,7 +70,13 @@ class Manager {
         this.iV,
         this.countryCode,
         this.phoneNumber,
-        this.verifyCode});
+        this.verifyCode,
+        this.address,
+        this.company,
+        this.customColor,
+        this.profileImage,
+        this.title,
+        this.companyLogo});
 
   Manager.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
@@ -88,6 +89,12 @@ class Manager {
     countryCode = json['countryCode'];
     phoneNumber = json['phoneNumber'];
     verifyCode = json['verifyCode'];
+    address = json['address'];
+    company = json['company'];
+    customColor = json['customColor'];
+    profileImage = json['profileImage'];
+    title = json['title'];
+    companyLogo = json['companyLogo'];
   }
 
   Map<String, dynamic> toJson() {
@@ -102,6 +109,12 @@ class Manager {
     data['countryCode'] = this.countryCode;
     data['phoneNumber'] = this.phoneNumber;
     data['verifyCode'] = this.verifyCode;
+    data['address'] = this.address;
+    data['company'] = this.company;
+    data['customColor'] = this.customColor;
+    data['profileImage'] = this.profileImage;
+    data['title'] = this.title;
+    data['companyLogo'] = this.companyLogo;
     return data;
   }
 }

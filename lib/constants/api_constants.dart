@@ -21,6 +21,10 @@ class ApiConstantsManager{
   static const String GET_PROJECT_DETAILS = "projectdetails/";
   static const String ADD_NOTE_MANAGER = "addingnote";
   static const String DASHBOARD_API = "managerdashboard";
+  static const String GET_MANAGER_PROFILE = "managerprofile";
+  static const String UPDATE_MANAGER_PROFILE = "updatemanagerprofile";
+  static const String ADD_NEW_CREW_BY_MANAGER = "addingcrew";
+  static const String RESEND_OTP = "resend";
 }
 class ApiConstantsCrew{
   static const String BASEURL = "http://3.235.151.126:8081/Crew/";
@@ -41,10 +45,5 @@ class ApiConstantsCrew{
   static const String RESET_PASSWORD_BY_PHONE_NUMBER = "resettbyphone";
   static const String DASHBOARD_API = "dashboard";
   static const String CHECK_IN_CREW = "checkintime";
-
-
-
-
-
-
+  static const String RESEND_OTP = "resend";
 }

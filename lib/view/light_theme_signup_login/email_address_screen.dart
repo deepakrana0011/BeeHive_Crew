@@ -80,8 +80,10 @@ class EmailAddressScreen extends StatelessWidget {
                                   if(_formKey.currentState!.validate()){
                                     if(fromForgotPassword == true){
                                       if(routeForResetPassword == 1){
+                                        CommonWidgets.hideKeyboard(context);
                                         provider.emailVerifcationCrew(context, emailController.text);
                                       }else{
+                                        CommonWidgets.hideKeyboard(context);
                                         provider.verifyEmailForOtp(context, emailController.text);
                                       }
                                     }else{

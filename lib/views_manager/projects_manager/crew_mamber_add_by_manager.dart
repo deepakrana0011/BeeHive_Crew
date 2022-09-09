@@ -1,6 +1,7 @@
 import 'package:beehive/constants/color_constants.dart';
 import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/constants/image_constants.dart';
+import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
 import 'package:beehive/provider/crew_member_add_by_manager_provider.dart';
@@ -16,8 +17,9 @@ import '../../helper/decoration.dart';
 import '../../helper/dialog_helper.dart';
 
 class CrewMemberAddByManager extends StatelessWidget {
-  const CrewMemberAddByManager({Key? key}) : super(key: key);
 
+  String projectId;
+  CrewMemberAddByManager({Key? key,required this.projectId}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return BaseView<CrewMemberAddByManagerProvider>(
@@ -45,19 +47,20 @@ class CrewMemberAddByManager extends StatelessWidget {
                               provider.addProfilePic(context, 2);
                             },
                           ));
+                  provider.updateImageChanged();
                 }, provider),
                 SizedBox(
                   height: DimensionConstants.d24.h,
                 ),
-                textFiledName(context, "name", "John Smith"),
+                textFiledName(context, "name", "John Smith",provider.nameController),
                 SizedBox(
                   height: DimensionConstants.d16.h,
                 ),
-                textFiledName(context, "title", "Carpenter"),
+                textFiledName(context, "title", "Carpenter",provider.titleController),
                 SizedBox(
                   height: DimensionConstants.d16.h,
                 ),
-                textFiledName(context, "specialty", "Framing & Finishing"),
+                textFiledName(context, "specialty", "Framing & Finishing",provider.specialityController),
                 SizedBox(
                   height: DimensionConstants.d24.h,
                 ),
@@ -70,34 +73,34 @@ class CrewMemberAddByManager extends StatelessWidget {
                 SizedBox(
                   height: DimensionConstants.d24.h,
                 ),
-                textFiledName(context, "company", "xyz Company"),
+                textFiledName(context, "company", "xyz Company",provider.companyController),
                 SizedBox(
                   height: DimensionConstants.d16.h,
                 ),
-                textFiledName(context, "phone", "123-555-2514"),
+                textFiledName(context, "phone", "123-555-2514",provider.phoneController),
                 SizedBox(
                   height: DimensionConstants.d16.h,
                 ),
-                textFiledName(context, "email", "johnsmith@gmail.com"),
+                textFiledName(context, "email", "johnsmith@gmail.com",provider.emailController),
                 SizedBox(
                   height: DimensionConstants.d16.h,
                 ),
                 textFiledName(
-                    context, "address", "88 Bloor St E. Toronto, ON, M4W3G9"),
+                    context, "address", "88 Bloor St E. Toronto, ON, M4W3G9",provider.addressController),
                 SizedBox(
                   height: DimensionConstants.d38.h,
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(
                       horizontal: DimensionConstants.d16.w),
-                  child: CommonWidgets.commonButton(context, "save".tr(),
+                  child:provider.state == ViewState.idle? CommonWidgets.commonButton(context, "save".tr(),
                       color1: ColorConstants.primaryGradient2Color,
                       color2: ColorConstants.primaryGradient1Color,
                       fontSize: DimensionConstants.d14.sp, onBtnTap: () {
-                    Navigator.of(context).pop();
+                    provider.addNewCrewByManager(context, projectId);
                   },
                     shadowRequired: true
-                  ),
+                  ):const Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,),),
                 ),
                 SizedBox(
                   height: DimensionConstants.d50.h,
@@ -142,7 +145,7 @@ Widget profilePic(BuildContext context, VoidCallback changePhotoTap,
   );
 }
 
-Widget textFiledName(BuildContext context, String title, String hintName) {
+Widget textFiledName(BuildContext context, String title, String hintName, TextEditingController controller) {
   return Padding(
     padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
     child: Column(
@@ -171,6 +174,7 @@ Widget textFiledName(BuildContext context, String title, String hintName) {
             borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
           ),
           child: TextFormField(
+            controller: controller,
             cursorColor: Theme.of(context).brightness == Brightness.dark
                 ? ColorConstants.colorWhite
                 : ColorConstants.colorBlack,

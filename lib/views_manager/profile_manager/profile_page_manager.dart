@@ -1,7 +1,9 @@
+import 'package:beehive/constants/api_constants.dart';
 import 'package:beehive/constants/color_constants.dart';
 import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/constants/image_constants.dart';
 import 'package:beehive/constants/route_constants.dart';
+import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/provider/profile_page_manager_provider.dart';
 import 'package:beehive/view/base_view.dart';
@@ -17,38 +19,28 @@ class ProfilePageManager extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BaseView<ProfilePageManagerProvider>(
-        onModelReady: (provider){},
+        onModelReady: (provider){
+          provider.getManagerProfile(context);
+        },
         builder: (context,provider,_){
           return Scaffold(
             body: SingleChildScrollView(
-              child: Column(
+              child:provider.state ==ViewState.idle? Column(
                 children: <Widget>[
                   profileWidget(context, () {
-                   provider.getDataFromEditProfileScreen(context);
+                   provider.getDataFromEditProfileScreen(context).then((value) => {
+                     provider.getManagerProfile(context),
+                   });
                   },provider),
-                  SizedBox(
-                    height: DimensionConstants.d38.h,
-                  ),
-                  profileDetailsWidget(
-                      context, ImageConstants.companyIcon, "xyz Company", false),
-                  SizedBox(
-                    height: DimensionConstants.d38.h,
-                  ),
-                  profileDetailsWidget(
-                      context, ImageConstants.callerIcon, "123-555-2514", false),
-                  SizedBox(
-                    height: DimensionConstants.d38.h,
-                  ),
-                  profileDetailsWidget(context, ImageConstants.mailerIcon,
-                      "johnsmith@gmail.com", false),
-                  SizedBox(
-                    height: DimensionConstants.d38.h,
-                  ),
-                  profileDetailsWidget(context, ImageConstants.locationIcon,
-                      "88 Bloor St E. Toronto ONM4W3G9", false),
-                  SizedBox(
-                    height: DimensionConstants.d38.h,
-                  ),
+                  SizedBox(height: DimensionConstants.d38.h,),
+                  profileDetailsWidget(context, ImageConstants.companyIcon, provider.profileResponse!.data!.company == null?"xyz Company": provider.profileResponse!.data!.company!, false),
+                  SizedBox(height: DimensionConstants.d38.h,),
+                  profileDetailsWidget(context, ImageConstants.callerIcon, provider.profileResponse!.data!.phoneNumber == null?"123-555-2514":provider.profileResponse!.data!.phoneNumber.toString(), false),
+                  SizedBox(height: DimensionConstants.d38.h,),
+                  profileDetailsWidget(context, ImageConstants.mailerIcon, provider.profileResponse!.data!.email == null?"johnsmith@gmail.com":provider.profileResponse!.data!.email!, false),
+                  SizedBox(height: DimensionConstants.d38.h,),
+                  profileDetailsWidget(context, ImageConstants.locationIcon, provider.profileResponse!.data!.address == null?"88 Bloor St E. Toronto ONM4W3G9":provider.profileResponse!.data!.address!, false),
+                  SizedBox(height: DimensionConstants.d38.h,),
                   GestureDetector(
                       onTap: () {
                         Navigator.pushNamed(
@@ -71,6 +63,9 @@ class ProfilePageManager extends StatelessWidget {
                     height: DimensionConstants.d80.h,
                   ),
                 ],
+              ):Padding(
+                padding:  EdgeInsets.only(top: DimensionConstants.d260.h),
+                child: Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,),),
               ),
             ),
           );
@@ -132,7 +127,7 @@ Widget profileWidget(BuildContext context, VoidCallback onTapOnEditButton, Profi
         ),
         Padding(
           padding: EdgeInsets.only(
-              top: DimensionConstants.d50.h, left: DimensionConstants.d110.w),
+              top: DimensionConstants.d50.h, left: DimensionConstants.d95.w),
           child: Container(
             height: DimensionConstants.d160.h,
             width: DimensionConstants.d160.w,
@@ -140,10 +135,14 @@ Widget profileWidget(BuildContext context, VoidCallback onTapOnEditButton, Profi
                 color: ColorConstants.colorWhite,
                 borderRadius: BorderRadius.circular(DimensionConstants.d80.r)),
             child: Center(
-              child: ImageView(
-                path:provider.profileImage ==""? ImageConstants.managerImage:provider.profileImage,
-                height: DimensionConstants.d150.h,
-                width: DimensionConstants.d150.w,
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(DimensionConstants.d75.r),
+                child: ImageView(
+                  path:provider.profileResponse!.data!.profileImage!.isEmpty? ImageConstants.managerImage:ApiConstantsCrew.BASE_URL_IMAGE+provider.profileResponse!.data!.profileImage!,
+                  height: DimensionConstants.d150.h,
+                  width: DimensionConstants.d150.w,
+                  fit: BoxFit.cover,
+                ),
               ),
             ),
           ),
@@ -153,13 +152,13 @@ Widget profileWidget(BuildContext context, VoidCallback onTapOnEditButton, Profi
               top: DimensionConstants.d220.h, left: DimensionConstants.d90.w),
           child: Column(
             children: <Widget>[
-              Text("Katharine Wells").boldText(
+              Text(provider.profileResponse!.data!.name == null? "xxx":provider.profileResponse!.data!.name!).boldText(
                   context, DimensionConstants.d30.sp, TextAlign.center,
                   color: ColorConstants.colorWhite),
               SizedBox(
                 height: DimensionConstants.d5.h,
               ),
-              Text("Construction ltd.").boldText(
+              Text(provider.profileResponse!.data!.company == null?"xxx":provider.profileResponse!.data!.company!).boldText(
                   context, DimensionConstants.d18.sp, TextAlign.center,
                   color: ColorConstants.colorWhite),
               SizedBox(
@@ -203,10 +202,14 @@ Widget profileWidget(BuildContext context, VoidCallback onTapOnEditButton, Profi
         Positioned(
             top: DimensionConstants.d125.h,
             left: DimensionConstants.d205.w,
-            child: ImageView(
-              path:provider.companyIcon ==""? ImageConstants.brandIocn:provider.companyIcon,
-              height: DimensionConstants.d82.h,
-              width: DimensionConstants.d82.w,
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(DimensionConstants.d41.r),
+              child: ImageView(
+                path:provider.profileResponse!.data!.companyLogo!.isEmpty? ImageConstants.brandIocn:ApiConstantsCrew.BASE_URL_IMAGE+provider.profileResponse!.data!.companyLogo!,
+                height: DimensionConstants.d82.h,
+                width: DimensionConstants.d82.w,
+                fit: BoxFit.cover,
+              ),
             )),
       ],
     ),

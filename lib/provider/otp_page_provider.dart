@@ -11,9 +11,10 @@ import '../services/fetch_data_expection.dart';
 import '../view/light_theme_signup_login/reset_password_screen.dart';
 
 class OtpPageProvider extends BaseProvider{
+  final textEditController  = TextEditingController();
   String otp= "";
 
-  updateProvider(String value){
+  getOtp(String value){
     otp = value;
     notifyListeners();
 
@@ -87,6 +88,28 @@ class OtpPageProvider extends BaseProvider{
       if (model.success == true) {
         setState(ViewState.idle);
         Navigator.pushNamed(context, RouteConstants.resetPasswordScreen,arguments: ResetPasswordScreen(email: phoneNumber, byPhoneOrEmail: true,));
+        DialogHelper.showMessage(context, model.message!);
+      } else {
+        setState(ViewState.idle);
+        DialogHelper.showMessage(context, model.message!);
+      }
+    } on FetchDataException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, e.toString());
+    } on SocketException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, "internet_connection".tr());
+    }
+  }
+
+
+
+  Future resendOtpApi(BuildContext context, String email,) async {
+    setState(ViewState.busy);
+    try {
+      var model = await apiCrew.resendOtpApi(context,email );
+      if (model.success == true) {
+        setState(ViewState.idle);
         DialogHelper.showMessage(context, model.message!);
       } else {
         setState(ViewState.idle);

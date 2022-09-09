@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:beehive/helper/shared_prefs.dart';
+import 'package:beehive/model/add_crew_by_manager_response.dart';
 import 'package:beehive/model/add_crew_response_manager.dart';
 import 'package:beehive/model/add_note_manager_response.dart';
 import 'package:beehive/model/assign_project_response_manager.dart';
@@ -16,6 +17,7 @@ import 'package:beehive/model/phone_otp_response_manager.dart';
 import 'package:beehive/model/project_details_response_manager.dart';
 import 'package:beehive/model/project_settings_break_request_manager.dart';
 import 'package:beehive/model/project_settings_response_manager.dart';
+import 'package:beehive/model/resend_otp_response.dart';
 import 'package:beehive/model/reset_password_by_phone_response.dart';
 import 'package:beehive/model/reset_password_response_crew.dart';
 import 'package:beehive/model/set_crew_rate_Manger_response.dart';
@@ -27,12 +29,17 @@ import 'package:syncfusion_flutter_sliders/sliders.dart';
 import '../constants/api_constants.dart';
 import '../model/create_project_response_manager.dart';
 import '../model/dash_board_page_response_crew.dart';
+import '../model/edit_profile_response_manager.dart';
 import '../model/get_otp_response_manager.dart';
+import '../model/get_profile_response_manager.dart';
 import '../model/sign_up_manager_response.dart';
 import '../model/verify_otp_response_manager.dart';
 import 'fetch_data_expection.dart';
 
 class ApiManager {
+
+  var profileImage;
+  var companyLogo;
   Dio dio = Dio();
   Future<SignUpResponse> signUp(
     BuildContext context,
@@ -569,6 +576,139 @@ class ApiManager {
     }
   }
 
+  Future<GetManagerProfileResponse> getManagerProfile(BuildContext context,) async {
+    try {
+      dio.options.headers["Authorization"] = SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var response = await dio.get(ApiConstantsManager.BASEURL + ApiConstantsManager.GET_MANAGER_PROFILE,);
+      return GetManagerProfileResponse.fromJson(json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+
+  Future<EditProfileManagerResponse> updateManagerProfile(
+      BuildContext context, {
+        required String companyLogoChanged,
+        required String profile,
+        required String address,
+        required String title,
+        required String company,
+        required String name,
+        required String phone,
+        required String email,
+        required HSVColor color,
+        required bool imageChanged,
+        required bool companyChanged,
+      }) async {
+    try {
+      profileImage = imageChanged == true ? MultipartFile.fromFileSync(profile, filename: "image.jpg") : null;
+      companyLogo = companyChanged == true ? MultipartFile.fromFileSync(companyLogoChanged, filename: "image.jpg") : null;
+      var map = imageChanged == true
+          ? {
+        "companyLogo":companyLogo,
+        "profileImage": profileImage,
+        "address": address,
+        "position": title,
+        "company": company,
+        "name": name,
+        "phoneNumber": phone,
+        "email": email,
+        "customColor":color
+      } : {
+        "address": address,
+        "position": title,
+        "company": company,
+        "name": name,
+        "phoneNumber": phone,
+        "email": email,
+        "customColor":color
+      };
+      dio.options.headers["Authorization"] = SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var response = await dio.post(ApiConstantsManager.BASEURL + ApiConstantsManager.UPDATE_MANAGER_PROFILE ,data: FormData.fromMap(map));
+      return EditProfileManagerResponse.fromJson(json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+  Future<AddCrewByManagerResponse> addNewCrew(
+      BuildContext context, {
+        required String profile,
+        required String address,
+        required String title,
+        required String company,
+        required String name,
+        required String phone,
+        required String speciality,
+        required String email,
+        required String projectId,
+        required bool imageChanged,
+      }) async {
+    try {
+      profileImage = imageChanged == true ? MultipartFile.fromFileSync(profile, filename: "image.jpg") : null;
+      var map = imageChanged == true
+          ? {
+        "profileImage": profileImage,
+        "address": address,
+        "projectId":projectId,
+        "position": title,
+        "speciality":speciality,
+        "company": company,
+        "name": name,
+        "phoneNumber": phone,
+        "email": email,
+
+      } : {
+        "address": address,
+        "position": title,
+        "speciality":speciality,
+        "projectId":projectId,
+        "company": company,
+        "name": name,
+        "phoneNumber": phone,
+        "email": email,
+
+      };
+      dio.options.headers["Authorization"] = SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var response = await dio.post(ApiConstantsManager.BASEURL + ApiConstantsManager.ADD_NEW_CREW_BY_MANAGER ,data: FormData.fromMap(map));
+      return AddCrewByManagerResponse.fromJson(json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+  Future<ResendOtpResponse> resendOtpApi(BuildContext context, String email) async {
+    try {
+      var map = {"email": email, };
+      var response = await dio.post(ApiConstantsManager.BASEURL + ApiConstantsManager.RESEND_OTP, data: map);
+      return ResendOtpResponse.fromJson(json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+
 
 
 
@@ -754,9 +894,7 @@ class ApiCrew {
     }
   }
 
-  Future<GetCrewProfileResponse> getCrewProfile(
-    BuildContext context,
-  ) async {
+  Future<GetCrewProfileResponse> getCrewProfile(BuildContext context,) async {
     try {
       dio.options.headers["Authorization"] =
           SharedPreference.prefs!.getString(SharedPreference.TOKEN);
@@ -788,9 +926,7 @@ class ApiCrew {
     required bool imageChanged,
   }) async {
     try {
-      profileImage = imageChanged == true
-          ? MultipartFile.fromFileSync(profile, filename: "image.jpg")
-          : null;
+      profileImage = imageChanged == true ? MultipartFile.fromFileSync(profile, filename: "image.jpg") : null;
       var map = imageChanged == true
           ? {
               "profileImage": profileImage,
@@ -799,7 +935,7 @@ class ApiCrew {
               "speciality": speciality,
               "company": company,
               "name": name,
-              "phone": phone,
+              "phoneNumber": phone,
               "email": email
             }
           : {
@@ -811,13 +947,8 @@ class ApiCrew {
               "phone": phone,
               "email": email
             };
-      var response = await dio.put(
-          ApiConstantsCrew.BASEURL +
-              ApiConstantsCrew.UPDATE_CREW_PROFILE +
-              SharedPreference.prefs!.getString(SharedPreference.USER_ID)!,
-          data: FormData.fromMap(map));
-      return UpdateCrewProfileResponse.fromJson(
-          json.decode(response.toString()));
+      var response = await dio.put(ApiConstantsCrew.BASEURL + ApiConstantsCrew.UPDATE_CREW_PROFILE + SharedPreference.prefs!.getString(SharedPreference.USER_ID)!,data: FormData.fromMap(map));
+      return UpdateCrewProfileResponse.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());
@@ -954,6 +1085,21 @@ class ApiCrew {
       dio.options.headers["Authorization"] = SharedPreference.prefs!.getString(SharedPreference.TOKEN);
       var response = await dio.post(ApiConstantsCrew.BASEURL + ApiConstantsCrew.CHECK_IN_CREW, data: map);
       return CheckInResponseCrew.fromJson(json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+  Future<ResendOtpResponse> resendOtpApi(BuildContext context, String email) async {
+    try {
+      var map = {"email": email, };
+      var response = await dio.post(ApiConstantsCrew.BASEURL + ApiConstantsCrew.RESEND_OTP, data: map);
+      return ResendOtpResponse.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());

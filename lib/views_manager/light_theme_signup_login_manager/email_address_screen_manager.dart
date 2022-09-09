@@ -99,6 +99,7 @@ class EmailAddressScreenManager extends StatelessWidget {
                               SizedBox(height: DimensionConstants.d39.h),
                             provider.state == ViewState.idle?  CommonWidgets.commonButton(
                                   context, "continue".tr(), onBtnTap: () {
+                              CommonWidgets.hideKeyboard(context);
                                 if (_formKey.currentState!.validate()) {
                                  if(fromForgotPassword == false){
                                    Navigator.pushNamed(context, RouteConstants.signUpScreenManager,arguments: SignUpScreenManager(email: emailController.text));

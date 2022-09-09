@@ -96,6 +96,7 @@ class LoginScreen extends StatelessWidget {
                                       provider.state == ViewState.idle?  CommonWidgets.commonButton(context, "login".tr(), onBtnTap: (){
                                           CommonWidgets.hideKeyboard(context);
                                           if(_formKey.currentState!.validate()){
+                                            CommonWidgets.hideKeyboard(context);
                                             provider.loginCrew(context, emailController.text, passwordController.text);
                                           }else{
                                           }

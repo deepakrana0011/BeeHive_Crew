@@ -1,4 +1,5 @@
 import 'package:beehive/enum/enum.dart';
+import 'package:beehive/widget/custom_class.dart';
 import 'package:flutter/material.dart';
 
 import '../locator.dart';
@@ -10,6 +11,7 @@ class BaseProvider extends ChangeNotifier {
 
   ApiManager api = locator<ApiManager>();
   ApiCrew apiCrew = locator<ApiCrew>();
+  CustomClass customClass = locator<CustomClass>();
   ViewState get state => _state;
 
   void setState(ViewState viewState) {

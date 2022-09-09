@@ -37,12 +37,16 @@ getInitials({required String string,required int limitTo}) {
 
 
 
+
   Future dashBoardApi(BuildContext context,) async {
     setState(ViewState.busy);
     try {
       var model = await api.dashBoardApi(context,);
       if (model.success == true) {
         responseManager = model;
+        customClass.logo = model.manager!.companyLogo!;
+        customClass.name = model.manager!.name!;
+        customClass.progile = model.manager!.profileImage!;
         for(int i =0; i < model.crewOnProject!.length; i++){
           getInitials(string: model.crewOnProject![i].projectId!.projectName!, limitTo: 2);
         }

@@ -40,6 +40,7 @@ import 'package:beehive/provider/sign_up_provider.dart';
 import 'package:beehive/provider/timesheet_from_crew_provider.dart';
 import 'package:beehive/provider/timesheet_manager_provider.dart';
 import 'package:beehive/services/api_class.dart';
+import 'package:beehive/widget/custom_class.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 
@@ -59,6 +60,7 @@ void setUpLocator(){
   locator.registerFactory<DashBoardPageManagerProvider>(() => DashBoardPageManagerProvider());
   locator.registerFactory<BottomBarManagerProvider>(() => BottomBarManagerProvider());
   locator.registerFactory(() => ProjectsProvider());
+  locator.registerFactory(() => CustomClass());
   locator.registerFactory(() => ProjectDetailsPageProvider());
   locator.registerFactory(() => AddNotePageProvider());
   locator.registerFactory(() => ProjectSettingsProvider());

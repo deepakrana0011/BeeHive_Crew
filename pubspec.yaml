@@ -59,6 +59,7 @@ dependencies:
   hsv_color_pickers: ^0.2.1
   another_flushbar: ^1.10.29
   dio: ^4.0.6
+  pin_code_fields: ^7.4.0
 
 dev_dependencies:
   flutter_test:

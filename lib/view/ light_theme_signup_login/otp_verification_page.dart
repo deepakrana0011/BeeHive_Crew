@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_otp_text_field/flutter_otp_text_field.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:pin_code_fields/pin_code_fields.dart';
 
 import '../../constants/color_constants.dart';
 import '../../constants/dimension_constants.dart';
@@ -77,16 +78,22 @@ class OtpVerificationPage extends StatelessWidget {
                                 color: ColorConstants.colorBlack,
                               ),
                               SizedBox(height: DimensionConstants.d60.h),
-                              optFiled(context, provider),
+                              optVerifyFiled(context,provider),
                               SizedBox(height: DimensionConstants.d25.h),
                               Align(
                                 alignment: Alignment.center,
-                                child: Text("resend_code".tr()).regularText(
-                                    context,
-                                    DimensionConstants.d14.sp,
-                                    TextAlign.center,
-                                    color: ColorConstants.colorBlack,
-                                    decoration: TextDecoration.underline),
+                                child: GestureDetector(
+                                  onTap: (){
+                                    provider.textEditController.clear();
+                                    provider.resendOtpApi(context, phoneNumber);
+                                  },
+                                  child: Text("resend_code".tr()).regularText(
+                                      context,
+                                      DimensionConstants.d14.sp,
+                                      TextAlign.center,
+                                      color: ColorConstants.colorBlack,
+                                      decoration: TextDecoration.underline),
+                                )
                               ),
                               SizedBox(height: DimensionConstants.d35.h),
                              provider.state == ViewState.idle? CommonWidgets.commonButton(
@@ -95,12 +102,16 @@ class OtpVerificationPage extends StatelessWidget {
                                       DialogHelper.showMessage(context, "Please enter OTP");
                                     }else{
                                   if(routeForResetPassword ==1){
+                                    CommonWidgets.hideKeyboard(context);
                                     provider.otpVerificationCrewPhone(context, phoneNumber);
                                   }else if(routeForResetPassword ==2){
+                                    CommonWidgets.hideKeyboard(context);
                                     provider.verifyEmailForOtp(context, phoneNumber);
                                   } else if(routeForResetPassword == 3){
+                                    CommonWidgets.hideKeyboard(context);
                                     provider.verifyEmailForOtpResetPassword(context, phoneNumber);
                                   }else if(routeForResetPassword == 4){
+                                    CommonWidgets.hideKeyboard(context);
                                     provider.verifyingOtpByPhone(context, phoneNumber);
                                   }
                                     }
@@ -120,12 +131,8 @@ class OtpVerificationPage extends StatelessWidget {
   }
 }
 
-Widget optFiled(
-  BuildContext context,
-  OtpPageProvider provider,
-) {
+/*Widget optFiled(BuildContext context, OtpPageProvider provider,) {
   return OtpTextField(
-
     fieldWidth: DimensionConstants.d60.w,
     numberOfFields: 4,
     cursorColor: ColorConstants.primaryColor,
@@ -142,7 +149,51 @@ Widget optFiled(
 
     },
     onSubmit: (String verificationCode) {
-      provider.updateProvider(verificationCode);
+   //   provider.updateProvider(verificationCode);
   }, // end onSubmit
+  );
+}*/
+
+Widget optVerifyFiled(BuildContext context, OtpPageProvider provider) {
+  return  Container(
+    child: PinCodeTextField(
+      appContext: context,
+      pastedTextStyle: const TextStyle(
+        color: ColorConstants.colorBlack,
+        fontWeight: FontWeight.w600,
+      ),
+      length: 4,
+      animationType: AnimationType.fade,
+      textStyle: TextStyle(
+        color: ColorConstants.colorBlack,
+        fontSize: DimensionConstants.d16.sp,
+        fontWeight: FontWeight.w600,
+      ),
+      pinTheme: PinTheme(
+          activeColor:  ColorConstants.primaryColor,
+          disabledColor: ColorConstants.grayE0E0E0,
+          inactiveFillColor: ColorConstants.colorWhite,
+          inactiveColor: ColorConstants.grayE0E0E0,
+          selectedColor: ColorConstants.primaryColor,
+          shape: PinCodeFieldShape.box,
+          borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
+          fieldHeight: DimensionConstants.d60.h,
+          fieldWidth: DimensionConstants.d60.w,
+          errorBorderColor: ColorConstants.redColorEB5757,
+          activeFillColor: ColorConstants.colorWhite,
+          selectedFillColor: ColorConstants.colorWhite),
+      cursorColor: Colors.black,
+      animationDuration: Duration(milliseconds: 100),
+      enableActiveFill: true,
+      controller: provider.textEditController,
+      keyboardType: TextInputType.number,
+      onCompleted: (String v) {
+        provider.getOtp(v);
+      },
+      onChanged: (value) {},
+      beforeTextPaste: (text) {
+        return true;
+      },
+    ),
   );
 }

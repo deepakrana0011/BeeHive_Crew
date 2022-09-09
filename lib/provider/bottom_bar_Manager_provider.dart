@@ -1,8 +1,14 @@
+import 'dart:io';
+
 import 'package:beehive/provider/base_provider.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../constants/route_constants.dart';
+import '../enum/enum.dart';
+import '../helper/dialog_helper.dart';
+import '../services/fetch_data_expection.dart';
 
 class BottomBarManagerProvider extends BaseProvider{
 
@@ -20,6 +26,8 @@ class BottomBarManagerProvider extends BaseProvider{
       Navigator.pushNamed(context, RouteConstants.notificationsScreenManager);
     }
   }
+
+
 
 
 }

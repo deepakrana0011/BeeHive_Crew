@@ -84,7 +84,7 @@ class ContinueWithPhone extends StatelessWidget {
                               SizedBox(height: DimensionConstants.d25.h),
                               GestureDetector(
                                 onTap: (){
-                                    Navigator.pushNamed(context, RouteConstants.emailAddressScreen,arguments: EmailAddressScreen(fromForgotPassword: true, routeForResetPassword: 1,));
+                                    Navigator.pushNamed(context, RouteConstants.emailAddressScreen,arguments: EmailAddressScreen(fromForgotPassword: true, routeForResetPassword: routeForResetPassword,));
                                 },
                                 child: Align(
                                   alignment: Alignment.center,
@@ -101,8 +101,10 @@ class ContinueWithPhone extends StatelessWidget {
                                     if(provider.phoneNumberController.text.isEmpty){
                                       DialogHelper.showMessage(context, "mobile_number_cant_be_empty".tr());
                                     }else if(routeForResetPassword == 1){
+                                      CommonWidgets.hideKeyboard(context);
                                      provider.phoneVerificationCrew(context, routeForResetPassword);
                                     }else if(routeForResetPassword == 2){
+                                      CommonWidgets.hideKeyboard(context);
                                       provider.resetPasswordByPhone(context, provider.phoneNumberController.text);
                                     }
                               },shadowRequired: true):Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,),)

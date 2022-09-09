@@ -102,6 +102,7 @@ class ContinueWithPhoneManager extends StatelessWidget {
                               SizedBox(height: DimensionConstants.d50.h),
                             provider.state == ViewState.idle?  CommonWidgets.commonButton(
                                   context, "continue".tr(), onBtnTap: () {
+                              CommonWidgets.hideKeyboard(context);
                                 if (provider
                                     .phoneNumberController.text.isEmpty) {
                                   DialogHelper.showMessage(context,
