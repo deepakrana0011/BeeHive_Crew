@@ -83,8 +83,7 @@ class OtpVerificationPageManager extends StatelessWidget {
                                     child: GestureDetector(
                                       onTap: (){
                                         CommonWidgets.hideKeyboard(context);
-                                        provider.resendOtpApi(context, phoneNumber);
-
+                                       continueWithPhoneOrEmail == true ?provider.resendOtpApiPhone(context, phoneNumber):provider.resendOtpApiEmail(context, phoneNumber);
                                       },
                                       child: Text("resend_code".tr()).regularText(context,
                                         DimensionConstants.d14.sp, TextAlign.center,

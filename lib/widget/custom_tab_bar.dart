@@ -278,8 +278,7 @@ class _CustomTabBarState extends State<CustomTabBar> with TickerProviderStateMix
 
   /// Weekly Tab Bar UI!!!!!!!!!!!!!!!!!!!!!!!!!
   ///
-
-  Widget weeklyTabBarContainer(DashboardProvider provider) {
+ Widget weeklyTabBarContainer(DashboardProvider provider) {
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -476,8 +475,6 @@ class _CustomTabBarState extends State<CustomTabBar> with TickerProviderStateMix
       ),
     );
   }
-
-
   Widget backNextBtn(String path) {
     return Container(
       alignment: Alignment.center,

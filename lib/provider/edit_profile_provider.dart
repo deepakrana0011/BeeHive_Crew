@@ -41,10 +41,9 @@ class EditProfileProvider extends BaseProvider {
     }
   }
 
-  upDateImageChanged(){
+  upDateImageChanged() {
     imageChanged = true;
     notifyListeners();
-
   }
 
   addImage(XFile image) {
@@ -53,18 +52,21 @@ class EditProfileProvider extends BaseProvider {
   }
 
   setAllController() {
-    profileImage = "${ApiConstantsCrew.BASE_URL_IMAGE}${getObj!.data!.profileImage== null?ImageConstants.personIcon:getObj!.data!.profileImage}";
-    nameController.text = getObj!.data!.name == null? " ":getObj!.data!.name!;
-    titleController.text = getObj!.data!.position == null? " ":getObj!.data!.position!;
-    specialityController.text = getObj!.data!.speciality == null? " ":getObj!.data!.speciality!;
-    companyNameController.text = getObj!.data!.company == null? " ":getObj!.data!.company! ;
-    phoneNumberController.text = getObj!.data!.phoneNumber == null? " ": getObj!.data!.phoneNumber.toString();
-    emailController.text = getObj!.data!.email  == null? " ":getObj!.data!.email! ;
-    addressController.text = getObj!.data!.address  == null? " ":getObj!.data!.address! ;
+    profileImage =
+    "${ApiConstantsCrew.BASE_URL_IMAGE}${getObj!.data!.profileImage == null ? ImageConstants.personIcon : getObj!.data!.profileImage}";
+    nameController.text = getObj!.data!.name!;
+    titleController.text = getObj!.data!.position!;
+    specialityController.text = getObj!.data!.speciality!;
+    companyNameController.text = getObj!.data!.company!;
+    phoneNumberController.text = getObj!.data!.phoneNumber.toString();
+    emailController.text = getObj!.data!.email!;
+    addressController.text = getObj!.data!.address!;
     notifyListeners();
   }
 
-  Future getCrewProfile(BuildContext context,) async {
+  Future getCrewProfile(
+    BuildContext context,
+  ) async {
     setState(ViewState.busy);
     try {
       var model = await apiCrew.getCrewProfile(context);
@@ -83,7 +85,9 @@ class EditProfileProvider extends BaseProvider {
     }
   }
 
-  Future updateCrewProfile(BuildContext context,) async {
+  Future updateCrewProfile(
+    BuildContext context,
+  ) async {
     setState(ViewState.busy);
     try {
       var model = await apiCrew.updateCrewProfile(
@@ -95,11 +99,14 @@ class EditProfileProvider extends BaseProvider {
         speciality: specialityController.text,
         phone: phoneNumberController.text,
         title: titleController.text,
-        company: companyNameController.text, imageChanged: imageChanged,
+        company: companyNameController.text,
+        imageChanged: imageChanged,
       );
       if (model.success == true) {
         setState(ViewState.idle);
-        Navigator.pop(context,);
+        Navigator.pop(
+          context,
+        );
         DialogHelper.showMessage(context, model.message!);
       } else {
         setState(ViewState.idle);

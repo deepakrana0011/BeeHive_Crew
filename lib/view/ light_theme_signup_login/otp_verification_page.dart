@@ -85,7 +85,7 @@ class OtpVerificationPage extends StatelessWidget {
                                 child: GestureDetector(
                                   onTap: (){
                                     provider.textEditController.clear();
-                                    provider.resendOtpApi(context, phoneNumber);
+                                   continueWithPhoneOrEmail == true? provider.resendOtpApiPhone(context, phoneNumber):provider.resendOtpApiEmail(context, phoneNumber);
                                   },
                                   child: Text("resend_code".tr()).regularText(
                                       context,

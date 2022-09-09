@@ -25,6 +25,7 @@ class ApiConstantsManager{
   static const String UPDATE_MANAGER_PROFILE = "updatemanagerprofile";
   static const String ADD_NEW_CREW_BY_MANAGER = "addingcrew";
   static const String RESEND_OTP = "resend";
+  static const String RESEND_OTP_PHONE= "resendtokenonphone";
 }
 class ApiConstantsCrew{
   static const String BASEURL = "http://3.235.151.126:8081/Crew/";
@@ -45,5 +46,7 @@ class ApiConstantsCrew{
   static const String RESET_PASSWORD_BY_PHONE_NUMBER = "resettbyphone";
   static const String DASHBOARD_API = "dashboard";
   static const String CHECK_IN_CREW = "checkintime";
-  static const String RESEND_OTP = "resend";
+  static const String RESEND_OTP_PHONE= "resendtokenonphone";
+  static const String RESEND_OTP_EMAIL = "resend";
+  static const String CHECK_OUT_API = "checkouttime/";
 }

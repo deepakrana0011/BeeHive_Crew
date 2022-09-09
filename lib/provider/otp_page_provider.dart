@@ -104,10 +104,29 @@ class OtpPageProvider extends BaseProvider{
 
 
 
-  Future resendOtpApi(BuildContext context, String email,) async {
+  Future resendOtpApiPhone(BuildContext context, String phoneNumber) async {
     setState(ViewState.busy);
     try {
-      var model = await apiCrew.resendOtpApi(context,email );
+      var model = await apiCrew.resendOtpByPhoneApi(context,phoneNumber);
+      if (model.success == true) {
+        setState(ViewState.idle);
+        DialogHelper.showMessage(context, model.message!);
+      } else {
+        setState(ViewState.idle);
+        DialogHelper.showMessage(context, model.message!);
+      }
+    } on FetchDataException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, e.toString());
+    } on SocketException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, "internet_connection".tr());
+    }
+  }
+  Future resendOtpApiEmail(BuildContext context, String email) async {
+    setState(ViewState.busy);
+    try {
+      var model = await apiCrew.resendOtpEmailApi(context,email);
       if (model.success == true) {
         setState(ViewState.idle);
         DialogHelper.showMessage(context, model.message!);

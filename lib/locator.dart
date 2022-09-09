@@ -37,6 +37,7 @@ import 'package:beehive/provider/set_rates_page_manager_provider.dart';
 import 'package:beehive/provider/sign_in_provider.dart';
 import 'package:beehive/provider/sign_up_manager_provider.dart';
 import 'package:beehive/provider/sign_up_provider.dart';
+import 'package:beehive/provider/time_sheet_provider_crew.dart';
 import 'package:beehive/provider/timesheet_from_crew_provider.dart';
 import 'package:beehive/provider/timesheet_manager_provider.dart';
 import 'package:beehive/services/api_class.dart';
@@ -46,7 +47,6 @@ import 'package:get_it/get_it.dart';
 
 GetIt locator = GetIt.instance;
 void setUpLocator(){
-
   locator.registerFactory<IntroductionProvider>(() => IntroductionProvider());
   locator.registerFactory<SignInProvider>(() => SignInProvider());
   locator.registerFactory<BottomBarProvider>(() => BottomBarProvider());
@@ -62,6 +62,7 @@ void setUpLocator(){
   locator.registerFactory(() => ProjectsProvider());
   locator.registerFactory(() => CustomClass());
   locator.registerFactory(() => ProjectDetailsPageProvider());
+  locator.registerFactory(() => TimeSheetTabBarProviderCrew());
   locator.registerFactory(() => AddNotePageProvider());
   locator.registerFactory(() => ProjectSettingsProvider());
   locator.registerFactory(() => EditProfileProvider());

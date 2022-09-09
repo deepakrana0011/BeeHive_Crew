@@ -63,7 +63,7 @@ class ProfilePageManager extends StatelessWidget {
                     height: DimensionConstants.d80.h,
                   ),
                 ],
-              ):Padding(
+              ): Padding(
                 padding:  EdgeInsets.only(top: DimensionConstants.d260.h),
                 child: Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,),),
               ),

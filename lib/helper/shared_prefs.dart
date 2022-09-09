@@ -14,6 +14,7 @@ class SharedPreference {
   static const USER_PROFILE = "profile";
   static const USER_LOGO = "logo";
   static const USER_NAME = "name";
+  static const Crew_NAME = "crewName";
 
  static SharedPreferences? prefs;
   static clearSharedPrefs() async {
@@ -22,6 +23,7 @@ class SharedPreference {
     prefs!.remove(ISMANAGER_LOGIN);
     prefs!.remove(IS_LOGIN);
     prefs!.remove(ISCREW_LOGIN);
+    prefs!.remove(Crew_NAME);
   }
   static clearCheckIn(){
     prefs!.remove(IS_CHECK_IN);

@@ -55,8 +55,7 @@ class Profile extends StatelessWidget {
                   ),
                   GestureDetector(
                       onTap: () {
-                        Navigator.pushNamed(
-                            context, RouteConstants.changePasswordPage);
+                        Navigator.pushNamed(context, RouteConstants.changePasswordPage);
                       },
                       child: profileDetailsWidget(context, ImageConstants.lockIcon,
                           "change_password".tr(), true)),

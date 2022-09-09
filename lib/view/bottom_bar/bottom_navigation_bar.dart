@@ -341,7 +341,7 @@ Widget drawer(BuildContext context,BottomBarProvider provider) {
                       onTap: (){
                         Navigator.pop(context);
                         SharedPreference.clearSharedPrefs();
-                        SharedPreference.clearCheckIn();
+                       SharedPreference.prefs!.setInt(SharedPreference.IS_CHECK_IN, 1);
                         Navigator.pushNamed(context, RouteConstants.selectToContinueScreen);
                       },
                       child: drawerHeadingsRow(

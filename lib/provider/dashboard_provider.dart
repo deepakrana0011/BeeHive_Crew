@@ -38,8 +38,13 @@ class DashboardProvider extends BaseProvider{
 
   String assignProjectId ="";
   String? checkInTime;
+  String? checkOutTime;
   getCheckInTime(){
     checkInTime =  DateFormat("yyyy-MM-dd hh:mm:ss").format(DateTime.now());
+    notifyListeners();
+  }
+  getCheckOutTime(){
+    checkOutTime =  DateFormat("yyyy-MM-dd hh:mm:ss").format(DateTime.now());
     notifyListeners();
   }
   int hour =0;
@@ -118,6 +123,26 @@ DashBoardPageResponseCrew? crewResponse;
        SharedPreference.prefs!.setInt(SharedPreference.IS_CHECK_IN , 2);
         convertTime(model.data!.lastCheckIn!);
         twoMinTimer();
+        setState(ViewState.idle);
+        DialogHelper.showMessage(context, model.message!);
+      } else {
+        setState(ViewState.idle);
+        DialogHelper.showMessage(context, model.message!);
+      }
+    } on FetchDataException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, e.toString());
+    } on SocketException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, "internet_connection".tr());
+    }
+  }
+
+  Future checkOutApi(BuildContext context,) async {
+    setState(ViewState.busy);
+    try {
+      var model = await apiCrew.checkOutApiCrew(context,assignProjectId, checkOutTime!);
+      if (model.success == true) {
         setState(ViewState.idle);
         DialogHelper.showMessage(context, model.message!);
       } else {

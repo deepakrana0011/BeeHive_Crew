@@ -18,6 +18,7 @@ import 'package:beehive/model/project_details_response_manager.dart';
 import 'package:beehive/model/project_settings_break_request_manager.dart';
 import 'package:beehive/model/project_settings_response_manager.dart';
 import 'package:beehive/model/resend_otp_response.dart';
+import 'package:beehive/model/resend_top_by_phone_crew_response.dart';
 import 'package:beehive/model/reset_password_by_phone_response.dart';
 import 'package:beehive/model/reset_password_response_crew.dart';
 import 'package:beehive/model/set_crew_rate_Manger_response.dart';
@@ -693,11 +694,26 @@ class ApiManager {
       }
     }
   }
-  Future<ResendOtpResponse> resendOtpApi(BuildContext context, String email) async {
+  Future<ResendOtpResponse> resendOtpApiEmail(BuildContext context, String email) async {
     try {
-      var map = {"email": email, };
+      var map ={"email": email,};
       var response = await dio.post(ApiConstantsManager.BASEURL + ApiConstantsManager.RESEND_OTP, data: map);
       return ResendOtpResponse.fromJson(json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+  Future<ResendOtpByPhoneResponseCrew> resendOtpByPhoneApi(BuildContext context, String phoneNumber, ) async {
+    try {
+      var map ={"phoneNumber": phoneNumber, };
+      var response = await dio.post(ApiConstantsManager.BASEURL + ApiConstantsManager.RESEND_OTP_PHONE, data: map);
+      return ResendOtpByPhoneResponseCrew.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());
@@ -1095,11 +1111,42 @@ class ApiCrew {
       }
     }
   }
-  Future<ResendOtpResponse> resendOtpApi(BuildContext context, String email) async {
+  Future<ResendOtpResponse> resendOtpEmailApi(BuildContext context, String email,) async {
     try {
       var map = {"email": email, };
-      var response = await dio.post(ApiConstantsCrew.BASEURL + ApiConstantsCrew.RESEND_OTP, data: map);
+      var response = await dio.post(ApiConstantsCrew.BASEURL + ApiConstantsCrew.RESEND_OTP_EMAIL, data: map);
       return ResendOtpResponse.fromJson(json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+  Future<ResendOtpByPhoneResponseCrew> resendOtpByPhoneApi(BuildContext context, String phoneNumber, ) async {
+    try {
+      var map ={"phoneNumber": phoneNumber, };
+      var response = await dio.post(ApiConstantsCrew.BASEURL + ApiConstantsCrew.RESEND_OTP_PHONE, data: map);
+      return ResendOtpByPhoneResponseCrew.fromJson(json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+  Future<CheckInResponseCrew> checkOutApiCrew(BuildContext context, String assignProjectId, String checkOutTime) async {
+    try {
+      var map = {"checkOutTime": checkOutTime, };
+      dio.options.headers["Authorization"] = SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var response = await dio.post(ApiConstantsCrew.BASEURL + ApiConstantsCrew.CHECK_OUT_API+assignProjectId, data: map);
+      return CheckInResponseCrew.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());

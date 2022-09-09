@@ -85,7 +85,7 @@ class ProjectSettingsPageManager extends StatelessWidget {
                       color2: ColorConstants.primaryGradient1Color,
                       fontSize: DimensionConstants.d16.sp,
                       shadowRequired: true, onBtnTap: () {
-                        provider.projectSettingsApi(context, projectId);
+                       provider.projectSettingsApi(context, projectId);
                     // Navigator.pushNamed(
                     //     context, RouteConstants.projectDetailsPageManager,
                     //     arguments: ProjectDetailsPageManager(
@@ -549,7 +549,7 @@ Widget hoursDropDownFrom(BuildContext context, double height, double width,
           items:  provider.fromTimeListPM.map((vehicleName) {
             return DropdownMenuItem(
                 onTap: () {
-                  provider.endingHours = vehicleName;
+                 provider.endTimeConversion(vehicleName);
                 },
                 value: vehicleName,
                 child: Padding(
@@ -600,7 +600,7 @@ Widget hoursDropDownTo(BuildContext context, double height, double width,
           items: provider.fromTimeListAM.map((vehicleName) {
             return DropdownMenuItem(
                 onTap: () {
-                provider.startingHour = vehicleName;
+               provider.startTimeConversion(vehicleName);
                 },
                 value: vehicleName,
                 child: Padding(

@@ -40,17 +40,16 @@ class _DashBoardPageState extends State<DashBoardPage>
         onModelReady: (provider) {
           this.provider = provider;
           provider.dashBoardApi(context);
-          SharedPreference.prefs!.setInt(SharedPreference.IS_CHECK_IN, 1);
     }, builder: (context, provider, _) {
       return Scaffold(
           key: _scaffoldKey,
           body: provider.state == ViewState.idle? Column(
             children: [
-              provider.crewResponse!.myProject!.isEmpty? noProjectNotCheckedInContainer(context, "you_have_no_projects".tr(),false): SharedPreference.prefs!.getInt(SharedPreference.IS_CHECK_IN) == 2 ? projectsCheckOutContainer(SharedPreference.prefs!.getString(SharedPreference.CHECKED_PROJECT)!,provider): noProjectNotCheckedInContainer(context, "you_are_not_checked_in".tr(),true, onTap: () {checkInAlert(context,provider);}),
-              provider.crewResponse!.myProject!.isEmpty? whenDoNotHaveProject()  : CustomTabBar(notCheckedIn: provider.notCheckedIn, navigationValue: SharedPreference.prefs!.getInt(SharedPreference.IS_CHECK_IN)!,),
+              provider.crewResponse!.myProject! == null? noProjectNotCheckedInContainer(context, "you_have_no_projects".tr(),false): SharedPreference.prefs!.getInt(SharedPreference.IS_CHECK_IN) == 2 ? projectsCheckOutContainer(SharedPreference.prefs!.getString(SharedPreference.CHECKED_PROJECT)!,provider): noProjectNotCheckedInContainer(context, "you_are_not_checked_in".tr(),true, onTap: () {checkInAlert(context,provider);}),
+              provider.crewResponse!.myProject! == null? whenDoNotHaveProject()  : CustomTabBar(notCheckedIn: provider.notCheckedIn, navigationValue: SharedPreference.prefs!.getInt(SharedPreference.IS_CHECK_IN)!,),
               SizedBox(height: DimensionConstants.d20.h),
             ],
-          ):Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,),));
+          ):const Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,),));
 
     });
   }
@@ -268,7 +267,7 @@ class _DashBoardPageState extends State<DashBoardPage>
               children: [
                 GestureDetector(
                     onTap: () {
-                      stillCheckedInAlert();
+                     // stillCheckedInAlert(SharedPreference.prefs!.getString(SharedPreference.Crew_NAME)!,provider.minuteCount,location);
                     },
                     child: lastCheckInTotalHoursColumn(
                         "12:50", "PM", "last_check_in".tr())),
@@ -309,7 +308,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                 "check_out".tr(),
                 ColorConstants.colorLightGreen,
                 onBtnTap: () {
-                  stillCheckedInAlert();
+                  stillCheckedInAlert(SharedPreference.prefs!.getString(SharedPreference.Crew_NAME)!,provider.minuteCount,provider.timerHour,location);
                   provider.isCheckedIn = false;
                   provider.updateLoadingStatus(true);
                 },
@@ -521,7 +520,7 @@ class _DashBoardPageState extends State<DashBoardPage>
       },
     );
   }
-  stillCheckedInAlert() {
+  stillCheckedInAlert(String nameOfUser,int hour, int mint, String projectName) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -545,7 +544,9 @@ class _DashBoardPageState extends State<DashBoardPage>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text("are_you_still_checked_in".tr()).boldText(
+                      Text("Hey "+nameOfUser).boldText(
+                          context, DimensionConstants.d18.sp, TextAlign.center),
+                      const Text("are you still checked-in?").boldText(
                           context, DimensionConstants.d18.sp, TextAlign.center),
                       SizedBox(height: DimensionConstants.d24.h),
                       Row(
@@ -553,7 +554,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                         children: [
                           const ImageView(path: ImageConstants.checkedInIcon),
                           SizedBox(width: DimensionConstants.d8.w),
-                          Text("${"checked_in".tr()} 3h 31m").semiBoldText(
+                          Text("${"checked_in".tr()} ${mint}h ${hour}m").semiBoldText(
                               context,
                               DimensionConstants.d14.sp,
                               TextAlign.left),
@@ -565,13 +566,13 @@ class _DashBoardPageState extends State<DashBoardPage>
                         children: [
                           const ImageView(path: ImageConstants.locationIcon),
                           SizedBox(width: DimensionConstants.d8.w),
-                          Text("Momentum Smart House Project").semiBoldText(
+                          Text(projectName).semiBoldText(
                               context,
                               DimensionConstants.d14.sp,
                               TextAlign.left),
                         ],
                       ),
-                      SizedBox(height: DimensionConstants.d44.h),
+                      SizedBox(height: DimensionConstants.d39.h),
                       Padding(
                         padding: EdgeInsets.symmetric(
                             horizontal: DimensionConstants.d4.w),
@@ -584,7 +585,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                                     context, "no_check_out".tr(), height: 50,
                                     onBtnTap: () {
                                   Navigator.of(context).pop();
-                                  whenDidYouCheckOutAlert();
+                                  whenDidYouCheckOutAlert(projectName);
                                 })),
                             SizedBox(width: DimensionConstants.d9.w),
                             SizedBox(
@@ -605,7 +606,7 @@ class _DashBoardPageState extends State<DashBoardPage>
               }));
         });
   }
-  whenDidYouCheckOutAlert() {
+  whenDidYouCheckOutAlert( String projectName) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -673,7 +674,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                         children: [
                           const ImageView(path: ImageConstants.locationIcon),
                           SizedBox(width: DimensionConstants.d8.w),
-                          Text("Momentum Smart House Project").semiBoldText(
+                          Text(projectName).semiBoldText(
                               context,
                               DimensionConstants.d14.sp,
                               TextAlign.left),
@@ -682,6 +683,8 @@ class _DashBoardPageState extends State<DashBoardPage>
                       SizedBox(height: DimensionConstants.d22.h),
                       CommonWidgets.commonButton(context, "check_out".tr(),
                           height: 50, onBtnTap: () {
+                        provider.getCheckOutTime();
+                        provider.checkOutApi(context);
                         Navigator.of(context).pop();
                         provider.hasCheckInCheckOut = true;
                         provider.updateLoadingStatus(true);

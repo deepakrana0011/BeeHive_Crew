@@ -66,10 +66,8 @@ class ProfilePageManagerProvider extends BaseProvider {
 
 
   setEditProfilePageController() {
-    profileImage =
-        ApiConstantsCrew.BASE_URL_IMAGE + profileResponse!.data!.profileImage!;
-    companyIcon =
-        ApiConstantsCrew.BASE_URL_IMAGE + profileResponse!.data!.companyLogo!;
+    profileImage = ApiConstantsCrew.BASE_URL_IMAGE + profileResponse!.data!.profileImage!;
+    companyIcon = ApiConstantsCrew.BASE_URL_IMAGE + profileResponse!.data!.companyLogo!;
     nameController.text = profileResponse!.data!.name!;
     titleController.text = profileResponse!.data!.title!;
     companyController.text = profileResponse!.data!.company!;
