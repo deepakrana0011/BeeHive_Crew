@@ -57,9 +57,6 @@ class AddCrewPageManagerProvider extends BaseProvider{
       DialogHelper.showMessage(context, "internet_connection".tr());
     }
   }
-
-
-
   Future assignCrewToProject(BuildContext context, String projectId) async {
     setState(ViewState.busy);
     try {

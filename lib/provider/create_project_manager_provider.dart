@@ -118,9 +118,7 @@ class CreateProjectManagerProvider extends BaseProvider {
     notifyListeners();
   }
 
-  Future createProjectManager(
-    BuildContext context,
-  ) async {
+  Future createProjectManager(BuildContext context,) async {
     setState(ViewState.busy);
     try {
       var model = await api.createProjectManager(
@@ -134,7 +132,7 @@ class CreateProjectManagerProvider extends BaseProvider {
       if (model.success == true) {
         setState(ViewState.idle);
         Navigator.pushNamed(context, RouteConstants.addCrewPageManager,
-            arguments: AddCrewPageManager(projectId: model.data!.sId!));
+            arguments: AddCrewPageManager(projectId: model.data!.sId!, id: model.data!.sId!,));
         DialogHelper.showMessage(context, model.message!);
       } else {
         setState(ViewState.idle);

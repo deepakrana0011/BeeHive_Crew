@@ -40,19 +40,13 @@ class ProjectSettingsPageManager extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   SizedBox(
-                    height: fromProjectOrCreateProject == true
-                        ? DimensionConstants.d16.h
-                        : DimensionConstants.d5.h,
+                    height: fromProjectOrCreateProject == true ? DimensionConstants.d16.h : DimensionConstants.d5.h,
                   ),
-                  fromProjectOrCreateProject == true
-                      ? workDaysWidget(context, provider)
-                      : notificationSwitcher(context, provider),
+                  fromProjectOrCreateProject == true ? workDaysWidget(context, provider) : notificationSwitcher(context, provider),
                   SizedBox(
                     height: DimensionConstants.d22.h,
                   ),
-                  fromProjectOrCreateProject == true
-                      ? hoursWidget(context, provider)
-                      : managerSetting(context),
+                  fromProjectOrCreateProject == true ? hoursWidget(context, provider) : managerSetting(context),
                   SizedBox(
                     height: DimensionConstants.d22.h,
                   ),
@@ -65,9 +59,7 @@ class ProjectSettingsPageManager extends StatelessWidget {
                     height: DimensionConstants.d8.h,
                   ),
                   addBreakButton(context, onBreakButtonTapped: () {
-                    provider.breakWidget.length == 2
-                        ? ""
-                        : provider.addIndexToList();
+                    provider.breakWidget.length == 2 ? "" : provider.addIndexToList();
                   }),
                   SizedBox(
                     height: DimensionConstants.d26.h,
@@ -270,8 +262,7 @@ Widget afterHourRateWidget(BuildContext context,
   );
 }
 
-Widget breakWidget(
-    BuildContext context, ProjectSettingsManagerProvider provider) {
+Widget breakWidget(BuildContext context, ProjectSettingsManagerProvider provider) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
@@ -447,7 +438,8 @@ Widget hoursContainerBreakTimeTo(BuildContext context, double height,
           items: provider.fromTimeListBreakTime.map((vehicleName) {
             return DropdownMenuItem(
                 onTap: () {
-                 provider.breakWidgetBreakTime = vehicleName;
+                  provider.breakTimeConvertFrom(vehicleName);
+                 //provider.breakWidgetBreakTime = vehicleName;
                 },
                 value: vehicleName,
                 child: Padding(
@@ -464,8 +456,7 @@ Widget hoursContainerBreakTimeTo(BuildContext context, double height,
   );
 }
 
-Widget hoursContainerBreakTimeOnTime(BuildContext context, double height,
-    double width, ProjectSettingsManagerProvider provider, int index) {
+Widget hoursContainerBreakTimeOnTime(BuildContext context, double height, double width, ProjectSettingsManagerProvider provider, int index) {
   return Container(
     height: height,
     width: width,
@@ -498,7 +489,7 @@ Widget hoursContainerBreakTimeOnTime(BuildContext context, double height,
           items: provider.fromTimeListAMOnTime.map((vehicleName) {
             return DropdownMenuItem(
                 onTap: () {
-                 provider.breakWidgetBreakTimeToTime = vehicleName;
+                 provider.breakTimeConvertTo(vehicleName);
                 },
                 value: vehicleName,
                 child: Padding(
@@ -515,8 +506,7 @@ Widget hoursContainerBreakTimeOnTime(BuildContext context, double height,
   );
 }
 
-Widget hoursDropDownFrom(BuildContext context, double height, double width,
-    String filedName, ProjectSettingsManagerProvider provider) {
+Widget hoursDropDownFrom(BuildContext context, double height, double width, String filedName, ProjectSettingsManagerProvider provider) {
   return Container(
     height: height,
     width: width,
@@ -566,8 +556,7 @@ Widget hoursDropDownFrom(BuildContext context, double height, double width,
   );
 }
 
-Widget hoursDropDownTo(BuildContext context, double height, double width,
-    String filedName, ProjectSettingsManagerProvider provider) {
+Widget hoursDropDownTo(BuildContext context, double height, double width, String filedName, ProjectSettingsManagerProvider provider) {
   return Container(
     height: height,
     width: width,
@@ -617,8 +606,7 @@ Widget hoursDropDownTo(BuildContext context, double height, double width,
   );
 }
 
-Widget hoursWidget(
-    BuildContext context, ProjectSettingsManagerProvider provider) {
+Widget hoursWidget(BuildContext context, ProjectSettingsManagerProvider provider) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
@@ -645,8 +633,7 @@ Widget hoursWidget(
   );
 }
 
-Widget addBreakButton(BuildContext context,
-    {required VoidCallback onBreakButtonTapped}) {
+Widget addBreakButton(BuildContext context, {required VoidCallback onBreakButtonTapped}) {
   return GestureDetector(
     onTap: onBreakButtonTapped,
     child: Container(
@@ -736,8 +723,7 @@ Widget roundTimeSheetList(BuildContext context,ProjectSettingsManagerProvider pr
   );
 }
 
-Widget notificationSwitcher(
-    BuildContext context, ProjectSettingsManagerProvider provider) {
+Widget notificationSwitcher(BuildContext context, ProjectSettingsManagerProvider provider) {
   return Container(
     height: DimensionConstants.d80.h,
     decoration: BoxDecoration(

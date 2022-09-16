@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:beehive/constants/api_constants.dart';
 import 'package:beehive/constants/image_constants.dart';
+import 'package:beehive/helper/shared_prefs.dart';
 import 'package:beehive/provider/base_provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -71,6 +72,8 @@ class EditProfileProvider extends BaseProvider {
     try {
       var model = await apiCrew.getCrewProfile(context);
       if (model.success == true) {
+        SharedPreference.prefs!.setString(SharedPreference.USER_PROFILE, model.data!.profileImage!);
+        SharedPreference.prefs!.setString(SharedPreference.USER_NAME, model.data!.name!);
         getObj = model;
         setState(ViewState.idle);
       } else {

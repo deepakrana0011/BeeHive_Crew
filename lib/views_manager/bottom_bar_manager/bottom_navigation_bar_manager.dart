@@ -73,7 +73,8 @@ class _BottomBarManagerState extends State<BottomBarManager> {
                   ? ClipRRect(
                 borderRadius: BorderRadius.circular(DimensionConstants.d24.r),
                     child: ImageView(
-                        path: SharedPreference.prefs!.getString(SharedPreference.USER_LOGO) == null? menuName.elementAt(provider.selectedIndex,):ApiConstantsCrew.BASE_URL_IMAGE+SharedPreference.prefs!.getString(SharedPreference.USER_LOGO)!,
+                        path: SharedPreference.prefs!.getString(SharedPreference.USER_LOGO) == null? menuName.elementAt(provider.selectedIndex,):
+                        ApiConstantsCrew.BASE_URL_IMAGE+SharedPreference.prefs!.getString(SharedPreference.USER_LOGO)!,
                         height: DimensionConstants.d48.h,
                         width: DimensionConstants.d48.w,
                         fit: BoxFit.cover,

@@ -19,7 +19,8 @@ import '../../helper/decoration.dart';
 
 class AddCrewPageManager extends StatelessWidget {
    String projectId;
-   AddCrewPageManager({Key? key,required this.projectId}) : super(key: key);
+   String id;
+   AddCrewPageManager({Key? key,required this.projectId,required this.id}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -201,7 +202,8 @@ Widget crewWidget(BuildContext context, AddCrewPageManagerProvider provider,){
               children:<Widget> [
                  ClipRRect(
                    borderRadius: BorderRadius.circular(DimensionConstants.d30.r),
-                   child: ImageView(path: "${ApiConstantsCrew.BASE_URL_IMAGE}""${provider.crewList[index].profileImage}",height: DimensionConstants.d60.h,
+                   child:
+          ImageView(path:provider.crewList[index].profileImage!=null ? "${ApiConstantsCrew.BASE_URL_IMAGE}""${provider.crewList[index].profileImage}":ImageConstants.emptyImageIcon,height: DimensionConstants.d60.h,
                    width: DimensionConstants.d60.w,
                    radius: DimensionConstants.d30.r,
                    fit: BoxFit.cover,

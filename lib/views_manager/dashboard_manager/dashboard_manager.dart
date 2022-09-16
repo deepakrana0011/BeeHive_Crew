@@ -46,7 +46,6 @@ class _DashBoardPageManagerState extends State<DashBoardPageManager> with Ticker
                 tabBarView(provider.controller!, context, provider)
               ],
             )
-
           ):Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,));
         });
   }
@@ -204,54 +203,61 @@ Widget projectsAndHoursCardListManager(BuildContext context,DashBoardPageManager
         side: const BorderSide(color: ColorConstants.grayF1F1F1, width: 1.0),
         borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
       ),
-      child: Column(
-        children: [
-          Container(
-            color: (Theme.of(context).brightness == Brightness.dark
-                ? ColorConstants.colorBlack
-                : ColorConstants.colorWhite),
-            height: DimensionConstants.d70.h,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                projectsHoursRow(context,ImageConstants.mapIcon, "${provider.responseManager!.activeProject} ${"projects".tr()}"),
-                Container(
-                  height: DimensionConstants.d70.h,
-                  width: DimensionConstants.d1.w,
-                  color: ColorConstants.colorLightGrey,
-                ),
-                projectsHoursRow(context,ImageConstants.clockIcon, "07.28 ${"hours".tr()}")
-              ],
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            Container(
+              color: (Theme.of(context).brightness == Brightness.dark
+                  ? ColorConstants.colorBlack
+                  : ColorConstants.colorWhite),
+              height: DimensionConstants.d70.h,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  projectsHoursRow(context,ImageConstants.mapIcon, "${provider.responseManager!.activeProject} ${"projects".tr()}"),
+                  Container(
+                    height: DimensionConstants.d70.h,
+                    width: DimensionConstants.d1.w,
+                    color: ColorConstants.colorLightGrey,
+                  ),
+                  projectsHoursRow(context,ImageConstants.clockIcon, "07.28 ${"hours".tr()}")
+                ],
+              ),
             ),
-          ),
-          const Divider(
-              color: ColorConstants.colorGreyDrawer,
-              height: 0.0,
-              thickness: 1.5),
+            const Divider(
+                color: ColorConstants.colorGreyDrawer,
+                height: 0.0,
+                thickness: 1.5),
+            projectHourRowManager(context,provider,onTap: (){}),
+
+           
+           /* const Divider(
+                color: ColorConstants.colorGreyDrawer,
+                height: 0.0,
+                thickness: 1.5),
+            projectHourRowManager(context,ColorConstants.primaryGradient1Color, "MS", "Momentum Digital", "1 Crew", "12:57h", ),
+            const Divider(
+                color: ColorConstants.colorGreyDrawer,
+                height: 0.0,
+                thickness: 1.5),
+            projectHourRowManager(context, ColorConstants.deepBlue, "MS", "Momentum Digital", "4 Crew", "12:57h", ),
+            const Divider(
+                color: ColorConstants.colorGreyDrawer,
+                height: 0.0,
+                thickness: 1.5),
+            projectHourRowManager(context, ColorConstants.deepBlue, "MS", "Momentum Digital", "2 Crew", "12:57h", ),*/
 
 
-          projectHourRowManager(context,provider,onTap: (){}),
-         /* const Divider(
-              color: ColorConstants.colorGreyDrawer,
-              height: 0.0,
-              thickness: 1.5),
-          projectHourRowManager(context,ColorConstants.primaryGradient1Color, "MS", "Momentum Digital", "1 Crew", "12:57h", ),
-          const Divider(
-              color: ColorConstants.colorGreyDrawer,
-              height: 0.0,
-              thickness: 1.5),
-          projectHourRowManager(context, ColorConstants.deepBlue, "MS", "Momentum Digital", "4 Crew", "12:57h", ),
-          const Divider(
-              color: ColorConstants.colorGreyDrawer,
-              height: 0.0,
-              thickness: 1.5),
-          projectHourRowManager(context, ColorConstants.deepBlue, "MS", "Momentum Digital", "2 Crew", "12:57h", ),*/
 
-        ],
+          ],
+        ),
       ),
     ),
   );
 }
+
+
+
 /*Widget weeklyTabBarContainerManager(BuildContext context) {
   return SingleChildScrollView(
     child: Column(

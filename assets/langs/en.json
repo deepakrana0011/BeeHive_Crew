@@ -20,7 +20,7 @@
   "invalid_email": "Invalid Email",
   "password_required": "Password is required",
   "invalid_password_format": "Password should have minimum 8 chars with uppercase,lowercase,number & special chars",
-  "welcome" : "Welcome",
+  "welcome" : " Welcome",
   "schedule" : "Schedule",
   "archived_projects" : "Archived Projects",
   "app_settings" : "App Settings",

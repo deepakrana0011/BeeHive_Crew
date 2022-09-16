@@ -10,6 +10,7 @@ class SharedPreference {
   static const ISCREW_LOGIN = "isCrewLogin";
   static const IS_LOGIN = "isLogin";
   static const IS_CHECK_IN = "1";
+  static const IS_CHECK_DB = "1";
   static const CHECKED_PROJECT = "something";
   static const USER_PROFILE = "profile";
   static const USER_LOGO = "logo";
@@ -24,9 +25,12 @@ class SharedPreference {
     prefs!.remove(IS_LOGIN);
     prefs!.remove(ISCREW_LOGIN);
     prefs!.remove(Crew_NAME);
+    prefs!.remove(USER_PROFILE);
+    prefs!.remove(USER_NAME);
   }
   static clearCheckIn(){
     prefs!.remove(IS_CHECK_IN);
+    prefs!.remove(IS_CHECK_DB);
     prefs!.remove(CHECKED_PROJECT);
   }
 

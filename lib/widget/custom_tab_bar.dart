@@ -7,6 +7,7 @@ import 'package:beehive/locator.dart';
 import 'package:beehive/provider/base_provider.dart';
 import 'package:beehive/provider/dashboard_provider.dart';
 import 'package:beehive/view/base_view.dart';
+import 'package:beehive/widget/get_time.dart';
 import 'package:beehive/widget/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -127,7 +128,9 @@ class _CustomTabBarState extends State<CustomTabBar> with TickerProviderStateMix
                 physics: NeverScrollableScrollPhysics(),
                 children: [
                   //  provider.hasProjects ? projectsAndHoursCardList() : zeroProjectZeroHourCard(),
-                 widget.notCheckedIn == false? projectsAndHoursCardList(provider):widget.navigationValue ==2?projectsAndHoursCardList(provider): zeroProjectZeroHourCard(),
+                 widget.notCheckedIn == false? projectsAndHoursCardList(provider):
+                 widget.navigationValue ==2 ? projectsAndHoursCardList(provider):
+                 zeroProjectZeroHourCard(),
                   weeklyTabBarContainer(provider),
                   Icon(Icons.directions_car, size: 350),
                 ],
@@ -224,7 +227,56 @@ class _CustomTabBarState extends State<CustomTabBar> with TickerProviderStateMix
           side: const BorderSide(color: ColorConstants.colorWhite, width: 1.0),
           borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
         ),
-        child: Column(
+        child: ListView.separated(
+          itemCount: provider.crewResponse!.today!.length,
+          itemBuilder: (BuildContext context, int index){
+            return GestureDetector(
+            //  onTap: onTap,
+              child: Container(
+                color: Colors.transparent,
+                child: Padding(
+                  padding: EdgeInsets.symmetric(
+                      vertical: DimensionConstants.d11.h,
+                      horizontal: DimensionConstants.d16.w),
+                  child: Row(
+                    children: [
+                      Container(
+                        alignment: Alignment.center,
+                        padding: const EdgeInsets.all(DimensionConstants.d5),
+                        height: DimensionConstants.d40.h,
+                        width: DimensionConstants.d40.w,
+                        decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: ColorConstants.blueGradient2Color,
+                        ),
+                        child: Text(provider.projectNameInitials[index].toString()).boldText(context, DimensionConstants.d16.sp, TextAlign.center, color: ColorConstants.colorWhite),
+                      ),
+                      SizedBox(width: DimensionConstants.d14.w),
+                      Container(width: DimensionConstants.d110.w,
+                        child:  Text(provider.crewResponse!.today![index].hoursDiff!).boldText(context, DimensionConstants.d13.sp, TextAlign.center),),
+                      SizedBox(width: DimensionConstants.d20.w,),
+                      Text(provider.crewResponse!.today![index].hoursDiff!).regularText(context, DimensionConstants.d13.sp, TextAlign.center),
+                      SizedBox(width: DimensionConstants.d15.w),
+                      Text(provider.crewResponse!.today![index].hoursDiff!).semiBoldText(context, DimensionConstants.d13.sp, TextAlign.center),
+                      SizedBox(width: DimensionConstants.d11.w),
+                      ImageView(path: ImageConstants.forwardArrowIcon, color: (Theme.of(context).brightness == Brightness.dark ? ColorConstants.colorWhite : ColorConstants.colorBlack))
+                    ],
+                  ),
+                ),
+              ),
+            );
+
+
+          }, separatorBuilder: (BuildContext context, int index) { return const Divider(
+            color: ColorConstants.colorGreyDrawer,
+            height: 0.0,
+            thickness: 1.5); },
+
+        ),
+
+
+
+        /*Column(
           children: [
             Container(
               color: (Theme.of(context).brightness == Brightness.dark
@@ -235,7 +287,7 @@ class _CustomTabBarState extends State<CustomTabBar> with TickerProviderStateMix
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   projectsHoursRow(
-                      ImageConstants.mapIcon, "${provider.crewResponse!.totalProjects} ${"projects".tr()}"),
+                      ImageConstants.mapIcon, "${provider.crewResponse!.activeProjects} ${"projects".tr()}"),
                   Container(
                     height: DimensionConstants.d70.h,
                     width: DimensionConstants.d1.w,
@@ -268,7 +320,7 @@ class _CustomTabBarState extends State<CustomTabBar> with TickerProviderStateMix
                 height: 0.0,
                 thickness: 1.5),
           ],
-        ),
+        ),*/
       ),
     );
   }
@@ -301,11 +353,17 @@ class _CustomTabBarState extends State<CustomTabBar> with TickerProviderStateMix
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        backNextBtn(ImageConstants.backIconIos),
-                        Text("Apr 13 - Apr 19").boldText(context,
+                        backNextBtn(ImageConstants.backIconIos,(){
+                        provider.previousWeekDates();
+                        provider.weeklyDataApi(context);
+                        }),
+                        Text("${GetTime.getDayMonth(provider.initialDay2)} -${GetTime.getDayMonth(provider.initialDay1)}").boldText(context,
                             DimensionConstants.d16.sp, TextAlign.center,
                             color: ColorConstants.colorWhite),
-                        backNextBtn(ImageConstants.nextIconIos)
+                        backNextBtn(ImageConstants.nextIconIos,(){
+                          provider.nextWeekDates();
+                          provider.weeklyDataApi(context);
+                        })
                       ],
                     ),
                   ),
@@ -339,7 +397,7 @@ class _CustomTabBarState extends State<CustomTabBar> with TickerProviderStateMix
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               projectsHoursRow(ImageConstants.mapIcon,
-                                  "${provider.crewResponse!.totalProjects} ${"projects".tr()}"),
+                                  "${provider.crewResponse!.activeProjects} ${"projects".tr()}"),
                               Container(
                                 height: DimensionConstants.d70.h,
                                 width: DimensionConstants.d1.w,
@@ -475,17 +533,20 @@ class _CustomTabBarState extends State<CustomTabBar> with TickerProviderStateMix
       ),
     );
   }
-  Widget backNextBtn(String path) {
-    return Container(
-      alignment: Alignment.center,
-      width: DimensionConstants.d25.w,
-      height: DimensionConstants.d26.h,
-      decoration: const BoxDecoration(
-        color: ColorConstants.colorWhite30,
-        shape: BoxShape.circle,
-      ),
-      child: ImageView(
-        path: path,
+  Widget backNextBtn(String path,onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        alignment: Alignment.center,
+        width: DimensionConstants.d25.w,
+        height: DimensionConstants.d26.h,
+        decoration: const BoxDecoration(
+          color: ColorConstants.colorWhite30,
+          shape: BoxShape.circle,
+        ),
+        child: ImageView(
+          path: path,
+        ),
       ),
     );
   }

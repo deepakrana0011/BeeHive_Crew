@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 
 import '../enum/enum.dart';
 import '../helper/dialog_helper.dart';
+import '../helper/shared_prefs.dart';
 import '../services/fetch_data_expection.dart';
 
 class ProfilePageProvider extends BaseProvider{
@@ -18,6 +19,8 @@ class ProfilePageProvider extends BaseProvider{
     try {
       var model = await apiCrew.getCrewProfile(context);
       if (model.success == true) {
+        SharedPreference.prefs!.setString(SharedPreference.USER_PROFILE, model.data!.profileImage??'');
+        SharedPreference.prefs!.setString(SharedPreference.USER_NAME, model.data!.name!);
         getObj = model;
         setState(ViewState.idle);
       } else {

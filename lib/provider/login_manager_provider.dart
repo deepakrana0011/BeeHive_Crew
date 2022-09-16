@@ -23,6 +23,7 @@ class LoginManagerProvider extends BaseProvider{
         setState(ViewState.idle);
         SharedPreference.prefs!.setString(SharedPreference.TOKEN, model.token!);
         SharedPreference.prefs!.setString(SharedPreference.USER_ID, model.data!.sId!);
+
         if(model.data!.status == 0){
           SharedPreference.prefs!.setBool(SharedPreference.IS_LOGIN , true);
           SharedPreference.prefs!.setBool(SharedPreference.ISMANAGER_LOGIN , true);

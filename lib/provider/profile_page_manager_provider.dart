@@ -107,17 +107,15 @@ class ProfilePageManagerProvider extends BaseProvider {
 
   ///Get profile manager api
   GetManagerProfileResponse? profileResponse;
-  Future getManagerProfile(
-    BuildContext context,
-  ) async {
+  Future getManagerProfile(BuildContext context,) async {
     setState(ViewState.busy);
     try {
       var model = await api.getManagerProfile(context);
       if (model.success == true) {
         profileResponse = model;
-        SharedPreference.prefs!.setString(SharedPreference.USER_LOGO, model.data!.companyLogo!);
-        SharedPreference.prefs!.setString(SharedPreference.USER_NAME, model.data!.name!);
-        SharedPreference.prefs!.setString(SharedPreference.USER_PROFILE, model.data!.profileImage!);
+        SharedPreference.prefs!.setString(SharedPreference.USER_LOGO, model.data!.companyLogo == null? "" : model.data!.companyLogo!);
+        SharedPreference.prefs!.setString(SharedPreference.USER_NAME, model.data!.name == null? "" :model.data!.name! );
+        SharedPreference.prefs!.setString(SharedPreference.USER_PROFILE, model.data!.profileImage== null? "" :model.data!.profileImage!);
         setState(ViewState.idle);
       } else {
         setState(ViewState.idle);

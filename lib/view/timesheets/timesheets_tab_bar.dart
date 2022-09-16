@@ -21,33 +21,32 @@ class TimeSheetsTabBar extends StatefulWidget {
   State<TimeSheetsTabBar> createState() => _TimeSheetsTabBarState();
 }
 
-class _TimeSheetsTabBarState extends State<TimeSheetsTabBar>with TickerProviderStateMixin {
+class _TimeSheetsTabBarState extends State<TimeSheetsTabBar>
+    with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     return BaseView<TimeSheetTabBarProviderCrew>(
-      onModelReady: (provider){
+      onModelReady: (provider) {
         provider.controller = TabController(length: 3, vsync: this);
-
+        provider.getWidget();
       },
-      builder: (context,provider,_){
+      builder: (context, provider, _) {
         return Scaffold(
           body: Column(
             children: [
               SizedBox(height: DimensionConstants.d24.h),
               CommonWidgets.totalProjectsTotalHoursRow(context, "4", "564"),
-           tabBarView(provider.controller!, context, provider)
+              tabBarView(provider.controller!, context, provider)
             ],
           ),
         );
-
-
       },
-
     );
   }
 }
 
-Widget tabBarView(TabController controller,BuildContext context, TimeSheetTabBarProviderCrew provider) {
+Widget tabBarView(TabController controller, BuildContext context,
+    TimeSheetTabBarProviderCrew provider) {
   return Expanded(
     child: Padding(
       padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
@@ -89,33 +88,33 @@ Widget tabBarView(TabController controller,BuildContext context, TimeSheetTabBar
                   height: DimensionConstants.d50.h,
                   width: DimensionConstants.d114.w,
                   child: controller.index == 0
-                      ? Text("today".tr()).boldText(context,
-                      DimensionConstants.d16.sp, TextAlign.center,
-                      color: ColorConstants.colorWhite)
-                      : Text("today".tr()).regularText(context,
-                      DimensionConstants.d16.sp, TextAlign.center),
+                      ? Text("today".tr()).boldText(
+                          context, DimensionConstants.d16.sp, TextAlign.center,
+                          color: ColorConstants.colorWhite)
+                      : Text("today".tr()).regularText(
+                          context, DimensionConstants.d16.sp, TextAlign.center),
                 ),
                 Container(
                   alignment: Alignment.center,
                   height: DimensionConstants.d50.h,
                   width: DimensionConstants.d114.w,
                   child: controller.index == 1
-                      ? Text("weekly".tr()).boldText(context,
-                      DimensionConstants.d16.sp, TextAlign.center,
-                      color: ColorConstants.colorWhite)
-                      : Text("weekly".tr()).regularText(context,
-                      DimensionConstants.d16.sp, TextAlign.center),
+                      ? Text("weekly".tr()).boldText(
+                          context, DimensionConstants.d16.sp, TextAlign.center,
+                          color: ColorConstants.colorWhite)
+                      : Text("weekly".tr()).regularText(
+                          context, DimensionConstants.d16.sp, TextAlign.center),
                 ),
                 Container(
                   alignment: Alignment.center,
                   height: DimensionConstants.d50.h,
                   width: DimensionConstants.d114.w,
                   child: controller.index == 2
-                      ? Text("bi_weekly".tr()).boldText(context,
-                      DimensionConstants.d16.sp, TextAlign.center,
-                      color: ColorConstants.colorWhite)
-                      : Text("bi_weekly".tr()).regularText(context,
-                      DimensionConstants.d16.sp, TextAlign.center),
+                      ? Text("bi_weekly".tr()).boldText(
+                          context, DimensionConstants.d16.sp, TextAlign.center,
+                          color: ColorConstants.colorWhite)
+                      : Text("bi_weekly".tr()).regularText(
+                          context, DimensionConstants.d16.sp, TextAlign.center),
                 ),
               ],
             ),
@@ -126,8 +125,8 @@ Widget tabBarView(TabController controller,BuildContext context, TimeSheetTabBar
               physics: NeverScrollableScrollPhysics(),
               children: [
                 //  provider.hasProjects ? projectsAndHoursCardList() : zeroProjectZeroHourCard(),
-                projectsAndHoursCardList(context,provider),
-                weeklyTabBarContainer(context,provider),
+                projectsAndHoursCardList(context, provider),
+                weeklyTabBarContainer(context, provider),
                 Icon(Icons.directions_car, size: 350),
               ],
             ),
@@ -137,7 +136,9 @@ Widget tabBarView(TabController controller,BuildContext context, TimeSheetTabBar
     ),
   );
 }
-Widget projectsAndHoursCardList(BuildContext context,TimeSheetTabBarProviderCrew provider) {
+
+Widget projectsAndHoursCardList(
+    BuildContext context, TimeSheetTabBarProviderCrew provider) {
   return Padding(
     padding: EdgeInsets.only(top: DimensionConstants.d16.h),
     child: Card(
@@ -159,13 +160,15 @@ Widget projectsAndHoursCardList(BuildContext context,TimeSheetTabBarProviderCrew
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                projectsHoursRow(context,ImageConstants.mapIcon, "4 ${"projects".tr()}"),
+                projectsHoursRow(
+                    context, ImageConstants.mapIcon, "4 ${"projects".tr()}"),
                 Container(
                   height: DimensionConstants.d70.h,
                   width: DimensionConstants.d1.w,
                   color: ColorConstants.colorLightGrey,
                 ),
-                projectsHoursRow(context,ImageConstants.clockIcon, "07.28 ${"hours".tr()}")
+                projectsHoursRow(
+                    context, ImageConstants.clockIcon, "07.28 ${"hours".tr()}")
               ],
             ),
           ),
@@ -173,28 +176,71 @@ Widget projectsAndHoursCardList(BuildContext context,TimeSheetTabBarProviderCrew
               color: ColorConstants.colorGreyDrawer,
               height: 0.0,
               thickness: 1.5),
-          projectHourRow(context,Color(0xFFBB6BD9), "MS", "8:50a", "10:47a", "02:57h", commonStepper()),
+          projectHourRow(context, Color(0xFFBB6BD9), "MS", "8:50a", "10:47a",
+              "02:57h", commonStepper()),
           const Divider(
               color: ColorConstants.colorGreyDrawer,
               height: 0.0,
               thickness: 1.5),
-          projectHourRow(context,ColorConstants.primaryGradient1Color, "MS", "8:50a",
-              "10:47p", "02:57h", commonStepper()),
+          projectHourRow(context, ColorConstants.primaryGradient1Color, "MS",
+              "8:50a", "10:47p", "02:57h", commonStepper()),
           const Divider(
               color: ColorConstants.colorGreyDrawer,
               height: 0.0,
               thickness: 1.5),
-          projectHourRow(context,ColorConstants.deepBlue, "AL", "8:50a", "10:47p",
-              "02:57h", stepperLineWithOneCoolIcon()),
+          projectHourRow(context, ColorConstants.deepBlue, "AL", "8:50a",
+              "10:47p", "02:57h", stepperLineWithOneCoolIcon()),
           const Divider(
               color: ColorConstants.colorGreyDrawer,
               height: 0.0,
               thickness: 1.5),
+          SizedBox(
+            height: DimensionConstants.d50.h,
+          ),
+
+          Container(
+              height: DimensionConstants.d5.h,
+              width: DimensionConstants.d75.w,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(DimensionConstants.d4.r)),
+              child: Flex(
+                direction: Axis.horizontal,
+                children: provider.widgetlist,
+              )),
+          // stepperCustom(8)
         ],
       ),
     ),
   );
 }
+
+Widget stepperCustom(int hours) {
+  double width = 80 / hours;
+  List<int> listOfBreaks = [1, 3, 6];
+  return Container(
+    width: DimensionConstants.d80.w,
+    height: DimensionConstants.d4.h,
+    child: Row(
+      children: [
+        Container(
+          width: DimensionConstants.d80.w,
+          height: DimensionConstants.d4.h,
+          child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              itemCount: hours,
+              itemBuilder: (BuildContext context, int index) {
+                return Container(
+                  height: DimensionConstants.d4.h,
+                  width: width,
+                  color: ColorConstants.green6FCF97,
+                );
+              }),
+        ),
+      ],
+    ),
+  );
+}
+
 Widget projectsHoursRow(BuildContext context, String iconPath, String txt) {
   return Row(
     children: [
@@ -204,7 +250,10 @@ Widget projectsHoursRow(BuildContext context, String iconPath, String txt) {
     ],
   );
 }
-Widget projectHourRow(BuildContext context,Color color, String name, String startingTime, String endTime, String totalTime, Widget stepper, {VoidCallback? onTap}) {
+
+Widget projectHourRow(BuildContext context, Color color, String name,
+    String startingTime, String endTime, String totalTime, Widget stepper,
+    {VoidCallback? onTap}) {
   return GestureDetector(
     onTap: onTap,
     child: Container(
@@ -237,8 +286,8 @@ Widget projectHourRow(BuildContext context,Color color, String name, String star
             Text(endTime).regularText(
                 context, DimensionConstants.d13.sp, TextAlign.center),
             SizedBox(width: DimensionConstants.d15.w),
-            Text(totalTime).boldText(
-                context, DimensionConstants.d13.sp, TextAlign.center),
+            Text(totalTime)
+                .boldText(context, DimensionConstants.d13.sp, TextAlign.center),
             SizedBox(width: DimensionConstants.d11.w),
             ImageView(
                 path: ImageConstants.forwardArrowIcon,
@@ -251,6 +300,7 @@ Widget projectHourRow(BuildContext context,Color color, String name, String star
     ),
   );
 }
+
 Widget commonStepper() {
   return Container(
     height: DimensionConstants.d4.h,
@@ -263,6 +313,7 @@ Widget commonStepper() {
     ),
   );
 }
+
 Widget stepperLineWithOneCoolIcon() {
   return Padding(
     padding: EdgeInsets.only(bottom: DimensionConstants.d13.h),
@@ -296,7 +347,9 @@ Widget stepperLineWithOneCoolIcon() {
     ),
   );
 }
-Widget weeklyTabBarContainer(BuildContext context,TimeSheetTabBarProviderCrew provider) {
+
+Widget weeklyTabBarContainer(
+    BuildContext context, TimeSheetTabBarProviderCrew provider) {
   return SingleChildScrollView(
     child: Column(
       children: [
@@ -305,7 +358,7 @@ Widget weeklyTabBarContainer(BuildContext context,TimeSheetTabBarProviderCrew pr
           decoration: BoxDecoration(
             color: ColorConstants.deepBlue,
             borderRadius:
-            BorderRadius.all(Radius.circular(DimensionConstants.d8.r)),
+                BorderRadius.all(Radius.circular(DimensionConstants.d8.r)),
           ),
           child: SingleChildScrollView(
             child: Column(
@@ -320,8 +373,8 @@ Widget weeklyTabBarContainer(BuildContext context,TimeSheetTabBarProviderCrew pr
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       backNextBtn(ImageConstants.backIconIos),
-                      Text("Apr 13 - Apr 19").boldText(context,
-                          DimensionConstants.d16.sp, TextAlign.center,
+                      Text("Apr 13 - Apr 19").boldText(
+                          context, DimensionConstants.d16.sp, TextAlign.center,
                           color: ColorConstants.colorWhite),
                       backNextBtn(ImageConstants.nextIconIos)
                     ],
@@ -343,9 +396,9 @@ Widget weeklyTabBarContainer(BuildContext context,TimeSheetTabBarProviderCrew pr
                       Container(
                         decoration: BoxDecoration(
                           color:
-                          (Theme.of(context).brightness == Brightness.dark
-                              ? ColorConstants.colorBlack
-                              : ColorConstants.colorWhite),
+                              (Theme.of(context).brightness == Brightness.dark
+                                  ? ColorConstants.colorBlack
+                                  : ColorConstants.colorWhite),
                           border: Border.all(
                             color: ColorConstants.colorLightGreyF2,
                           ),
@@ -356,33 +409,36 @@ Widget weeklyTabBarContainer(BuildContext context,TimeSheetTabBarProviderCrew pr
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            projectsHoursRow(context,ImageConstants.mapIcon,
+                            projectsHoursRow(context, ImageConstants.mapIcon,
                                 "4 ${"projects".tr()}"),
                             Container(
                               height: DimensionConstants.d70.h,
                               width: DimensionConstants.d1.w,
                               color: ColorConstants.colorLightGrey,
                             ),
-                            projectsHoursRow(context,ImageConstants.clockIcon,
+                            projectsHoursRow(context, ImageConstants.clockIcon,
                                 "07:28 ${"hours".tr()}")
                           ],
                         ),
                       ),
-                      weeklyTabBarDateContainer(context,"Tue, April 13"),
-                      projectHourRow(context,
+                      weeklyTabBarDateContainer(context, "Tue, April 13"),
+                      projectHourRow(
+                          context,
                           Color(0xFFBB6BD9),
                           "MS",
                           "8:50a",
                           "10:47a",
                           "02:57h",
                           stepperLineWithTwoCoolIcon(), onTap: () {
-                        Navigator.pushNamed(context, RouteConstants.timeSheetsScreen);
+                        Navigator.pushNamed(
+                            context, RouteConstants.timeSheetsScreen);
                       }),
                       const Divider(
                           color: ColorConstants.colorGreyDrawer,
                           height: 0.0,
                           thickness: 1.5),
-                      projectHourRow(context,
+                      projectHourRow(
+                          context,
                           ColorConstants.primaryGradient1Color,
                           "MD",
                           "8:50a",
@@ -392,17 +448,18 @@ Widget weeklyTabBarContainer(BuildContext context,TimeSheetTabBarProviderCrew pr
                         Navigator.pushNamed(
                             context, RouteConstants.timeSheetsScreen);
                       }),
-                      weeklyTabBarDateContainer(context,"Wed, April 14"),
-                      projectHourRow(context,Color(0xFFBB6BD9), "MS", "8:50a",
+                      weeklyTabBarDateContainer(context, "Wed, April 14"),
+                      projectHourRow(context, Color(0xFFBB6BD9), "MS", "8:50a",
                           "10:47p", "02:57h", commonStepper(), onTap: () {
-                            Navigator.pushNamed(
-                                context, RouteConstants.timeSheetsScreen);
-                          }),
+                        Navigator.pushNamed(
+                            context, RouteConstants.timeSheetsScreen);
+                      }),
                       const Divider(
                           color: ColorConstants.colorGreyDrawer,
                           height: 0.0,
                           thickness: 1.5),
-                      projectHourRow(context,
+                      projectHourRow(
+                          context,
                           ColorConstants.primaryGradient1Color,
                           "MD",
                           "8:50a",
@@ -412,7 +469,8 @@ Widget weeklyTabBarContainer(BuildContext context,TimeSheetTabBarProviderCrew pr
                         Navigator.pushNamed(
                             context, RouteConstants.timeSheetsScreen);
                       }),
-                      projectHourRow(context,
+                      projectHourRow(
+                          context,
                           Color(0xFFBB6BD9),
                           "MS",
                           "8:50a",
@@ -426,7 +484,8 @@ Widget weeklyTabBarContainer(BuildContext context,TimeSheetTabBarProviderCrew pr
                           color: ColorConstants.colorGreyDrawer,
                           height: 0.0,
                           thickness: 1.5),
-                      projectHourRow(context,
+                      projectHourRow(
+                          context,
                           ColorConstants.primaryGradient1Color,
                           "MD",
                           "8:50a",
@@ -447,32 +506,26 @@ Widget weeklyTabBarContainer(BuildContext context,TimeSheetTabBarProviderCrew pr
                         child: Column(
                           children: [
                             Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text("total_hours".tr()).semiBoldText(
                                     context,
                                     DimensionConstants.d14.sp,
                                     TextAlign.center),
-                                Text("48:28 Hrs").semiBoldText(
-                                    context,
-                                    DimensionConstants.d14.sp,
-                                    TextAlign.center)
+                                Text("48:28 Hrs").semiBoldText(context,
+                                    DimensionConstants.d14.sp, TextAlign.center)
                               ],
                             ),
                             SizedBox(height: DimensionConstants.d6.h),
                             Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.spaceBetween,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text("x \$20.00/hr").semiBoldText(
                                     context,
                                     DimensionConstants.d14.sp,
                                     TextAlign.center),
-                                Text("\$805.00").semiBoldText(
-                                    context,
-                                    DimensionConstants.d14.sp,
-                                    TextAlign.center)
+                                Text("\$805.00").semiBoldText(context,
+                                    DimensionConstants.d14.sp, TextAlign.center)
                               ],
                             ),
                           ],
@@ -492,6 +545,7 @@ Widget weeklyTabBarContainer(BuildContext context,TimeSheetTabBarProviderCrew pr
     ),
   );
 }
+
 Widget backNextBtn(String path) {
   return Container(
     alignment: Alignment.center,
@@ -506,6 +560,7 @@ Widget backNextBtn(String path) {
     ),
   );
 }
+
 Widget stepperLineWithTwoCoolIcon() {
   return Column(
     children: [
@@ -586,6 +641,7 @@ Widget stepperLineWithTwoCoolIcon() {
     ],
   );
 }
+
 Widget stepperWithGrayAndGreen() {
   return SizedBox(
     width: DimensionConstants.d75.w,
@@ -619,16 +675,17 @@ Widget stepperWithGrayAndGreen() {
     ),
   );
 }
+
 Widget exportTimeSheetBtn(BuildContext context) {
   return GestureDetector(
     onTap: () {
       showDialog(
           context: context,
           builder: (BuildContext context) => DialogHelper.exportFileDialog(
-            context,
-            photoFromCamera: () {},
-            photoFromGallery: () {},
-          ));
+                context,
+                photoFromCamera: () {},
+                photoFromGallery: () {},
+              ));
     },
     child: Container(
       padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
@@ -653,7 +710,8 @@ Widget exportTimeSheetBtn(BuildContext context) {
     ),
   );
 }
-Widget weeklyTabBarDateContainer(BuildContext context,String date) {
+
+Widget weeklyTabBarDateContainer(BuildContext context, String date) {
   return Container(
     color: ColorConstants.colorLightGreyF2,
     height: DimensionConstants.d32.h,

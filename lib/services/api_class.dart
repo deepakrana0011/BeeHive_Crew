@@ -24,11 +24,13 @@ import 'package:beehive/model/reset_password_response_crew.dart';
 import 'package:beehive/model/set_crew_rate_Manger_response.dart';
 import 'package:beehive/model/set_project_rate_request.dart';
 import 'package:beehive/model/update_crew_profile_response.dart';
+import 'package:beehive/model/weekly_check_in_Response.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 import '../constants/api_constants.dart';
 import '../model/create_project_response_manager.dart';
+import '../model/crew_dashboard1.dart';
 import '../model/dash_board_page_response_crew.dart';
 import '../model/edit_profile_response_manager.dart';
 import '../model/get_otp_response_manager.dart';
@@ -206,9 +208,7 @@ class ApiManager {
         "longitude": longitude,
         "locationRadius": locationRadius
       };
-      var response = await dio.post(
-          ApiConstantsManager.BASEURL + ApiConstantsManager.CREATE_PROJECT,
-          data: map);
+      var response = await dio.post(ApiConstantsManager.BASEURL + ApiConstantsManager.CREATE_PROJECT, data: map);
       return CreateProjectResponseManager.fromJson(
           json.decode(response.toString()));
     } on DioError catch (e) {
@@ -475,26 +475,30 @@ class ApiManager {
       required String hoursStarting,
       required String endingHours,
       required String afterHourRate,
-      required String breakFrom,
-      required String breakTo,
+        required List<String> breakFrom,
+        required List<String> breakTo,
+     /* required String breakFrom,
+      required String breakTo,*/
       required String roundTimeSheetValue}) async {
     try {
+      List<ProjectSettingsBreakRequestManager> breaks=[];
       var breakRequest = ProjectSettingsBreakRequestManager();
-      breakRequest.from = breakFrom;
-      breakRequest.to = breakTo;
-      var hoursRequest = ProjectSettingsBreakRequestManager();
-      hoursRequest.from = hoursStarting;
-      hoursRequest.to = endingHours;
+      for(int i=0; i<breakFrom.length; i++) {
+        breakRequest.from = breakFrom[i];
+       breakRequest.to = breakTo[i];
+        breaks.add(breakRequest);
+      }
       var map = {
-        "assignProjectId": projectId,
+
         "workDays": workdays,
-        "hours": hoursRequest,
+        "hoursTo":hoursStarting,
+        "hoursFrom": endingHours,
         "afterHoursRate": afterHourRate,
-        "breaks": breakRequest,
+        "break": breaks,
         "roundTimesheets": roundTimeSheetValue
       };
       dio.options.headers["Authorization"] = SharedPreference.prefs!.getString(SharedPreference.TOKEN);
-      var response = await dio.post(ApiConstantsManager.BASEURL + ApiConstantsManager.PROJECT_SETTINGS, data: map);
+      var response = await dio.post(ApiConstantsManager.BASEURL + ApiConstantsManager.PROJECT_SETTINGS+projectId, data: map);
       return ProjectSettingsResponseManager.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
@@ -1079,11 +1083,30 @@ class ApiCrew {
       }
     }
   }
-  Future<DashBoardPageResponseCrew> dashBoardApi(BuildContext context, ) async {
+  Future<CrewDashboardResponse1> dashBoardApi(BuildContext context, ) async {
     try {
       dio.options.headers["Authorization"] = SharedPreference.prefs!.getString(SharedPreference.TOKEN);
       var response = await dio.get(ApiConstantsCrew.BASEURL + ApiConstantsCrew.DASHBOARD_API ,);
-      return DashBoardPageResponseCrew.fromJson(json.decode(response.toString()));
+      return CrewDashboardResponse1.fromJson(json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+  Future<WeeklyCheckInResponse> weeklyChekIn(BuildContext context, String weekTo, String weekFrom) async {
+    try {
+      var map = {
+        "firstDate":weekTo,
+        "secondDate":weekFrom
+      } ;
+      dio.options.headers["Authorization"] = SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var response = await dio.post(ApiConstantsCrew.BASEURL + ApiConstantsCrew.WEEKLY_CHECKIN, data: map);
+      return WeeklyCheckInResponse.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());
@@ -1145,7 +1168,7 @@ class ApiCrew {
     try {
       var map = {"checkOutTime": checkOutTime, };
       dio.options.headers["Authorization"] = SharedPreference.prefs!.getString(SharedPreference.TOKEN);
-      var response = await dio.post(ApiConstantsCrew.BASEURL + ApiConstantsCrew.CHECK_OUT_API+assignProjectId, data: map);
+      var response = await dio.put(ApiConstantsCrew.BASEURL + ApiConstantsCrew.CHECK_OUT_API+assignProjectId, data: map);
       return CheckInResponseCrew.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {

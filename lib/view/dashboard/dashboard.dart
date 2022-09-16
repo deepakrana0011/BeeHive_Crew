@@ -14,10 +14,12 @@ import '../../constants/dimension_constants.dart';
 import '../../constants/image_constants.dart';
 import '../../constants/route_constants.dart';
 import '../../helper/common_widgets.dart';
+import '../../helper/dialog_helper.dart';
 import '../../locator.dart';
 import '../../provider/bottom_bar_provider.dart';
 import '../../provider/dashboard_provider.dart';
 import '../../widget/custom_tab_bar.dart';
+import '../../widget/get_time.dart';
 import '../../widget/image_view.dart';
 import '../base_view.dart';
 
@@ -27,7 +29,6 @@ class DashBoardPage extends StatefulWidget {
   @override
   _DashBoardPageState createState() => _DashBoardPageState();
 }
-
 class _DashBoardPageState extends State<DashBoardPage>
     with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -40,20 +41,27 @@ class _DashBoardPageState extends State<DashBoardPage>
         onModelReady: (provider) {
           this.provider = provider;
           provider.dashBoardApi(context);
+          provider.weeklyDataApi(context);
     }, builder: (context, provider, _) {
       return Scaffold(
           key: _scaffoldKey,
           body: provider.state == ViewState.idle? Column(
             children: [
-              provider.crewResponse!.myProject! == null? noProjectNotCheckedInContainer(context, "you_have_no_projects".tr(),false): SharedPreference.prefs!.getInt(SharedPreference.IS_CHECK_IN) == 2 ? projectsCheckOutContainer(SharedPreference.prefs!.getString(SharedPreference.CHECKED_PROJECT)!,provider): noProjectNotCheckedInContainer(context, "you_are_not_checked_in".tr(),true, onTap: () {checkInAlert(context,provider);}),
-              provider.crewResponse!.myProject! == null? whenDoNotHaveProject()  : CustomTabBar(notCheckedIn: provider.notCheckedIn, navigationValue: SharedPreference.prefs!.getInt(SharedPreference.IS_CHECK_IN)!,),
+              provider.crewResponse == null?
+              noProjectNotCheckedInContainer(context, "you_have_no_projects".tr(),false):
+              SharedPreference.prefs!.getInt(SharedPreference.IS_CHECK_IN) == 1 ?
+              projectsCheckOutContainer(SharedPreference.prefs!.getString(SharedPreference.CHECKED_PROJECT)??"",provider):
+              noProjectNotCheckedInContainer(context, "you_are_not_checked_in".tr(),true,
+                  onTap: () {checkInAlert(context,provider);}),
+              provider.crewResponse == null?
+              whenDoNotHaveProject()  :
+              CustomTabBar(notCheckedIn: provider.notCheckedIn, navigationValue: 2/*SharedPreference.prefs!.getInt(SharedPreference.IS_CHECK_IN)!*/,),
               SizedBox(height: DimensionConstants.d20.h),
             ],
           ):const Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,),));
 
     });
   }
-
   Widget whenDoNotHaveProject() {
     return SingleChildScrollView(
       child: Column(
@@ -145,7 +153,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Hey ""${provider.crewResponse!.user!.name},").boldText(
+                    Text("Hey ""${provider.crewResponse!.data!.name},").boldText(
                     context, DimensionConstants.d18.sp, TextAlign.left,
                     color: ColorConstants.colorWhite),
                     Text("hey_john".tr()).boldText(
@@ -220,6 +228,7 @@ class _DashBoardPageState extends State<DashBoardPage>
       ),
     );
   }
+  /// Widget after checkOut
   Widget projectsCheckInContainer(String location) {
     return Container(
       width: double.infinity,
@@ -303,8 +312,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                       context, DimensionConstants.d16.sp, TextAlign.left,
                       color: ColorConstants.colorLightGreen),
                 ],
-              ),
-              checkInCheckOutBtn(
+              ),checkInCheckOutBtn(
                 "check_out".tr(),
                 ColorConstants.colorLightGreen,
                 onBtnTap: () {
@@ -325,7 +333,7 @@ class _DashBoardPageState extends State<DashBoardPage>
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                lastCheckInTotalHoursColumn("${provider.hour <= 9 ? 0 :""}${provider.hour}:${provider.minutes <= 9? 0 : ""}${provider.minutes}", "${provider.getAmAndPm(provider.hour!)}", "last_check_in".tr()),
+                lastCheckInTotalHoursColumn("${provider.hour <= 9 ? 0 :""}${provider.hour}:${provider.minutes <= 9? 0 : ""}${provider.minutes}", "${GetTime.getAmAndPm(provider.hour)}", "last_check_in".tr()),
                 lastCheckInTotalHoursColumn("08:23", "HR", "total_hours".tr()),
               ],
             ),
@@ -408,7 +416,7 @@ class _DashBoardPageState extends State<DashBoardPage>
             borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
           ),
           elevation: 0,
-          content: Builder(builder: (context) {
+          content: Builder(builder: (BuildContext context) {
             return Container(
               padding: EdgeInsets.symmetric(
                   vertical: DimensionConstants.d24.h,
@@ -443,7 +451,6 @@ class _DashBoardPageState extends State<DashBoardPage>
                     child: DropdownButtonHideUnderline(
                       child: DropdownButtonFormField(
                         isExpanded: true,
-
                         items: provider.checkInItems.toSet().map(( CheckBoxModelCrew item) => DropdownMenuItem<String>(
                                   value: item.projectName,
                                   onTap: (){
@@ -477,8 +484,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                                           height: 0.0)*/
                                     ],
                                   ),
-                                ))
-                            .toList(),
+                                )).toList(),
                         value: provider.checkIn,
                         onSaved: (String? value) {
                          provider.updateDropDownValueOfCheckBox(value!);
@@ -508,9 +514,13 @@ class _DashBoardPageState extends State<DashBoardPage>
                   SizedBox(height: DimensionConstants.d14.h),
                   CommonWidgets.commonButton(context, "check_in".tr(),
                       height: DimensionConstants.d50.h, onBtnTap: () {
-                    Navigator.pop(context);
-                    provider.getCheckInTime();
-                    provider.checkInApi(context);
+                        if(provider.assignProjectId.isEmpty){
+                          DialogHelper.showMessage(context, "Please Select Project");
+                        }
+                        else{Navigator.pop(context);
+                        provider.getCheckInTime();
+                        provider.checkInApi(_scaffoldKey.currentContext);}
+
                   })
                 ],
               ),
@@ -544,7 +554,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Text("Hey "+nameOfUser).boldText(
+                      Text("Hey $nameOfUser").boldText(
                           context, DimensionConstants.d18.sp, TextAlign.center),
                       const Text("are you still checked-in?").boldText(
                           context, DimensionConstants.d18.sp, TextAlign.center),
@@ -606,93 +616,119 @@ class _DashBoardPageState extends State<DashBoardPage>
               }));
         });
   }
+
+  /// widget for checkOut
   whenDidYouCheckOutAlert( String projectName) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return AlertDialog(
-              contentPadding: EdgeInsets.zero,
-              insetPadding: EdgeInsets.fromLTRB(DimensionConstants.d16.w, 0.0,
-                  DimensionConstants.d16.w, DimensionConstants.d75.h),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
-              ),
-              elevation: 0,
-              content: Builder(builder: (context) {
-                return Container(
-                  padding: EdgeInsets.fromLTRB(
-                      DimensionConstants.d24.w,
-                      DimensionConstants.d24.h,
-                      DimensionConstants.d24.w,
-                      DimensionConstants.d24.h),
-                  height: DimensionConstants.d276.h,
-                  width: DimensionConstants.d343.w,
-                  child: Column(
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: const Align(
-                            alignment: Alignment.centerLeft,
-                            child:
-                                ImageView(path: ImageConstants.smallBackIcon)),
-                      ),
-                      SizedBox(height: DimensionConstants.d9.h),
-                      Text("when_did_you_check_out".tr()).boldText(
-                          context, DimensionConstants.d18.sp, TextAlign.center),
-                      SizedBox(height: DimensionConstants.d13.h),
-                      Container(
-                        alignment: Alignment.centerLeft,
-                        height: DimensionConstants.d45.h,
-                        width: DimensionConstants.d171.w,
-                        decoration: BoxDecoration(
-                            color: ColorConstants.colorLightGreyF2,
-                            borderRadius: BorderRadius.all(
-                                Radius.circular(DimensionConstants.d8.r))),
-                        child: Row(
-                          children: [
-                            SizedBox(width: DimensionConstants.d16.w),
-                            const ImageView(
-                                path: ImageConstants.clockIcon,
-                                color: ColorConstants.colorBlack),
-                            SizedBox(width: DimensionConstants.d16.w),
-                            Text("5:50 PM").boldText(context,
-                                DimensionConstants.d16.sp, TextAlign.left,
-                                color: ColorConstants.colorBlack),
-                            SizedBox(width: DimensionConstants.d22.w),
-                            const ImageView(
-                                path: ImageConstants.downArrowIcon,
-                                color: ColorConstants.colorBlack),
-                            SizedBox(width: DimensionConstants.d14.w),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: DimensionConstants.d12.h),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+          return StatefulBuilder(builder: (context, setState) {
+            {
+              return AlertDialog(
+                  contentPadding: EdgeInsets.zero,
+                  insetPadding: EdgeInsets.fromLTRB(
+                      DimensionConstants.d16.w, 0.0,
+                      DimensionConstants.d16.w, DimensionConstants.d75.h),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(
+                        DimensionConstants.d8.r),
+                  ),
+                  elevation: 0,
+                  content: Builder(builder: (context) {
+                    return Container(
+                      padding: EdgeInsets.fromLTRB(
+                          DimensionConstants.d24.w,
+                          DimensionConstants.d24.h,
+                          DimensionConstants.d24.w,
+                          DimensionConstants.d24.h),
+                      height: DimensionConstants.d276.h,
+                      width: DimensionConstants.d343.w,
+                      child: Column(
                         children: [
-                          const ImageView(path: ImageConstants.locationIcon),
-                          SizedBox(width: DimensionConstants.d8.w),
-                          Text(projectName).semiBoldText(
-                              context,
-                              DimensionConstants.d14.sp,
-                              TextAlign.left),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).pop();
+                            },
+                            child: const Align(
+                                alignment: Alignment.centerLeft,
+                                child:
+                                ImageView(path: ImageConstants.smallBackIcon)),
+                          ),
+                          SizedBox(height: DimensionConstants.d9.h),
+                          Text("when_did_you_check_out".tr()).boldText(
+                              context, DimensionConstants.d18.sp,
+                              TextAlign.center),
+                          SizedBox(height: DimensionConstants.d13.h),
+                          GestureDetector(
+                            onTap: () {
+                             // provider.showTime(context);
+                            },
+                            child: Container(
+                              alignment: Alignment.centerLeft,
+                              height: DimensionConstants.d45.h,
+                              width: DimensionConstants.d171.w,
+                              decoration: BoxDecoration(
+                                  color: ColorConstants.colorLightGreyF2,
+                                  borderRadius: BorderRadius.all(
+                                      Radius.circular(
+                                          DimensionConstants.d8.r))),
+                              child: Row(
+                                children: [
+                                  SizedBox(width: DimensionConstants.d16.w),
+                                  const ImageView(
+                                      path: ImageConstants.clockIcon,
+                                      color: ColorConstants.colorBlack),
+                                  SizedBox(width: DimensionConstants.d16.w),
+                                  Text(provider.selectedCheckOutTime == null ?
+                                  ("${provider.initialTime.hour < 12 ? provider
+                                      .initialTime.hour : (provider.initialTime
+                                      .hour - 12)}:${provider.initialTime
+                                      .minute} " +
+                                     GetTime.hoursAM(provider.initialTime))
+                                      : provider.selectedCheckOutTime!)
+                                      .boldText(context,
+                                      DimensionConstants.d16.sp, TextAlign.left,
+                                      color: ColorConstants.colorBlack),
+                                  Expanded(child: SizedBox(
+                                      width: DimensionConstants.d2.w)),
+                                  const ImageView(
+                                      path: ImageConstants.downArrowIcon,
+                                      color: ColorConstants.colorBlack),
+                                  SizedBox(width: DimensionConstants.d14.w),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: DimensionConstants.d12.h),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const ImageView(
+                                  path: ImageConstants.locationIcon),
+                              SizedBox(width: DimensionConstants.d8.w),
+                              Text(projectName).semiBoldText(
+                                  context,
+                                  DimensionConstants.d14.sp,
+                                  TextAlign.left),
+                            ],
+                          ),
+                          SizedBox(height: DimensionConstants.d22.h),
+                          CommonWidgets.commonButton(context, "check_out".tr(),
+                              height: 50, onBtnTap: () {
+                            provider.timeToSend(_scaffoldKey.currentContext);
+                                //provider.showTime(_scaffoldKey.currentContext);
+                                //SharedPreference.clearCheckIn();
+
+                                //Navigator.of(context).pop();
+                                provider.hasCheckInCheckOut = true;
+                                provider.updateLoadingStatus(true);
+                              })
                         ],
                       ),
-                      SizedBox(height: DimensionConstants.d22.h),
-                      CommonWidgets.commonButton(context, "check_out".tr(),
-                          height: 50, onBtnTap: () {
-                        provider.getCheckOutTime();
-                        provider.checkOutApi(context);
-                        Navigator.of(context).pop();
-                        provider.hasCheckInCheckOut = true;
-                        provider.updateLoadingStatus(true);
-                      })
-                    ],
-                  ),
-                );
-              }));
+                    );
+                  }));
+            }
+          });
         });
   }
 }

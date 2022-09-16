@@ -138,7 +138,8 @@ Widget profileWidget(BuildContext context, VoidCallback onTapOnEditButton, Profi
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(DimensionConstants.d75.r),
                 child: ImageView(
-                  path:provider.profileResponse!.data!.profileImage!.isEmpty? ImageConstants.managerImage:ApiConstantsCrew.BASE_URL_IMAGE+provider.profileResponse!.data!.profileImage!,
+                  path:provider.profileResponse!.data!.profileImage==null? ImageConstants.managerImage:
+                  ApiConstantsCrew.BASE_URL_IMAGE+provider.profileResponse!.data!.profileImage!,
                   height: DimensionConstants.d150.h,
                   width: DimensionConstants.d150.w,
                   fit: BoxFit.cover,
@@ -205,7 +206,7 @@ Widget profileWidget(BuildContext context, VoidCallback onTapOnEditButton, Profi
             child: ClipRRect(
               borderRadius: BorderRadius.circular(DimensionConstants.d41.r),
               child: ImageView(
-                path:provider.profileResponse!.data!.companyLogo!.isEmpty? ImageConstants.brandIocn:ApiConstantsCrew.BASE_URL_IMAGE+provider.profileResponse!.data!.companyLogo!,
+                path:provider.profileResponse!.data!.companyLogo==null? ImageConstants.brandIocn:ApiConstantsCrew.BASE_URL_IMAGE+provider.profileResponse!.data!.companyLogo!,
                 height: DimensionConstants.d82.h,
                 width: DimensionConstants.d82.w,
                 fit: BoxFit.cover,

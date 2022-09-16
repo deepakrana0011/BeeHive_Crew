@@ -430,7 +430,7 @@ Widget todayTab(
                 ? GestureDetector(
                     onTap: () {
                       Navigator.pushNamed(
-                          context, RouteConstants.addCrewPageManager,arguments: AddCrewPageManager(projectId: projectId));
+                          context, RouteConstants.addCrewPageManager,arguments: AddCrewPageManager(projectId: projectId, id: '',));
                     },
                     child: Container(
                       height: DimensionConstants.d40.h,
@@ -786,7 +786,7 @@ Widget crewWidget(BuildContext context, bool archivedOrNot,ProjectDetailsManager
       SizedBox(
         height: DimensionConstants.d24.h,
       ),
-      managerDetails(context, true, provider.projectResponse!.crew!.managerId!.name!, archivedOrNot,provider.projectResponse!.crew!.crewId![0].profileImage!),
+      managerDetails(context, true, provider.projectResponse!.crew!.managerId!.name!, archivedOrNot,provider.projectResponse!.crew!.crewId![0].profileImage ?? ""),
       SizedBox(
         height: DimensionConstants.d8.h,
       ),
@@ -795,7 +795,7 @@ Widget crewWidget(BuildContext context, bool archivedOrNot,ProjectDetailsManager
             // Navigator.pushNamed(context, RouteConstants.crewProfilePage);
           },
           child:
-              managerDetails(context, false, provider.projectResponse!.crew!.crewId![0].name!, archivedOrNot,provider.projectResponse!.crew!.crewId![0].profileImage!)),
+              managerDetails(context, false, provider.projectResponse!.crew!.crewId![0].name!, archivedOrNot,provider.projectResponse!.crew!.crewId![0].profileImage ?? "")),
 
     ],
   );

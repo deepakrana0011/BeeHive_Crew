@@ -17,7 +17,7 @@ class ApiConstantsManager{
   static const String RESET_PASSWORD_BY_PHONE = "resettpasswordbyphone";
   static const String GET_ASSIGNED_CREW_IN_PROJECT = "assignedprojectbyid/";
   static const String SET_RATE_BY_MANAGER = "projectprice";
-  static const String PROJECT_SETTINGS = "projectsettings";
+  static const String PROJECT_SETTINGS = "projectsettings/";
   static const String GET_PROJECT_DETAILS = "projectdetails/";
   static const String ADD_NOTE_MANAGER = "addingnote";
   static const String DASHBOARD_API = "managerdashboard";
@@ -49,4 +49,5 @@ class ApiConstantsCrew{
   static const String RESEND_OTP_PHONE= "resendtokenonphone";
   static const String RESEND_OTP_EMAIL = "resend";
   static const String CHECK_OUT_API = "checkouttime/";
+  static const String WEEKLY_CHECKIN = "weeklydata";
 }

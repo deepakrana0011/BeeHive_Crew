@@ -257,20 +257,20 @@ Widget drawer(BuildContext context,BottomBarProvider provider) {
                               Padding(
                                 padding: EdgeInsets.only(top: DimensionConstants.d56.h),
                                 child:
-                                    const ImageView(path: ImageConstants.drawerProfile),
+                                const ImageView(path: ImageConstants.drawerProfile),
                               ),
                               // SizedBox(height: DimensionConstants.d19.h),
                               Padding(
                                 padding:
-                                    EdgeInsets.only(left: DimensionConstants.d43.w),
+                                    EdgeInsets.only(left: DimensionConstants.d42.w),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text("welcome".tr()).semiBoldText(context,
+                                    Text(" welcome".tr()).semiBoldText(context,
                                         DimensionConstants.d20.sp, TextAlign.center,
                                         color: ColorConstants.colorWhite),
                                     // SizedBox(height: DimensionConstants.d3.h),
-                                    Text("John Smith").boldText(context,
+                                    Text(SharedPreference.prefs!.getString(SharedPreference.USER_NAME) == null? "":SharedPreference.prefs!.getString(SharedPreference.USER_NAME)!).boldText(context,
                                         DimensionConstants.d30.sp, TextAlign.center,
                                         color: ColorConstants.colorWhite),
                                   ],
