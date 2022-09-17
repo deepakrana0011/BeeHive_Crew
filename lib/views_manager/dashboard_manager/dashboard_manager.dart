@@ -258,7 +258,8 @@ Widget projectsAndHoursCardListManager(BuildContext context,DashBoardPageManager
 
 
 
-/*Widget weeklyTabBarContainerManager(BuildContext context) {
+/*
+Widget weeklyTabBarContainerManager(BuildContext context) {
   return SingleChildScrollView(
     child: Column(
       children: [
@@ -385,7 +386,8 @@ Widget projectsAndHoursCardListManager(BuildContext context,DashBoardPageManager
       ],
     ),
   );
-}*/
+}
+*/
 Widget projectsHoursRow(BuildContext context,String iconPath, String txt) {
   return Row(
     children: [

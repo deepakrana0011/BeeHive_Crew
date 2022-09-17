@@ -47,7 +47,8 @@ class CreateProjectManager extends StatelessWidget {
       };
       return Scaffold(
         appBar: CommonWidgets.appBarWithTitleAndAction(context,
-            title: "create_a_project"),
+            title: "create_a_project",popFunction: (){CommonWidgets.hideKeyboard(context);
+            Navigator.pop(context);}),
         body: SingleChildScrollView(
           child: Column(
             children: <Widget>[

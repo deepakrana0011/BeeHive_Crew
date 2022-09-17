@@ -396,15 +396,13 @@ class _CustomTabBarState extends State<CustomTabBar> with TickerProviderStateMix
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              projectsHoursRow(ImageConstants.mapIcon,
-                                  "${provider.crewResponse!.activeProjects} ${"projects".tr()}"),
+                              projectsHoursRow(ImageConstants.mapIcon, "${provider.crewResponse!.activeProjects} ${"projects".tr()}"),
                               Container(
                                 height: DimensionConstants.d70.h,
                                 width: DimensionConstants.d1.w,
                                 color: ColorConstants.colorLightGrey,
                               ),
-                              projectsHoursRow(ImageConstants.clockIcon,
-                                  "07:28 ${"hours".tr()}")
+                              projectsHoursRow(ImageConstants.clockIcon,"07:28 ${"hours".tr()}")
                             ],
                           ),
                         ),

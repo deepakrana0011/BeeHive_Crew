@@ -25,22 +25,18 @@ import '../../provider/bottom_bar_Manager_provider.dart';
 class ArchivedProjectDetailsManager extends StatefulWidget {
   bool archivedOrProject;
   bool fromProject;
-  ArchivedProjectDetailsManager(
-      {Key? key, required this.archivedOrProject, required this.fromProject})
-      : super(key: key);
+  ArchivedProjectDetailsManager({Key? key, required this.archivedOrProject, required this.fromProject}) : super(key: key);
 
   @override
   State<ArchivedProjectDetailsManager> createState() => _ArchivedProjectDetailsManagerState();
 }
 
-class _ArchivedProjectDetailsManagerState
-    extends State<ArchivedProjectDetailsManager> with TickerProviderStateMixin {
+class _ArchivedProjectDetailsManagerState extends State<ArchivedProjectDetailsManager> with TickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     final dashBoardProvider = Provider.of<BottomBarManagerProvider>(context, listen: false);
     return BaseView<ProjectDetailsManagerProvider>(
-      onModelReady: (provider) {
-        provider.tabController = TabController(length: 3, vsync: this);
+      onModelReady: (provider) {provider.tabController = TabController(length: 3, vsync: this);
       },
       builder: (context, provider, _) {
         return Scaffold(
@@ -53,7 +49,7 @@ class _ArchivedProjectDetailsManagerState
             Navigator.pushNamed(
                 context, RouteConstants.projectSettingsPageManager,
                 arguments: ProjectSettingsPageManager(
-                    fromProjectOrCreateProject: false));
+                    fromProjectOrCreateProject: false, projectId: '',));
           }, popFunction: () {
             CommonWidgets.hideKeyboard(context);
             dashBoardProvider.onItemTapped(1);
@@ -372,7 +368,7 @@ Widget todayTab(
                       Navigator.pushNamed(
                           context, RouteConstants.addNotePageManager,
                           arguments:
-                              AddNotePageManager(publicOrPrivate: false));
+                              AddNotePageManager(publicOrPrivate: false, projectId: '',));
                     },
                     child: Container(
                       height: DimensionConstants.d40.h,

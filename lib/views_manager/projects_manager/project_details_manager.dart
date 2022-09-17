@@ -57,7 +57,10 @@ class _ProjectDetailsPageManagerState extends State<ProjectDetailsPageManager>
                   fromProjectOrCreateProject: false,
                   projectId: '212',
                 ));
-          }),
+
+          },
+          popFunction: (){CommonWidgets.hideKeyboard(context);
+          Navigator.pop(context);}),
           body: Padding(
             padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
             child: SingleChildScrollView(

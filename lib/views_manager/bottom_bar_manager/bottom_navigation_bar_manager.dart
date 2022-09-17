@@ -24,15 +24,14 @@ import '../../provider/app_state_provider.dart';
 import '../dashboard_manager/dashboard_manager.dart';
 
 class BottomBarManager extends StatefulWidget {
-  const BottomBarManager({Key? key}) : super(key: key);
+  int? pageIndex;
+  int? fromBottomNav;
+  BottomBarManager({Key? key, this.pageIndex, this.fromBottomNav}) : super(key: key);
 
   @override
   _BottomBarManagerState createState() => _BottomBarManagerState();
 }
-
 class _BottomBarManagerState extends State<BottomBarManager> {
-
-
   static final List<Widget> _widgetOptions = <Widget>[
     const DashBoardPageManager(),
     const ProjectsPageManager(),
@@ -55,7 +54,8 @@ class _BottomBarManagerState extends State<BottomBarManager> {
   Widget build(BuildContext context) {
     return BaseView<BottomBarManagerProvider>(
         onModelReady: (provider) {
-
+          provider.onItemTapped(widget.pageIndex!);
+         provider.updateNavigationValue(widget.fromBottomNav!);
         },
         builder: (context, provider, _) {
           return provider.state == ViewState.busy  ? const Scaffold(
@@ -65,7 +65,7 @@ class _BottomBarManagerState extends State<BottomBarManager> {
             backgroundColor: ColorConstants.colorWhite,
             key: provider.scaffoldKey,
             drawer: drawer(context, provider,),
-            appBar: AppBar(
+            appBar: provider.fromBottomNav == 1? AppBar(
               centerTitle: true,
               elevation: 1,
               backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
@@ -135,9 +135,9 @@ class _BottomBarManagerState extends State<BottomBarManager> {
                   ),
                 ),
               ],
-            ),
+            ):null,
             body: Center(
-              child: _widgetOptions.elementAt(provider.selectedIndex),
+              child: provider.pageView(provider.selectedIndex,),
             ),
             bottomNavigationBar: BottomNavigationBar(
               items: <BottomNavigationBarItem>[
@@ -414,12 +414,12 @@ Widget drawer(BuildContext context, BottomBarManagerProvider provider,) {
                       onTap: () {
                         Navigator.pop(context);
                         provider.onItemTapped(1);
+                        provider.updateNavigationValue(3);
                       },
                       child: drawerHeadingsRow(
                         context,
                         ImageConstants.openFolderIcon,
                         "archived_projects".tr(),
-
                       ),
                     ),
                     SizedBox(height: DimensionConstants.d30.h),

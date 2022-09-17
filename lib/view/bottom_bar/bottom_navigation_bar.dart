@@ -28,9 +28,6 @@ class BottomBar extends StatefulWidget {
 }
 
 class _BottomBarState extends State<BottomBar> {
-
-
-
   static final List<Widget> _widgetOptions = <Widget>[
     DashBoardPage(),
     const Projects(),
@@ -52,7 +49,11 @@ class _BottomBarState extends State<BottomBar> {
   @override
   Widget build(BuildContext context) {
     final themeChange = Provider.of<AppStateNotifier>(context);
-    return BaseView<BottomBarProvider>(builder: (context, provider, _) {
+    return BaseView<BottomBarProvider>(
+        onModelReady: (provider){
+
+        },
+        builder: (context, provider, _) {
       return Scaffold(
         key: provider.scaffoldKey,
         drawer: drawer(context,provider),

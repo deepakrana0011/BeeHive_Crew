@@ -36,7 +36,8 @@ class SetRatesPageManager extends StatelessWidget {
       builder: (context, provider, _) {
         return Scaffold(
           appBar: CommonWidgets.appBarWithTitleAndAction(context,
-              title: "set_rates"),
+              title: "set_rates", popFunction: () { CommonWidgets.hideKeyboard(context);
+              Navigator.pop(context); }),
           body: SingleChildScrollView(
             child: provider.state == ViewState.idle? Column(
               crossAxisAlignment: CrossAxisAlignment.start,

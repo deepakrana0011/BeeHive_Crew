@@ -9,6 +9,7 @@ import '../enum/enum.dart';
 import '../helper/dialog_helper.dart';
 import '../helper/shared_prefs.dart';
 import '../services/fetch_data_expection.dart';
+import '../views_manager/bottom_bar_manager/bottom_navigation_bar_manager.dart';
 
 class LoginManagerProvider extends BaseProvider{
   bool emailContentPadding = false;
@@ -27,7 +28,7 @@ class LoginManagerProvider extends BaseProvider{
         if(model.data!.status == 0){
           SharedPreference.prefs!.setBool(SharedPreference.IS_LOGIN , true);
           SharedPreference.prefs!.setBool(SharedPreference.ISMANAGER_LOGIN , true);
-          Navigator.pushNamedAndRemoveUntil(context, RouteConstants.bottomBarManager, (route) => false);
+          Navigator.pushNamed(context, RouteConstants.bottomBarManager,arguments: BottomBarManager(fromBottomNav: 1, pageIndex: 0));
         }else{
           Navigator.pushNamedAndRemoveUntil(context, RouteConstants.continueWithPhoneManager, (route) => false);
         }

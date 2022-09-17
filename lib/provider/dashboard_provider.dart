@@ -280,11 +280,6 @@ class DashboardProvider extends BaseProvider{
       },
     );
   }
-
-
-
-
-
   timeToSend( context) async{
     selectedTime= await timeWidget(context);
       hours=(selectedTime!.hour<12?selectedTime!.hour:(selectedTime!.hour-12));
@@ -294,8 +289,8 @@ class DashboardProvider extends BaseProvider{
       selectedCheckOutTime =  "${hourOut}:${min} "+ GetTime.hoursAM(selectedTime!);
       // getCheckOutTime(selectedCheckOutTime!);
       getCheckOutTimeWithCurrentDate(time!);
-    DateTime checkInDate =  DateFormat("yyyy-MM-dd hh:mm:ss").parse(checkInDetail!.checkInTime!);
-   DateTime checkOutDate =  DateFormat("yyyy-MM-dd hh:mm:ss").parse(checkOutTime!);
+      DateTime checkInDate =  DateFormat("yyyy-MM-dd hh:mm:ss").parse(checkInDetail!.checkInTime!);
+      DateTime checkOutDate =  DateFormat("yyyy-MM-dd hh:mm:ss").parse(checkOutTime!);
     if(checkOutDate.isAfter(checkInDate)){
       print("DT1 is after DT2");
       Navigator.pop(context);
@@ -363,10 +358,6 @@ class DashboardProvider extends BaseProvider{
     secondDate=GetTime.formattedDate(initialDay2.subtract(const Duration(days: 7)));
       notifyListeners();
   }
-
-
-
-
 
 
   getInitials({required String string,required int limitTo}) {

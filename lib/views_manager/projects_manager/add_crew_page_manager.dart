@@ -31,7 +31,7 @@ class AddCrewPageManager extends StatelessWidget {
       builder: (context,provider,_){
         return Scaffold(
           appBar:
-          CommonWidgets.appBarWithTitleAndAction(context, title: "add_crew"),
+          CommonWidgets.appBarWithTitleAndAction(context, title: "add_crew",popFunction: () { CommonWidgets.hideKeyboard(context); Navigator.pop(context);}),
           body: Padding(
             padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
             child: SingleChildScrollView(

@@ -12,6 +12,7 @@ class SharedPreference {
   static const IS_CHECK_IN = "1";
   static const IS_CHECK_DB = "1";
   static const CHECKED_PROJECT = "something";
+  static const DashBoardIcon = "DashBoardIcon";
   static const USER_PROFILE = "profile";
   static const USER_LOGO = "logo";
   static const USER_NAME = "name";

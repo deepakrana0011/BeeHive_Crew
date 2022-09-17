@@ -146,8 +146,9 @@ class OnGenerateRouter {
         return MaterialPageRoute(
             builder: (_) => OtpVerificationPage(phoneNumber: args.phoneNumber, continueWithPhoneOrEmail: args.continueWithPhoneOrEmail, routeForResetPassword: args.routeForResetPassword,), settings: settings);
       case RouteConstants.bottomBarManager:
+        final args = settings.arguments as BottomBarManager;
         return MaterialPageRoute(
-            builder: (_) => BottomBarManager(), settings: settings);
+            builder: (_) => BottomBarManager(fromBottomNav: args.fromBottomNav, pageIndex: args.pageIndex,), settings: settings);
       case RouteConstants.continueWithPhoneManager:
         final args = settings.arguments as ContinueWithPhoneManager;
         return MaterialPageRoute(

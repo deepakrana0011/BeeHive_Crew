@@ -43,7 +43,6 @@ class BottomBarManagerProvider extends BaseProvider{
     const TimeSheetPageManager(),
     const ProfilePageManager(),
   ];
-
   pageView(int index,){
     if(index == 0){
      return const DashBoardPageManager();
@@ -57,7 +56,7 @@ class BottomBarManagerProvider extends BaseProvider{
       } else if( fromBottomNav == 4){
         return   ArchivedProjectDetailsManager(archivedOrProject: false, fromProject: true);
       } else if( fromBottomNav == 5){
-        return   ProjectDetailsPageManager( createProject: true,);
+        return   ProjectDetailsPageManager( createProject: true, projectId: '',);
       }
     }else if(index == 2){
       return  const TimeSheetPageManager();

@@ -17,6 +17,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../constants/image_constants.dart';
 import '../../helper/dialog_helper.dart';
 import '../../widget/image_view.dart';
+import '../bottom_bar_manager/bottom_navigation_bar_manager.dart';
 
 class ProjectSettingsPageManager extends StatelessWidget {
   bool fromProjectOrCreateProject;
@@ -31,7 +32,8 @@ class ProjectSettingsPageManager extends StatelessWidget {
       builder: (context, provider, _) {
         return Scaffold(
           appBar: CommonWidgets.appBarWithTitleAndAction(context,
-              title: "project_settings"),
+              title: "project_settings", popFunction: () { CommonWidgets.hideKeyboard(context);
+              Navigator.pushNamed(context, RouteConstants.bottomBarManager,arguments: BottomBarManager(fromBottomNav: 1, pageIndex: 1)); }),
           body: SingleChildScrollView(
             child: Padding(
               padding:
