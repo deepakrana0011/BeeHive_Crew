@@ -26,7 +26,8 @@ class CertificationPage extends StatelessWidget {
           appBar: CommonWidgets.appBarWithTitleAndAction(context,
               title: "certification".tr(),
               actionButtonRequired: true,
-              actionIcon: ImageConstants.notificationIconBell,onTapAction: (){Navigator.pushNamed(context, RouteConstants.notificationsScreen);}),
+              actionIcon: ImageConstants.notificationIconBell,onTapAction: (){Navigator.pushNamed(context, RouteConstants.notificationsScreen);},popFunction: () { CommonWidgets.hideKeyboard(context);
+              Navigator.pop(context);}),
           body: Column(
             children: <Widget>[
               SizedBox(

@@ -27,6 +27,8 @@ class AddNotePage extends StatelessWidget {
             context,
             actionButtonRequired: false,
             title: "add_note",
+              popFunction: () { CommonWidgets.hideKeyboard(context);
+              Navigator.pop(context);}
           ),
           body: SingleChildScrollView(
             child: Column(

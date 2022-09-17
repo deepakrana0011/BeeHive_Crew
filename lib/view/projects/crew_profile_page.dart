@@ -17,7 +17,8 @@ class CrewProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CommonWidgets.appBarWithTitleAndAction(context,
-          title: "crew_profile", actionButtonRequired: false),
+          title: "crew_profile", actionButtonRequired: false,popFunction: () { CommonWidgets.hideKeyboard(context);
+          Navigator.pop(context);}),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[

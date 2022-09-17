@@ -25,7 +25,10 @@ class CrewProfilePageManager extends StatelessWidget {
         builder: (context, provider, _) {
           return Scaffold(
             appBar: CommonWidgets.appBarWithTitleAndAction(context,
-                title: "crew_profile", actionButtonRequired: false),
+                title: "crew_profile", actionButtonRequired: false,
+                popFunction: () { CommonWidgets.hideKeyboard(context);
+                Navigator.pop(context);}
+            ),
             body: Padding(
               padding:
                   EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),

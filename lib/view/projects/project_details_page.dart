@@ -38,7 +38,9 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage>
               actionIcon: ImageConstants.settingsIcon,
               actionButtonRequired: true, onTapAction: () {
             Navigator.pushNamed(context, RouteConstants.projectSettingsPage);
-          }),
+          },
+              popFunction: () { CommonWidgets.hideKeyboard(context);
+              Navigator.pop(context);}),
           body: Padding(
             padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
             child: SingleChildScrollView(

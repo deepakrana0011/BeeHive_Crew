@@ -15,7 +15,8 @@ class ChangePasswordPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:  CommonWidgets.appBarWithTitleAndAction(context,title: "change_password".tr(),actionButtonRequired: false,),
+      appBar:  CommonWidgets.appBarWithTitleAndAction(context,title: "change_password".tr(),actionButtonRequired: false,popFunction: () { CommonWidgets.hideKeyboard(context);
+      Navigator.pop(context);}),
       body: Column(
         children:<Widget> [
           SizedBox(height: DimensionConstants.d24.h,),

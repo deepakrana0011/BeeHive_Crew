@@ -27,7 +27,8 @@ class CertificationPageManager extends StatelessWidget {
           appBar: CommonWidgets.appBarWithTitleAndAction(context,
               title: "certification".tr(),
               actionButtonRequired: true,
-              actionIcon: ImageConstants.notificationIconBell,onTapAction: (){Navigator.pushNamed(context, RouteConstants.notificationsScreenManager);}),
+              actionIcon: ImageConstants.notificationIconBell,onTapAction: (){Navigator.pushNamed(context, RouteConstants.notificationsScreenManager);},popFunction: () { CommonWidgets.hideKeyboard(context);
+              Navigator.pop(context);}),
           body: SingleChildScrollView(
             child: Column(
               children: <Widget>[

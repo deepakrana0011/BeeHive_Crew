@@ -96,6 +96,7 @@ class CommonWidgets {
     bool? showSkipButton,
     VoidCallback? onTapAction,
     VoidCallback? skipCallback,
+     required VoidCallback? popFunction,
     String? actionIcon,
     bool message = false,
     bool? color,
@@ -121,9 +122,7 @@ class CommonWidgets {
           child: Row(
             children: <Widget>[
               GestureDetector(
-                onTap: () {
-                  Navigator.of(context).pop();
-                },
+                onTap: popFunction,
                 child: const ImageView(
                   path: ImageConstants.leftArrowIcon,
                 ),

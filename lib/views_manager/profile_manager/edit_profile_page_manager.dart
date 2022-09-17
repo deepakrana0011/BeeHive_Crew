@@ -4,6 +4,7 @@ import 'package:beehive/constants/image_constants.dart';
 import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
+import 'package:beehive/helper/shared_prefs.dart';
 import 'package:beehive/provider/edit_profile_provider.dart';
 import 'package:beehive/provider/profile_page_manager_provider.dart';
 import 'package:beehive/view/base_view.dart';
@@ -39,7 +40,8 @@ class _EditProfilePageManagerState extends State<EditProfilePageManager> {
       builder: (context, provider, _) {
         return Scaffold(
           appBar: CommonWidgets.appBarWithTitleAndAction(context,
-              title: "edit_profile", actionButtonRequired: false),
+              title: "edit_profile", actionButtonRequired: false,popFunction: () { CommonWidgets.hideKeyboard(context);
+              Navigator.pop(context);}),
           body: SingleChildScrollView(
             child: provider.state == ViewState.idle? Column(
               children: <Widget>[
@@ -91,7 +93,7 @@ class _EditProfilePageManagerState extends State<EditProfilePageManager> {
                                 ));
                         provider.updateCompanyLogoChanged();
                       },
-                      provider.companyIcon,
+                      SharedPreference.prefs!.getString(SharedPreference.DashBoardIcon)== null? "": SharedPreference.prefs!.getString(SharedPreference.DashBoardIcon)!,
                       "change_logo",
                       ImageConstants.emptyLogo,
                     ),
