@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:beehive/provider/base_provider.dart';
+import 'package:beehive/views_manager/bottom_bar_manager/bottom_navigation_bar_manager.dart';
 import 'package:beehive/views_manager/light_theme_signup_login_manager/reset_password_screen_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -25,7 +26,7 @@ class OtpPageProviderManager extends BaseProvider{
       var model = await api.verifyOtp(context,phoneNumber,otp );
       if (model.success == true) {
         setState(ViewState.idle);
-        Navigator.pushNamedAndRemoveUntil(context, RouteConstants.bottomBarManager, (route) => false);
+        Navigator.pushNamed(context, RouteConstants.bottomBarManager, arguments: BottomBarManager(pageIndex: 0,fromBottomNav: 1,));
         DialogHelper.showMessage(context, model.message!);
       } else {
         setState(ViewState.idle);
