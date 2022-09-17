@@ -30,7 +30,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 import '../constants/api_constants.dart';
 import '../model/create_project_response_manager.dart';
-import '../model/crew_dashboard1.dart';
+import '../model/crew_dashboard_response.dart';
 import '../model/dash_board_page_response_crew.dart';
 import '../model/edit_profile_response_manager.dart';
 import '../model/get_otp_response_manager.dart';
@@ -1083,11 +1083,13 @@ class ApiCrew {
       }
     }
   }
-  Future<CrewDashboardResponse1> dashBoardApi(BuildContext context, ) async {
+  Future<CrewDashboardResponse> dashBoardApi(BuildContext context, ) async {
     try {
       dio.options.headers["Authorization"] = SharedPreference.prefs!.getString(SharedPreference.TOKEN);
-      var response = await dio.get(ApiConstantsCrew.BASEURL + ApiConstantsCrew.DASHBOARD_API ,);
-      return CrewDashboardResponse1.fromJson(json.decode(response.toString()));
+      var response = await dio.post(ApiConstantsCrew.BASEURL + ApiConstantsCrew.DASHBOARD_API);
+      var responseString=response.toString();
+      print("response string is ${responseString}");
+      return CrewDashboardResponse.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());

@@ -40,20 +40,20 @@ class _DashBoardPageState extends State<DashBoardPage>
     return BaseView<DashboardProvider>(
         onModelReady: (provider) {
           this.provider = provider;
-          provider.dashBoardApi(context);
+          provider.getDashBoardData(context);
           provider.weeklyDataApi(context);
     }, builder: (context, provider, _) {
       return Scaffold(
           key: _scaffoldKey,
           body: provider.state == ViewState.idle? Column(
             children: [
-              provider.crewResponse == null?
+              provider.crewResponse?.myProject == null?
               noProjectNotCheckedInContainer(context, "you_have_no_projects".tr(),false):
               SharedPreference.prefs!.getInt(SharedPreference.IS_CHECK_IN) == 1 ?
               projectsCheckOutContainer(SharedPreference.prefs!.getString(SharedPreference.CHECKED_PROJECT)??"",provider):
               noProjectNotCheckedInContainer(context, "you_are_not_checked_in".tr(),true,
                   onTap: () {checkInAlert(context,provider);}),
-              provider.crewResponse == null?
+              provider.crewResponse?.myProject!=null?
               whenDoNotHaveProject()  :
               CustomTabBar(notCheckedIn: provider.notCheckedIn, navigationValue: 2/*SharedPreference.prefs!.getInt(SharedPreference.IS_CHECK_IN)!*/,),
               SizedBox(height: DimensionConstants.d20.h),

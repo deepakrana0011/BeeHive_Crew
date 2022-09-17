@@ -15,7 +15,7 @@ import 'package:flutter/material.dart';
 
 import '../enum/enum.dart';
 import '../helper/dialog_helper.dart';
-import '../model/crew_dashboard1.dart';
+import '../model/crew_dashboard_response.dart';
 import '../services/fetch_data_expection.dart';
 
 class DashboardProvider extends BaseProvider{
@@ -49,15 +49,18 @@ class DashboardProvider extends BaseProvider{
   String? firstDate;
   String? secondDate;
   List<AllCheckIns> key=[];
-  CrewDashboardResponse1? crewResponse;
+  CrewDashboardResponse? crewResponse;
   String? currentCheckInProjectId;
   List<int> hoursList=[];
   List<Widget> widgetList=[];
   List<String> projectNameInitials =[];
   DateTime initialDay1 =DateTime.now();
   DateTime initialDay2 =DateTime.now().subtract(const Duration(days:7));
-
   String? initialDate;
+  String? day;
+  String? month;
+  String? year;
+
 
   updateNoProject(){
     noProject = !noProject;
@@ -79,14 +82,7 @@ class DashboardProvider extends BaseProvider{
     checkInTime =  DateFormat("yyyy-MM-dd hh:mm:ss").format(DateTime.now());
     notifyListeners();
   }
- /* getCheckOutTime(String date){
-    //checkOutTime =  DateFormat("yyyy-MM-dd hh:mm:ss").format(date);
-    checkOutTime = DateFormat.jm().parse(date).toString();
-    notifyListeners();
-  }*/
-    String? day;
-    String? month;
-    String? year;
+
 
    getCheckOutTimeWithCurrentDate(String time){
      DateTime date= DateTime.now();
@@ -124,7 +120,7 @@ class DashboardProvider extends BaseProvider{
     );
   }
 
-  Future dashBoardApi(BuildContext context,) async {
+  Future getDashBoardData(BuildContext context,) async {
     setState(ViewState.busy);
     try {
       var model = await apiCrew.dashBoardApi(context,);
@@ -159,20 +155,6 @@ class DashboardProvider extends BaseProvider{
             getInitials(string: "No Project", limitTo: 2);
           }
         }
-
-
-        /*for(int i =0; i<model.allCheckIns!.length ; i++){
-          if(model.allCheckIns![i].checkOutTime==null){
-            currentCheckInProjectId=model.allCheckIns![i].sId;
-            SharedPreference.prefs!.setInt(SharedPreference.IS_CHECK_IN, 1);
-            break;
-          }
-          else{SharedPreference.prefs!.setInt(SharedPreference.IS_CHECK_IN, 0);
-          }
-        }*/
-        //currentCheckInProjectId=model.allCheckIns![0].sId;
-
-
         checkIn = model.myProject!.isEmpty?"":model.myProject![0].projectId!.projectName!;
         convertTime(model.lastCheckIn!.isEmpty ? DateTime.now().toString():model.lastCheckIn![0].checkInTime!);
         getTimeDifferenceBetweenTime(model.lastCheckIn!.isEmpty ? DateTime.now().toString():model.lastCheckIn![0].checkInTime!);
@@ -198,7 +180,7 @@ class DashboardProvider extends BaseProvider{
           checkInResponse = model;
           SharedPreference.prefs!.setInt(SharedPreference.IS_CHECK_IN, 2);
           twoMinTimer();
-          dashBoardApi(context);
+          getDashBoardData(context);
           setState(ViewState.idle);
           DialogHelper.showMessage(context, model.message!);
         } else {
@@ -294,7 +276,7 @@ class DashboardProvider extends BaseProvider{
     if(checkOutDate.isAfter(checkInDate)){
       print("DT1 is after DT2");
       Navigator.pop(context);
-      checkOutApi(context).then((value) {dashBoardApi(context);});
+      checkOutApi(context).then((value) {getDashBoardData(context);});
       getCheckOutSelectedTime();
       notifyListeners();
       print(selectedTime);
