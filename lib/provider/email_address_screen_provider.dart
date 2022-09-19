@@ -14,7 +14,7 @@ class EmailAddressScreenProvider extends BaseProvider{
   Future emailVerifcationCrew(BuildContext context, String email) async {
     setState(ViewState.busy);
     try {
-      var model = await apiCrew.verifyCrewEmail(context,email );
+      var model = await api.verifyCrewEmail(context,email );
       if (model.success == true) {
         setState(ViewState.idle);
         Navigator.pushNamed(context, RouteConstants.otpVerificationPage,arguments: OtpVerificationPage(phoneNumber: email, continueWithPhoneOrEmail: false, routeForResetPassword: 2,));
@@ -36,7 +36,7 @@ class EmailAddressScreenProvider extends BaseProvider{
   Future verifyEmailForOtp(BuildContext context, String email,) async {
     setState(ViewState.busy);
     try {
-      var model = await apiCrew.getOtpForPasswordResetCrew(context,email );
+      var model = await api.getOtpForPasswordResetCrew(context,email );
       if (model.success == true) {
         setState(ViewState.idle);
         Navigator.pushNamed(context, RouteConstants.otpVerificationPage,arguments: OtpVerificationPage(phoneNumber: email, continueWithPhoneOrEmail: false, routeForResetPassword: 3,));

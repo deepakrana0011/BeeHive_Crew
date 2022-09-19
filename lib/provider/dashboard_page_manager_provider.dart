@@ -42,7 +42,7 @@ getInitials({required String string,required int limitTo}) {
   Future dashBoardApi(BuildContext context,) async {
     setState(ViewState.busy);
     try {
-      var model = await api.dashBoardApi(context,);
+      var model = await api.dashBoardApiManager(context,);
       if (model.success == true) {
         responseManager = model;
         customClass.logo = model.manager!.companyLogo ?? '';

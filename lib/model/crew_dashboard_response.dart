@@ -125,8 +125,8 @@ class ProjectId {
   String? id;
   String? projectName;
   String? address;
-  int? latitude;
-  int? longitude;
+  double? latitude;
+  double? longitude;
   String? locationRadius;
   List<String>? workDays;
   int? status;

@@ -24,7 +24,7 @@ getDialCode(String code){
 Future phoneVerificationCrew(BuildContext context, int routeForResetPassword,) async {
   setState(ViewState.busy);
   try {
-    var model = await apiCrew.phoneNumberVerificationCrew(context,dialCode,phoneNumberController.text );
+    var model = await api.phoneNumberVerificationCrew(context,dialCode,phoneNumberController.text );
     if (model.success == true) {
       setState(ViewState.idle);
       Navigator.pushNamed(context, RouteConstants.otpVerificationPage,arguments: OtpVerificationPage(phoneNumber: phoneNumberController.text, continueWithPhoneOrEmail: true, routeForResetPassword: routeForResetPassword,));
@@ -45,7 +45,7 @@ Future phoneVerificationCrew(BuildContext context, int routeForResetPassword,) a
 Future resetPasswordByPhone(BuildContext context, String phoneNumber,) async {
   setState(ViewState.busy);
   try {
-    var model = await apiCrew.resetPasswordByPhone(context,phoneNumber);
+    var model = await api.resetPasswordByPhone(context,phoneNumber);
     if (model.success == true) {
       setState(ViewState.idle);
       Navigator.pushNamed(context, RouteConstants.otpVerificationPage,arguments: OtpVerificationPage(phoneNumber: phoneNumber, continueWithPhoneOrEmail: true, routeForResetPassword: 4));

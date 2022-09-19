@@ -21,7 +21,7 @@ class SignUpProvider extends BaseProvider{
   Future signUpCrew(BuildContext context,String emailController) async {
     setState(ViewState.busy);
     try {
-      var model = await apiCrew.signUpCrew(context, nameController.text,emailController, passwordController.text);
+      var model = await api.signUpCrew(context, nameController.text,emailController, passwordController.text);
       if (model.success == true) {
         SharedPreference.prefs!.setString(SharedPreference.TOKEN, model.token!);
         SharedPreference.prefs!.setString(SharedPreference.USER_ID, model.data!.sId!);

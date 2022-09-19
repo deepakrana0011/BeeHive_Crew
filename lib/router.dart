@@ -58,15 +58,15 @@ class OnGenerateRouter {
     switch (settings.name) {
       case RouteConstants.beehiveIntro:
         return MaterialPageRoute(
-            builder: (_) => IntroductionPages(), settings: settings);
+            builder: (_) => const IntroductionPages(), settings: settings);
 
       case RouteConstants.signInScreen:
         return MaterialPageRoute(
-            builder: (_) => SignInScreen(), settings: settings);
+            builder: (_) => const SignInScreen(), settings: settings);
 
       case RouteConstants.bottomNavigationBar:
         return MaterialPageRoute(
-            builder: (_) => BottomBar(), settings: settings);
+            builder: (_) => const BottomBar(), settings: settings);
       case RouteConstants.projectDetailsPage:
         final args = settings.arguments as ProjectDetailsPage;
         return MaterialPageRoute(
@@ -75,40 +75,40 @@ class OnGenerateRouter {
             settings: settings);
       case RouteConstants.addNotePage:
         return MaterialPageRoute(
-            builder: (_) => AddNotePage(), settings: settings);
+            builder: (_) => const AddNotePage(), settings: settings);
       case RouteConstants.projectSettingsPage:
         return MaterialPageRoute(
-            builder: (_) => ProjectSettingsPage(), settings: settings);
+            builder: (_) => const ProjectSettingsPage(), settings: settings);
       case RouteConstants.crewProfilePage:
         return MaterialPageRoute(
-            builder: (_) => CrewProfilePage(), settings: settings);
+            builder: (_) => const CrewProfilePage(), settings: settings);
       case RouteConstants.editProfilePage:
         return MaterialPageRoute(
-            builder: (_) => EditProfilePage(), settings: settings);
+            builder: (_) => const EditProfilePage(), settings: settings);
       case RouteConstants.changePasswordPage:
         return MaterialPageRoute(
-            builder: (_) => ChangePasswordPage(), settings: settings);
+            builder: (_) => const ChangePasswordPage(), settings: settings);
       case RouteConstants.certificationPage:
         return MaterialPageRoute(
-            builder: (_) => CertificationPage(), settings: settings);
+            builder: (_) => const CertificationPage(), settings: settings);
       case RouteConstants.upgradePage:
         return MaterialPageRoute(
-            builder: (_) => UpgradePage(), settings: settings);
+            builder: (_) => const UpgradePage(), settings: settings);
       case RouteConstants.paymentPage:
         return MaterialPageRoute(
-            builder: (_) => PaymentPage(), settings: settings);
+            builder: (_) => const PaymentPage(), settings: settings);
 
       case RouteConstants.timeSheetsScreen:
         return MaterialPageRoute(
-            builder: (_) => TimeSheetsScreen(), settings: settings);
+            builder: (_) => const TimeSheetsScreen(), settings: settings);
 
       case RouteConstants.notificationsScreen:
         return MaterialPageRoute(
-            builder: (_) => NotificationsScreen(), settings: settings);
+            builder: (_) => const NotificationsScreen(), settings: settings);
 
       case RouteConstants.archivedProjectsScreen:
         return MaterialPageRoute(
-            builder: (_) => ArchivedProjectsScreen(), settings: settings);
+            builder: (_) => const ArchivedProjectsScreen(), settings: settings);
 
       case RouteConstants.appSettings:
         return MaterialPageRoute(
@@ -116,13 +116,14 @@ class OnGenerateRouter {
 
       case RouteConstants.selectToContinueScreen:
         return MaterialPageRoute(
-            builder: (_) => SelectToContinueScreen(), settings: settings);
+            builder: (_) => const SelectToContinueScreen(), settings: settings);
 
       case RouteConstants.emailAddressScreen:
         final args = settings.arguments as EmailAddressScreen;
         return MaterialPageRoute(
             builder: (_) => EmailAddressScreen(
-                  fromForgotPassword: args.fromForgotPassword, routeForResetPassword: args.routeForResetPassword,
+                  fromForgotPassword: args.fromForgotPassword,
+                  routeForResetPassword: args.routeForResetPassword,
                 ),
             settings: settings);
       case RouteConstants.signUpScreen:
@@ -136,27 +137,55 @@ class OnGenerateRouter {
       case RouteConstants.resetPasswordScreen:
         final args = settings.arguments as ResetPasswordScreen;
         return MaterialPageRoute(
-            builder: (_) => ResetPasswordScreen(email: args.email, byPhoneOrEmail: args.byPhoneOrEmail,), settings: settings);
+            builder: (_) => ResetPasswordScreen(
+                  email: args.email,
+                  byPhoneOrEmail: args.byPhoneOrEmail,
+                ),
+            settings: settings);
       case RouteConstants.continueWithPhone:
         final args = settings.arguments as ContinueWithPhone;
         return MaterialPageRoute(
-            builder: (_) => ContinueWithPhone(routeForResetPassword: args.routeForResetPassword,), settings: settings);
+            builder: (_) => ContinueWithPhone(
+                  routeForResetPassword: args.routeForResetPassword,
+                ),
+            settings: settings);
       case RouteConstants.otpVerificationPage:
         final args = settings.arguments as OtpVerificationPage;
         return MaterialPageRoute(
-            builder: (_) => OtpVerificationPage(phoneNumber: args.phoneNumber, continueWithPhoneOrEmail: args.continueWithPhoneOrEmail, routeForResetPassword: args.routeForResetPassword,), settings: settings);
+            builder: (_) => OtpVerificationPage(
+                  phoneNumber: args.phoneNumber,
+                  continueWithPhoneOrEmail: args.continueWithPhoneOrEmail,
+                  routeForResetPassword: args.routeForResetPassword,
+                ),
+            settings: settings);
       case RouteConstants.bottomBarManager:
-        final args = settings.arguments as BottomBarManager;
+        var pageIndex = 0;
+        var fromBottomNav = 1;
+        if (settings.arguments != null) {
+          final args = settings.arguments as BottomBarManager;
+          fromBottomNav = args.fromBottomNav!;
+          pageIndex = args.pageIndex!;
+        }
         return MaterialPageRoute(
-            builder: (_) => BottomBarManager(fromBottomNav: args.fromBottomNav, pageIndex: args.pageIndex,), settings: settings);
+            builder: (_) => BottomBarManager(
+                fromBottomNav: fromBottomNav, pageIndex: pageIndex),
+            settings: settings);
       case RouteConstants.continueWithPhoneManager:
         final args = settings.arguments as ContinueWithPhoneManager;
         return MaterialPageRoute(
-            builder: (_) => ContinueWithPhoneManager(routeForResetPassword: args.routeForResetPassword,), settings: settings);
+            builder: (_) => ContinueWithPhoneManager(
+                  routeForResetPassword: args.routeForResetPassword,
+                ),
+            settings: settings);
       case RouteConstants.otpVerificationPageManager:
         final args = settings.arguments as OtpVerificationPageManager;
         return MaterialPageRoute(
-            builder: (_) => OtpVerificationPageManager(phoneNumber: args.phoneNumber, continueWithPhoneOrEmail: args.continueWithPhoneOrEmail, resetPasswordWithEmail: args.resetPasswordWithEmail,), settings: settings);
+            builder: (_) => OtpVerificationPageManager(
+                  phoneNumber: args.phoneNumber,
+                  continueWithPhoneOrEmail: args.continueWithPhoneOrEmail,
+                  resetPasswordWithEmail: args.resetPasswordWithEmail,
+                ),
+            settings: settings);
       case RouteConstants.signUpScreenManager:
         final args = settings.arguments as SignUpScreenManager;
         return MaterialPageRoute(
@@ -166,12 +195,13 @@ class OnGenerateRouter {
         final args = settings.arguments as EmailAddressScreenManager;
         return MaterialPageRoute(
             builder: (_) => EmailAddressScreenManager(
-                  fromForgotPassword: args.fromForgotPassword, routeForResetPassword: args.routeForResetPassword,
+                  fromForgotPassword: args.fromForgotPassword,
+                  routeForResetPassword: args.routeForResetPassword,
                 ),
             settings: settings);
       case RouteConstants.notificationsScreenManager:
         return MaterialPageRoute(
-            builder: (_) => NotificationsScreenManager(), settings: settings);
+            builder: (_) => const NotificationsScreenManager(), settings: settings);
       case RouteConstants.appSettingsManager:
         return MaterialPageRoute(
             builder: (_) => AppSettingsManager(), settings: settings);
@@ -182,34 +212,38 @@ class OnGenerateRouter {
         final args = settings.arguments as ProjectDetailsPageManager;
         return MaterialPageRoute(
             builder: (_) => ProjectDetailsPageManager(
-                  createProject: args.createProject, projectId: args.projectId,
+                  createProject: args.createProject,
+                  projectId: args.projectId,
                 ),
             settings: settings);
       case RouteConstants.archivedProjectsScreenManager:
         return MaterialPageRoute(
-            builder: (_) => ArchivedProjectsScreenManager(),
+            builder: (_) => const ArchivedProjectsScreenManager(),
             settings: settings);
       case RouteConstants.createProjectManager:
         return MaterialPageRoute(
-            builder: (_) => CreateProjectManager(), settings: settings);
+            builder: (_) => const CreateProjectManager(), settings: settings);
       case RouteConstants.addCrewPageManager:
-        final args = settings.arguments as AddCrewPageManager;
         return MaterialPageRoute(
-            builder: (_) => AddCrewPageManager(projectId: args.projectId, id: args.id,), settings: settings);
+            builder: (_) => AddCrewPageManager(),
+            settings: settings);
       case RouteConstants.crewMemberAddByManager:
         final args = settings.arguments as CrewMemberAddByManager;
         return MaterialPageRoute(
-            builder: (_) => CrewMemberAddByManager(projectId: args.projectId,), settings: settings);
+            builder: (_) => CrewMemberAddByManager(
+                  projectId: args.projectId,
+                ),
+            settings: settings);
       case RouteConstants.setRatesManager:
         final args = settings.arguments as SetRatesPageManager;
         return MaterialPageRoute(
-            builder: (_) => SetRatesPageManager(projectId: args.projectId,), settings: settings);
+            builder: (_) => SetRatesPageManager(),
+            settings: settings);
       case RouteConstants.projectSettingsPageManager:
         final args = settings.arguments as ProjectSettingsPageManager;
         return MaterialPageRoute(
             builder: (_) => ProjectSettingsPageManager(
-                  fromProjectOrCreateProject: args.fromProjectOrCreateProject,
-              projectId: args.projectId,
+                  fromProjectOrCreateProject: args.fromProjectOrCreateProject
                 ),
             settings: settings);
       case RouteConstants.addNotePageManager:
@@ -217,7 +251,7 @@ class OnGenerateRouter {
         return MaterialPageRoute(
             builder: (_) => AddNotePageManager(
                   publicOrPrivate: args.publicOrPrivate,
-              projectId: args.projectId,
+                  projectId: args.projectId,
                 ),
             settings: settings);
       case RouteConstants.archivedProjectDetailsManager:
@@ -230,32 +264,44 @@ class OnGenerateRouter {
             settings: settings);
       case RouteConstants.crewPageProfileManager:
         return MaterialPageRoute(
-            builder: (_) => CrewProfilePageManager(), settings: settings);
+            builder: (_) => const CrewProfilePageManager(), settings: settings);
       case RouteConstants.timeSheetScreenManager:
         final args = settings.arguments as TimeSheetsScreenManager;
         return MaterialPageRoute(
-            builder: (_) => TimeSheetsScreenManager(removeInterruption: args.removeInterruption,), settings: settings);
+            builder: (_) => TimeSheetsScreenManager(
+                  removeInterruption: args.removeInterruption,
+                ),
+            settings: settings);
       case RouteConstants.timeSheetsFromCrew:
         return MaterialPageRoute(
-            builder: (_) => TimeSheetFromCrew(), settings: settings);
+            builder: (_) => const TimeSheetFromCrew(), settings: settings);
       case RouteConstants.billingInformationPageManager:
         final args = settings.arguments as BillingInformationPageManager;
         return MaterialPageRoute(
-            builder: (_) => BillingInformationPageManager(texOrNot: args.texOrNot,), settings: settings);
+            builder: (_) => BillingInformationPageManager(
+                  texOrNot: args.texOrNot,
+                ),
+            settings: settings);
       case RouteConstants.paymentPageManager:
         return MaterialPageRoute(
-            builder: (_) => PaymentPageManager(), settings: settings);
+            builder: (_) => const PaymentPageManager(), settings: settings);
       case RouteConstants.certificationPageManager:
-        return MaterialPageRoute(builder: (_)=> CertificationPageManager(),settings: settings);
+        return MaterialPageRoute(
+            builder: (_) => const CertificationPageManager(), settings: settings);
       case RouteConstants.editProfilePageManager:
-        return MaterialPageRoute(builder: (_)=> EditProfilePageManager(),settings: settings);
+        return MaterialPageRoute(
+            builder: (_) => const EditProfilePageManager(), settings: settings);
       case RouteConstants.changePasswordPageManager:
-        return MaterialPageRoute(builder: (_)=> ChangePasswordPageManager(),settings: settings);
+        return MaterialPageRoute(
+            builder: (_) => const ChangePasswordPageManager(), settings: settings);
       case RouteConstants.resetPasswordScreenManager:
         final args = settings.arguments as ResetPasswordScreenManager;
-        return MaterialPageRoute(builder: (_)=> ResetPasswordScreenManager(email: args.email, byPhoneOrEmail: args.byPhoneOrEmail,),settings: settings);
-
-
+        return MaterialPageRoute(
+            builder: (_) => ResetPasswordScreenManager(
+                  email: args.email,
+                  byPhoneOrEmail: args.byPhoneOrEmail,
+                ),
+            settings: settings);
 
       default:
         return _onPageNotFound();

@@ -54,8 +54,7 @@ class _ProjectDetailsPageManagerState extends State<ProjectDetailsPageManager>
             Navigator.pushNamed(
                 context, RouteConstants.projectSettingsPageManager,
                 arguments: ProjectSettingsPageManager(
-                  fromProjectOrCreateProject: false,
-                  projectId: '212',
+                  fromProjectOrCreateProject: false
                 ));
 
           },
@@ -433,7 +432,7 @@ Widget todayTab(
                 ? GestureDetector(
                     onTap: () {
                       Navigator.pushNamed(
-                          context, RouteConstants.addCrewPageManager,arguments: AddCrewPageManager(projectId: projectId, id: '',));
+                          context, RouteConstants.addCrewPageManager,arguments: AddCrewPageManager());
                     },
                     child: Container(
                       height: DimensionConstants.d40.h,

@@ -11,7 +11,6 @@ import '../constants/image_constants.dart';
 import '../widget/image_view.dart';
 
 class CommonWidgets {
-
   static void hideKeyboard(BuildContext context) {
     FocusScope.of(context).requestFocus(FocusNode());
     FocusScopeNode currentFocus = FocusScope.of(context);
@@ -29,26 +28,24 @@ class CommonWidgets {
         children: [
           GestureDetector(
             onTap: () {
-              SharedPreference.prefs!.setBool(SharedPreference.INTRODUCTION_COMPLETE, true);
-              Navigator.of(context)
-                  .pushNamedAndRemoveUntil(
-                  RouteConstants.selectToContinueScreen,
-                      (route) => false);
+              SharedPreference.prefs!
+                  .setBool(SharedPreference.INTRODUCTION_COMPLETE, true);
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                  RouteConstants.selectToContinueScreen, (route) => false);
             },
-            child: Text("sign_in".tr()).regularText(context,
-                DimensionConstants.d20.sp, TextAlign.left,
+            child: Text("sign_in".tr()).regularText(
+                context, DimensionConstants.d20.sp, TextAlign.left,
                 color: ColorConstants.colorWhite),
           ),
           GestureDetector(
             onTap: () {
-              SharedPreference.prefs!.setBool(SharedPreference.INTRODUCTION_COMPLETE, true);
-              Navigator.of(context)
-                  .pushNamedAndRemoveUntil(
-                  RouteConstants.selectToContinueScreen,
-                      (route) => false);
+              SharedPreference.prefs!
+                  .setBool(SharedPreference.INTRODUCTION_COMPLETE, true);
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                  RouteConstants.selectToContinueScreen, (route) => false);
             },
-            child: Text("create_account".tr()).regularText(context,
-                DimensionConstants.d20.sp, TextAlign.left,
+            child: Text("create_account".tr()).regularText(
+                context, DimensionConstants.d20.sp, TextAlign.left,
                 color: ColorConstants.primaryColor),
           ),
         ],
@@ -56,9 +53,13 @@ class CommonWidgets {
     );
   }
 
-
   static Widget commonButton(BuildContext context, String btnText,
-      {VoidCallback? onBtnTap, double? height, Color? color1, Color? color2, double? fontSize, bool? shadowRequired}) {
+      {VoidCallback? onBtnTap,
+      double? height,
+      Color? color1,
+      Color? color2,
+      double? fontSize,
+      bool? shadowRequired}) {
     return GestureDetector(
       onTap: onBtnTap,
       child: Container(
@@ -73,14 +74,16 @@ class CommonWidgets {
               color2 ?? ColorConstants.primaryGradient1Color
             ],
           ),
-          boxShadow: shadowRequired == true ? <BoxShadow>[
-            BoxShadow(
-              color: ColorConstants.primaryGradient2Color.withOpacity(0.7),
-              blurRadius: 20.0,
-              offset: const Offset(0.0, 6),
-            )
-          ] : null,
-
+          boxShadow: shadowRequired == true
+              ? <BoxShadow>[
+                  BoxShadow(
+                    color:
+                        ColorConstants.primaryGradient2Color.withOpacity(0.7),
+                    blurRadius: 20.0,
+                    offset: const Offset(0.0, 6),
+                  )
+                ]
+              : null,
           borderRadius: BorderRadius.all(
             Radius.circular(DimensionConstants.d8.r),
           ),
@@ -92,11 +95,12 @@ class CommonWidgets {
     );
   }
 
-  static PreferredSizeWidget appBarWithTitleAndAction(BuildContext context, {
+  static PreferredSizeWidget appBarWithTitleAndAction(
+    BuildContext context, {
     bool? showSkipButton,
     VoidCallback? onTapAction,
     VoidCallback? skipCallback,
-     required VoidCallback? popFunction,
+    required VoidCallback? popFunction,
     String? actionIcon,
     bool message = false,
     bool? color,
@@ -132,22 +136,25 @@ class CommonWidgets {
         ),
       ),
       actions: [
-        actionButtonRequired == true ? Padding(
-          padding: EdgeInsets.only(right: DimensionConstants.d10.w),
-          child: GestureDetector(
-            onTap: onTapAction,
-            child: ImageView(
-              path: actionIcon,
-              height: DimensionConstants.d24.h,
-              width: DimensionConstants.d24.w,
-            ),
-          ),
-        ) : Container(),
+        actionButtonRequired == true
+            ? Padding(
+                padding: EdgeInsets.only(right: DimensionConstants.d10.w),
+                child: GestureDetector(
+                  onTap: onTapAction,
+                  child: ImageView(
+                    path: actionIcon,
+                    height: DimensionConstants.d24.h,
+                    width: DimensionConstants.d24.w,
+                  ),
+                ),
+              )
+            : Container(),
       ],
     );
   }
 
-  static PreferredSizeWidget appBarWithTitleAndGradient(BuildContext context, {
+  static PreferredSizeWidget appBarWithTitleAndGradient(
+    BuildContext context, {
     bool? showSkipButton,
     VoidCallback? onTapAction,
     VoidCallback? skipCallback,
@@ -167,10 +174,9 @@ class CommonWidgets {
       flexibleSpace: Container(
         decoration: const BoxDecoration(
             gradient: LinearGradient(colors: [
-              ColorConstants.blueGradient1Color,
-              ColorConstants.blueGradient2Color
-            ])
-        ),
+          ColorConstants.blueGradient1Color,
+          ColorConstants.blueGradient2Color
+        ])),
       ),
       leadingWidth: 100,
       leading: InkWell(
@@ -196,25 +202,26 @@ class CommonWidgets {
         ),
       ),
       actions: [
-        actionButtonRequired == true ? Padding(
-          padding: EdgeInsets.only(right: DimensionConstants.d10.w),
-          child: GestureDetector(
-            onTap: onTapAction,
-            child: ImageView(
-              path: actionIcon,
-              height: DimensionConstants.d24.h,
-              width: DimensionConstants.d24.w,
-              color: ColorConstants.colorWhite,
-            ),
-          ),
-        ) : Container(),
+        actionButtonRequired == true
+            ? Padding(
+                padding: EdgeInsets.only(right: DimensionConstants.d10.w),
+                child: GestureDetector(
+                  onTap: onTapAction,
+                  child: ImageView(
+                    path: actionIcon,
+                    height: DimensionConstants.d24.h,
+                    width: DimensionConstants.d24.w,
+                    color: ColorConstants.colorWhite,
+                  ),
+                ),
+              )
+            : Container(),
       ],
     );
   }
 
-
-  static Widget totalProjectsTotalHoursRow(BuildContext context,
-      String totalProject, String totalHours) {
+  static Widget totalProjectsTotalHoursRow(
+      BuildContext context, String totalProject, String totalHours) {
     return Container(
       height: DimensionConstants.d72.h,
       width: DimensionConstants.d343.w,
@@ -227,16 +234,13 @@ class CommonWidgets {
         child: Row(
           children: <Widget>[
             Padding(
-              padding:
-              EdgeInsets.symmetric(vertical: DimensionConstants.d13.h),
+              padding: EdgeInsets.symmetric(vertical: DimensionConstants.d13.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Text(totalProject).semiBoldText(
                       context, DimensionConstants.d20.sp, TextAlign.left,
-                      color: Theme
-                          .of(context)
-                          .brightness == Brightness.dark
+                      color: Theme.of(context).brightness == Brightness.dark
                           ? ColorConstants.colorBlack
                           : ColorConstants.colorBlack),
                   SizedBox(
@@ -244,9 +248,7 @@ class CommonWidgets {
                   ),
                   Text("project_projects".tr()).regularText(
                       context, DimensionConstants.d14.sp, TextAlign.left,
-                      color: Theme
-                          .of(context)
-                          .brightness == Brightness.dark
+                      color: Theme.of(context).brightness == Brightness.dark
                           ? ColorConstants.colorBlack
                           : ColorConstants.colorBlack),
                 ],
@@ -264,16 +266,13 @@ class CommonWidgets {
               width: DimensionConstants.d55.w,
             ),
             Padding(
-              padding:
-              EdgeInsets.symmetric(vertical: DimensionConstants.d13.h),
+              padding: EdgeInsets.symmetric(vertical: DimensionConstants.d13.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Text(totalHours).semiBoldText(
                       context, DimensionConstants.d20.sp, TextAlign.left,
-                      color: Theme
-                          .of(context)
-                          .brightness == Brightness.dark
+                      color: Theme.of(context).brightness == Brightness.dark
                           ? ColorConstants.colorBlack
                           : ColorConstants.colorBlack),
                   SizedBox(
@@ -281,9 +280,7 @@ class CommonWidgets {
                   ),
                   Text("total_hours".tr()).regularText(
                       context, DimensionConstants.d14.sp, TextAlign.left,
-                      color: Theme
-                          .of(context)
-                          .brightness == Brightness.dark
+                      color: Theme.of(context).brightness == Brightness.dark
                           ? ColorConstants.colorBlack
                           : ColorConstants.colorBlack),
                 ],
@@ -295,8 +292,8 @@ class CommonWidgets {
     );
   }
 
-  static Widget totalProjectsTotalHoursRowTimeSheetManager(BuildContext context,
-      String totalProject, String totalHours) {
+  static Widget totalProjectsTotalHoursRowTimeSheetManager(
+      BuildContext context, String totalProject, String totalHours) {
     return Container(
       height: DimensionConstants.d72.h,
       width: DimensionConstants.d343.w,
@@ -309,8 +306,7 @@ class CommonWidgets {
         child: Row(
           children: <Widget>[
             Padding(
-              padding:
-              EdgeInsets.symmetric(vertical: DimensionConstants.d13.h),
+              padding: EdgeInsets.symmetric(vertical: DimensionConstants.d13.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
@@ -322,7 +318,7 @@ class CommonWidgets {
                   ),
                   Text("project_sites".tr()).regularText(
                       context, DimensionConstants.d14.sp, TextAlign.left,
-                      color:ColorConstants.colorBlack),
+                      color: ColorConstants.colorBlack),
                 ],
               ),
             ),
@@ -338,16 +334,13 @@ class CommonWidgets {
               width: DimensionConstants.d55.w,
             ),
             Padding(
-              padding:
-              EdgeInsets.symmetric(vertical: DimensionConstants.d13.h),
+              padding: EdgeInsets.symmetric(vertical: DimensionConstants.d13.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Text(totalHours).semiBoldText(
                       context, DimensionConstants.d20.sp, TextAlign.left,
-                      color: Theme
-                          .of(context)
-                          .brightness == Brightness.dark
+                      color: Theme.of(context).brightness == Brightness.dark
                           ? ColorConstants.colorBlack
                           : ColorConstants.colorBlack),
                   SizedBox(
@@ -355,9 +348,7 @@ class CommonWidgets {
                   ),
                   Text("total_hours".tr()).regularText(
                       context, DimensionConstants.d14.sp, TextAlign.left,
-                      color: Theme
-                          .of(context)
-                          .brightness == Brightness.dark
+                      color: Theme.of(context).brightness == Brightness.dark
                           ? ColorConstants.colorBlack
                           : ColorConstants.colorBlack),
                 ],
@@ -368,8 +359,9 @@ class CommonWidgets {
       ),
     );
   }
-  static Widget crewTabProject(BuildContext context,
-      String totalProject, String totalHours) {
+
+  static Widget crewTabProject(
+      BuildContext context, String totalProject, String totalHours) {
     return Container(
       height: DimensionConstants.d72.h,
       width: DimensionConstants.d343.w,
@@ -385,8 +377,7 @@ class CommonWidgets {
               width: DimensionConstants.d10.w,
             ),
             Padding(
-              padding:
-              EdgeInsets.symmetric(vertical: DimensionConstants.d13.h),
+              padding: EdgeInsets.symmetric(vertical: DimensionConstants.d13.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
@@ -398,7 +389,7 @@ class CommonWidgets {
                   ),
                   Text("crew".tr()).regularText(
                       context, DimensionConstants.d14.sp, TextAlign.left,
-                      color:ColorConstants.colorBlack),
+                      color: ColorConstants.colorBlack),
                 ],
               ),
             ),
@@ -414,16 +405,13 @@ class CommonWidgets {
               width: DimensionConstants.d47.w,
             ),
             Padding(
-              padding:
-              EdgeInsets.symmetric(vertical: DimensionConstants.d13.h),
+              padding: EdgeInsets.symmetric(vertical: DimensionConstants.d13.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Text(totalHours).semiBoldText(
                       context, DimensionConstants.d20.sp, TextAlign.left,
-                      color: Theme
-                          .of(context)
-                          .brightness == Brightness.dark
+                      color: Theme.of(context).brightness == Brightness.dark
                           ? ColorConstants.colorBlack
                           : ColorConstants.colorBlack),
                   SizedBox(
@@ -431,9 +419,7 @@ class CommonWidgets {
                   ),
                   Text("total_hours".tr()).regularText(
                       context, DimensionConstants.d14.sp, TextAlign.left,
-                      color: Theme
-                          .of(context)
-                          .brightness == Brightness.dark
+                      color: Theme.of(context).brightness == Brightness.dark
                           ? ColorConstants.colorBlack
                           : ColorConstants.colorBlack),
                 ],
@@ -444,8 +430,9 @@ class CommonWidgets {
       ),
     );
   }
-  static Widget crewTabProjectTimeSheet(BuildContext context,
-      String totalProject, String totalHours) {
+
+  static Widget crewTabProjectTimeSheet(
+      BuildContext context, String totalProject, String totalHours) {
     return Container(
       height: DimensionConstants.d72.h,
       width: DimensionConstants.d343.w,
@@ -461,8 +448,7 @@ class CommonWidgets {
               width: DimensionConstants.d5.w,
             ),
             Padding(
-              padding:
-              EdgeInsets.symmetric(vertical: DimensionConstants.d13.h),
+              padding: EdgeInsets.symmetric(vertical: DimensionConstants.d13.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
@@ -474,7 +460,7 @@ class CommonWidgets {
                   ),
                   Text("projects".tr()).regularText(
                       context, DimensionConstants.d14.sp, TextAlign.left,
-                      color:ColorConstants.colorBlack),
+                      color: ColorConstants.colorBlack),
                 ],
               ),
             ),
@@ -490,16 +476,13 @@ class CommonWidgets {
               width: DimensionConstants.d47.w,
             ),
             Padding(
-              padding:
-              EdgeInsets.symmetric(vertical: DimensionConstants.d13.h),
+              padding: EdgeInsets.symmetric(vertical: DimensionConstants.d13.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: <Widget>[
                   Text(totalHours).semiBoldText(
                       context, DimensionConstants.d20.sp, TextAlign.left,
-                      color: Theme
-                          .of(context)
-                          .brightness == Brightness.dark
+                      color: Theme.of(context).brightness == Brightness.dark
                           ? ColorConstants.colorBlack
                           : ColorConstants.colorBlack),
                   SizedBox(
@@ -507,9 +490,7 @@ class CommonWidgets {
                   ),
                   Text("total_hours".tr()).regularText(
                       context, DimensionConstants.d14.sp, TextAlign.left,
-                      color: Theme
-                          .of(context)
-                          .brightness == Brightness.dark
+                      color: Theme.of(context).brightness == Brightness.dark
                           ? ColorConstants.colorBlack
                           : ColorConstants.colorBlack),
                 ],
@@ -521,22 +502,11 @@ class CommonWidgets {
     );
   }
 
-
-
-
-
-
-
-
-
-
+  static Widget Divider(double height, double width, Color color) {
+    return Container(
+      height: height,
+      width: width,
+      color: color,
+    );
+  }
 }
-
-
-
-
-
-
-
-
-

@@ -19,7 +19,7 @@ class LoginProvider extends BaseProvider{
   Future loginCrew(BuildContext context, String email,String password) async {
     setState(ViewState.busy);
     try {
-      var model = await apiCrew.loginCrew(context,email,password);
+      var model = await api.loginCrew(context,email,password);
       if (model.success == true) {
         setState(ViewState.idle);
         SharedPreference.prefs!.setString(SharedPreference.TOKEN, model.token!);

@@ -17,8 +17,6 @@ import '../../provider/bottom_bar_Manager_provider.dart';
 import '../../provider/bottom_bar_provider.dart';
 import '../../widget/image_view.dart';
 
-
-
 class DashBoardPageManager extends StatefulWidget {
   const DashBoardPageManager({Key? key}) : super(key: key);
 
@@ -26,60 +24,81 @@ class DashBoardPageManager extends StatefulWidget {
   _DashBoardPageManagerState createState() => _DashBoardPageManagerState();
 }
 
-class _DashBoardPageManagerState extends State<DashBoardPageManager> with TickerProviderStateMixin {
-
-  DashBoardPageManagerProvider provider= locator<DashBoardPageManagerProvider>();
+class _DashBoardPageManagerState extends State<DashBoardPageManager>
+    with TickerProviderStateMixin {
+  DashBoardPageManagerProvider provider =
+      locator<DashBoardPageManagerProvider>();
 
   @override
   Widget build(BuildContext context) {
-
-
-    return BaseView<DashBoardPageManagerProvider>(
-        onModelReady: (provider) {this.provider = provider;provider.dashBoardApi(context,);
-       provider.controller = TabController(length: 3, vsync: this);
-        },
-        builder: (context, provider, _) {
-          return provider.state == ViewState.idle?Scaffold(
-            body: Column(
-              children:<Widget> [
-                activeProjectWidget(context,provider),
+    return BaseView<DashBoardPageManagerProvider>(onModelReady: (provider) {
+      this.provider = provider;
+      provider.dashBoardApi(
+        context,
+      );
+      provider.controller = TabController(length: 3, vsync: this);
+    }, builder: (context, provider, _) {
+      return provider.state == ViewState.idle
+          ? Scaffold(
+              body: Column(
+              children: <Widget>[
+                activeProjectWidget(context, provider),
                 tabBarView(provider.controller!, context, provider)
               ],
-            )
-          ):Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,));
-        });
+            ))
+          : Center(
+              child: CircularProgressIndicator(
+              color: ColorConstants.primaryGradient2Color,
+            ));
+    });
   }
 }
 
-Widget activeProjectWidget(BuildContext context, DashBoardPageManagerProvider provider){
+Widget activeProjectWidget(
+    BuildContext context, DashBoardPageManagerProvider provider) {
   return Container(
     height: DimensionConstants.d151.h,
     width: double.infinity,
     decoration: const BoxDecoration(
-      gradient: LinearGradient(colors: [ColorConstants.blueGradient1Color,ColorConstants.blueGradient2Color])
-    ),
+        gradient: LinearGradient(colors: [
+      ColorConstants.blueGradient1Color,
+      ColorConstants.blueGradient2Color
+    ])),
     child: Padding(
       padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children:<Widget> [
-          SizedBox(height: DimensionConstants.d16.h,),
-          Text("Hey  ${provider.responseManager!.manager!.name!},\nwhat’s buzzing?").boldText(context, DimensionConstants.d18.sp, TextAlign.left,color: ColorConstants.colorWhite),
-          SizedBox(height: DimensionConstants.d10.h,),
+        children: <Widget>[
+          SizedBox(
+            height: DimensionConstants.d16.h,
+          ),
+          Text("Hey  ${provider.responseManager!.manager!.name!},\nwhat’s buzzing?")
+              .boldText(context, DimensionConstants.d18.sp, TextAlign.left,
+                  color: ColorConstants.colorWhite),
+          SizedBox(
+            height: DimensionConstants.d10.h,
+          ),
           Row(
-            children:<Widget> [
-              crewAndActiveProject(context,provider.responseManager!.activeProject.toString(),"active_projects"),
+            children: <Widget>[
+              crewAndActiveProject(
+                  context,
+                  provider.responseManager!.activeProject.toString(),
+                  "active_projects"),
               Expanded(child: Container()),
-              crewAndActiveProject(context,provider.responseManager!.crewMembers.toString(),"crew_members"),
+              crewAndActiveProject(
+                  context,
+                  provider.responseManager!.crewMembers.toString(),
+                  "crew_members"),
             ],
           ),
-
         ],
       ),
     ),
   );
 }
-Widget crewAndActiveProject(BuildContext context,String number,String tabName){
+
+Widget crewAndActiveProject(
+    BuildContext context, String number, String tabName) {
   return Container(
     height: DimensionConstants.d65.h,
     width: DimensionConstants.d169.w,
@@ -89,16 +108,20 @@ Widget crewAndActiveProject(BuildContext context,String number,String tabName){
     ),
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      children:<Widget> [
-        Text(number).semiBoldText(context, DimensionConstants.d22.sp, TextAlign.center,color: ColorConstants.colorWhite),
-        Text(tabName.tr()).regularText(context, DimensionConstants.d14.sp, TextAlign.center,color: ColorConstants.colorWhite),
+      children: <Widget>[
+        Text(number).semiBoldText(
+            context, DimensionConstants.d22.sp, TextAlign.center,
+            color: ColorConstants.colorWhite),
+        Text(tabName.tr()).regularText(
+            context, DimensionConstants.d14.sp, TextAlign.center,
+            color: ColorConstants.colorWhite),
       ],
     ),
   );
-
-
 }
-Widget tabBarView(TabController controller, BuildContext context,DashBoardPageManagerProvider provider) {
+
+Widget tabBarView(TabController controller, BuildContext context,
+    DashBoardPageManagerProvider provider) {
   return Expanded(
     child: Padding(
       padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
@@ -140,33 +163,33 @@ Widget tabBarView(TabController controller, BuildContext context,DashBoardPageMa
                   height: DimensionConstants.d50.h,
                   width: DimensionConstants.d114.w,
                   child: controller.index == 0
-                      ? Text("today".tr()).boldText(context,
-                      DimensionConstants.d16.sp, TextAlign.center,
-                      color: ColorConstants.colorWhite)
-                      : Text("today".tr()).regularText(context,
-                      DimensionConstants.d16.sp, TextAlign.center),
+                      ? Text("today".tr()).boldText(
+                          context, DimensionConstants.d16.sp, TextAlign.center,
+                          color: ColorConstants.colorWhite)
+                      : Text("today".tr()).regularText(
+                          context, DimensionConstants.d16.sp, TextAlign.center),
                 ),
                 Container(
                   alignment: Alignment.center,
                   height: DimensionConstants.d50.h,
                   width: DimensionConstants.d114.w,
                   child: controller.index == 1
-                      ? Text("weekly".tr()).boldText(context,
-                      DimensionConstants.d16.sp, TextAlign.center,
-                      color: ColorConstants.colorWhite)
-                      : Text("weekly".tr()).regularText(context,
-                      DimensionConstants.d16.sp, TextAlign.center),
+                      ? Text("weekly".tr()).boldText(
+                          context, DimensionConstants.d16.sp, TextAlign.center,
+                          color: ColorConstants.colorWhite)
+                      : Text("weekly".tr()).regularText(
+                          context, DimensionConstants.d16.sp, TextAlign.center),
                 ),
                 Container(
                   alignment: Alignment.center,
                   height: DimensionConstants.d50.h,
                   width: DimensionConstants.d114.w,
                   child: controller.index == 2
-                      ? Text("bi_weekly".tr()).boldText(context,
-                      DimensionConstants.d16.sp, TextAlign.center,
-                      color: ColorConstants.colorWhite)
-                      : Text("bi_weekly".tr()).regularText(context,
-                      DimensionConstants.d16.sp, TextAlign.center),
+                      ? Text("bi_weekly".tr()).boldText(
+                          context, DimensionConstants.d16.sp, TextAlign.center,
+                          color: ColorConstants.colorWhite)
+                      : Text("bi_weekly".tr()).regularText(
+                          context, DimensionConstants.d16.sp, TextAlign.center),
                 ),
               ],
             ),
@@ -176,10 +199,9 @@ Widget tabBarView(TabController controller, BuildContext context,DashBoardPageMa
               controller: controller,
               physics: NeverScrollableScrollPhysics(),
               children: [
-                //  provider.hasProjects ? projectsAndHoursCardList() : zeroProjectZeroHourCard(),
-                projectsAndHoursCardListManager(context,provider),
-               Container(),
-               /* weeklyTabBarContainerManager(context),*/
+                projectsAndHoursCardListManager(context, provider),
+                Container(),
+                /* weeklyTabBarContainerManager(context),*/
                 Icon(Icons.directions_car, size: 350),
               ],
             ),
@@ -190,7 +212,8 @@ Widget tabBarView(TabController controller, BuildContext context,DashBoardPageMa
   );
 }
 
-Widget projectsAndHoursCardListManager(BuildContext context,DashBoardPageManagerProvider provider) {
+Widget projectsAndHoursCardListManager(
+    BuildContext context, DashBoardPageManagerProvider provider) {
   return Padding(
     padding: EdgeInsets.only(top: DimensionConstants.d16.h),
     child: Card(
@@ -214,13 +237,15 @@ Widget projectsAndHoursCardListManager(BuildContext context,DashBoardPageManager
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  projectsHoursRow(context,ImageConstants.mapIcon, "${provider.responseManager!.activeProject} ${"projects".tr()}"),
+                  projectsHoursRow(context, ImageConstants.mapIcon,
+                      "${provider.responseManager!.activeProject} ${"projects".tr()}"),
                   Container(
                     height: DimensionConstants.d70.h,
                     width: DimensionConstants.d1.w,
                     color: ColorConstants.colorLightGrey,
                   ),
-                  projectsHoursRow(context,ImageConstants.clockIcon, "07.28 ${"hours".tr()}")
+                  projectsHoursRow(context, ImageConstants.clockIcon,
+                      "07.28 ${"hours".tr()}")
                 ],
               ),
             ),
@@ -228,10 +253,9 @@ Widget projectsAndHoursCardListManager(BuildContext context,DashBoardPageManager
                 color: ColorConstants.colorGreyDrawer,
                 height: 0.0,
                 thickness: 1.5),
-            projectHourRowManager(context,provider,onTap: (){}),
+            projectHourRowManager(context, provider, onTap: () {}),
 
-           
-           /* const Divider(
+            /* const Divider(
                 color: ColorConstants.colorGreyDrawer,
                 height: 0.0,
                 thickness: 1.5),
@@ -246,17 +270,12 @@ Widget projectsAndHoursCardListManager(BuildContext context,DashBoardPageManager
                 height: 0.0,
                 thickness: 1.5),
             projectHourRowManager(context, ColorConstants.deepBlue, "MS", "Momentum Digital", "2 Crew", "12:57h", ),*/
-
-
-
           ],
         ),
       ),
     ),
   );
 }
-
-
 
 /*
 Widget weeklyTabBarContainerManager(BuildContext context) {
@@ -388,7 +407,7 @@ Widget weeklyTabBarContainerManager(BuildContext context) {
   );
 }
 */
-Widget projectsHoursRow(BuildContext context,String iconPath, String txt) {
+Widget projectsHoursRow(BuildContext context, String iconPath, String txt) {
   return Row(
     children: [
       ImageView(path: iconPath),
@@ -397,13 +416,16 @@ Widget projectsHoursRow(BuildContext context,String iconPath, String txt) {
     ],
   );
 }
-Widget projectHourRowManager(BuildContext context, DashBoardPageManagerProvider provider,  {VoidCallback? onTap}) {
+
+Widget projectHourRowManager(
+    BuildContext context, DashBoardPageManagerProvider provider,
+    {VoidCallback? onTap}) {
   return Container(
     height: DimensionConstants.d240.h,
     width: DimensionConstants.d400.w,
     child: ListView.separated(
       itemCount: provider.responseManager!.crewOnProject!.length,
-      itemBuilder: (BuildContext context, int index){
+      itemBuilder: (BuildContext context, int index) {
         return GestureDetector(
           onTap: onTap,
           child: Container(
@@ -423,31 +445,44 @@ Widget projectHourRowManager(BuildContext context, DashBoardPageManagerProvider 
                       shape: BoxShape.circle,
                       color: ColorConstants.blueGradient2Color,
                     ),
-                    child: Text(provider.projectNameInitials[index].toString()).boldText(context, DimensionConstants.d16.sp, TextAlign.center, color: ColorConstants.colorWhite),
+                    child: Text(provider.projectNameInitials[index].toString())
+                        .boldText(context, DimensionConstants.d16.sp,
+                            TextAlign.center,
+                            color: ColorConstants.colorWhite),
                   ),
                   SizedBox(width: DimensionConstants.d14.w),
                   Container(
                     width: DimensionConstants.d120.w,
-                    child:  Text(provider.responseManager!.crewOnProject![index].projectId!.projectName!).boldText(context, DimensionConstants.d13.sp, TextAlign.center),
+                    child: Text(provider.responseManager!.crewOnProject![index]
+                            .projectId!.projectName!)
+                        .boldText(context, DimensionConstants.d13.sp,
+                            TextAlign.center),
                   ),
-                  SizedBox(width: DimensionConstants.d24.w,),
-                  Text("${provider.responseManager!.crewOnProject![index].crewId!.length} Crew").regularText(context, DimensionConstants.d13.sp, TextAlign.center),
+                  SizedBox(
+                    width: DimensionConstants.d24.w,
+                  ),
+                  Text("${provider.responseManager!.crewOnProject![index].crewId!.length} Crew")
+                      .regularText(
+                          context, DimensionConstants.d13.sp, TextAlign.center),
                   SizedBox(width: DimensionConstants.d15.w),
-                  Text("12:57h").semiBoldText(context, DimensionConstants.d13.sp, TextAlign.center),
+                  Text("12:57h").semiBoldText(
+                      context, DimensionConstants.d13.sp, TextAlign.center),
                   SizedBox(width: DimensionConstants.d11.w),
-                  ImageView(path: ImageConstants.forwardArrowIcon, color: (Theme.of(context).brightness == Brightness.dark ? ColorConstants.colorWhite : ColorConstants.colorBlack))
+                  ImageView(
+                      path: ImageConstants.forwardArrowIcon,
+                      color: (Theme.of(context).brightness == Brightness.dark
+                          ? ColorConstants.colorWhite
+                          : ColorConstants.colorBlack))
                 ],
               ),
             ),
           ),
         );
-
-
-      }, separatorBuilder: (BuildContext context, int index) { return const Divider(
-        color: ColorConstants.colorGreyDrawer,
-        height: 0.0,
-        thickness: 1.5); },
-
+      },
+      separatorBuilder: (BuildContext context, int index) {
+        return const Divider(
+            color: ColorConstants.colorGreyDrawer, height: 0.0, thickness: 1.5);
+      },
     ),
   );
 }
@@ -464,6 +499,7 @@ Widget commonStepper() {
     ),
   );
 }
+
 Widget stepperLineWithOneCoolIcon() {
   return Padding(
     padding: EdgeInsets.only(bottom: DimensionConstants.d13.h),
@@ -497,6 +533,7 @@ Widget stepperLineWithOneCoolIcon() {
     ),
   );
 }
+
 Widget backNextBtn(String path) {
   return Container(
     alignment: Alignment.center,
@@ -511,7 +548,8 @@ Widget backNextBtn(String path) {
     ),
   );
 }
-Widget weeklyTabBarDateContainer(BuildContext context,String date) {
+
+Widget weeklyTabBarDateContainer(BuildContext context, String date) {
   return Container(
     color: ColorConstants.colorLightGreyF2,
     height: DimensionConstants.d32.h,
@@ -602,6 +640,7 @@ Widget stepperLineWithTwoCoolIcon() {
     ],
   );
 }
+
 Widget stepperWithGrayAndGreen() {
   return SizedBox(
     width: DimensionConstants.d75.w,

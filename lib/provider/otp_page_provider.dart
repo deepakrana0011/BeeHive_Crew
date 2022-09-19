@@ -22,7 +22,7 @@ class OtpPageProvider extends BaseProvider{
   Future otpVerificationCrewPhone(BuildContext context, String phoneNumber,) async {
     setState(ViewState.busy);
     try {
-      var model = await apiCrew.verifyOtpCrewPhone(context,phoneNumber,otp );
+      var model = await api.verifyOtpCrewPhone(context,phoneNumber,otp );
       if (model.success == true) {
         setState(ViewState.idle);
           Navigator.pushNamedAndRemoveUntil(context, RouteConstants.loginScreen, (route) => false);
@@ -42,7 +42,7 @@ class OtpPageProvider extends BaseProvider{
   Future verifyEmailForOtp(BuildContext context, String email,) async {
     setState(ViewState.busy);
     try {
-      var model = await apiCrew.verifyEmailForOtp(context,email ,otp);
+      var model = await api.verifyEmailForOtp(context,email ,otp);
       if (model.success == true) {
         setState(ViewState.idle);
         Navigator.pushNamed(context, RouteConstants.loginScreen, );
@@ -63,7 +63,7 @@ class OtpPageProvider extends BaseProvider{
   Future verifyEmailForOtpResetPassword(BuildContext context, String email,) async {
     setState(ViewState.busy);
     try {
-      var model = await apiCrew.verifyEmailForResetPassword(context,email ,otp);
+      var model = await api.verifyEmailForResetPassword(context,email ,otp);
       if (model.success == true) {
         setState(ViewState.idle);
         Navigator.pushNamed(context, RouteConstants.resetPasswordScreen,arguments: ResetPasswordScreen(email: email, byPhoneOrEmail: false,),);
@@ -84,7 +84,7 @@ class OtpPageProvider extends BaseProvider{
   Future verifyingOtpByPhone(BuildContext context, String phoneNumber,) async {
     setState(ViewState.busy);
     try {
-      var model = await apiCrew.verifyingOtpByPhone(context,phoneNumber, otp);
+      var model = await api.verifyingOtpByPhone(context,phoneNumber, otp);
       if (model.success == true) {
         setState(ViewState.idle);
         Navigator.pushNamed(context, RouteConstants.resetPasswordScreen,arguments: ResetPasswordScreen(email: phoneNumber, byPhoneOrEmail: true,));
@@ -107,7 +107,7 @@ class OtpPageProvider extends BaseProvider{
   Future resendOtpApiPhone(BuildContext context, String phoneNumber) async {
     setState(ViewState.busy);
     try {
-      var model = await apiCrew.resendOtpByPhoneApi(context,phoneNumber);
+      var model = await api.resendOtpByPhoneApi(context,phoneNumber);
       if (model.success == true) {
         setState(ViewState.idle);
         DialogHelper.showMessage(context, model.message!);
@@ -126,7 +126,7 @@ class OtpPageProvider extends BaseProvider{
   Future resendOtpApiEmail(BuildContext context, String email) async {
     setState(ViewState.busy);
     try {
-      var model = await apiCrew.resendOtpEmailApi(context,email);
+      var model = await api.resendOtpEmailApi(context,email);
       if (model.success == true) {
         setState(ViewState.idle);
         DialogHelper.showMessage(context, model.message!);

@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:beehive/helper/shared_prefs.dart';
+import 'package:beehive/locator.dart';
 import 'package:beehive/model/add_crew_by_manager_response.dart';
 import 'package:beehive/model/add_crew_response_manager.dart';
 import 'package:beehive/model/add_note_manager_response.dart';
 import 'package:beehive/model/assign_project_response_manager.dart';
 import 'package:beehive/model/check_in_response_crew.dart';
+import 'package:beehive/model/create_project_request.dart';
 import 'package:beehive/model/dashboard_manager_response.dart';
 import 'package:beehive/model/email_verification_response_manager.dart';
 import 'package:beehive/model/email_verified_response_manager.dart';
@@ -39,11 +41,11 @@ import '../model/sign_up_manager_response.dart';
 import '../model/verify_otp_response_manager.dart';
 import 'fetch_data_expection.dart';
 
-class ApiManager {
-
+class Api {
   var profileImage;
   var companyLogo;
-  Dio dio = Dio();
+  Dio dio = locator<Dio>();
+
   Future<SignUpResponse> signUp(
     BuildContext context,
     String name,
@@ -208,7 +210,9 @@ class ApiManager {
         "longitude": longitude,
         "locationRadius": locationRadius
       };
-      var response = await dio.post(ApiConstantsManager.BASEURL + ApiConstantsManager.CREATE_PROJECT, data: map);
+      var response = await dio.post(
+          ApiConstantsManager.BASEURL + ApiConstantsManager.CREATE_PROJECT,
+          data: map);
       return CreateProjectResponseManager.fromJson(
           json.decode(response.toString()));
     } on DioError catch (e) {
@@ -332,27 +336,7 @@ class ApiManager {
     }
   }
 
-  Future<EmailVerifiedResponseManager> verifyingOtpByPhone(
-      BuildContext context, String phoneNumber, String otp) async {
-    try {
-      var map = {"phoneNumber": phoneNumber, "forgotOTP": otp};
-      var response = await dio.post(
-          ApiConstantsManager.BASEURL + ApiConstantsManager.VERIFY_OTP_BY_PHONE,
-          data: map);
-      return EmailVerifiedResponseManager.fromJson(
-          json.decode(response.toString()));
-    } on DioError catch (e) {
-      if (e.response != null) {
-        var errorData = jsonDecode(e.response.toString());
-        var errorMessage = errorData["message"];
-        throw FetchDataException(errorMessage);
-      } else {
-        throw const SocketException("Socket Exception");
-      }
-    }
-  }
-
-  Future<EmailVerifiedResponseManager> resetPasswordByPhoneNumber(
+  Future<EmailVerifiedResponseManager> resetPasswordByPhoneNumberManager(
       BuildContext context,
       {required String phoneNumber,
       required String password}) async {
@@ -383,7 +367,7 @@ class ApiManager {
     try {
       List selectedList = [];
       for (int i = 0; i < selectedCrew.length; i++) {
-        selectedList.add(selectedCrew[i].sId);
+        selectedList.add(selectedCrew[i].id);
       }
       var map = {
         "projectId": projectId,
@@ -475,31 +459,36 @@ class ApiManager {
       required String hoursStarting,
       required String endingHours,
       required String afterHourRate,
-        required List<String> breakFrom,
-        required List<String> breakTo,
-     /* required String breakFrom,
+      required List<String> breakFrom,
+      required List<String> breakTo,
+      /* required String breakFrom,
       required String breakTo,*/
       required String roundTimeSheetValue}) async {
     try {
-      List<ProjectSettingsBreakRequestManager> breaks=[];
+      List<ProjectSettingsBreakRequestManager> breaks = [];
       var breakRequest = ProjectSettingsBreakRequestManager();
-      for(int i=0; i<breakFrom.length; i++) {
+      for (int i = 0; i < breakFrom.length; i++) {
         breakRequest.from = breakFrom[i];
-       breakRequest.to = breakTo[i];
+        breakRequest.to = breakTo[i];
         breaks.add(breakRequest);
       }
       var map = {
-
         "workDays": workdays,
-        "hoursTo":hoursStarting,
+        "hoursTo": hoursStarting,
         "hoursFrom": endingHours,
         "afterHoursRate": afterHourRate,
         "break": breaks,
         "roundTimesheets": roundTimeSheetValue
       };
-      dio.options.headers["Authorization"] = SharedPreference.prefs!.getString(SharedPreference.TOKEN);
-      var response = await dio.post(ApiConstantsManager.BASEURL + ApiConstantsManager.PROJECT_SETTINGS+projectId, data: map);
-      return ProjectSettingsResponseManager.fromJson(json.decode(response.toString()));
+      dio.options.headers["Authorization"] =
+          SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var response = await dio.post(
+          ApiConstantsManager.BASEURL +
+              ApiConstantsManager.PROJECT_SETTINGS +
+              projectId,
+          data: map);
+      return ProjectSettingsResponseManager.fromJson(
+          json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());
@@ -535,15 +524,15 @@ class ApiManager {
   }
 
   Future<AddNoteManagerResponse> addNoteApi(BuildContext context,
-      {
-      required String assignProjectId,
+      {required String assignProjectId,
       required String title,
       required String note,
       required List<String> image}) async {
     try {
-      List<MultipartFile> imageToUpload =[];
-      for(int i =0; i < image.length;i++){
-      imageToUpload.add(MultipartFile.fromFileSync(image[i], filename: "image.jpg"));
+      List<MultipartFile> imageToUpload = [];
+      for (int i = 0; i < image.length; i++) {
+        imageToUpload
+            .add(MultipartFile.fromFileSync(image[i], filename: "image.jpg"));
       }
       var map = {
         "assignProjectId": assignProjectId,
@@ -551,7 +540,9 @@ class ApiManager {
         "note": note,
         "image": imageToUpload,
       };
-      var response = await dio.post(ApiConstantsManager.BASEURL + ApiConstantsManager.ADD_NOTE_MANAGER, data: FormData.fromMap(map));
+      var response = await dio.post(
+          ApiConstantsManager.BASEURL + ApiConstantsManager.ADD_NOTE_MANAGER,
+          data: FormData.fromMap(map));
       return AddNoteManagerResponse.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
@@ -564,12 +555,17 @@ class ApiManager {
     }
   }
 
-
-  Future<DashBoardResponseManager> dashBoardApi(BuildContext context, ) async {
+  Future<DashBoardResponseManager> dashBoardApiManager(
+    BuildContext context,
+  ) async {
     try {
-      dio.options.headers["Authorization"] = SharedPreference.prefs!.getString(SharedPreference.TOKEN);
-      var response = await dio.get(ApiConstantsManager.BASEURL + ApiConstantsManager.DASHBOARD_API ,);
-      return DashBoardResponseManager.fromJson(json.decode(response.toString()));
+      dio.options.headers["Authorization"] =
+          SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var response = await dio.get(
+        ApiConstantsManager.BASEURL + ApiConstantsManager.DASHBOARD_API,
+      );
+      return DashBoardResponseManager.fromJson(
+          json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());
@@ -581,11 +577,17 @@ class ApiManager {
     }
   }
 
-  Future<GetManagerProfileResponse> getManagerProfile(BuildContext context,) async {
+  Future<GetManagerProfileResponse> getManagerProfile(
+    BuildContext context,
+  ) async {
     try {
-      dio.options.headers["Authorization"] = SharedPreference.prefs!.getString(SharedPreference.TOKEN);
-      var response = await dio.get(ApiConstantsManager.BASEURL + ApiConstantsManager.GET_MANAGER_PROFILE,);
-      return GetManagerProfileResponse.fromJson(json.decode(response.toString()));
+      dio.options.headers["Authorization"] =
+          SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var response = await dio.get(
+        ApiConstantsManager.BASEURL + ApiConstantsManager.GET_MANAGER_PROFILE,
+      );
+      return GetManagerProfileResponse.fromJson(
+          json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());
@@ -598,45 +600,56 @@ class ApiManager {
   }
 
   Future<EditProfileManagerResponse> updateManagerProfile(
-      BuildContext context, {
-        required String companyLogoChanged,
-        required String profile,
-        required String address,
-        required String title,
-        required String company,
-        required String name,
-        required String phone,
-        required String email,
-        required HSVColor color,
-        required bool imageChanged,
-        required bool companyChanged,
-      }) async {
+    BuildContext context, {
+    required String companyLogoChanged,
+    required String profile,
+    required String address,
+    required String title,
+    required String company,
+    required String name,
+    required String phone,
+    required String email,
+    required HSVColor color,
+    required bool imageChanged,
+    required bool companyChanged,
+  }) async {
     try {
-      profileImage = imageChanged == true ? MultipartFile.fromFileSync(profile, filename: "image.jpg") : null;
-      companyLogo = companyChanged == true ? MultipartFile.fromFileSync(companyLogoChanged, filename: "image.jpg") : null;
+      profileImage = imageChanged == true
+          ? MultipartFile.fromFileSync(profile, filename: "image.jpg")
+          : null;
+      companyLogo = companyChanged == true
+          ? MultipartFile.fromFileSync(companyLogoChanged,
+              filename: "image.jpg")
+          : null;
       var map = imageChanged == true
           ? {
-        "companyLogo":companyLogo,
-        "profileImage": profileImage,
-        "address": address,
-        "position": title,
-        "company": company,
-        "name": name,
-        "phoneNumber": phone,
-        "email": email,
-        "customColor":color
-      } : {
-        "address": address,
-        "position": title,
-        "company": company,
-        "name": name,
-        "phoneNumber": phone,
-        "email": email,
-        "customColor":color
-      };
-      dio.options.headers["Authorization"] = SharedPreference.prefs!.getString(SharedPreference.TOKEN);
-      var response = await dio.post(ApiConstantsManager.BASEURL + ApiConstantsManager.UPDATE_MANAGER_PROFILE ,data: FormData.fromMap(map));
-      return EditProfileManagerResponse.fromJson(json.decode(response.toString()));
+              "companyLogo": companyLogo,
+              "profileImage": profileImage,
+              "address": address,
+              "position": title,
+              "company": company,
+              "name": name,
+              "phoneNumber": phone,
+              "email": email,
+              "customColor": color
+            }
+          : {
+              "address": address,
+              "position": title,
+              "company": company,
+              "name": name,
+              "phoneNumber": phone,
+              "email": email,
+              "customColor": color
+            };
+      dio.options.headers["Authorization"] =
+          SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var response = await dio.post(
+          ApiConstantsManager.BASEURL +
+              ApiConstantsManager.UPDATE_MANAGER_PROFILE,
+          data: FormData.fromMap(map));
+      return EditProfileManagerResponse.fromJson(
+          json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());
@@ -647,47 +660,54 @@ class ApiManager {
       }
     }
   }
+
   Future<AddCrewByManagerResponse> addNewCrew(
-      BuildContext context, {
-        required String profile,
-        required String address,
-        required String title,
-        required String company,
-        required String name,
-        required String phone,
-        required String speciality,
-        required String email,
-        required String projectId,
-        required bool imageChanged,
-      }) async {
+    BuildContext context, {
+    required String profile,
+    required String address,
+    required String title,
+    required String company,
+    required String name,
+    required String phone,
+    required String speciality,
+    required String email,
+    required String projectId,
+    required bool imageChanged,
+  }) async {
     try {
-      profileImage = imageChanged == true ? MultipartFile.fromFileSync(profile, filename: "image.jpg") : null;
+      profileImage = imageChanged == true
+          ? MultipartFile.fromFileSync(profile, filename: "image.jpg")
+          : null;
       var map = imageChanged == true
           ? {
-        "profileImage": profileImage,
-        "address": address,
-        "projectId":projectId,
-        "position": title,
-        "speciality":speciality,
-        "company": company,
-        "name": name,
-        "phoneNumber": phone,
-        "email": email,
-
-      } : {
-        "address": address,
-        "position": title,
-        "speciality":speciality,
-        "projectId":projectId,
-        "company": company,
-        "name": name,
-        "phoneNumber": phone,
-        "email": email,
-
-      };
-      dio.options.headers["Authorization"] = SharedPreference.prefs!.getString(SharedPreference.TOKEN);
-      var response = await dio.post(ApiConstantsManager.BASEURL + ApiConstantsManager.ADD_NEW_CREW_BY_MANAGER ,data: FormData.fromMap(map));
-      return AddCrewByManagerResponse.fromJson(json.decode(response.toString()));
+              "profileImage": profileImage,
+              "address": address,
+              "projectId": projectId,
+              "position": title,
+              "speciality": speciality,
+              "company": company,
+              "name": name,
+              "phoneNumber": phone,
+              "email": email,
+            }
+          : {
+              "address": address,
+              "position": title,
+              "speciality": speciality,
+              "projectId": projectId,
+              "company": company,
+              "name": name,
+              "phoneNumber": phone,
+              "email": email,
+            };
+      dio.options.headers["Authorization"] =
+          SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var response = await dio.post(
+          ApiConstantsManager.BASEURL +
+              ApiConstantsManager.ADD_NEW_CREW_BY_MANAGER,
+          data: FormData.fromMap(map));
+      return AddCrewByManagerResponse.fromJson(
+          json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());
@@ -698,10 +718,16 @@ class ApiManager {
       }
     }
   }
-  Future<ResendOtpResponse> resendOtpApiEmail(BuildContext context, String email) async {
+
+  Future<ResendOtpResponse> resendOtpApiEmail(
+      BuildContext context, String email) async {
     try {
-      var map ={"email": email,};
-      var response = await dio.post(ApiConstantsManager.BASEURL + ApiConstantsManager.RESEND_OTP, data: map);
+      var map = {
+        "email": email,
+      };
+      var response = await dio.post(
+          ApiConstantsManager.BASEURL + ApiConstantsManager.RESEND_OTP,
+          data: map);
       return ResendOtpResponse.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
@@ -713,11 +739,20 @@ class ApiManager {
       }
     }
   }
-  Future<ResendOtpByPhoneResponseCrew> resendOtpByPhoneApi(BuildContext context, String phoneNumber, ) async {
+
+  Future<ResendOtpByPhoneResponseCrew> resendOtpByPhoneApi(
+    BuildContext context,
+    String phoneNumber,
+  ) async {
     try {
-      var map ={"phoneNumber": phoneNumber, };
-      var response = await dio.post(ApiConstantsManager.BASEURL + ApiConstantsManager.RESEND_OTP_PHONE, data: map);
-      return ResendOtpByPhoneResponseCrew.fromJson(json.decode(response.toString()));
+      var map = {
+        "phoneNumber": phoneNumber,
+      };
+      var response = await dio.post(
+          ApiConstantsManager.BASEURL + ApiConstantsManager.RESEND_OTP_PHONE,
+          data: map);
+      return ResendOtpByPhoneResponseCrew.fromJson(
+          json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());
@@ -729,33 +764,12 @@ class ApiManager {
     }
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-}
-
-class ApiCrew {
-  var profileImage;
-  Dio dio = Dio();
-  Future<SignUpResponse> signUpCrew(BuildContext context, String name, String email, password,) async {
+  Future<SignUpResponse> signUpCrew(
+    BuildContext context,
+    String name,
+    String email,
+    password,
+  ) async {
     try {
       var map = {"name": name, "email": email, "password": password};
       var response = await dio
@@ -894,27 +908,9 @@ class ApiCrew {
     }
   }
 
-  Future<EmailVerifiedResponseManager> verifyEmailForOtp(
-      BuildContext context, String email, String otp) async {
-    try {
-      var map = {"email": email, "verifyCode": otp};
-      var response = await dio.post(
-          ApiConstantsCrew.BASEURL + ApiConstantsCrew.VERIFY_EMAIL_OTP,
-          data: map);
-      return EmailVerifiedResponseManager.fromJson(
-          json.decode(response.toString()));
-    } on DioError catch (e) {
-      if (e.response != null) {
-        var errorData = jsonDecode(e.response.toString());
-        var errorMessage = errorData["message"];
-        throw FetchDataException(errorMessage);
-      } else {
-        throw const SocketException("Socket Exception");
-      }
-    }
-  }
-
-  Future<GetCrewProfileResponse> getCrewProfile(BuildContext context,) async {
+  Future<GetCrewProfileResponse> getCrewProfile(
+    BuildContext context,
+  ) async {
     try {
       dio.options.headers["Authorization"] =
           SharedPreference.prefs!.getString(SharedPreference.TOKEN);
@@ -946,7 +942,9 @@ class ApiCrew {
     required bool imageChanged,
   }) async {
     try {
-      profileImage = imageChanged == true ? MultipartFile.fromFileSync(profile, filename: "image.jpg") : null;
+      profileImage = imageChanged == true
+          ? MultipartFile.fromFileSync(profile, filename: "image.jpg")
+          : null;
       var map = imageChanged == true
           ? {
               "profileImage": profileImage,
@@ -967,8 +965,13 @@ class ApiCrew {
               "phone": phone,
               "email": email
             };
-      var response = await dio.put(ApiConstantsCrew.BASEURL + ApiConstantsCrew.UPDATE_CREW_PROFILE + SharedPreference.prefs!.getString(SharedPreference.USER_ID)!,data: FormData.fromMap(map));
-      return UpdateCrewProfileResponse.fromJson(json.decode(response.toString()));
+      var response = await dio.put(
+          ApiConstantsCrew.BASEURL +
+              ApiConstantsCrew.UPDATE_CREW_PROFILE +
+              SharedPreference.prefs!.getString(SharedPreference.USER_ID)!,
+          data: FormData.fromMap(map));
+      return UpdateCrewProfileResponse.fromJson(
+          json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());
@@ -992,49 +995,6 @@ class ApiCrew {
           ApiConstantsCrew.BASEURL + ApiConstantsCrew.GET_OTP_FOR_PASSWORD,
           data: map);
       return GetOtpForResetPasswordResponse.fromJson(
-          json.decode(response.toString()));
-    } on DioError catch (e) {
-      if (e.response != null) {
-        var errorData = jsonDecode(e.response.toString());
-        var errorMessage = errorData["message"];
-        throw FetchDataException(errorMessage);
-      } else {
-        throw const SocketException("Socket Exception");
-      }
-    }
-  }
-
-  Future<GetOtpResponseManager> verifyEmailForResetPassword(
-      BuildContext context, String email, String otp) async {
-    try {
-      var map = {"email": email, "forgotOTP": otp};
-      var response = await dio.post(
-          ApiConstantsCrew.BASEURL + ApiConstantsCrew.VERIFY_OTP_RESETPASSWORD,
-          data: map);
-      return GetOtpResponseManager.fromJson(json.decode(response.toString()));
-    } on DioError catch (e) {
-      if (e.response != null) {
-        var errorData = jsonDecode(e.response.toString());
-        var errorMessage = errorData["message"];
-        throw FetchDataException(errorMessage);
-      } else {
-        throw const SocketException("Socket Exception");
-      }
-    }
-  }
-
-  Future<ResetPasswordByPhoneResponse> resetPasswordByPhone(
-    BuildContext context,
-    String phoneNumber,
-  ) async {
-    try {
-      var map = {
-        "phoneNumber": phoneNumber,
-      };
-      var response = await dio.post(
-          ApiConstantsCrew.BASEURL + ApiConstantsCrew.RESET_PASSWORD_BY_PHONE,
-          data: map);
-      return ResetPasswordByPhoneResponse.fromJson(
           json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
@@ -1071,8 +1031,12 @@ class ApiCrew {
       BuildContext context, String phoneNumber, String password) async {
     try {
       var map = {"phoneNumber": phoneNumber, "password": password};
-      var response = await dio.post(ApiConstantsCrew.BASEURL + ApiConstantsCrew.RESET_PASSWORD_BY_PHONE_NUMBER, data: map);
-      return EmailVerifiedResponseManager.fromJson(json.decode(response.toString()));
+      var response = await dio.post(
+          ApiConstantsCrew.BASEURL +
+              ApiConstantsCrew.RESET_PASSWORD_BY_PHONE_NUMBER,
+          data: map);
+      return EmailVerifiedResponseManager.fromJson(
+          json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());
@@ -1083,11 +1047,16 @@ class ApiCrew {
       }
     }
   }
-  Future<CrewDashboardResponse> dashBoardApi(BuildContext context, ) async {
+
+  Future<CrewDashboardResponse> dashBoardApi(
+    BuildContext context,
+  ) async {
     try {
-      dio.options.headers["Authorization"] = SharedPreference.prefs!.getString(SharedPreference.TOKEN);
-      var response = await dio.post(ApiConstantsCrew.BASEURL + ApiConstantsCrew.DASHBOARD_API);
-      var responseString=response.toString();
+      dio.options.headers["Authorization"] =
+          SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var response = await dio
+          .post(ApiConstantsCrew.BASEURL + ApiConstantsCrew.DASHBOARD_API);
+      var responseString = response.toString();
       print("response string is ${responseString}");
       return CrewDashboardResponse.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
@@ -1100,14 +1069,16 @@ class ApiCrew {
       }
     }
   }
-  Future<WeeklyCheckInResponse> weeklyChekIn(BuildContext context, String weekTo, String weekFrom) async {
+
+  Future<WeeklyCheckInResponse> weeklyChekIn(
+      BuildContext context, String weekTo, String weekFrom) async {
     try {
-      var map = {
-        "firstDate":weekTo,
-        "secondDate":weekFrom
-      } ;
-      dio.options.headers["Authorization"] = SharedPreference.prefs!.getString(SharedPreference.TOKEN);
-      var response = await dio.post(ApiConstantsCrew.BASEURL + ApiConstantsCrew.WEEKLY_CHECKIN, data: map);
+      var map = {"firstDate": weekTo, "secondDate": weekFrom};
+      dio.options.headers["Authorization"] =
+          SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var response = await dio.post(
+          ApiConstantsCrew.BASEURL + ApiConstantsCrew.WEEKLY_CHECKIN,
+          data: map);
       return WeeklyCheckInResponse.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
@@ -1120,11 +1091,18 @@ class ApiCrew {
     }
   }
 
-  Future<CheckInResponseCrew> checkInApi(BuildContext context, String assignProjectId, String checkInTime) async {
+  Future<CheckInResponseCrew> checkInApi(
+      BuildContext context, String assignProjectId, String checkInTime) async {
     try {
-      var map = {"assignProjectId": assignProjectId, "checkInTime": checkInTime};
-      dio.options.headers["Authorization"] = SharedPreference.prefs!.getString(SharedPreference.TOKEN);
-      var response = await dio.post(ApiConstantsCrew.BASEURL + ApiConstantsCrew.CHECK_IN_CREW, data: map);
+      var map = {
+        "assignProjectId": assignProjectId,
+        "checkInTime": checkInTime
+      };
+      dio.options.headers["Authorization"] =
+          SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var response = await dio.post(
+          ApiConstantsCrew.BASEURL + ApiConstantsCrew.CHECK_IN_CREW,
+          data: map);
       return CheckInResponseCrew.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
@@ -1136,10 +1114,18 @@ class ApiCrew {
       }
     }
   }
-  Future<ResendOtpResponse> resendOtpEmailApi(BuildContext context, String email,) async {
+
+  Future<ResendOtpResponse> resendOtpEmailApi(
+    BuildContext context,
+    String email,
+  ) async {
     try {
-      var map = {"email": email, };
-      var response = await dio.post(ApiConstantsCrew.BASEURL + ApiConstantsCrew.RESEND_OTP_EMAIL, data: map);
+      var map = {
+        "email": email,
+      };
+      var response = await dio.post(
+          ApiConstantsCrew.BASEURL + ApiConstantsCrew.RESEND_OTP_EMAIL,
+          data: map);
       return ResendOtpResponse.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
@@ -1151,26 +1137,20 @@ class ApiCrew {
       }
     }
   }
-  Future<ResendOtpByPhoneResponseCrew> resendOtpByPhoneApi(BuildContext context, String phoneNumber, ) async {
+
+  Future<CheckInResponseCrew> checkOutApiCrew(
+      BuildContext context, String assignProjectId, String checkOutTime) async {
     try {
-      var map ={"phoneNumber": phoneNumber, };
-      var response = await dio.post(ApiConstantsCrew.BASEURL + ApiConstantsCrew.RESEND_OTP_PHONE, data: map);
-      return ResendOtpByPhoneResponseCrew.fromJson(json.decode(response.toString()));
-    } on DioError catch (e) {
-      if (e.response != null) {
-        var errorData = jsonDecode(e.response.toString());
-        var errorMessage = errorData["message"];
-        throw FetchDataException(errorMessage);
-      } else {
-        throw const SocketException("Socket Exception");
-      }
-    }
-  }
-  Future<CheckInResponseCrew> checkOutApiCrew(BuildContext context, String assignProjectId, String checkOutTime) async {
-    try {
-      var map = {"checkOutTime": checkOutTime, };
-      dio.options.headers["Authorization"] = SharedPreference.prefs!.getString(SharedPreference.TOKEN);
-      var response = await dio.put(ApiConstantsCrew.BASEURL + ApiConstantsCrew.CHECK_OUT_API+assignProjectId, data: map);
+      var map = {
+        "checkOutTime": checkOutTime,
+      };
+      dio.options.headers["Authorization"] =
+          SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var response = await dio.put(
+          ApiConstantsCrew.BASEURL +
+              ApiConstantsCrew.CHECK_OUT_API +
+              assignProjectId,
+          data: map);
       return CheckInResponseCrew.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
@@ -1183,22 +1163,23 @@ class ApiCrew {
     }
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  Future<Response> createProject(
+      BuildContext context, CreateProjectRequest request) async {
+    var requestToServer = request.toJson();
+    try {
+      dio.options.headers["Authorization"] =
+          SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var response = await dio.post(ApiConstantsManager.BASEURL + "newproject",
+          data: requestToServer);
+      return response;
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
 }

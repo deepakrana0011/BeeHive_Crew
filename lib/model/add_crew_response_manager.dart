@@ -18,7 +18,7 @@ class AddCrewResponseManager {
 }
 
 class AddCrewData {
-  String? sId;
+  String? id;
   String? email;
   String? password;
   int? status;
@@ -34,7 +34,7 @@ class AddCrewData {
   bool isSelected = false;
 
   AddCrewData(
-      {this.sId,
+      {this.id,
         this.email,
         this.password,
         this.status,
@@ -49,17 +49,17 @@ class AddCrewData {
         this.speciality});
 
   AddCrewData.fromJson(Map<String, dynamic> json) {
-    sId = json['_id'];
+    id = json['_id'];
     email = json['email'];
     password = json['password'];
     status = json['status'];
     createdAt = json['createdAt'];
     iV = json['__v'];
     verifyCode = json['verifyCode'];
-    address = json['address'];
+    address = json['address'] ?? "";
     company = json['company'];
     name = json['name'];
-    position = json['position'];
+    position = json['position']??"";
     profileImage = json['profileImage'];
     speciality = json['speciality'];
   }

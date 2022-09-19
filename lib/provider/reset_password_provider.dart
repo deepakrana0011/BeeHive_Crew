@@ -19,7 +19,7 @@ class ResetPasswordProvider extends BaseProvider{
   Future resetPasswordCrew(BuildContext context,String password,String email) async {
     setState(ViewState.busy);
     try {
-      var model = await apiCrew.resetPasswordCrew(context,password, email);
+      var model = await api.resetPasswordCrew(context,password, email);
       if (model.success == true) {
         setState(ViewState.idle);
         Navigator.pushNamedAndRemoveUntil(context, RouteConstants.loginScreen, (route) => false);
@@ -40,7 +40,7 @@ class ResetPasswordProvider extends BaseProvider{
   Future resetPasswordCrewByPhone(BuildContext context,String password,String phone) async {
     setState(ViewState.busy);
     try {
-      var model = await apiCrew.resetPasswordByPhoneNumber(context,password, phone);
+      var model = await api.resetPasswordByPhoneNumberManager(context,password: password,phoneNumber: phone);
       if (model.success == true) {
         setState(ViewState.idle);
         Navigator.pushNamedAndRemoveUntil(context, RouteConstants.loginScreen, (route) => false);

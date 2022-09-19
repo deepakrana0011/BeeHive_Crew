@@ -17,7 +17,7 @@ class ProfilePageProvider extends BaseProvider{
   Future getCrewProfile(BuildContext context,) async {
     setState(ViewState.busy);
     try {
-      var model = await apiCrew.getCrewProfile(context);
+      var model = await api.getCrewProfile(context);
       if (model.success == true) {
         SharedPreference.prefs!.setString(SharedPreference.USER_PROFILE, model.data!.profileImage??'');
         SharedPreference.prefs!.setString(SharedPreference.USER_NAME, model.data!.name!);

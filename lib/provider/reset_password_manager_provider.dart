@@ -43,7 +43,7 @@ class ResetPasswordManagerProvider extends BaseProvider{
       {required String phone, required String password}) async {
     setState(ViewState.busy);
     try {
-      var model = await api.resetPasswordByPhoneNumber(context, phoneNumber: phone, password: password,);
+      var model = await api.resetPasswordByPhoneNumberManager(context, phoneNumber: phone, password: password,);
       if (model.success == true) {
         setState(ViewState.idle);
         Navigator.pushNamedAndRemoveUntil(context, RouteConstants.loginScreenManager, (route) => false);

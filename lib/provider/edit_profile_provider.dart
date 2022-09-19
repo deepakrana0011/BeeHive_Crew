@@ -70,7 +70,7 @@ class EditProfileProvider extends BaseProvider {
   ) async {
     setState(ViewState.busy);
     try {
-      var model = await apiCrew.getCrewProfile(context);
+      var model = await api.getCrewProfile(context);
       if (model.success == true) {
         SharedPreference.prefs!.setString(SharedPreference.USER_PROFILE, model.data!.profileImage!);
         SharedPreference.prefs!.setString(SharedPreference.USER_NAME, model.data!.name!);
@@ -93,7 +93,7 @@ class EditProfileProvider extends BaseProvider {
   ) async {
     setState(ViewState.busy);
     try {
-      var model = await apiCrew.updateCrewProfile(
+      var model = await api.updateCrewProfile(
         context,
         email: emailController.text,
         address: addressController.text,

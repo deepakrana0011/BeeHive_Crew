@@ -49,7 +49,7 @@ class _ArchivedProjectDetailsManagerState extends State<ArchivedProjectDetailsMa
             Navigator.pushNamed(
                 context, RouteConstants.projectSettingsPageManager,
                 arguments: ProjectSettingsPageManager(
-                    fromProjectOrCreateProject: false, projectId: '',));
+                    fromProjectOrCreateProject: false));
           }, popFunction: () {
             CommonWidgets.hideKeyboard(context);
             dashBoardProvider.onItemTapped(1);
@@ -1385,8 +1385,8 @@ Widget todayBoxForProjectDetails(BuildContext context) {
         SizedBox(
           width: DimensionConstants.d50.w,
         ),
-        Devider(DimensionConstants.d70.h, DimensionConstants.d1.w,
-            ColorConstants.colorWhite90),
+        Container(width:DimensionConstants.d70.h, height:DimensionConstants.d1.w,
+            color:ColorConstants.colorWhite90),
         SizedBox(
           width: DimensionConstants.d70.w,
         ),

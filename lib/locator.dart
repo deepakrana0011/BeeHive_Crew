@@ -1,3 +1,4 @@
+import 'package:beehive/model/create_project_request.dart';
 import 'package:beehive/provider/add_crew_page_provider_manager.dart';
 import 'package:beehive/provider/add_note_page_manager_provider.dart';
 import 'package:beehive/provider/add_note_page_provider.dart';
@@ -46,7 +47,8 @@ import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 
 GetIt locator = GetIt.instance;
-void setUpLocator(){
+
+void setUpLocator() {
   locator.registerFactory<IntroductionProvider>(() => IntroductionProvider());
   locator.registerFactory<SignInProvider>(() => SignInProvider());
   locator.registerFactory<BottomBarProvider>(() => BottomBarProvider());
@@ -57,8 +59,10 @@ void setUpLocator(){
   locator.registerFactory<SignUpProvider>(() => SignUpProvider());
   locator.registerFactory<LoginProvider>(() => LoginProvider());
   locator.registerFactory<ResetPasswordProvider>(() => ResetPasswordProvider());
-  locator.registerFactory<DashBoardPageManagerProvider>(() => DashBoardPageManagerProvider());
-  locator.registerFactory<BottomBarManagerProvider>(() => BottomBarManagerProvider());
+  locator.registerFactory<DashBoardPageManagerProvider>(
+      () => DashBoardPageManagerProvider());
+  locator.registerFactory<BottomBarManagerProvider>(
+      () => BottomBarManagerProvider());
   locator.registerFactory(() => ProjectsProvider());
   locator.registerFactory(() => CustomClass());
   locator.registerFactory(() => ProjectDetailsPageProvider());
@@ -90,12 +94,16 @@ void setUpLocator(){
   locator.registerFactory(() => EmailAddressScreenManagerProvider());
   locator.registerFactory(() => EmailAddressScreenProvider());
   locator.registerFactory(() => ProfilePageProvider());
-  locator.registerLazySingleton(() => ApiManager());
-  locator.registerLazySingleton(() => ApiCrew());
+  locator.registerLazySingleton(() => Api());;
+  locator.registerLazySingleton(() => CreateProjectRequest());
   locator.registerLazySingleton<Dio>(() {
     Dio dio = Dio();
-    dio.interceptors.add(LogInterceptor(requestBody: true, responseBody: true,request: true,requestHeader:false,responseHeader: false  ));
+    dio.interceptors.add(LogInterceptor(
+        requestBody: true,
+        responseBody: true,
+        request: true,
+        requestHeader: false,
+        responseHeader: false));
     return dio;
   });
-
 }

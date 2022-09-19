@@ -768,9 +768,10 @@ class DialogHelper {
                 SizedBox(
                   height: DimensionConstants.d23.h,
                 ),
-                Text("are_you_sure_you_want_to_archive_this_project".tr()).regularText(
-                    context, DimensionConstants.d14.sp, TextAlign.center,
-                    color: ColorConstants.colorBlack),
+                Text("are_you_sure_you_want_to_archive_this_project".tr())
+                    .regularText(
+                        context, DimensionConstants.d14.sp, TextAlign.center,
+                        color: ColorConstants.colorBlack),
                 SizedBox(
                   height: DimensionConstants.d35.h,
                 ),
@@ -880,11 +881,9 @@ class DialogHelper {
                             context, "remove".tr(),
                             color1: ColorConstants.redColorEB5757,
                             color2: ColorConstants.redColorEB5757,
-                            fontSize: DimensionConstants.d16.sp,
-                            onBtnTap: () {
-                              Navigator.of(context).pop();
-                            },
-                            shadowRequired: false),
+                            fontSize: DimensionConstants.d16.sp, onBtnTap: () {
+                          Navigator.of(context).pop();
+                        }, shadowRequired: false),
                       ),
                     ],
                   ),
@@ -897,17 +896,20 @@ class DialogHelper {
     );
   }
 
- static showMessage(BuildContext context, String message) {
+  static showMessage(BuildContext context, String message) {
     Flushbar(
       message: message,
-      borderRadius: BorderRadius.circular(DimensionConstants.d15.r),
-   backgroundGradient: LinearGradient(colors: [ColorConstants.primaryGradient1Color,ColorConstants.primaryGradient2Color]),
+      backgroundGradient: const LinearGradient(colors: [
+        ColorConstants.primaryGradient1Color,
+        ColorConstants.primaryGradient2Color
+      ]),
       duration: const Duration(seconds: 3),
     ).show(context);
   }
+
   static editRateDialogBox(BuildContext context,
       {required VoidCallback cancel, required VoidCallback delete}) {
-    FocusNode focusNode  = FocusNode ();
+    FocusNode focusNode = FocusNode();
     FocusScope.of(context).requestFocus(focusNode);
     return Dialog(
       backgroundColor: Colors.transparent,
@@ -940,49 +942,61 @@ class DialogHelper {
                     Text("edit_rate".tr()).boldText(
                         context, DimensionConstants.d20.sp, TextAlign.center,
                         color: ColorConstants.deepBlue),
-                    SizedBox(height: DimensionConstants.d15.h,),
+                    SizedBox(
+                      height: DimensionConstants.d15.h,
+                    ),
                     Padding(
                       padding: EdgeInsets.only(left: DimensionConstants.d100.w),
                       child: Row(
-                        children:<Widget> [
-                          const ImageView(path: ImageConstants.dollarIcon,),
-                          SizedBox(width: DimensionConstants.d8.w,),
-                          Container(height: DimensionConstants.d54.h,
-                          width: DimensionConstants.d125.w,
-                          decoration: BoxDecoration(
-                            color: ColorConstants.grayF2F2F2,
-                            borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
+                        children: <Widget>[
+                          const ImageView(
+                            path: ImageConstants.dollarIcon,
                           ),
+                          SizedBox(
+                            width: DimensionConstants.d8.w,
+                          ),
+                          Container(
+                            height: DimensionConstants.d54.h,
+                            width: DimensionConstants.d125.w,
+                            decoration: BoxDecoration(
+                              color: ColorConstants.grayF2F2F2,
+                              borderRadius: BorderRadius.circular(
+                                  DimensionConstants.d8.r),
+                            ),
                             child: TextFormField(
                               focusNode: focusNode,
                               keyboardType: TextInputType.phone,
                               decoration: ViewDecoration.inputDecorationBox(
-                                fieldName: "20.00".tr(),
-                                radius: DimensionConstants.d8.r,
-                                fillColor:  ColorConstants.littleDarkGray,
-                                color: ColorConstants.grayF2F2F2,
-                                hintTextColor:  ColorConstants.colorBlack,
-                                hintTextSize: DimensionConstants.d16.sp,
-                                textFiledColor: ColorConstants.colorBlack
-                              ),
+                                  fieldName: "20.00".tr(),
+                                  radius: DimensionConstants.d8.r,
+                                  fillColor: ColorConstants.littleDarkGray,
+                                  color: ColorConstants.grayF2F2F2,
+                                  hintTextColor: ColorConstants.colorBlack,
+                                  hintTextSize: DimensionConstants.d16.sp,
+                                  textFiledColor: ColorConstants.colorBlack),
                             ),
                           ),
-                          SizedBox(width: DimensionConstants.d8.w,),
-                          const ImageView(path: ImageConstants.hrIcon,)
-
+                          SizedBox(
+                            width: DimensionConstants.d8.w,
+                          ),
+                          const ImageView(
+                            path: ImageConstants.hrIcon,
+                          )
                         ],
                       ),
                     ),
-                    SizedBox(height: DimensionConstants.d17.h,),
+                    SizedBox(
+                      height: DimensionConstants.d17.h,
+                    ),
                     Padding(
-                      padding:  EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
+                      padding: EdgeInsets.symmetric(
+                          horizontal: DimensionConstants.d16.w),
                       child: CommonWidgets.commonButton(context, "save".tr(),
                           color1: ColorConstants.primaryGradient1Color,
                           color2: ColorConstants.primaryGradient2Color,
                           fontSize: DimensionConstants.d16.sp, onBtnTap: () {
-                            Navigator.of(context).pop();
-                          },
-                          shadowRequired: true),
+                        Navigator.of(context).pop();
+                      }, shadowRequired: true),
                     ),
                   ],
                 ),
@@ -993,15 +1007,13 @@ class DialogHelper {
               bottom: DimensionConstants.d190.h,
               left: DimensionConstants.d270.w,
               child: GestureDetector(
-                onTap: (){
+                onTap: () {
                   Navigator.of(context).pop();
                 },
                 child: const ImageView(
                   path: ImageConstants.crossIcon,
                 ),
               )),
-
-
         ],
       ),
     );

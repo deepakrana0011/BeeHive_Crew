@@ -47,13 +47,13 @@ class _DashBoardPageState extends State<DashBoardPage>
           key: _scaffoldKey,
           body: provider.state == ViewState.idle? Column(
             children: [
-              provider.crewResponse?.myProject == null?
+              provider.crewResponse?.myProjects!.length==0?
               noProjectNotCheckedInContainer(context, "you_have_no_projects".tr(),false):
               SharedPreference.prefs!.getInt(SharedPreference.IS_CHECK_IN) == 1 ?
               projectsCheckOutContainer(SharedPreference.prefs!.getString(SharedPreference.CHECKED_PROJECT)??"",provider):
               noProjectNotCheckedInContainer(context, "you_are_not_checked_in".tr(),true,
                   onTap: () {checkInAlert(context,provider);}),
-              provider.crewResponse?.myProject!=null?
+              provider.crewResponse?.myProjects!.length==0?
               whenDoNotHaveProject()  :
               CustomTabBar(notCheckedIn: provider.notCheckedIn, navigationValue: 2/*SharedPreference.prefs!.getInt(SharedPreference.IS_CHECK_IN)!*/,),
               SizedBox(height: DimensionConstants.d20.h),

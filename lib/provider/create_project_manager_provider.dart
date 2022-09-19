@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/enum/enum.dart';
+import 'package:beehive/locator.dart';
+import 'package:beehive/model/create_project_request.dart';
 import 'package:beehive/provider/base_provider.dart';
 import 'package:beehive/views_manager/projects_manager/add_crew_page_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -17,6 +19,7 @@ import '../services/fetch_data_expection.dart';
 
 class CreateProjectManagerProvider extends BaseProvider {
   final projectNameController = TextEditingController();
+  CreateProjectRequest createProjectRequest = locator<CreateProjectRequest>();
   Completer<GoogleMapController> controller = Completer();
   BitmapDescriptor? pinLocationIconUser;
 
@@ -31,11 +34,14 @@ class CreateProjectManagerProvider extends BaseProvider {
   double longitude = 0;
   var value;
   String pickUpLocation = "";
+  double locationRadius = 0;
+
   Future getLngLt(context) async {
     setState(ViewState.busy);
     value = await Geolocator.getCurrentPosition();
     latitude = value.latitude;
     longitude = value.longitude;
+    getPickUpAddress(latitude, longitude);
     setState(ViewState.idle);
   }
 
@@ -46,6 +52,7 @@ class CreateProjectManagerProvider extends BaseProvider {
   }
 
   List<Marker> markers = [];
+
   onMapCreated(GoogleMapController controller) {
     setState(ViewState.busy);
     markers.add(Marker(
@@ -112,38 +119,24 @@ class CreateProjectManagerProvider extends BaseProvider {
     return await Geolocator.getCurrentPosition();
   }
 
-  double valueFor = 0;
   updateValue(double value) {
-    valueFor = value;
+    locationRadius = value;
     notifyListeners();
   }
 
-  Future createProjectManager(BuildContext context,) async {
-    setState(ViewState.busy);
-    try {
-      var model = await api.createProjectManager(
-        context,
-        projectName: projectNameController.text,
-        longitude: longitude.toString(),
-        locationRadius: valueFor.toString(),
-        latitude: latitude.toString(),
-        address: pickUpLocation,
-      );
-      if (model.success == true) {
-        setState(ViewState.idle);
-        Navigator.pushNamed(context, RouteConstants.addCrewPageManager,
-            arguments: AddCrewPageManager(projectId: model.data!.sId!, id: model.data!.sId!,));
-        DialogHelper.showMessage(context, model.message!);
-      } else {
-        setState(ViewState.idle);
-        DialogHelper.showMessage(context, model.message!);
-      }
-    } on FetchDataException catch (e) {
-      setState(ViewState.idle);
-      DialogHelper.showMessage(context, e.toString());
-    } on SocketException catch (e) {
-      setState(ViewState.idle);
-      DialogHelper.showMessage(context, "internet_connection".tr());
+  void navigateToNextPage(BuildContext context) {
+    if (projectNameController.text.trim().isEmpty) {
+      DialogHelper.showMessage(context, "please_enter_project_name".tr());
+    } else if (pickUpLocation.isEmpty) {
+      DialogHelper.showMessage(context, "Please enter the address");
+    } else {
+      createProjectRequest.projectName = projectNameController.text.toString();
+      createProjectRequest.latitude = latitude.toString();
+      createProjectRequest.longitude = longitude.toString();
+      createProjectRequest.address = pickUpLocation;
+      createProjectRequest.locationRadius = locationRadius.toString();
+      Navigator.pushNamed(context, RouteConstants.addCrewPageManager,
+          arguments: const AddCrewPageManager());
     }
   }
 }
