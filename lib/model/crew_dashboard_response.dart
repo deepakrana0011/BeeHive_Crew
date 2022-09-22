@@ -1,64 +1,43 @@
 class CrewDashboardResponse {
   CrewDashboardResponse({
     this.success,
-    this.data,
-    this.activeProjects,
-    this.myProjects,
-    this.lastCheckIn,
-    this.todayTotalWorkedHours,
-    this.weeklyHours,
-    this.biWeekHours,
-    this.allCheckIns,
-    this.today,
+    this.crew,
+    this.projects,
+    this.allCheckin,
+    this.userCheckin,
   });
 
   bool? success;
-  Data? data;
-  int? activeProjects;
-  List<MyProject>? myProjects;
-  List<LastCheckIn>? lastCheckIn;
-  int? todayTotalWorkedHours;
-  int? weeklyHours;
-  int? biWeekHours;
-  List<AllCheckIn>? allCheckIns;
-  List<AllCheckIn>? today;
+  CrewDetail? crew;
+  int? projects;
+  List<CheckInProjectDetail>? allCheckin;
+  CheckInProjectDetail? userCheckin;
 
-  factory CrewDashboardResponse.fromJson(Map<String, dynamic> json) => CrewDashboardResponse(
-    success: json["success"],
-    data: Data.fromJson(json["data"]),
-    activeProjects: json["activeProjects"],
-    myProjects: List<MyProject>.from(json["myProjects"].map((x) => MyProject.fromJson(x))),
-    lastCheckIn: List<LastCheckIn>.from(json["lastCheckIn"].map((x) => LastCheckIn.fromJson(x))),
-    todayTotalWorkedHours: json["todayTotalWorkedHours"],
-    weeklyHours: json["weeklyHours"],
-    biWeekHours: json["biWeekHours"],
-    allCheckIns: List<AllCheckIn>.from(json["allCheckIns"].map((x) => AllCheckIn.fromJson(x))),
-    today: List<AllCheckIn>.from(json["today"].map((x) => AllCheckIn.fromJson(x))),
-  );
-
-  /*Map<String, dynamic> toJson() => {
-    "success": success,
-    "data": data?.toJson(),
-    "activeProjects": activeProjects,
-    "myProjects": List<dynamic>.from(myProjects.map((x) => x.toJson())),
-    "lastCheckIn": List<dynamic>.from(lastCheckIn.map((x) => x.toJson())),
-    "todayTotalWorkedHours": todayTotalWorkedHours,
-    "weeklyHours": weeklyHours,
-    "biWeekHours": biWeekHours,
-    "allCheckIns": List<dynamic>.from(allCheckIns.map((x) => x.toJson())),
-    "today": List<dynamic>.from(today.map((x) => x.toJson())),
-  };*/
+  factory CrewDashboardResponse.fromJson(Map<String, dynamic> json) =>
+      CrewDashboardResponse(
+        success: json["success"],
+        crew: CrewDetail.fromJson(json["crew"]),
+        projects: json["projects"],
+        allCheckin: json["allCheckin"] != null
+            ? List<CheckInProjectDetail>.from(
+                json["allCheckin"].map((x) => CheckInProjectDetail.fromJson(x)))
+            : [],
+        userCheckin: json["userCheckin"] != null
+            ? CheckInProjectDetail.fromJson(json["userCheckin"])
+            : null,
+      );
 }
 
-class AllCheckIn {
-  AllCheckIn({
+class CheckInProjectDetail {
+  CheckInProjectDetail({
     this.id,
     this.crewId,
     this.assignProjectId,
     this.checkInTime,
     this.hoursDiff,
+    this.allCheckinBreak,
     this.status,
-    this.totalWorkingHours,
+    this.interuption,
     this.createdAt,
     this.v,
     this.checkOutTime,
@@ -66,144 +45,56 @@ class AllCheckIn {
 
   String? id;
   String? crewId;
-  ProjectId? assignProjectId;
+  AllCheckinAssignProjectId? assignProjectId;
   DateTime? checkInTime;
-  String? hoursDiff;
+  int? hoursDiff;
+  List<Break>? allCheckinBreak;
   int? status;
-  String? totalWorkingHours;
+  List<dynamic>? interuption;
   DateTime? createdAt;
   int? v;
   DateTime? checkOutTime;
 
-  factory AllCheckIn.fromJson(Map<String, dynamic> json) => AllCheckIn(
-    id: json["_id"],
-    crewId: json["crewId"],
-    assignProjectId: ProjectId.fromJson(json["assignProjectId"]),
-    checkInTime: DateTime.parse(json["checkInTime"]),
-    hoursDiff: json["hoursDiff"],
-    status: json["status"],
-    totalWorkingHours: json["TotalWorkingHours"],
-    createdAt: DateTime.parse(json["createdAt"]),
-    v: json["__v"],
-    checkOutTime: DateTime.parse(json["checkOutTime"]),
-  );
-
- /* Map<String, dynamic> toJson() => {
-    "_id": id,
-    "crewId": crewId,
-    "assignProjectId": assignProjectId.toJson(),
-    "checkInTime": checkInTime.toIso8601String(),
-    "hoursDiff": hoursDiff,
-    "status": status,
-    "TotalWorkingHours": totalWorkingHours,
-    "createdAt": createdAt.toIso8601String(),
-    "__v": v,
-    "checkOutTime": checkOutTime.toIso8601String(),
-  };*/
-}
-
-class ProjectId {
-  ProjectId({
-    this.id,
-    this.projectName,
-    this.address,
-    this.latitude,
-    this.longitude,
-    this.locationRadius,
-    this.workDays,
-    this.status,
-    this.projectIdBreak,
-    this.createdAt,
-    this.v,
-    this.afterHoursRate,
-    this.hoursFrom,
-    this.hoursTo,
-    this.roundTimesheets,
-    this.totalWorkingHours,
-  });
-
-  String? id;
-  String? projectName;
-  String? address;
-  double? latitude;
-  double? longitude;
-  String? locationRadius;
-  List<String>? workDays;
-  int? status;
-  List<Break>? projectIdBreak;
-  DateTime? createdAt;
-  int? v;
-  String? afterHoursRate;
-  DateTime? hoursFrom;
-  DateTime? hoursTo;
-  String? roundTimesheets;
-  String? totalWorkingHours;
-
-  factory ProjectId.fromJson(Map<String, dynamic> json) => ProjectId(
-    id: json["_id"],
-    projectName: json["projectName"],
-    address: json["address"],
-    latitude: json["latitude"],
-    longitude: json["longitude"],
-    locationRadius: json["locationRadius"],
-    workDays: List<String>.from(json["workDays"].map((x) => x)),
-    status: json["status"],
-    projectIdBreak: List<Break>.from(json["break"].map((x) => Break.fromJson(x))),
-    createdAt: DateTime.parse(json["createdAt"]),
-    v: json["__v"],
-    afterHoursRate: json["afterHoursRate"],
-    hoursFrom: DateTime.parse(json["hoursFrom"]),
-    hoursTo: DateTime.parse(json["hoursTo"]),
-    roundTimesheets: json["roundTimesheets"],
-    totalWorkingHours: json["TotalWorkingHours"],
-  );
-
-/*Map<String, dynamic> toJson() => {
-    "_id": id,
-    "projectName": projectName,
-    "address": address,
-    "latitude": latitude,
-    "longitude": longitude,
-    "locationRadius": locationRadius,
-    "workDays": List<dynamic>.from(workDays.map((x) => x)),
-    "status": status,
-    "break": List<dynamic>.from(projectIdBreak.map((x) => x.toJson())),
-    "createdAt": createdAt.toIso8601String(),
-    "__v": v,
-    "afterHoursRate": afterHoursRate,
-    "hoursFrom": hoursFrom.toIso8601String(),
-    "hoursTo": hoursTo.toIso8601String(),
-    "roundTimesheets": roundTimesheets,
-    "TotalWorkingHours": totalWorkingHours,
-  };*/
+  factory CheckInProjectDetail.fromJson(Map<String, dynamic> json) =>
+      CheckInProjectDetail(
+        id: json["_id"],
+        crewId: json["crewId"],
+        assignProjectId:
+            AllCheckinAssignProjectId.fromJson(json["assignProjectId"]),
+        checkInTime: DateTime.parse(json["checkInTime"]),
+        hoursDiff: json["hoursDiff"],
+        allCheckinBreak:
+            List<Break>.from(json["break"].map((x) => Break.fromJson(x))),
+        status: json["status"],
+        interuption: List<dynamic>.from(json["interuption"].map((x) => x)),
+        createdAt: DateTime.parse(json["createdAt"]),
+        v: json["__v"],
+        checkOutTime: json["checkOutTime"] == null
+            ? null
+            : DateTime.parse(json["checkOutTime"]),
+      );
 }
 
 class Break {
   Break({
-    this.from,
-    this.to,
+    this.startTime,
+    this.interval,
     this.id,
   });
 
-  DateTime? from;
-  DateTime? to;
+  String? startTime;
+  String? interval;
   String? id;
 
   factory Break.fromJson(Map<String, dynamic> json) => Break(
-    from: DateTime.parse(json["from"]),
-    to: DateTime.parse(json["to"]),
-    id: json["_id"],
-  );
-
-  /*Map<String, dynamic> toJson() => {
-    "from": from.toIso8601String(),
-    "to": to.toIso8601String(),
-    "_id": id,
-  };*/
+        startTime: json["startTime"],
+        interval: json["interval"],
+        id: json["_id"],
+      );
 }
 
-class Data {
-  Data({
+class CrewDetail {
+  CrewDetail({
     this.id,
     this.email,
     this.name,
@@ -221,87 +112,111 @@ class Data {
   DateTime? createdAt;
   int? v;
 
-  factory Data.fromJson(Map<String, dynamic> json) => Data(
-    id: json["_id"],
-    email: json["email"],
-    name: json["name"],
-    password: json["password"],
-    status: json["status"],
-    createdAt: DateTime.parse(json["createdAt"]),
-    v: json["__v"],
-  );
-
-  /*Map<String, dynamic> toJson() => {
-    "_id": id,
-    "email": email,
-    "name": name,
-    "password": password,
-    "status": status,
-    "createdAt": createdAt.toIso8601String(),
-    "__v": v,
-  };*/
+  factory CrewDetail.fromJson(Map<String, dynamic> json) => CrewDetail(
+        id: json["_id"],
+        email: json["email"],
+        name: json["name"],
+        password: json["password"],
+        status: json["status"],
+        createdAt: DateTime.parse(json["createdAt"]),
+        v: json["__v"],
+      );
 }
 
-class LastCheckIn {
-  LastCheckIn({
+class ProjectRate {
+  ProjectRate({
+    this.crewId,
+    this.price,
     this.id,
-    this.checkInTime,
   });
 
+  String? crewId;
+  String? price;
   String? id;
-  DateTime? checkInTime;
 
-  factory LastCheckIn.fromJson(Map<String, dynamic> json) => LastCheckIn(
-    id: json["_id"],
-    checkInTime: DateTime.parse(json["checkInTime"]),
-  );
+  factory ProjectRate.fromJson(Map<String, dynamic> json) => ProjectRate(
+        crewId: json["crewId"],
+        price: json["price"],
+        id: json["_id"],
+      );
 
-  /*Map<String, dynamic> toJson() => {
-    "_id": id,
-    "checkInTime": checkInTime.toIso8601String(),
-  };*/
+  Map<String, dynamic> toJson() => {
+        "crewId": crewId,
+        "price": price,
+        "_id": id,
+      };
 }
 
-class MyProject {
-  MyProject({
+class AllCheckinAssignProjectId {
+  AllCheckinAssignProjectId({
     this.id,
-    this.projectId,
     this.managerId,
+    this.projectName,
+    this.address,
+    this.latitude,
+    this.longitude,
+    this.locationRadius,
     this.crewId,
-    this.totalWorkingHours,
+    this.workDays,
+    this.hoursFrom,
+    this.hoursTo,
+    this.afterHoursRate,
+    this.assignProjectIdBreak,
+    this.roundTimesheets,
+    this.sameRate,
+    this.projectRate,
     this.status,
     this.createdAt,
     this.v,
   });
 
   String? id;
-  ProjectId? projectId;
   String? managerId;
+  String? projectName;
+  String? address;
+  double? latitude;
+  double? longitude;
+  String? locationRadius;
   List<String>? crewId;
-  String? totalWorkingHours;
+  List<String>? workDays;
+  String? hoursFrom;
+  String? hoursTo;
+  String? afterHoursRate;
+  List<Break>? assignProjectIdBreak;
+  String? roundTimesheets;
+  String? sameRate;
+  List<ProjectRate>? projectRate;
   int? status;
   DateTime? createdAt;
   int? v;
 
-  factory MyProject.fromJson(Map<String, dynamic> json) => MyProject(
-    id: json["_id"],
-    projectId: ProjectId.fromJson(json["projectId"]),
-    managerId: json["managerId"],
-    crewId: List<String>.from(json["crewId"].map((x) => x)),
-    totalWorkingHours: json["TotalWorkingHours"],
-    status: json["status"],
-    createdAt: DateTime.parse(json["createdAt"]),
-    v: json["__v"],
-  );
-
-  /*Map<String, dynamic> toJson() => {
-    "_id": id,
-    "projectId": projectId.toJson(),
-    "managerId": managerId,
-    "crewId": List<dynamic>.from(crewId.map((x) => x)),
-    "TotalWorkingHours": totalWorkingHours,
-    "status": status,
-    "createdAt": createdAt.toIso8601String(),
-    "__v": v,
-  };*/
+  factory AllCheckinAssignProjectId.fromJson(Map<String, dynamic> json) =>
+      AllCheckinAssignProjectId(
+        id: json["_id"],
+        managerId: json["managerId"] ?? null,
+        projectName: json["projectName"] ?? null,
+        address: json["address"] ?? null,
+        latitude: json["latitude"] ?? null,
+        longitude: json["longitude"] ?? null,
+        locationRadius: json["locationRadius"] ?? null,
+        crewId: json["crewId"] != null
+            ? List<String>.from(json["crewId"].map((x) => x))
+            : [],
+        workDays: json["workDays"] != null
+            ? List<String>.from(json["workDays"].map((x) => x))
+            : [],
+        hoursFrom: json["hoursFrom"] ?? null,
+        hoursTo: json["hoursTo"] ?? null,
+        afterHoursRate: json["afterHoursRate"] ?? null,
+        assignProjectIdBreak: json["break"] != null
+            ? List<Break>.from(json["break"].map((x) => Break.fromJson(x)))
+            : [],
+        roundTimesheets: json["roundTimesheets"] ?? null,
+        sameRate: json["sameRate"] ?? null,
+        projectRate: json["projectRate"] != null
+            ? List<ProjectRate>.from(
+                json["projectRate"].map((x) => ProjectRate.fromJson(x)))
+            : [],
+        status: json["status"] ?? null,
+      );
 }

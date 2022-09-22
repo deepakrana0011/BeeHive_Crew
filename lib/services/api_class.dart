@@ -8,7 +8,7 @@ import 'package:beehive/model/add_note_manager_response.dart';
 import 'package:beehive/model/assign_project_response_manager.dart';
 import 'package:beehive/model/check_in_response_crew.dart';
 import 'package:beehive/model/create_project_request.dart';
-import 'package:beehive/model/dashboard_manager_response.dart';
+import 'package:beehive/model/manager_dashboard_response.dart';
 import 'package:beehive/model/email_verification_response_manager.dart';
 import 'package:beehive/model/email_verified_response_manager.dart';
 import 'package:beehive/model/get_assinged_crew_manager.dart';
@@ -31,6 +31,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 import '../constants/api_constants.dart';
+import '../model/allProjectCrewResponse.dart';
 import '../model/create_project_response_manager.dart';
 import '../model/crew_dashboard_response.dart';
 import '../model/dash_board_page_response_crew.dart';
@@ -69,20 +70,61 @@ class Api {
     }
   }
 
-  Future<PhoneOtpResponseManager> phoneNumberVerification(
+  Future<bool> isEmailExistManager(
+    String email,
+  ) async {
+    try {
+      var map = {"email": email};
+      var response = await dio.post(
+          ApiConstantsManager.BASEURL + ApiConstantsManager.emailExist,
+          data: map);
+      var data = json.decode(response.toString());
+      var status = data["success"];
+      return status;
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+
+  Future<bool> isEmailExistCrew(String email) async {
+    try {
+      var map = {"email": email};
+      var response = await dio.post(
+          ApiConstantsCrew.BASEURL + ApiConstantsCrew.emailExist,
+          data: map);
+      var data = json.decode(response.toString());
+      var status = data["success"];
+      return status;
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+
+  Future<PhoneOtpResponseManager> sendOtpSignupPhoneManager(
     BuildContext context,
     String countryCode,
     String phoneNumber,
   ) async {
     try {
-      dio.options.headers["Authorization"] =
-          SharedPreference.prefs!.getString(SharedPreference.TOKEN);
       var map = {
         "countryCode": countryCode,
         "phoneNumber": phoneNumber,
       };
       var response = await dio.post(
-          ApiConstantsManager.BASEURL + ApiConstantsManager.PHONE_VERIFICATION,
+          ApiConstantsManager.BASEURL +
+              ApiConstantsManager.sendOtpSignupPhoneManager,
           data: map);
       return PhoneOtpResponseManager.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
@@ -96,21 +138,80 @@ class Api {
     }
   }
 
-  Future<VerifyOtpResponseManager> verifyOtp(
+  Future<PhoneOtpResponseManager> sendOtpForgotPhoneManager(
+    BuildContext context,
+    String countryCode,
+    String phoneNumber,
+  ) async {
+    try {
+      var map = {
+        "countryCode": countryCode,
+        "phoneNumber": phoneNumber,
+      };
+      var response = await dio.post(
+          ApiConstantsManager.BASEURL +
+              ApiConstantsManager.sendOtpForgotPhoneManager,
+          data: map);
+      return PhoneOtpResponseManager.fromJson(json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+
+  Future<OtpVerificationResponse> verifyOtpSignupPhoneManager(
     BuildContext context,
     String phoneNumber,
     String otp,
+    String countryCode,
   ) async {
     try {
       var map = {
         "verifyCode": otp,
         "phoneNumber": phoneNumber,
+        "countryCode": countryCode
       };
+      dio.options.headers["authorization"] =
+          SharedPreference.prefs!.getString(SharedPreference.TOKEN);
       var response = await dio.post(
-          ApiConstantsManager.BASEURL + ApiConstantsManager.VERIFY_OTP,
+          ApiConstantsManager.BASEURL +
+              ApiConstantsManager.verifyOtpSignupPhoneManager,
           data: map);
-      return VerifyOtpResponseManager.fromJson(
-          json.decode(response.toString()));
+      return OtpVerificationResponse.fromJson(json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+
+  Future<OtpVerificationResponse> verifyOtpForgotPhoneManager(
+    BuildContext context,
+    String phoneNumber,
+    String otp,
+    String countryCode,
+  ) async {
+    try {
+      var map = {
+        "forgotOTP": otp,
+        "phoneNumber": phoneNumber,
+        "countryCode": countryCode
+      };
+      //dio.options.headers["authorization"] = SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var response = await dio.post(
+          ApiConstantsManager.BASEURL +
+              ApiConstantsManager.verifyOtpForgotPhoneManager,
+          data: map);
+      return OtpVerificationResponse.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());
@@ -147,7 +248,7 @@ class Api {
     }
   }
 
-  Future<EmailVerificationResponseManager> verifyManagerEmail(
+  Future<EmailVerificationResponseManager> sendOtpForgotEmailManager(
     BuildContext context,
     String email,
   ) async {
@@ -157,7 +258,7 @@ class Api {
       };
       var response = await dio.post(
           ApiConstantsManager.BASEURL +
-              ApiConstantsManager.VERIFY_MANAGER_EMAIL,
+              ApiConstantsManager.sendOtpForgotEmailManager,
           data: map);
       return EmailVerificationResponseManager.fromJson(
           json.decode(response.toString()));
@@ -172,16 +273,34 @@ class Api {
     }
   }
 
-  Future<EmailVerifiedResponseManager> verifyEmailForOtp(
+  Future<OtpVerificationResponse> verifyOtpEmailManager(
       BuildContext context, String email, String otp) async {
     try {
-      var map = {"email": email, "verifyCode": otp};
+      var map = {"email": email, "forgotOTP": otp};
       var response = await dio.post(
           ApiConstantsManager.BASEURL +
-              ApiConstantsManager.VERIFY_EMAIL_FOR_OTP,
+              ApiConstantsManager.verifyOtpEmailManager,
           data: map);
-      return EmailVerifiedResponseManager.fromJson(
-          json.decode(response.toString()));
+      return OtpVerificationResponse.fromJson(json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+
+  Future<OtpVerificationResponse> verifyOtpEmailCrew(
+      BuildContext context, String email, String otp) async {
+    try {
+      var map = {"email": email, "forgotOTP": otp};
+      var response = await dio.post(
+          ApiConstantsCrew.BASEURL + ApiConstantsCrew.verifyOtpEmailCrew,
+          data: map);
+      return OtpVerificationResponse.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());
@@ -201,7 +320,7 @@ class Api {
       required String longitude,
       required String locationRadius}) async {
     try {
-      dio.options.headers["Authorization"] =
+      dio.options.headers["authorization"] =
           SharedPreference.prefs!.getString(SharedPreference.TOKEN);
       var map = {
         "projectName": projectName,
@@ -230,7 +349,7 @@ class Api {
     BuildContext context,
   ) async {
     try {
-      dio.options.headers["Authorization"] =
+      dio.options.headers["authorization"] =
           SharedPreference.prefs!.getString(SharedPreference.TOKEN);
       var response = await dio.get(
         ApiConstantsManager.BASEURL + ApiConstantsManager.GET_CREW_LIST,
@@ -247,107 +366,17 @@ class Api {
     }
   }
 
-  Future<GetOtpForResetPasswordResponse> getOtpForPasswordReset(
-    BuildContext context,
-    String email,
-  ) async {
+  Future<OtpVerificationResponse> resetPasswordManager(
+      BuildContext context, String token,
+      {required String password}) async {
     try {
-      var map = {
-        "email": email,
-      };
-      var response = await dio.post(
-          ApiConstantsManager.BASEURL +
-              ApiConstantsManager.GET_OTP_FOR_PASSWORD,
-          data: map);
-      return GetOtpForResetPasswordResponse.fromJson(
-          json.decode(response.toString()));
-    } on DioError catch (e) {
-      if (e.response != null) {
-        var errorData = jsonDecode(e.response.toString());
-        var errorMessage = errorData["message"];
-        throw FetchDataException(errorMessage);
-      } else {
-        throw const SocketException("Socket Exception");
-      }
-    }
-  }
-
-  Future<GetOtpResponseManager> verifyEmailForResetPassword(
-      BuildContext context, String email, String otp) async {
-    try {
-      var map = {"email": email, "forgotOTP": otp};
-      var response = await dio.post(
-          ApiConstantsManager.BASEURL +
-              ApiConstantsManager.VERIFY_OTP_RESETPASSWORD,
-          data: map);
-      return GetOtpResponseManager.fromJson(json.decode(response.toString()));
-    } on DioError catch (e) {
-      if (e.response != null) {
-        var errorData = jsonDecode(e.response.toString());
-        var errorMessage = errorData["message"];
-        throw FetchDataException(errorMessage);
-      } else {
-        throw const SocketException("Socket Exception");
-      }
-    }
-  }
-
-  Future<GetOtpResponseManager> resetPasswordManager(
-      BuildContext context, String password, String email) async {
-    try {
-      var map = {"password": password, "email": email};
+      var map = {"password": password};
+      dio.options.headers["authorization"] = token;
       var response = await dio.put(
-          ApiConstantsManager.BASEURL + ApiConstantsManager.RESET_PASSWORD,
-          data: map);
-      return GetOtpResponseManager.fromJson(json.decode(response.toString()));
-    } on DioError catch (e) {
-      if (e.response != null) {
-        var errorData = jsonDecode(e.response.toString());
-        var errorMessage = errorData["message"];
-        throw FetchDataException(errorMessage);
-      } else {
-        throw const SocketException("Socket Exception");
-      }
-    }
-  }
-
-  Future<ResetPasswordByPhoneResponse> resetPasswordByPhone(
-    BuildContext context,
-    String phoneNumber,
-  ) async {
-    try {
-      var map = {
-        "phoneNumber": phoneNumber,
-      };
-      var response = await dio.post(
           ApiConstantsManager.BASEURL +
-              ApiConstantsManager.FORGOT_PASSWORD_BY_PHONE,
+              ApiConstantsManager.resetPasswordManager,
           data: map);
-      return ResetPasswordByPhoneResponse.fromJson(
-          json.decode(response.toString()));
-    } on DioError catch (e) {
-      if (e.response != null) {
-        var errorData = jsonDecode(e.response.toString());
-        var errorMessage = errorData["message"];
-        throw FetchDataException(errorMessage);
-      } else {
-        throw const SocketException("Socket Exception");
-      }
-    }
-  }
-
-  Future<EmailVerifiedResponseManager> resetPasswordByPhoneNumberManager(
-      BuildContext context,
-      {required String phoneNumber,
-      required String password}) async {
-    try {
-      var map = {"phoneNumber": phoneNumber, "password": password};
-      var response = await dio.post(
-          ApiConstantsManager.BASEURL +
-              ApiConstantsManager.RESET_PASSWORD_BY_PHONE,
-          data: map);
-      return EmailVerifiedResponseManager.fromJson(
-          json.decode(response.toString()));
+      return OtpVerificationResponse.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());
@@ -391,7 +420,7 @@ class Api {
   Future<GetAssignedCrewInProject> getAssignedVCrewInProject(
       BuildContext context, String projectId) async {
     try {
-      dio.options.headers["Authorization"] =
+      dio.options.headers["authorization"] =
           SharedPreference.prefs!.getString(SharedPreference.TOKEN);
       var response = await dio.get(
         ApiConstantsManager.BASEURL +
@@ -435,7 +464,7 @@ class Api {
               "assignProjectId": projectId,
               "projetRate": selectedList,
             };
-      dio.options.headers["Authorization"] =
+      dio.options.headers["authorization"] =
           SharedPreference.prefs!.getString(SharedPreference.TOKEN);
       var response = await dio.post(
           ApiConstantsManager.BASEURL + ApiConstantsManager.SET_RATE_BY_MANAGER,
@@ -480,7 +509,7 @@ class Api {
         "break": breaks,
         "roundTimesheets": roundTimeSheetValue
       };
-      dio.options.headers["Authorization"] =
+      dio.options.headers["authorization"] =
           SharedPreference.prefs!.getString(SharedPreference.TOKEN);
       var response = await dio.post(
           ApiConstantsManager.BASEURL +
@@ -503,7 +532,7 @@ class Api {
   Future<ProjectDetailsResponseManager> getCreatedProjectDetails(
       BuildContext context, String projectId) async {
     try {
-      dio.options.headers["Authorization"] =
+      dio.options.headers["authorization"] =
           SharedPreference.prefs!.getString(SharedPreference.TOKEN);
       var response = await dio.get(
         ApiConstantsManager.BASEURL +
@@ -555,16 +584,16 @@ class Api {
     }
   }
 
-  Future<DashBoardResponseManager> dashBoardApiManager(
-    BuildContext context,
-  ) async {
+  Future<ManagerDashboardResponse> dashBoardApiManager(
+      BuildContext context, String startDate, String endDate) async {
+    var map = {"startDate": startDate, "endDate": endDate};
     try {
-      dio.options.headers["Authorization"] =
+      dio.options.headers["authorization"] =
           SharedPreference.prefs!.getString(SharedPreference.TOKEN);
-      var response = await dio.get(
-        ApiConstantsManager.BASEURL + ApiConstantsManager.DASHBOARD_API,
-      );
-      return DashBoardResponseManager.fromJson(
+      var response = await dio.post(
+          ApiConstantsManager.BASEURL + ApiConstantsManager.DASHBOARD_API,
+          data: map);
+      return ManagerDashboardResponse.fromJson(
           json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
@@ -581,7 +610,7 @@ class Api {
     BuildContext context,
   ) async {
     try {
-      dio.options.headers["Authorization"] =
+      dio.options.headers["authorization"] =
           SharedPreference.prefs!.getString(SharedPreference.TOKEN);
       var response = await dio.get(
         ApiConstantsManager.BASEURL + ApiConstantsManager.GET_MANAGER_PROFILE,
@@ -642,7 +671,7 @@ class Api {
               "email": email,
               "customColor": color
             };
-      dio.options.headers["Authorization"] =
+      dio.options.headers["authorization"] =
           SharedPreference.prefs!.getString(SharedPreference.TOKEN);
       var response = await dio.post(
           ApiConstantsManager.BASEURL +
@@ -700,7 +729,7 @@ class Api {
               "phoneNumber": phone,
               "email": email,
             };
-      dio.options.headers["Authorization"] =
+      dio.options.headers["authorization"] =
           SharedPreference.prefs!.getString(SharedPreference.TOKEN);
       var response = await dio.post(
           ApiConstantsManager.BASEURL +
@@ -786,7 +815,7 @@ class Api {
     }
   }
 
-  Future<PhoneOtpResponseManager> phoneNumberVerificationCrew(
+  Future<PhoneOtpResponseManager> sendOtpForgotPhoneCrew(
     BuildContext context,
     String countryCode,
     String phoneNumber,
@@ -799,7 +828,7 @@ class Api {
         "phoneNumber": phoneNumber,
       };
       var response = await dio.post(
-          ApiConstantsCrew.BASEURL + ApiConstantsCrew.PHONE_VERIFICATION,
+          ApiConstantsCrew.BASEURL + ApiConstantsCrew.sendOtpForgotPhoneCrew,
           data: map);
       return PhoneOtpResponseManager.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
@@ -813,21 +842,80 @@ class Api {
     }
   }
 
-  Future<VerifyOtpResponseManager> verifyOtpCrewPhone(
+  Future<PhoneOtpResponseManager> sendOtpSignupPhoneCrew(
+    BuildContext context,
+    String countryCode,
+    String phoneNumber,
+  ) async {
+    try {
+      // dio.options.headers["authorization"] =
+      //     SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var map = {
+        "countryCode": countryCode,
+        "phoneNumber": phoneNumber,
+      };
+      var response = await dio.post(
+          ApiConstantsCrew.BASEURL + ApiConstantsCrew.sendOtpSignupPhoneCrew,
+          data: map);
+      return PhoneOtpResponseManager.fromJson(json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+
+  Future<OtpVerificationResponse> verifyOtpSignupPhoneCrew(
     BuildContext context,
     String phoneNumber,
     String otp,
+    String countryCode,
   ) async {
     try {
       var map = {
         "verifyCode": otp,
         "phoneNumber": phoneNumber,
+        "countryCode": countryCode,
+      };
+      var value = SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      dio.options.headers["authorization"] = value;
+      var response = await dio.post(
+          ApiConstantsCrew.BASEURL + ApiConstantsCrew.verifyOtpSignupPhoneCrew,
+          data: map);
+      return OtpVerificationResponse.fromJson(json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+
+  Future<OtpVerificationResponse> verifyOtpForgotPhoneCrew(
+    BuildContext context,
+    String phoneNumber,
+    String otp,
+    String countryCode,
+  ) async {
+    try {
+      /*dio.options.headers["authorization"] =
+          SharedPreference.prefs!.getString(SharedPreference.TOKEN);*/
+      var map = {
+        "forgotOTP": otp,
+        "phoneNumber": phoneNumber,
+        "countryCode": countryCode
       };
       var response = await dio.post(
-          ApiConstantsCrew.BASEURL + ApiConstantsCrew.VERIFY_OTP,
+          ApiConstantsCrew.BASEURL + ApiConstantsCrew.verifyOtpForgotPhoneCrew,
           data: map);
-      return VerifyOtpResponseManager.fromJson(
-          json.decode(response.toString()));
+      return OtpVerificationResponse.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());
@@ -865,11 +953,12 @@ class Api {
   }
 
   Future<ResetPasswordResponseCrew> resetPasswordCrew(
-      BuildContext context, String password, String email) async {
+      BuildContext context, String password, String token) async {
     try {
-      var map = {"password": password, "email": email};
+      dio.options.headers["authorization"] = token;
+      var map = {"password": password};
       var response = await dio.put(
-          ApiConstantsCrew.BASEURL + ApiConstantsCrew.RESET_PASSWORD,
+          ApiConstantsCrew.BASEURL + ApiConstantsCrew.resetPasswordCrew,
           data: map);
       return ResetPasswordResponseCrew.fromJson(
           json.decode(response.toString()));
@@ -884,7 +973,7 @@ class Api {
     }
   }
 
-  Future<EmailVerificationResponseManager> verifyCrewEmail(
+  Future<EmailVerificationResponseManager> sendOtpEmailCrew(
     BuildContext context,
     String email,
   ) async {
@@ -893,7 +982,7 @@ class Api {
         "email": email,
       };
       var response = await dio.post(
-          ApiConstantsCrew.BASEURL + ApiConstantsCrew.VERIFY_CREW_EMAIL,
+          ApiConstantsCrew.BASEURL + ApiConstantsCrew.sendOtpForgotEmailCrew,
           data: map);
       return EmailVerificationResponseManager.fromJson(
           json.decode(response.toString()));
@@ -912,7 +1001,7 @@ class Api {
     BuildContext context,
   ) async {
     try {
-      dio.options.headers["Authorization"] =
+      dio.options.headers["authorization"] =
           SharedPreference.prefs!.getString(SharedPreference.TOKEN);
       var response = await dio.get(
         ApiConstantsCrew.BASEURL + ApiConstantsCrew.GET_CREW_PROFILE,
@@ -983,79 +1072,14 @@ class Api {
     }
   }
 
-  Future<GetOtpForResetPasswordResponse> getOtpForPasswordResetCrew(
-    BuildContext context,
-    String email,
-  ) async {
-    try {
-      var map = {
-        "email": email,
-      };
-      var response = await dio.post(
-          ApiConstantsCrew.BASEURL + ApiConstantsCrew.GET_OTP_FOR_PASSWORD,
-          data: map);
-      return GetOtpForResetPasswordResponse.fromJson(
-          json.decode(response.toString()));
-    } on DioError catch (e) {
-      if (e.response != null) {
-        var errorData = jsonDecode(e.response.toString());
-        var errorMessage = errorData["message"];
-        throw FetchDataException(errorMessage);
-      } else {
-        throw const SocketException("Socket Exception");
-      }
-    }
-  }
-
-  Future<EmailVerifiedResponseManager> verifyingOtpByPhone(
-      BuildContext context, String phoneNumber, String otp) async {
-    try {
-      var map = {"phoneNumber": phoneNumber, "forgotOTP": otp};
-      var response = await dio.post(
-          ApiConstantsCrew.BASEURL + ApiConstantsCrew.VERIFYINNG_BY_PHONE,
-          data: map);
-      return EmailVerifiedResponseManager.fromJson(
-          json.decode(response.toString()));
-    } on DioError catch (e) {
-      if (e.response != null) {
-        var errorData = jsonDecode(e.response.toString());
-        var errorMessage = errorData["message"];
-        throw FetchDataException(errorMessage);
-      } else {
-        throw const SocketException("Socket Exception");
-      }
-    }
-  }
-
-  Future<EmailVerifiedResponseManager> resetPasswordByPhoneNumber(
-      BuildContext context, String phoneNumber, String password) async {
-    try {
-      var map = {"phoneNumber": phoneNumber, "password": password};
-      var response = await dio.post(
-          ApiConstantsCrew.BASEURL +
-              ApiConstantsCrew.RESET_PASSWORD_BY_PHONE_NUMBER,
-          data: map);
-      return EmailVerifiedResponseManager.fromJson(
-          json.decode(response.toString()));
-    } on DioError catch (e) {
-      if (e.response != null) {
-        var errorData = jsonDecode(e.response.toString());
-        var errorMessage = errorData["message"];
-        throw FetchDataException(errorMessage);
-      } else {
-        throw const SocketException("Socket Exception");
-      }
-    }
-  }
-
   Future<CrewDashboardResponse> dashBoardApi(
     BuildContext context,
   ) async {
     try {
-      dio.options.headers["Authorization"] =
+      dio.options.headers["authorization"] =
           SharedPreference.prefs!.getString(SharedPreference.TOKEN);
       var response = await dio
-          .post(ApiConstantsCrew.BASEURL + ApiConstantsCrew.DASHBOARD_API);
+          .post(ApiConstantsCrew.BASEURL + ApiConstantsCrew.crewDashboard);
       var responseString = response.toString();
       print("response string is ${responseString}");
       return CrewDashboardResponse.fromJson(json.decode(response.toString()));
@@ -1074,7 +1098,7 @@ class Api {
       BuildContext context, String weekTo, String weekFrom) async {
     try {
       var map = {"firstDate": weekTo, "secondDate": weekFrom};
-      dio.options.headers["Authorization"] =
+      dio.options.headers["authorization"] =
           SharedPreference.prefs!.getString(SharedPreference.TOKEN);
       var response = await dio.post(
           ApiConstantsCrew.BASEURL + ApiConstantsCrew.WEEKLY_CHECKIN,
@@ -1098,7 +1122,7 @@ class Api {
         "assignProjectId": assignProjectId,
         "checkInTime": checkInTime
       };
-      dio.options.headers["Authorization"] =
+      dio.options.headers["authorization"] =
           SharedPreference.prefs!.getString(SharedPreference.TOKEN);
       var response = await dio.post(
           ApiConstantsCrew.BASEURL + ApiConstantsCrew.CHECK_IN_CREW,
@@ -1144,7 +1168,7 @@ class Api {
       var map = {
         "checkOutTime": checkOutTime,
       };
-      dio.options.headers["Authorization"] =
+      dio.options.headers["authorization"] =
           SharedPreference.prefs!.getString(SharedPreference.TOKEN);
       var response = await dio.put(
           ApiConstantsCrew.BASEURL +
@@ -1167,11 +1191,31 @@ class Api {
       BuildContext context, CreateProjectRequest request) async {
     var requestToServer = request.toJson();
     try {
-      dio.options.headers["Authorization"] =
+      dio.options.headers["authorization"] =
           SharedPreference.prefs!.getString(SharedPreference.TOKEN);
       var response = await dio.post(ApiConstantsManager.BASEURL + "newproject",
           data: requestToServer);
       return response;
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+
+  Future<AllProjectCrewResponse> getAllProjectsCrew(
+      BuildContext context) async {
+    try {
+      dio.options.headers["authorization"] =
+          SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var response = await dio.get(
+        ApiConstantsCrew.BASEURL + ApiConstantsCrew.getAllCrewProjects,
+      );
+      return AllProjectCrewResponse.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());

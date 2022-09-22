@@ -1,6 +1,7 @@
 class EmailVerificationResponseManager {
   bool? success;
   String? message;
+  String? token;
   Data? data;
 
   EmailVerificationResponseManager({this.success, this.message, this.data});
@@ -8,6 +9,7 @@ class EmailVerificationResponseManager {
   EmailVerificationResponseManager.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     message = json['message'];
+    token = json['Token'];
     data = json['data'] != null ? new Data.fromJson(json['data']) : null;
   }
 

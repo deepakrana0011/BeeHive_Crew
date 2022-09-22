@@ -10,6 +10,7 @@ import 'package:beehive/provider/bottom_bar_Manager_provider.dart';
 import 'package:beehive/provider/dashboard_page_manager_provider.dart';
 import 'package:beehive/view/base_view.dart';
 import 'package:beehive/views_manager/billing_information/billing_information_page_manager.dart';
+import 'package:beehive/views_manager/dashboard_manager/drawer_manager.dart';
 import 'package:beehive/views_manager/profile_manager/profile_page_manager.dart';
 import 'package:beehive/views_manager/projects_manager/projects_page_manager.dart';
 import 'package:beehive/views_manager/timesheet_manager/timesheet_page_manager.dart';
@@ -26,11 +27,14 @@ import '../dashboard_manager/dashboard_manager.dart';
 class BottomBarManager extends StatefulWidget {
   int? pageIndex;
   int? fromBottomNav;
-  BottomBarManager({Key? key, this.pageIndex, this.fromBottomNav}) : super(key: key);
+
+  BottomBarManager({Key? key, this.pageIndex, this.fromBottomNav})
+      : super(key: key);
 
   @override
   _BottomBarManagerState createState() => _BottomBarManagerState();
 }
+
 class _BottomBarManagerState extends State<BottomBarManager> {
   static final List<Widget> _widgetOptions = <Widget>[
     const DashBoardPageManager(),
@@ -50,213 +54,245 @@ class _BottomBarManagerState extends State<BottomBarManager> {
     ImageConstants.searchIcon,
     ImageConstants.notificationIconBell
   ];
+
   @override
   Widget build(BuildContext context) {
-    return BaseView<BottomBarManagerProvider>(
-        onModelReady: (provider) {
-          provider.onItemTapped(widget.pageIndex!);
-         provider.updateNavigationValue(widget.fromBottomNav!);
-        },
-        builder: (context, provider, _) {
-          return provider.state == ViewState.busy  ? const Scaffold(
-            body: Center(
-            child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,),
-          ) ): Scaffold(
-            backgroundColor: ColorConstants.colorWhite,
-            key: provider.scaffoldKey,
-            drawer: drawer(context, provider,),
-            appBar: provider.fromBottomNav == 1? AppBar(
-              centerTitle: true,
-              elevation: 1,
-              backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-              title: provider.selectedIndex == 0
-                  ? ClipRRect(
-                borderRadius: BorderRadius.circular(DimensionConstants.d24.r),
-                    child: ImageView(
-                        path: SharedPreference.prefs!.getString(SharedPreference.USER_LOGO) == null? menuName.elementAt(provider.selectedIndex,):
-                        ApiConstantsCrew.BASE_URL_IMAGE+SharedPreference.prefs!.getString(SharedPreference.USER_LOGO)!,
-                        height: DimensionConstants.d48.h,
-                        width: DimensionConstants.d48.w,
-                        fit: BoxFit.cover,
+    return BaseView<BottomBarManagerProvider>(onModelReady: (provider) {
+      provider.onItemTapped(widget.pageIndex!);
+      provider.updateNavigationValue(widget.fromBottomNav!);
+    }, builder: (context, provider, _) {
+      return provider.state == ViewState.busy
+          ? const Scaffold(
+              body: Center(
+              child: CircularProgressIndicator(
+                color: ColorConstants.primaryGradient2Color,
+              ),
+            ))
+          : Scaffold(
+              backgroundColor: ColorConstants.colorWhite,
+              key: provider.scaffoldKey,
+              drawer: DrawerManager(
+                provider: provider,
+              ) /*drawer(
+                context,
+                provider,
+              )*/
+              ,
+              appBar: provider.fromBottomNav == 1
+                  ? AppBar(
+                      centerTitle: true,
+                      elevation: 1,
+                      backgroundColor:
+                          Theme.of(context).appBarTheme.backgroundColor,
+                      title: provider.selectedIndex == 0
+                          ? ClipRRect(
+                              borderRadius: BorderRadius.circular(
+                                  DimensionConstants.d24.r),
+                              child: ImageView(
+                                path: provider.companyLogo!.isEmpty
+                                    ? menuName.elementAt(
+                                        provider.selectedIndex,
+                                      )
+                                    : ApiConstantsCrew.BASE_URL_IMAGE +
+                                        SharedPreference.prefs!.getString(
+                                            SharedPreference.USER_LOGO)!,
+                                height: DimensionConstants.d48.h,
+                                width: DimensionConstants.d48.w,
+                                fit: BoxFit.cover,
+                              ),
+                            )
+                          : Text(menuName.elementAt(provider.selectedIndex))
+                              .semiBoldText(
+                              context,
+                              DimensionConstants.d22.sp,
+                              TextAlign.center,
+                              color: Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? ColorConstants.colorWhite
+                                  : ColorConstants.colorBlack,
+                            ),
+                      leading: GestureDetector(
+                          onTap: () {
+                            provider.scaffoldKey.currentState!.openDrawer();
+                          },
+                          child: Padding(
+                            padding:
+                                const EdgeInsets.all(DimensionConstants.d15),
+                            child: ImageView(
+                              path: ImageConstants.drawerIcon,
+                              color: Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? ColorConstants.colorWhite
+                                  : ColorConstants.colorBlack,
+                              height: DimensionConstants.d24.h,
+                              width: DimensionConstants.d24.w,
+                            ),
+                          )),
+                      actions: [
+                        // provider.selectedIndex == 0 ? Switch(
+                        //     value: themeChange.isDarkModeOn,
+                        //     onChanged: (boolVal) {
+                        //       themeChange.updateTheme(boolVal);
+                        //       provider.updateLoadingStatus(true);
+                        //     },
+                        //   ):Container(),
+                        Padding(
+                          padding: provider.selectedIndex == 0
+                              ? EdgeInsets.only(right: DimensionConstants.d20.w)
+                              : EdgeInsets.only(
+                                  right: DimensionConstants.d10.w,
+                                  top: DimensionConstants.d10.h),
+                          child: GestureDetector(
+                            onTap: () {
+                              provider.routeNavigation(
+                                  context, provider.selectedIndex);
+                            },
+                            child: ImageView(
+                              path:
+                                  actionIcon.elementAt(provider.selectedIndex),
+                              height: DimensionConstants.d24.h,
+                              width: DimensionConstants.d24.w,
+                              color: provider.selectedIndex != 0
+                                  ? Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? ColorConstants.colorWhite
+                                      : ColorConstants.colorBlack
+                                  : null,
+                            ),
+                          ),
+                        ),
+                      ],
+                    )
+                  : null,
+              body: Center(
+                child: provider.pageView(
+                  provider.selectedIndex,
+                ),
+              ),
+              bottomNavigationBar: BottomNavigationBar(
+                items: <BottomNavigationBarItem>[
+                  BottomNavigationBarItem(
+                    icon: Padding(
+                      padding: EdgeInsets.only(
+                          top: DimensionConstants.d8.h,
+                          bottom: DimensionConstants.d3.h),
+                      child: const ImageView(
+                        path: ImageConstants.bottomBarDashBoardInActive,
                       ),
-                  )
-                  : Text(menuName.elementAt(provider.selectedIndex))
-                      .semiBoldText(
-                      context,
-                      DimensionConstants.d22.sp,
-                      TextAlign.center,
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? ColorConstants.colorWhite
-                          : ColorConstants.colorBlack,
                     ),
-              leading: GestureDetector(
-                  onTap: () {
-                    provider.scaffoldKey.currentState!.openDrawer();
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.all(DimensionConstants.d15),
-                    child: ImageView(
-                      path: ImageConstants.drawerIcon,
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? ColorConstants.colorWhite
-                          : ColorConstants.colorBlack,
-                      height: DimensionConstants.d24.h,
-                      width: DimensionConstants.d24.w,
+                    activeIcon: Padding(
+                      padding: EdgeInsets.only(
+                          top: DimensionConstants.d8.h,
+                          bottom: DimensionConstants.d3.h),
+                      child: const ImageView(
+                        path: ImageConstants.dashboardIcon,
+                        color: ColorConstants.primaryColor,
+                      ),
                     ),
-                  )),
-              actions: [
-                // provider.selectedIndex == 0 ? Switch(
-                //     value: themeChange.isDarkModeOn,
-                //     onChanged: (boolVal) {
-                //       themeChange.updateTheme(boolVal);
-                //       provider.updateLoadingStatus(true);
-                //     },
-                //   ):Container(),
-                Padding(
-                  padding: provider.selectedIndex == 0
-                      ? EdgeInsets.only(right: DimensionConstants.d20.w)
-                      : EdgeInsets.only(
-                          right: DimensionConstants.d10.w,
-                          top: DimensionConstants.d10.h),
-                  child: GestureDetector(
-                    onTap: () {
-                      provider.routeNavigation(context, provider.selectedIndex);
-                    },
-                    child: ImageView(
-                      path: actionIcon.elementAt(provider.selectedIndex),
-                      height: DimensionConstants.d24.h,
-                      width: DimensionConstants.d24.w,
-                      color: provider.selectedIndex != 0
-                          ? Theme.of(context).brightness == Brightness.dark
-                              ? ColorConstants.colorWhite
-                              : ColorConstants.colorBlack
-                          : null,
-                    ),
+                    label: 'Dashboard',
                   ),
-                ),
-              ],
-            ):null,
-            body: Center(
-              child: provider.pageView(provider.selectedIndex,),
-            ),
-            bottomNavigationBar: BottomNavigationBar(
-              items: <BottomNavigationBarItem>[
-                BottomNavigationBarItem(
-                  icon: Padding(
-                    padding: EdgeInsets.only(
-                        top: DimensionConstants.d8.h,
-                        bottom: DimensionConstants.d3.h),
-                    child: const ImageView(
-                      path: ImageConstants.bottomBarDashBoardInActive,
+                  BottomNavigationBarItem(
+                    icon: Padding(
+                      padding: EdgeInsets.only(
+                          top: DimensionConstants.d8.h,
+                          bottom: DimensionConstants.d3.h),
+                      child: ImageView(
+                        path: ImageConstants.projectsIcon,
+                        color: (Theme.of(context).brightness == Brightness.dark
+                            ? ColorConstants.colorWhite
+                            : ColorConstants.colorBlack),
+                      ),
                     ),
-                  ),
-                  activeIcon: Padding(
-                    padding: EdgeInsets.only(
-                        top: DimensionConstants.d8.h,
-                        bottom: DimensionConstants.d3.h),
-                    child: const ImageView(
-                      path: ImageConstants.dashboardIcon,
-                      color: ColorConstants.primaryColor,
+                    activeIcon: Padding(
+                      padding: EdgeInsets.only(
+                          top: DimensionConstants.d8.h,
+                          bottom: DimensionConstants.d3.h),
+                      child: const ImageView(
+                        path: ImageConstants.bottomBarProjectActive,
+                        color: ColorConstants.primaryColor,
+                      ),
                     ),
+                    label: 'Projects',
                   ),
-                  label: 'Dashboard',
-                ),
-                BottomNavigationBarItem(
-                  icon: Padding(
-                    padding: EdgeInsets.only(
-                        top: DimensionConstants.d8.h,
-                        bottom: DimensionConstants.d3.h),
-                    child: ImageView(
-                      path: ImageConstants.projectsIcon,
-                      color: (Theme.of(context).brightness == Brightness.dark
-                          ? ColorConstants.colorWhite
-                          : ColorConstants.colorBlack),
+                  BottomNavigationBarItem(
+                    icon: Padding(
+                      padding: EdgeInsets.only(
+                          top: DimensionConstants.d8.h,
+                          bottom: DimensionConstants.d3.h),
+                      child: ImageView(
+                        path: ImageConstants.timeSheetsIcon,
+                        color: (Theme.of(context).brightness == Brightness.dark
+                            ? ColorConstants.colorWhite
+                            : ColorConstants.colorBlack),
+                      ),
                     ),
-                  ),
-                  activeIcon: Padding(
-                    padding: EdgeInsets.only(
-                        top: DimensionConstants.d8.h,
-                        bottom: DimensionConstants.d3.h),
-                    child: const ImageView(
-                      path: ImageConstants.bottomBarProjectActive,
-                      color: ColorConstants.primaryColor,
+                    activeIcon: Padding(
+                      padding: EdgeInsets.only(
+                          top: DimensionConstants.d8.h,
+                          bottom: DimensionConstants.d3.h),
+                      child: const ImageView(
+                        path: ImageConstants.bottomBarTimeSheetActive,
+                        color: ColorConstants.primaryColor,
+                      ),
                     ),
+                    label: 'Timesheets',
                   ),
-                  label: 'Projects',
-                ),
-                BottomNavigationBarItem(
-                  icon: Padding(
-                    padding: EdgeInsets.only(
-                        top: DimensionConstants.d8.h,
-                        bottom: DimensionConstants.d3.h),
-                    child: ImageView(
-                      path: ImageConstants.timeSheetsIcon,
-                      color: (Theme.of(context).brightness == Brightness.dark
-                          ? ColorConstants.colorWhite
-                          : ColorConstants.colorBlack),
+                  BottomNavigationBarItem(
+                    icon: Padding(
+                      padding: EdgeInsets.only(
+                          top: DimensionConstants.d8.h,
+                          bottom: DimensionConstants.d3.h),
+                      child: ImageView(
+                        path: ImageConstants.profileIcon,
+                        color: (Theme.of(context).brightness == Brightness.dark
+                            ? ColorConstants.colorWhite
+                            : ColorConstants.colorBlack),
+                      ),
                     ),
-                  ),
-                  activeIcon: Padding(
-                    padding: EdgeInsets.only(
-                        top: DimensionConstants.d8.h,
-                        bottom: DimensionConstants.d3.h),
-                    child: const ImageView(
-                      path: ImageConstants.bottomBarTimeSheetActive,
-                      color: ColorConstants.primaryColor,
+                    activeIcon: Padding(
+                      padding: EdgeInsets.only(
+                          top: DimensionConstants.d8.h,
+                          bottom: DimensionConstants.d3.h),
+                      child: const ImageView(
+                        path: ImageConstants.bottomBarProfileActive,
+                        color: ColorConstants.primaryColor,
+                      ),
                     ),
+                    label: 'Profile',
                   ),
-                  label: 'Timesheets',
-                ),
-                BottomNavigationBarItem(
-                  icon: Padding(
-                    padding: EdgeInsets.only(
-                        top: DimensionConstants.d8.h,
-                        bottom: DimensionConstants.d3.h),
-                    child: ImageView(
-                      path: ImageConstants.profileIcon,
-                      color: (Theme.of(context).brightness == Brightness.dark
-                          ? ColorConstants.colorWhite
-                          : ColorConstants.colorBlack),
-                    ),
-                  ),
-                  activeIcon: Padding(
-                    padding: EdgeInsets.only(
-                        top: DimensionConstants.d8.h,
-                        bottom: DimensionConstants.d3.h),
-                    child: const ImageView(
-                      path: ImageConstants.bottomBarProfileActive,
-                      color: ColorConstants.primaryColor,
-                    ),
-                  ),
-                  label: 'Profile',
-                ),
-              ],
-              selectedLabelStyle:
-                  Theme.of(context).bottomNavigationBarTheme.selectedLabelStyle,
-              unselectedLabelStyle: Theme.of(context)
-                  .bottomNavigationBarTheme
-                  .unselectedLabelStyle,
-              type: BottomNavigationBarType.fixed,
-              backgroundColor:
-                  Theme.of(context).bottomNavigationBarTheme.backgroundColor,
-              currentIndex: provider.selectedIndex,
-              selectedItemColor:
-                  Theme.of(context).bottomNavigationBarTheme.selectedItemColor,
-              unselectedItemColor: Theme.of(context)
-                  .bottomNavigationBarTheme
-                  .unselectedItemColor,
-              iconSize: 25,
-              onTap: provider.onItemTapped,
-              elevation: 5,
-              showSelectedLabels: true,
-              showUnselectedLabels: true,
-            ),
-          );
-        });
+                ],
+                selectedLabelStyle: Theme.of(context)
+                    .bottomNavigationBarTheme
+                    .selectedLabelStyle,
+                unselectedLabelStyle: Theme.of(context)
+                    .bottomNavigationBarTheme
+                    .unselectedLabelStyle,
+                type: BottomNavigationBarType.fixed,
+                backgroundColor:
+                    Theme.of(context).bottomNavigationBarTheme.backgroundColor,
+                currentIndex: provider.selectedIndex,
+                selectedItemColor: Theme.of(context)
+                    .bottomNavigationBarTheme
+                    .selectedItemColor,
+                unselectedItemColor: Theme.of(context)
+                    .bottomNavigationBarTheme
+                    .unselectedItemColor,
+                iconSize: 25,
+                onTap: provider.onItemTapped,
+                elevation: 5,
+                showSelectedLabels: true,
+                showUnselectedLabels: true,
+              ),
+            );
+    });
   }
 }
 
-Widget drawer(BuildContext context, BottomBarManagerProvider provider,) {
+Widget drawer(
+  BuildContext context,
+  BottomBarManagerProvider provider,
+) {
+  print("drawer get open");
   return Stack(
     children: [
       SizedBox(
@@ -293,11 +329,20 @@ Widget drawer(BuildContext context, BottomBarManagerProvider provider,) {
                             children: [
                               Padding(
                                 padding: EdgeInsets.only(
-                                    top: DimensionConstants.d60.h,left: DimensionConstants.d30.w),
-                                child:  ClipRRect(
-                                  borderRadius: BorderRadius.circular(DimensionConstants.d55.r),
+                                    top: DimensionConstants.d60.h,
+                                    left: DimensionConstants.d30.w),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(
+                                      DimensionConstants.d55.r),
                                   child: ImageView(
-                                    path:SharedPreference.prefs!.getString(SharedPreference.USER_PROFILE) == null? ImageConstants.drawerProfile:ApiConstantsCrew.BASE_URL_IMAGE+SharedPreference.prefs!.getString(SharedPreference.USER_PROFILE)!,
+                                    path: SharedPreference.prefs!.getString(
+                                                SharedPreference
+                                                    .USER_PROFILE) ==
+                                            null
+                                        ? ImageConstants.drawerProfile
+                                        : ApiConstantsCrew.BASE_URL_IMAGE +
+                                            SharedPreference.prefs!.getString(
+                                                SharedPreference.USER_PROFILE)!,
                                     height: DimensionConstants.d110.h,
                                     width: DimensionConstants.d110.w,
                                     fit: BoxFit.cover,
@@ -308,9 +353,16 @@ Widget drawer(BuildContext context, BottomBarManagerProvider provider,) {
                                   top: DimensionConstants.d110.h,
                                   left: DimensionConstants.d110.w,
                                   child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(DimensionConstants.d27.r),
+                                    borderRadius: BorderRadius.circular(
+                                        DimensionConstants.d27.r),
                                     child: ImageView(
-                                      path:SharedPreference.prefs!.getString(SharedPreference.USER_LOGO) == null? ImageConstants.brandIocn:ApiConstantsCrew.BASE_URL_IMAGE+SharedPreference.prefs!.getString(SharedPreference.USER_LOGO)! ,
+                                      path: SharedPreference.prefs!.getString(
+                                                  SharedPreference.USER_LOGO) ==
+                                              null
+                                          ? ImageConstants.brandIocn
+                                          : ApiConstantsCrew.BASE_URL_IMAGE +
+                                              SharedPreference.prefs!.getString(
+                                                  SharedPreference.USER_LOGO)!,
                                       height: DimensionConstants.d55.h,
                                       width: DimensionConstants.d55.w,
                                       fit: BoxFit.cover,
@@ -327,12 +379,14 @@ Widget drawer(BuildContext context, BottomBarManagerProvider provider,) {
                                         DimensionConstants.d20.sp,
                                         TextAlign.center,
                                         color: ColorConstants.colorWhite),
-                                    // SizedBox(height: DimensionConstants.d3.h),
-                                     Text(SharedPreference.prefs!.getString(SharedPreference.USER_NAME) == null?"":SharedPreference.prefs!.getString(SharedPreference.USER_NAME)!).boldText(
-                                        context,
-                                        DimensionConstants.d30.sp,
-                                        TextAlign.center,
-                                        color: ColorConstants.colorWhite),
+                                    Text(SharedPreference.prefs!.getString(
+                                                SharedPreference.USER_NAME) ??
+                                            "")
+                                        .boldText(
+                                            context,
+                                            DimensionConstants.d30.sp,
+                                            TextAlign.center,
+                                            color: ColorConstants.colorWhite),
                                     SizedBox(
                                       height: DimensionConstants.d8.h,
                                     ),
@@ -406,8 +460,10 @@ Widget drawer(BuildContext context, BottomBarManagerProvider provider,) {
                         provider.onItemTapped(1);
                       },
                       child: drawerHeadingsRow(
-                          context, ImageConstants.calendarIcon, "schedule".tr(),
-                          ),
+                        context,
+                        ImageConstants.calendarIcon,
+                        "schedule".tr(),
+                      ),
                     ),
                     SizedBox(height: DimensionConstants.d33.h),
                     GestureDetector(
@@ -457,7 +513,8 @@ Widget drawer(BuildContext context, BottomBarManagerProvider provider,) {
                       onTap: () {
                         Navigator.pop(context);
                         SharedPreference.clearSharedPrefs();
-                        Navigator.pushNamed(context, RouteConstants.selectToContinueScreen);
+                        Navigator.pushNamed(
+                            context, RouteConstants.selectToContinueScreen);
                       },
                       child: drawerHeadingsRow(
                           context, ImageConstants.logoutIcon, "logout".tr()),
@@ -473,7 +530,7 @@ Widget drawer(BuildContext context, BottomBarManagerProvider provider,) {
           top: DimensionConstants.d60.h,
           left: DimensionConstants.d280.w,
           child: GestureDetector(
-            onTap: (){
+            onTap: () {
               Navigator.pop(context);
             },
             child: const ImageView(

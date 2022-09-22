@@ -13,59 +13,85 @@ import '../views_manager/projects_manager/project_details_manager.dart';
 import '../views_manager/projects_manager/projects_page_manager.dart';
 import '../views_manager/timesheet_manager/timesheet_page_manager.dart';
 
-
-class BottomBarManagerProvider extends BaseProvider{
+class BottomBarManagerProvider extends BaseProvider {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   int selectedIndex = 0;
   int fromBottomNav = 1;
 
-  updateNavigationValue(int newValue){
+  String? _managerName;
+  String? _managerProfilePic;
+  String? _companyLogo;
+
+  String get managerName => _managerName ?? "";
+
+  String get managerProfilePic => _managerProfilePic ?? "";
+
+  String get companyLogo => _companyLogo ?? "";
+
+  void updateDrawerData(String name, String profilePic, String companyLogo) {
+    _companyLogo = companyLogo;
+    _managerProfilePic = profilePic;
+    _managerName = name;
+    customNotify();
+  }
+
+  updateNavigationValue(int newValue) {
     fromBottomNav = newValue;
     notifyListeners();
   }
+
+
   void onItemTapped(int index) {
     selectedIndex = index;
     updateNavigationValue(1);
     notifyListeners();
   }
 
-  routeNavigation(BuildContext context, int index){
-    if(index == 0){
+  routeNavigation(BuildContext context, int index) {
+    if (index == 0) {
       Navigator.pushNamed(context, RouteConstants.notificationsScreenManager);
-    }else if(index == 3){
+    } else if (index == 3) {
       Navigator.pushNamed(context, RouteConstants.notificationsScreenManager);
     }
   }
 
- final List<Widget> widgetOptions = <Widget>[
+  final List<Widget> widgetOptions = <Widget>[
     const DashBoardPageManager(),
     const ProjectsPageManager(),
     const TimeSheetPageManager(),
     const ProfilePageManager(),
   ];
-  pageView(int index,){
-    if(index == 0){
-     return const DashBoardPageManager();
-    }else if(index ==1){
-      if(fromBottomNav == 1){
-        return  const ProjectsPageManager();
-      }else if(fromBottomNav == 2){
-        return   ArchivedProjectDetailsManager(archivedOrProject: true, fromProject: false);
-      }else if(fromBottomNav == 3){
+
+  pageView(
+    int index,
+  ) {
+    if (index == 0) {
+      return const DashBoardPageManager();
+    } else if (index == 1) {
+      if (fromBottomNav == 1) {
+        return const ProjectsPageManager();
+      } else if (fromBottomNav == 2) {
+        return ArchivedProjectDetailsManager(
+            archivedOrProject: true, fromProject: false);
+      } else if (fromBottomNav == 3) {
         return const ArchivedProjectsScreenManager();
-      } else if( fromBottomNav == 4){
-        return   ArchivedProjectDetailsManager(archivedOrProject: false, fromProject: true);
-      } else if( fromBottomNav == 5){
-        return   ProjectDetailsPageManager( createProject: true, projectId: '',);
+      } else if (fromBottomNav == 4) {
+        return ArchivedProjectDetailsManager(
+            archivedOrProject: false, fromProject: true);
+      } else if (fromBottomNav == 5) {
+        return ProjectDetailsPageManager(
+          createProject: true,
+          projectId: '',
+        );
       }
-    }else if(index == 2){
-      return  const TimeSheetPageManager();
-    } else if(index==3){
+    } else if (index == 2) {
+      return const TimeSheetPageManager();
+    } else if (index == 3) {
       return const ProfilePageManager();
     }
     notifyListeners();
-
   }
+
   List<String> menuName = [
     ImageConstants.dashBoardIcon,
     "Projects",
@@ -73,20 +99,10 @@ class BottomBarManagerProvider extends BaseProvider{
     "Profile"
   ];
 
-
-
-
   List<String> actionIcon = [
     ImageConstants.notificationIcon,
     ImageConstants.searchIcon,
     ImageConstants.searchIcon,
     ImageConstants.notificationIconBell
   ];
-
-
-
-
-
-
 }
-

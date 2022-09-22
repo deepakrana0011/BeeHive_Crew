@@ -1,6 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
+import 'package:beehive/helper/shared_prefs.dart';
 import 'package:beehive/provider/base_provider.dart';
+import 'package:beehive/views_manager/light_theme_signup_login_manager/login_screen_manager.dart';
+import 'package:beehive/views_manager/light_theme_signup_login_manager/sign_up_screen_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -10,16 +15,22 @@ import '../helper/dialog_helper.dart';
 import '../services/fetch_data_expection.dart';
 import '../views_manager/light_theme_signup_login_manager/otp_verification_page_manager.dart';
 
-class EmailAddressScreenManagerProvider extends BaseProvider{
-
-  Future emailVerificationManager(BuildContext context, String email) async {
+class EmailAddressScreenManagerProvider extends BaseProvider {
+  Future sendOtpEmailManager(BuildContext context, String email,
+      bool isVerificationProcess, bool isResetPassword) async {
     setState(ViewState.busy);
     try {
-      var model = await api.verifyManagerEmail(context,email );
+      var model = await api.sendOtpForgotEmailManager(context, email);
+      setState(ViewState.idle);
       if (model.success == true) {
-        setState(ViewState.idle);
-        Navigator.pushNamed(context, RouteConstants.otpVerificationPageManager,arguments: OtpVerificationPageManager(phoneNumber: email, continueWithPhoneOrEmail: false, resetPasswordWithEmail: 2,));
-        DialogHelper.showMessage(context, model.message!);
+        SharedPreference.prefs!
+            .setString(SharedPreference.TOKEN, model!.token!);
+        Navigator.pushNamed(context, RouteConstants.otpVerificationPageManager,
+            arguments: {
+              "value": email,
+              "isEmailVerification": true,
+              "isResetPassword": isResetPassword
+            });
       } else {
         setState(ViewState.idle);
         DialogHelper.showMessage(context, model.message!);
@@ -33,18 +44,17 @@ class EmailAddressScreenManagerProvider extends BaseProvider{
     }
   }
 
-
-  Future verifyEmailForOtp(BuildContext context, String email,) async {
+  Future isEmailExist(BuildContext context, String email) async {
     setState(ViewState.busy);
     try {
-      var model = await api.getOtpForPasswordReset(context,email );
-      if (model.success == true) {
-        setState(ViewState.idle);
-        Navigator.pushNamed(context, RouteConstants.otpVerificationPageManager,arguments: OtpVerificationPageManager(phoneNumber: email, resetPasswordWithEmail: 3,continueWithPhoneOrEmail: false,));
-        DialogHelper.showMessage(context, model.message!);
+      var status = await api.isEmailExistManager(email);
+      setState(ViewState.idle);
+      if (status) {
+        Navigator.pushNamed(context, RouteConstants.loginScreenManager,
+            arguments: email);
       } else {
-        setState(ViewState.idle);
-        DialogHelper.showMessage(context, model.message!);
+        Navigator.pushNamed(context, RouteConstants.signUpScreenManager,
+            arguments: email);
       }
     } on FetchDataException catch (e) {
       setState(ViewState.idle);
@@ -54,13 +64,4 @@ class EmailAddressScreenManagerProvider extends BaseProvider{
       DialogHelper.showMessage(context, "internet_connection".tr());
     }
   }
-
-
-
-
-
-
-
-
 }
-

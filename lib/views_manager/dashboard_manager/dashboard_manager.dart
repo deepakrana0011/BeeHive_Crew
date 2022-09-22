@@ -1,7 +1,12 @@
+import 'dart:math';
+
 import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
+import 'package:beehive/helper/date_function.dart';
 import 'package:beehive/provider/dashboard_page_manager_provider.dart';
+import 'package:beehive/provider/drawer_manager_provider.dart';
 import 'package:beehive/view/base_view.dart';
+import 'package:beehive/widget/custom_circular_bar.dart';
 import 'package:beehive/widget/custom_tab_bar.dart';
 import 'package:beehive/widget/custom_tab_bar_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -26,16 +31,23 @@ class DashBoardPageManager extends StatefulWidget {
 
 class _DashBoardPageManagerState extends State<DashBoardPageManager>
     with TickerProviderStateMixin {
-  DashBoardPageManagerProvider provider =
-      locator<DashBoardPageManagerProvider>();
+  DrawerManagerProvider? drawerManagerProvider;
+  BottomBarManagerProvider? managerProvider;
+
+  @override
+  void initState() {
+    managerProvider =
+        Provider.of<BottomBarManagerProvider>(context, listen: false);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     return BaseView<DashBoardPageManagerProvider>(onModelReady: (provider) {
-      this.provider = provider;
-      provider.dashBoardApi(
-        context,
-      );
+      var startDate = DateFunctions.getCurrentDateMonthYear();
+      var endDate = DateFunctions.getCurrentDateMonthYear();
+      provider.dashBoardApi(context, startDate, endDate, managerProvider,
+          showFullLoader: true);
       provider.controller = TabController(length: 3, vsync: this);
     }, builder: (context, provider, _) {
       return provider.state == ViewState.idle
@@ -43,10 +55,11 @@ class _DashBoardPageManagerState extends State<DashBoardPageManager>
               body: Column(
               children: <Widget>[
                 activeProjectWidget(context, provider),
-                tabBarView(provider.controller!, context, provider)
+                tabBarView(
+                    provider.controller!, context, provider, managerProvider!)
               ],
             ))
-          : Center(
+          : const Center(
               child: CircularProgressIndicator(
               color: ColorConstants.primaryGradient2Color,
             ));
@@ -72,7 +85,7 @@ Widget activeProjectWidget(
           SizedBox(
             height: DimensionConstants.d16.h,
           ),
-          Text("Hey  ${provider.responseManager!.manager!.name!},\nwhat’s buzzing?")
+          Text("Hey  ${provider.responseManager!.manager?.name!},\nwhat’s buzzing?")
               .boldText(context, DimensionConstants.d18.sp, TextAlign.left,
                   color: ColorConstants.colorWhite),
           SizedBox(
@@ -87,7 +100,7 @@ Widget activeProjectWidget(
               Expanded(child: Container()),
               crewAndActiveProject(
                   context,
-                  provider.responseManager!.crewMembers.toString(),
+                  provider.responseManager!.crewmembers.toString(),
                   "crew_members"),
             ],
           ),
@@ -120,8 +133,11 @@ Widget crewAndActiveProject(
   );
 }
 
-Widget tabBarView(TabController controller, BuildContext context,
-    DashBoardPageManagerProvider provider) {
+Widget tabBarView(
+    TabController controller,
+    BuildContext context,
+    DashBoardPageManagerProvider provider,
+    BottomBarManagerProvider managerProvider) {
   return Expanded(
     child: Padding(
       padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
@@ -155,6 +171,36 @@ Widget tabBarView(TabController controller, BuildContext context,
               onTap: (index) {
                 if (controller.indexIsChanging) {
                   provider.updateLoadingStatus(true);
+                }
+                switch (index) {
+                  case 0:
+                    {
+                      var startDate = DateFunctions.getCurrentDateMonthYear();
+                      var endDate = DateFunctions.getCurrentDateMonthYear();
+                      provider.selectedStartDate = null;
+                      provider.selectedEndDate = null;
+                      provider.dashBoardApi(
+                          context, startDate, endDate, managerProvider);
+                      break;
+                    }
+                  case 1:
+                    {
+                      provider.selectedStartDate = null;
+                      provider.selectedEndDate = null;
+                      provider.nextWeekDays(7);
+                      provider.dashBoardApi(context, provider.startDate!,
+                          provider.startDate!, managerProvider);
+                      break;
+                    }
+                  case 2:
+                    {
+                      provider.selectedStartDate = null;
+                      provider.selectedEndDate = null;
+                      provider.nextWeekDays(14);
+                      provider.dashBoardApi(context, provider.startDate!,
+                          provider.startDate!, managerProvider);
+                      break;
+                    }
                 }
               },
               tabs: [
@@ -195,16 +241,31 @@ Widget tabBarView(TabController controller, BuildContext context,
             ),
           ),
           Expanded(
-            child: TabBarView(
-              controller: controller,
-              physics: NeverScrollableScrollPhysics(),
-              children: [
-                projectsAndHoursCardListManager(context, provider),
-                Container(),
-                /* weeklyTabBarContainerManager(context),*/
-                Icon(Icons.directions_car, size: 350),
-              ],
-            ),
+            child: provider.isLoading
+                ? const Center(
+                    child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                            ColorConstants.primaryColor)),
+                  )
+                : TabBarView(
+                    controller: controller,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: [
+                      /*provider.responseManager!.projectData!.isNotEmpty
+                          ?*/
+                      todayDataWidget(context, provider),
+                      //: noDataFound(context),
+                      /*provider.responseManager!.projectData!.isNotEmpty
+                          ? */
+                      weeklyTabBarContainerManager(
+                          context, provider, managerProvider, controller),
+                      // : noDataFound(context),
+                      /*provider.responseManager!.projectData!.isNotEmpty
+                          ?*/ weeklyTabBarContainerManager(
+                          context, provider, managerProvider, controller),
+                          //: noDataFound(context),
+                    ],
+                  ),
           ),
         ],
       ),
@@ -212,12 +273,18 @@ Widget tabBarView(TabController controller, BuildContext context,
   );
 }
 
-Widget projectsAndHoursCardListManager(
+Widget noDataFound(BuildContext context) {
+  return Center(
+      child: const Text("No Data Found")
+          .boldText(context, DimensionConstants.d18.sp, TextAlign.center));
+}
+
+Widget todayDataWidget(
     BuildContext context, DashBoardPageManagerProvider provider) {
   return Padding(
     padding: EdgeInsets.only(top: DimensionConstants.d16.h),
     child: Card(
-      margin: EdgeInsets.only(bottom: DimensionConstants.d80.h),
+      margin: EdgeInsets.only(bottom: DimensionConstants.d20.h),
       elevation: 2.5,
       color: (Theme.of(context).brightness == Brightness.dark
           ? ColorConstants.colorBlack
@@ -253,23 +320,7 @@ Widget projectsAndHoursCardListManager(
                 color: ColorConstants.colorGreyDrawer,
                 height: 0.0,
                 thickness: 1.5),
-            projectHourRowManager(context, provider, onTap: () {}),
-
-            /* const Divider(
-                color: ColorConstants.colorGreyDrawer,
-                height: 0.0,
-                thickness: 1.5),
-            projectHourRowManager(context,ColorConstants.primaryGradient1Color, "MS", "Momentum Digital", "1 Crew", "12:57h", ),
-            const Divider(
-                color: ColorConstants.colorGreyDrawer,
-                height: 0.0,
-                thickness: 1.5),
-            projectHourRowManager(context, ColorConstants.deepBlue, "MS", "Momentum Digital", "4 Crew", "12:57h", ),
-            const Divider(
-                color: ColorConstants.colorGreyDrawer,
-                height: 0.0,
-                thickness: 1.5),
-            projectHourRowManager(context, ColorConstants.deepBlue, "MS", "Momentum Digital", "2 Crew", "12:57h", ),*/
+            projectHourRowManager(context, provider),
           ],
         ),
       ),
@@ -277,8 +328,11 @@ Widget projectsAndHoursCardListManager(
   );
 }
 
-/*
-Widget weeklyTabBarContainerManager(BuildContext context) {
+Widget weeklyTabBarContainerManager(
+    BuildContext context,
+    DashBoardPageManagerProvider provider,
+    BottomBarManagerProvider barProvider,
+    TabController controller) {
   return SingleChildScrollView(
     child: Column(
       children: [
@@ -287,7 +341,7 @@ Widget weeklyTabBarContainerManager(BuildContext context) {
           decoration: BoxDecoration(
             color: ColorConstants.deepBlue,
             borderRadius:
-            BorderRadius.all(Radius.circular(DimensionConstants.d8.r)),
+                BorderRadius.all(Radius.circular(DimensionConstants.d8.r)),
           ),
           child: SingleChildScrollView(
             child: Column(
@@ -301,11 +355,36 @@ Widget weeklyTabBarContainerManager(BuildContext context) {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      backNextBtn(ImageConstants.backIconIos),
-                      Text("Apr 13 - Apr 19").boldText(context,
-                          DimensionConstants.d16.sp, TextAlign.center,
-                          color: ColorConstants.colorWhite),
-                      backNextBtn(ImageConstants.nextIconIos)
+                      GestureDetector(
+                        child: backNextBtn(ImageConstants.backIconIos),
+                        onTap: () {
+                          provider
+                              .previousWeekDays(controller.index == 1 ? 7 : 14);
+                          provider.dashBoardApi(context, provider.startDate!,
+                              provider.endDate!, barProvider);
+                        },
+                      ),
+                      Text("${DateFunctions.capitalize(provider.weekFirstDate??"")} - ${DateFunctions.capitalize(provider.weekEndDate??"")}")
+                          .boldText(context, DimensionConstants.d16.sp,
+                              TextAlign.center,
+                              color: ColorConstants.colorWhite),
+                      provider.endDate !=
+                              DateFormat("yyyy-MM-dd").format(DateTime.now())
+                          ? GestureDetector(
+                              child: backNextBtn(ImageConstants.nextIconIos),
+                              onTap: () {
+                                provider.nextWeekDays(
+                                    controller.index == 1 ? 7 : 14);
+                                provider.dashBoardApi(
+                                    context,
+                                    provider.startDate!,
+                                    provider.endDate!,
+                                    barProvider);
+                              },
+                            )
+                          : Visibility(
+                              visible: false,
+                              child: backNextBtn(ImageConstants.nextIconIos))
                     ],
                   ),
                 ),
@@ -325,9 +404,9 @@ Widget weeklyTabBarContainerManager(BuildContext context) {
                       Container(
                         decoration: BoxDecoration(
                           color:
-                          (Theme.of(context).brightness == Brightness.dark
-                              ? ColorConstants.colorBlack
-                              : ColorConstants.colorWhite),
+                              (Theme.of(context).brightness == Brightness.dark
+                                  ? ColorConstants.colorBlack
+                                  : ColorConstants.colorWhite),
                           border: Border.all(
                             color: ColorConstants.colorLightGreyF2,
                           ),
@@ -338,61 +417,44 @@ Widget weeklyTabBarContainerManager(BuildContext context) {
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
-                            projectsHoursRow(context,ImageConstants.mapIcon,
+                            projectsHoursRow(context, ImageConstants.mapIcon,
                                 "4 ${"projects".tr()}"),
                             Container(
                               height: DimensionConstants.d70.h,
                               width: DimensionConstants.d1.w,
                               color: ColorConstants.colorLightGrey,
                             ),
-                            projectsHoursRow(context,ImageConstants.clockIcon,
+                            projectsHoursRow(context, ImageConstants.clockIcon,
                                 "07:28 ${"hours".tr()}")
                           ],
                         ),
                       ),
-                      weeklyTabBarDateContainer(context,"Tue, April 13"),
-                      projectHourRowManager(context, Color(0xFFBB6BD9), "MS", "Momentum Digital", "1 Crew", "12:57h",  onTap: () {
-                        // Navigator.pushNamed(
-                        //     context, RouteConstants.timeSheetsScreen);
-                      }),
-                      const Divider(
-                          color: ColorConstants.colorGreyDrawer,
-                          height: 0.0,
-                          thickness: 1.5),
-                      projectHourRowManager(context, ColorConstants.primaryGradient1Color, "MD", "Momentum Digital", "1 Crew", "02:57h",  onTap: () {
-                        // Navigator.pushNamed(
-                        //     context, RouteConstants.timeSheetsScreen);
-                      }),
-                      weeklyTabBarDateContainer(context,"Wed, April 14"),
-                      projectHourRowManager(context, Color(0xFFBB6BD9), "MS", "Momentum Digital", "1 Crew", "12:57h",  onTap: () {
-                        // Navigator.pushNamed(
-                        //     context, RouteConstants.timeSheetsScreen);
-                      }),
-                      const Divider(
-                          color: ColorConstants.colorGreyDrawer,
-                          height: 0.0,
-                          thickness: 1.5),
-                      projectHourRowManager(context, ColorConstants.primaryGradient1Color, "MD", "Momentum Digital", "2 Crew", "12:57h",  onTap: () {
-                        // Navigator.pushNamed(
-                        //     context, RouteConstants.timeSheetsScreen);
-                      }),
-                      projectHourRowManager(context,Color(0xFFBB6BD9), "MS", "Momentum Digital", "1 Crew", "12:57h",  onTap: () {
-                        // Navigator.pushNamed(
-                        //     context, RouteConstants.timeSheetsScreen);
-                      }),
-                      const Divider(
-                          color: ColorConstants.colorGreyDrawer,
-                          height: 0.0,
-                          thickness: 1.5),
-                      projectHourRowManager(context, ColorConstants.primaryGradient1Color, "MD", "Momentum Digital", "1 Crew", "12:57h",  onTap: () {
-                        // Navigator.pushNamed(
-                        //     context, RouteConstants.timeSheetsScreen);
-                      }),
-                      const Divider(
-                          color: ColorConstants.colorGreyDrawer,
-                          height: 0.0,
-                          thickness: 1.5),
-                      // SizedBox(height: DimensionConstants.d60.h),
+                      ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: 5,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            return Column(
+                              children: [
+                                weeklyTabBarDateContainer(
+                                    context, "Tue, April 13"),
+                                ListView.separated(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: 5,
+                                  itemBuilder: (context, index) {
+                                    return projectDetailTile(context);
+                                  },
+                                  separatorBuilder: (context, index) {
+                                    return const Divider(
+                                        color: ColorConstants.colorGreyDrawer,
+                                        height: 0.0,
+                                        thickness: 1.5);
+                                  },
+                                ),
+                              ],
+                            );
+                          })
                     ],
                   ),
                 )
@@ -400,13 +462,14 @@ Widget weeklyTabBarContainerManager(BuildContext context) {
             ),
           ),
         ),
-
-        SizedBox(height: DimensionConstants.d70.h,),
+        SizedBox(
+          height: DimensionConstants.d70.h,
+        ),
       ],
     ),
   );
 }
-*/
+
 Widget projectsHoursRow(BuildContext context, String iconPath, String txt) {
   return Row(
     children: [
@@ -418,71 +481,70 @@ Widget projectsHoursRow(BuildContext context, String iconPath, String txt) {
 }
 
 Widget projectHourRowManager(
-    BuildContext context, DashBoardPageManagerProvider provider,
-    {VoidCallback? onTap}) {
+    BuildContext context, DashBoardPageManagerProvider provider) {
   return Container(
     height: DimensionConstants.d240.h,
     width: DimensionConstants.d400.w,
     child: ListView.separated(
-      itemCount: provider.responseManager!.crewOnProject!.length,
+      itemCount: 1,
       itemBuilder: (BuildContext context, int index) {
-        return GestureDetector(
-          onTap: onTap,
-          child: Container(
-            color: Colors.transparent,
-            child: Padding(
-              padding: EdgeInsets.symmetric(
-                  vertical: DimensionConstants.d11.h,
-                  horizontal: DimensionConstants.d16.w),
-              child: Row(
-                children: [
-                  Container(
-                    alignment: Alignment.center,
-                    padding: const EdgeInsets.all(DimensionConstants.d5),
-                    height: DimensionConstants.d40.h,
-                    width: DimensionConstants.d40.w,
-                    decoration: const BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: ColorConstants.blueGradient2Color,
-                    ),
-                    child: Text(provider.projectNameInitials[index].toString())
-                        .boldText(context, DimensionConstants.d16.sp,
-                            TextAlign.center,
-                            color: ColorConstants.colorWhite),
-                  ),
-                  SizedBox(width: DimensionConstants.d14.w),
-                  Container(
-                    width: DimensionConstants.d120.w,
-                    child: Text(provider.responseManager!.crewOnProject![index]
-                            .projectId!.projectName!)
-                        .boldText(context, DimensionConstants.d13.sp,
-                            TextAlign.center),
-                  ),
-                  SizedBox(
-                    width: DimensionConstants.d24.w,
-                  ),
-                  Text("${provider.responseManager!.crewOnProject![index].crewId!.length} Crew")
-                      .regularText(
-                          context, DimensionConstants.d13.sp, TextAlign.center),
-                  SizedBox(width: DimensionConstants.d15.w),
-                  Text("12:57h").semiBoldText(
-                      context, DimensionConstants.d13.sp, TextAlign.center),
-                  SizedBox(width: DimensionConstants.d11.w),
-                  ImageView(
-                      path: ImageConstants.forwardArrowIcon,
-                      color: (Theme.of(context).brightness == Brightness.dark
-                          ? ColorConstants.colorWhite
-                          : ColorConstants.colorBlack))
-                ],
-              ),
-            ),
-          ),
+        return Container(
+          color: Colors.transparent,
+          child: projectDetailTile(context),
         );
       },
       separatorBuilder: (BuildContext context, int index) {
         return const Divider(
             color: ColorConstants.colorGreyDrawer, height: 0.0, thickness: 1.5);
       },
+    ),
+  );
+}
+
+Widget projectDetailTile(BuildContext context) {
+  return GestureDetector(
+    onTap: () {},
+    child: Padding(
+      padding: EdgeInsets.symmetric(
+          vertical: DimensionConstants.d11.h,
+          horizontal: DimensionConstants.d16.w),
+      child: Row(
+        children: [
+          Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.all(DimensionConstants.d5),
+            height: DimensionConstants.d40.h,
+            width: DimensionConstants.d40.w,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.primaries[Random().nextInt(Colors.primaries.length)],
+            ),
+            child: Text("DE").boldText(
+                context, DimensionConstants.d16.sp, TextAlign.center,
+                color: ColorConstants.colorWhite),
+          ),
+          SizedBox(width: DimensionConstants.d14.w),
+          Container(
+            width: DimensionConstants.d120.w,
+            child: Text("Testing")
+                .boldText(context, DimensionConstants.d13.sp, TextAlign.center),
+          ),
+          SizedBox(
+            width: DimensionConstants.d24.w,
+          ),
+          Text("6 Crew").regularText(
+              context, DimensionConstants.d13.sp, TextAlign.center),
+          SizedBox(width: DimensionConstants.d15.w),
+          Text("12:57h").semiBoldText(
+              context, DimensionConstants.d13.sp, TextAlign.center),
+          SizedBox(width: DimensionConstants.d11.w),
+          ImageView(
+              path: ImageConstants.forwardArrowIcon,
+              color: (Theme.of(context).brightness == Brightness.dark
+                  ? ColorConstants.colorWhite
+                  : ColorConstants.colorBlack))
+        ],
+      ),
     ),
   );
 }

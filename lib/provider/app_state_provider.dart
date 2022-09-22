@@ -2,7 +2,6 @@ import 'package:beehive/helper/shared_prefs.dart';
 import 'package:beehive/provider/base_provider.dart';
 
 class AppStateNotifier extends BaseProvider {
-
   bool isDarkModeOn = SharedPreference.prefs?.getBool(SharedPreference.THEME_STATUS) ?? false;
 
   void updateTheme(bool isDarkModeOn) {

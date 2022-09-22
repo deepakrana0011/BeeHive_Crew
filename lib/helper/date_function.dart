@@ -222,10 +222,44 @@ class DateFunctions {
     return dateString */ /*+ ", " + valueString*/ /*;
   }*/
 
+  static String getMonthDay(DateTime dateTime) {
+    String newTime = DateFormat("MMM dd").format(dateTime);
+    return newTime.toLowerCase();
+  }
+
+  static String getCurrentDateMonthYear() {
+    DateTime date = DateTime.now();
+    String dayName = DateFormat("yyyy-MM-dd").format(date);
+    return dayName.toUpperCase();
+  }
+
   static DateTime stringToDate(String dateString) {
     DateTime date = DateFormat("hh:mm a").parse(dateString);
     String _24HourFormat = DateFormat("HH:mm").format(date);
     DateTime _24HourFormatDate = DateFormat("hh:mm").parse(_24HourFormat);
     return _24HourFormatDate;
+  }
+
+  static String capitalize(String value) {
+    if (value.isNotEmpty) {
+      var result = value[0].toUpperCase();
+      bool cap = true;
+      for (int i = 1; i < value.length; i++) {
+        if (value[i - 1] == " " && cap == true) {
+          result = result + value[i].toUpperCase();
+        } else {
+          result = result + value[i];
+          cap = false;
+        }
+      }
+      return result;
+    } else {
+      return "";
+    }
+  }
+
+  static String dateFormatyyyyMMddhhmmss(DateTime dateTime) {
+    String date = DateFormat("yyyy-MM-dd hh:mm:ss").format(dateTime);
+    return date;
   }
 }

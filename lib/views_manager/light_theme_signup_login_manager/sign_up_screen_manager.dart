@@ -24,15 +24,14 @@ class SignUpScreenManager extends StatelessWidget {
   final passwordFocusNode = FocusNode();
   final _formKey = GlobalKey<FormState>();
   SignUpManagerProvider provider = locator<SignUpManagerProvider>();
+
   @override
   Widget build(BuildContext context) {
-    return BaseView<SignUpManagerProvider>(
-      onModelReady: (provider){
-        this.provider = provider;
-      },
-        builder: (context, provider, _){
+    return BaseView<SignUpManagerProvider>(onModelReady: (provider) {
+      this.provider = provider;
+    }, builder: (context, provider, _) {
       return GestureDetector(
-        onTap: (){
+        onTap: () {
           CommonWidgets.hideKeyboard(context);
         },
         child: Scaffold(
@@ -48,65 +47,87 @@ class SignUpScreenManager extends StatelessWidget {
                       const ImageView(path: ImageConstants.lightThemeSignUpBg),
                       Positioned(
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    top: DimensionConstants.d44.h,
-                                    left: DimensionConstants.d24.w),
-                                   child: GestureDetector(
-                                      behavior: HitTestBehavior.translucent,
-                                      onTap: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                      child: SizedBox(
-                                          width: DimensionConstants.d24.w,
-                                          height: DimensionConstants.d24.h,
-                                          child: const ImageView(
-                                              path: ImageConstants.backIcon, fit: BoxFit.cover)),
-                                    ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d32.w),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(height: DimensionConstants.d75.h),
-                                    SizedBox(
-                                      width: DimensionConstants.d242.w,
-                                      child: Text("sign_up".tr()).boldText(context, DimensionConstants.d30.sp, TextAlign.left, color: ColorConstants.colorBlack),
-                                    ),
-                                    SizedBox(height: DimensionConstants.d16.h),
-                                    Text(email).regularText(context, DimensionConstants.d16.sp, TextAlign.left, color: ColorConstants.colorBlack),
-                                    SizedBox(height: DimensionConstants.d49.h),
-                                    Text("your_name".tr()).boldText(context, DimensionConstants.d14.sp, TextAlign.center, color: ColorConstants.colorWhite70),
-                                    nameTextField(provider),
-                                    SizedBox(height: DimensionConstants.d24.h),
-                                    Text("your_password".tr()).boldText(context, DimensionConstants.d14.sp, TextAlign.center, color: ColorConstants.colorWhite70),
-                                    passwordTextField(provider),
-                                    SizedBox(height: DimensionConstants.d39.h),
-                                    provider.state ==ViewState.idle? CommonWidgets.commonButton(context, "sign_up_".tr(), onBtnTap: (){
-                                      if(_formKey.currentState!.validate()){
-                                        CommonWidgets.hideKeyboard(context);
-                                        provider.signUp(context, email);
-                                      }else{
-                                      }
-                                    },shadowRequired: true):const Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color)),
-                                    SizedBox(height: DimensionConstants.d20.h),
-                                    GestureDetector(
-                                      onTap: (){
-                                        Navigator.pushNamed(context, RouteConstants.loginScreenManager);
-                                      },
-                                      child: Align(
-                                        alignment: Alignment.center,
-                                        child: Text("login".tr()).regularText(context, DimensionConstants.d16.sp, TextAlign.center, color: ColorConstants.colorBlack,decoration: TextDecoration.underline),
-                                      ),
-                                    ),
-                                  ],
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(
+                                top: DimensionConstants.d44.h,
+                                left: DimensionConstants.d24.w),
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.translucent,
+                              onTap: () {
+                                Navigator.of(context).pop();
+                              },
+                              child: SizedBox(
+                                  width: DimensionConstants.d24.w,
+                                  height: DimensionConstants.d24.h,
+                                  child: const ImageView(
+                                      path: ImageConstants.backIcon,
+                                      fit: BoxFit.cover)),
+                            ),
+                          ),
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: DimensionConstants.d32.w),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                SizedBox(height: DimensionConstants.d75.h),
+                                SizedBox(
+                                  width: DimensionConstants.d242.w,
+                                  child: Text("sign_up".tr()).boldText(context,
+                                      DimensionConstants.d30.sp, TextAlign.left,
+                                      color: ColorConstants.colorBlack),
                                 ),
-                              )
-                            ],
-                          ))
+                                SizedBox(height: DimensionConstants.d16.h),
+                                Text(email).regularText(context,
+                                    DimensionConstants.d16.sp, TextAlign.left,
+                                    color: ColorConstants.colorBlack),
+                                SizedBox(height: DimensionConstants.d49.h),
+                                Text("your_name".tr()).boldText(context,
+                                    DimensionConstants.d14.sp, TextAlign.center,
+                                    color: ColorConstants.colorWhite70),
+                                nameTextField(provider),
+                                SizedBox(height: DimensionConstants.d24.h),
+                                Text("your_password".tr()).boldText(context,
+                                    DimensionConstants.d14.sp, TextAlign.center,
+                                    color: ColorConstants.colorWhite70),
+                                passwordTextField(provider),
+                                SizedBox(height: DimensionConstants.d39.h),
+                                provider.state == ViewState.idle
+                                    ? CommonWidgets.commonButton(
+                                        context, "sign_up_".tr(), onBtnTap: () {
+                                        if (_formKey.currentState!.validate()) {
+                                          CommonWidgets.hideKeyboard(context);
+                                          provider.signUp(context, email);
+                                        } else {}
+                                      }, shadowRequired: true)
+                                    : const Center(
+                                        child: CircularProgressIndicator(
+                                            color: ColorConstants
+                                                .primaryGradient2Color)),
+                                SizedBox(height: DimensionConstants.d20.h),
+                                GestureDetector(
+                                  onTap: () {
+                                    Navigator.pushNamed(context,
+                                        RouteConstants.loginScreenManager,
+                                        arguments: "");
+                                  },
+                                  child: Align(
+                                    alignment: Alignment.center,
+                                    child: Text("login".tr()).regularText(
+                                        context,
+                                        DimensionConstants.d16.sp,
+                                        TextAlign.center,
+                                        color: ColorConstants.colorBlack,
+                                        decoration: TextDecoration.underline),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ))
                     ],
                   ),
                 ],
@@ -118,58 +139,66 @@ class SignUpScreenManager extends StatelessWidget {
     });
   }
 
-  Widget nameTextField(SignUpManagerProvider provider){
-    return  TextFormField(
+  Widget nameTextField(SignUpManagerProvider provider) {
+    return TextFormField(
       cursorColor: ColorConstants.colorWhite70,
       focusNode: nameFocusNode,
       controller: provider.nameController,
-      style: ViewDecoration.textFieldStyle(DimensionConstants.d16.sp, FontWeight.w400, ColorConstants.colorBlack),
-      decoration: ViewDecoration.inputDecorationTextField(contPadding: provider.nameContentPadding, fillColor: ColorConstants.colorWhite),
+      style: ViewDecoration.textFieldStyle(DimensionConstants.d16.sp,
+          FontWeight.w400, ColorConstants.colorBlack),
+      decoration: ViewDecoration.inputDecorationTextField(
+          contPadding: provider.nameContentPadding,
+          fillColor: ColorConstants.colorWhite),
       textInputAction: TextInputAction.next,
       keyboardType: TextInputType.text,
       onChanged: (value) {
         if (value.isNotEmpty) {
-            provider.nameContentPadding = true;
-        } else{
-            provider.nameContentPadding = false;
+          provider.nameContentPadding = true;
+        } else {
+          provider.nameContentPadding = false;
         }
         provider.updateLoadingStatus(true);
       },
     );
   }
 
-  Widget passwordTextField(SignUpManagerProvider provider){
-    return  TextFormField(
+  Widget passwordTextField(SignUpManagerProvider provider) {
+    return TextFormField(
       cursorColor: ColorConstants.colorWhite70,
       focusNode: passwordFocusNode,
       controller: provider.passwordController,
       obscureText: !provider.passwordVisible,
-      style: ViewDecoration.textFieldStyle(DimensionConstants.d16.sp, FontWeight.w400, ColorConstants.colorBlack),
-      decoration: ViewDecoration.inputDecorationTextField(contPadding: provider.passwordContentPadding, suffixIcon:  IconButton(
-        padding: EdgeInsets.zero,
-        icon:  ImageView(
-          path: provider.passwordVisible ? ImageConstants.eyeIcon:ImageConstants.passwordHideIcon,
-        ),
-        onPressed: () {
-          provider.passwordVisible = !provider.passwordVisible;
-          provider.updateLoadingStatus(true);
-        },
-      ), fillColor: ColorConstants.colorWhite),
+      style: ViewDecoration.textFieldStyle(DimensionConstants.d16.sp,
+          FontWeight.w400, ColorConstants.colorBlack),
+      decoration: ViewDecoration.inputDecorationTextField(
+          contPadding: provider.passwordContentPadding,
+          suffixIcon: IconButton(
+            padding: EdgeInsets.zero,
+            icon: ImageView(
+              path: provider.passwordVisible
+                  ? ImageConstants.eyeIcon
+                  : ImageConstants.passwordHideIcon,
+            ),
+            onPressed: () {
+              provider.passwordVisible = !provider.passwordVisible;
+              provider.updateLoadingStatus(true);
+            },
+          ),
+          fillColor: ColorConstants.colorWhite),
       textInputAction: TextInputAction.done,
       keyboardType: TextInputType.text,
       onChanged: (value) {
         if (value.isNotEmpty) {
           provider.passwordContentPadding = true;
-        } else{
-            provider.passwordContentPadding = false;
+        } else {
+          provider.passwordContentPadding = false;
         }
         provider.updateLoadingStatus(true);
       },
       validator: (value) {
         if (value!.trim().isEmpty) {
           return "password_required".tr();
-        } else if (!Validations.validateStructure(
-            value)) {
+        } else if (!Validations.validateStructure(value)) {
           return "invalid_password_format".tr();
         }
         {

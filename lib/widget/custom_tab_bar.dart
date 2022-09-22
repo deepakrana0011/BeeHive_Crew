@@ -128,10 +128,10 @@ class _CustomTabBarState extends State<CustomTabBar> with TickerProviderStateMix
                 physics: NeverScrollableScrollPhysics(),
                 children: [
                   //  provider.hasProjects ? projectsAndHoursCardList() : zeroProjectZeroHourCard(),
-                 widget.notCheckedIn == false? projectsAndHoursCardList(provider):
-                 widget.navigationValue ==2 ? projectsAndHoursCardList(provider):
+                 /*widget.notCheckedIn == false? projectsAndHoursCardList(provider):
+                 widget.navigationValue ==2 ? projectsAndHoursCardList(provider):*/
                  zeroProjectZeroHourCard(),
-                  weeklyTabBarContainer(provider),
+                  ///weeklyTabBarContainer(provider),
                   Icon(Icons.directions_car, size: 350),
                 ],
               ),
@@ -215,7 +215,7 @@ class _CustomTabBarState extends State<CustomTabBar> with TickerProviderStateMix
   }
 
   /// Today Tab bar Ui~~~~~~~~~~~~~~~~~~~~~
-  Widget projectsAndHoursCardList(DashboardProvider provider) {
+ /* Widget projectsAndHoursCardList(DashboardProvider provider) {
     return Padding(
       padding: EdgeInsets.only(top: DimensionConstants.d16.h),
       child: Card(
@@ -276,7 +276,7 @@ class _CustomTabBarState extends State<CustomTabBar> with TickerProviderStateMix
 
 
 
-        /*Column(
+        *//*Column(
           children: [
             Container(
               color: (Theme.of(context).brightness == Brightness.dark
@@ -320,17 +320,17 @@ class _CustomTabBarState extends State<CustomTabBar> with TickerProviderStateMix
                 height: 0.0,
                 thickness: 1.5),
           ],
-        ),*/
+        ),*//*
       ),
     );
-  }
+  }*/
 
 
   /// ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
   /// Weekly Tab Bar UI!!!!!!!!!!!!!!!!!!!!!!!!!
   ///
- Widget weeklyTabBarContainer(DashboardProvider provider) {
+/* Widget weeklyTabBarContainer(DashboardProvider provider) {
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -530,7 +530,7 @@ class _CustomTabBarState extends State<CustomTabBar> with TickerProviderStateMix
         ],
       ),
     );
-  }
+  }*/
   Widget backNextBtn(String path,onTap) {
     return GestureDetector(
       onTap: onTap,

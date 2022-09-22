@@ -1,8 +1,12 @@
+// ignore_for_file: prefer_interpolation_to_compose_strings
+
 import 'dart:async';
 import 'dart:io';
 
 import 'package:beehive/constants/color_constants.dart';
+import 'package:beehive/helper/date_function.dart';
 import 'package:beehive/helper/shared_prefs.dart';
+import 'package:beehive/model/allProjectCrewResponse.dart';
 import 'package:beehive/model/check_box_model_crew.dart';
 import 'package:beehive/model/check_in_response_crew.dart';
 import 'package:beehive/model/check_out_response_crew.dart';
@@ -23,8 +27,6 @@ class DashboardProvider extends BaseProvider {
   bool checkedInNoProjects = false;
   bool hasCheckInCheckOut = false;
   bool isCheckedIn = false;
-  bool noProject = true;
-  AllCheckIn? checkInDetail;
   int? hours;
   String? hourOut;
   String? minOut;
@@ -41,15 +43,9 @@ class DashboardProvider extends BaseProvider {
   int minuteCount = 0;
   Timer? timer;
   String? selectedCheckOutTime;
-
-  String assignProjectId = "";
-  String? checkInTime;
   String? checkOutTime;
-  bool notCheckedIn = true;
-  String checkIn = "";
   String? firstDate;
   String? secondDate;
-  List<AllCheckIn> key = [];
   CrewDashboardResponse? crewResponse;
   String? currentCheckInProjectId;
   List<int> hoursList = [];
@@ -61,25 +57,97 @@ class DashboardProvider extends BaseProvider {
   String? day;
   String? month;
   String? year;
+  bool? isCheckOut;
 
-  updateNoProject() {
-    noProject = !noProject;
-    notifyListeners();
+  int selectedTabIndex = 0;
+  AllProjectCrewResponse? allProjectCrewResponse;
+  String assignProjectId = "";
+
+  Future getDashBoardData(
+    BuildContext context,
+  ) async {
+    setState(ViewState.busy);
+    try {
+      var model = await api.dashBoardApi(
+        context,
+      );
+      if (model.success ?? false) {
+        crewResponse = model;
+        setState(ViewState.idle);
+      } else {
+        setState(ViewState.idle);
+      }
+    } on FetchDataException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, e.toString());
+    } on SocketException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, "internet_connection".tr());
+    }
   }
 
-  updateDropDownValueOfCheckBox(val) {
-    checkIn = val;
-    notifyListeners();
+  Future checkInApi(
+    context,
+  ) async {
+    setState(ViewState.busy);
+    try {
+      var checkInTime = DateFunctions.dateFormatyyyyMMddhhmmss(DateTime.now());
+      var model = await api.checkInApi(context, assignProjectId, checkInTime);
+      assignProjectId = "";
+      if (model.success == true) {
+        getDashBoardData(context);
+      } else {
+        setState(ViewState.idle);
+        DialogHelper.showMessage(context, model.message!);
+      }
+    } on FetchDataException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, e.toString());
+    } on SocketException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, "internet_connection".tr());
+    }
   }
 
-  updateNotChecked() {
-    notCheckedIn = !notCheckedIn;
-    notifyListeners();
+  Future checkOutApi(
+    context,
+  ) async {
+    setState(ViewState.busy);
+    try {
+      var model = await api.checkOutApiCrew(
+          context, currentCheckInProjectId!, checkOutTime!);
+
+      if (model.success == true) {
+        isCheckOut = true;
+        setState(ViewState.idle);
+        DialogHelper.showMessage(context, model.message!);
+      } else {
+        setState(ViewState.idle);
+        DialogHelper.showMessage(context, model.message!);
+      }
+    } on FetchDataException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, e.toString());
+    } on SocketException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, "internet_connection".tr());
+    }
   }
 
-  getCheckInTime() {
-    checkInTime = DateFormat("yyyy-MM-dd hh:mm:ss").format(DateTime.now());
-    notifyListeners();
+  Future getAllProjectsWithoutCheckout(
+    BuildContext context,
+  ) async {
+    setState(ViewState.busy);
+    try {
+      allProjectCrewResponse = await api.getAllProjectsCrew(context);
+      setState(ViewState.idle);
+    } on FetchDataException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, e.toString());
+    } on SocketException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, "internet_connection".tr());
+    }
   }
 
   getCheckOutTimeWithCurrentDate(String time) {
@@ -115,119 +183,6 @@ class DashboardProvider extends BaseProvider {
         notifyListeners();
       },
     );
-  }
-
-  Future getDashBoardData(
-    BuildContext context,
-  ) async {
-    setState(ViewState.busy);
-    try {
-      var model = await api.dashBoardApi(
-        context,
-      );
-      if (model.success ?? false) {
-        crewResponse = model;
-        if (model.lastCheckIn!.isNotEmpty) {
-          // convertTime(model.lastCheckIn![0].checkInTime!);
-        }
-        checkInItems = [];
-        for (int i = 0; i < model.myProjects!.length; i++) {
-          var crewModel = CheckBoxModelCrew();
-          crewModel.projectId = model.myProjects![i].projectId!.id!;
-          crewModel.projectName = model.myProjects![i].projectId!.projectName;
-          checkInItems.add(crewModel);
-        }
-        //key = (model.allCheckIns!.where((checkOutTime) => checkInTime==null).toList());
-
-        var index = model.allCheckIns!
-            .indexWhere((element) => element.checkOutTime == null);
-        if (index != -1) {
-          checkInDetail = model.allCheckIns![index];
-          currentCheckInProjectId = model.allCheckIns![index].id;
-          SharedPreference.prefs!.setInt(SharedPreference.IS_CHECK_IN, 1);
-        } else {
-          SharedPreference.prefs!.setInt(SharedPreference.IS_CHECK_IN, 0);
-        }
-        for (int i = 0; i < model.today!.length; i++) {
-          if (model.today![i].assignProjectId!.projectName != '') {
-            getInitials(
-                string: model.today![i].assignProjectId!.projectName!,
-                limitTo: 1);
-          } else {
-            getInitials(string: "No Project", limitTo: 2);
-          }
-        }
-        checkIn = model.myProjects!.isEmpty
-            ? ""
-            : model.myProjects![0].projectId!.projectName!;
-        // convertTime(model.lastCheckIn!.isEmpty ? DateTime.now().toString():model.lastCheckIn![0].checkInTime!);
-        //getTimeDifferenceBetweenTime(model.lastCheckIn!.isEmpty ? DateTime.now().toString():model.lastCheckIn![0].checkInTime!);
-        setState(ViewState.idle);
-      } else {
-        setState(ViewState.idle);
-      }
-    } on FetchDataException catch (e) {
-      setState(ViewState.idle);
-      DialogHelper.showMessage(context, e.toString());
-    } on SocketException catch (e) {
-      setState(ViewState.idle);
-      DialogHelper.showMessage(context, "internet_connection".tr());
-    }
-  }
-
-  CheckInResponseCrew? checkInResponse;
-
-  Future checkInApi(
-    context,
-  ) async {
-    setState(ViewState.busy);
-    try {
-      var model = await api.checkInApi(context, assignProjectId, checkInTime!);
-      if (model.success == true) {
-        checkInResponse = model;
-        SharedPreference.prefs!.setInt(SharedPreference.IS_CHECK_IN, 2);
-        twoMinTimer();
-        getDashBoardData(context);
-        setState(ViewState.idle);
-        DialogHelper.showMessage(context, model.message!);
-      } else {
-        setState(ViewState.idle);
-        DialogHelper.showMessage(context, model.message!);
-      }
-    } on FetchDataException catch (e) {
-      setState(ViewState.idle);
-      DialogHelper.showMessage(context, e.toString());
-    } on SocketException catch (e) {
-      setState(ViewState.idle);
-      DialogHelper.showMessage(context, "internet_connection".tr());
-    }
-  }
-
-  bool? isCheckOut;
-
-  Future checkOutApi(
-    context,
-  ) async {
-    setState(ViewState.busy);
-    try {
-      var model = await api.checkOutApiCrew(
-          context, currentCheckInProjectId!, checkOutTime!);
-
-      if (model.success == true) {
-        isCheckOut = true;
-        setState(ViewState.idle);
-        DialogHelper.showMessage(context, model.message!);
-      } else {
-        setState(ViewState.idle);
-        DialogHelper.showMessage(context, model.message!);
-      }
-    } on FetchDataException catch (e) {
-      setState(ViewState.idle);
-      DialogHelper.showMessage(context, e.toString());
-    } on SocketException catch (e) {
-      setState(ViewState.idle);
-      DialogHelper.showMessage(context, "internet_connection".tr());
-    }
   }
 
   Future weeklyDataApi(context) async {
@@ -292,11 +247,11 @@ class DashboardProvider extends BaseProvider {
         "${hourOut}:${min} " + GetTime.hoursAM(selectedTime!);
     // getCheckOutTime(selectedCheckOutTime!);
     getCheckOutTimeWithCurrentDate(time!);
-    DateTime checkInDate = DateFormat("yyyy-MM-dd hh:mm:ss")
-        .parse(checkInDetail!.checkInTime!.toString());
+    /*DateTime checkInDate = DateFormat("yyyy-MM-dd hh:mm:ss")
+        .parse(checkInDetail!.checkInTime!.toString());*/
     DateTime checkOutDate =
         DateFormat("yyyy-MM-dd hh:mm:ss").parse(checkOutTime!);
-    if (checkOutDate.isAfter(checkInDate)) {
+    if (true /*checkOutDate.isAfter(checkInDate)*/) {
       print("DT1 is after DT2");
       Navigator.pop(context);
       checkOutApi(context).then((value) {
@@ -310,48 +265,12 @@ class DashboardProvider extends BaseProvider {
     }
   }
 
-  /* showTime( context) async {
-    selectedTime = await
-    showTimePicker(
-      context: context,
-      confirmText: "ok",
-      initialTime: initialTime,
-    );
-    hours=(selectedTime!.hour<12?selectedTime!.hour:(selectedTime!.hour-12));
-    hourOut=(hours! < 10?
-    "0${hours}":
-    hours).toString();
-    min=selectedTime!.minute<10 ?
-    "0${selectedTime!.minute}":
-    selectedTime!.minute.toString();
-    time="${hourOut}:${min}";
-    selectedCheckOutTime =  "${hourOut}:${min} "+ GetTime.hoursAM(selectedTime!);
-    getCheckOutTime(selectedCheckOutTime!);
-    Navigator.pop(context);
-    checkOutApi(context).then((value) {dashBoardApi(context);});
-    getCheckOutSelectedTime();
-    notifyListeners();
-    print(selectedTime);
-  }*/
-
   getCheckOutSelectedTime() {
     selectedCheckOutTime = selectedCheckOutTime == null
         ? ("${initialTime.hour < 12 ? initialTime.hour : (initialTime.hour - 12)}:${initialTime.minute} " +
             GetTime.hoursAM(initialTime))
-        : ("${hours}:${min} " + GetTime.hoursAM(selectedTime!));
+        : ("$hours:$min " + GetTime.hoursAM(selectedTime!));
     notifyListeners();
-  }
-
-  getWidget() {
-    for (int i = 0; i < hoursList.length; i++) {
-      widgetList.add(Flexible(
-        flex: hoursList[i],
-        child: Container(
-          height: 5,
-          color: i % 2 == 0 ? Colors.green : Colors.grey,
-        ),
-      ));
-    }
   }
 
   nextWeekDates() {
@@ -380,5 +299,10 @@ class DashboardProvider extends BaseProvider {
       buffer.write(split[i][0]);
     }
     projectNameInitials.add(buffer.toString());
+  }
+
+  void updateSelectedTabIndex(int index) {
+    selectedTabIndex = index;
+    customNotify();
   }
 }

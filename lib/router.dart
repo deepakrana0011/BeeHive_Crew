@@ -119,43 +119,43 @@ class OnGenerateRouter {
             builder: (_) => const SelectToContinueScreen(), settings: settings);
 
       case RouteConstants.emailAddressScreen:
-        final args = settings.arguments as EmailAddressScreen;
+        final args = settings.arguments as Map;
         return MaterialPageRoute(
             builder: (_) => EmailAddressScreen(
-                  fromForgotPassword: args.fromForgotPassword,
-                  routeForResetPassword: args.routeForResetPassword,
+                  isVerificationProcess: args["isVerificationProcess"],
+                  email: args["email"] ?? "",
+                  isResetPassword: args["isResetPassword"] ?? "",
                 ),
             settings: settings);
       case RouteConstants.signUpScreen:
-        final args = settings.arguments as SignUpScreen;
+        final args = settings.arguments as String;
         return MaterialPageRoute(
-            builder: (_) => SignUpScreen(email: args.email),
-            settings: settings);
+            builder: (_) => SignUpScreen(email: args), settings: settings);
       case RouteConstants.loginScreen:
+        final args = settings.arguments as String;
         return MaterialPageRoute(
-            builder: (_) => LoginScreen(), settings: settings);
-      case RouteConstants.resetPasswordScreen:
-        final args = settings.arguments as ResetPasswordScreen;
-        return MaterialPageRoute(
-            builder: (_) => ResetPasswordScreen(
-                  email: args.email,
-                  byPhoneOrEmail: args.byPhoneOrEmail,
+            builder: (_) => LoginScreen(
+                  email: args,
                 ),
             settings: settings);
+      case RouteConstants.resetPasswordScreen:
+        final authToken = settings.arguments as String;
+        return MaterialPageRoute(
+            builder: (_) => ResetPasswordScreen(authToken: authToken,), settings: settings);
       case RouteConstants.continueWithPhone:
-        final args = settings.arguments as ContinueWithPhone;
+        final args = settings.arguments as bool;
         return MaterialPageRoute(
             builder: (_) => ContinueWithPhone(
-                  routeForResetPassword: args.routeForResetPassword,
+                  isResetPassword: args,
                 ),
             settings: settings);
       case RouteConstants.otpVerificationPage:
-        final args = settings.arguments as OtpVerificationPage;
+        var values = settings.arguments as Map;
         return MaterialPageRoute(
             builder: (_) => OtpVerificationPage(
-                  phoneNumber: args.phoneNumber,
-                  continueWithPhoneOrEmail: args.continueWithPhoneOrEmail,
-                  routeForResetPassword: args.routeForResetPassword,
+                  value: values["value"],
+                  isEmailVerification: values["isEmailVerification"],
+                  isResetPassword: values["isResetPassword"],
                 ),
             settings: settings);
       case RouteConstants.bottomBarManager:
@@ -171,43 +171,49 @@ class OnGenerateRouter {
                 fromBottomNav: fromBottomNav, pageIndex: pageIndex),
             settings: settings);
       case RouteConstants.continueWithPhoneManager:
-        final args = settings.arguments as ContinueWithPhoneManager;
+        final args = settings.arguments as bool;
         return MaterialPageRoute(
             builder: (_) => ContinueWithPhoneManager(
-                  routeForResetPassword: args.routeForResetPassword,
+                  isResetPassword: args,
                 ),
             settings: settings);
       case RouteConstants.otpVerificationPageManager:
-        final args = settings.arguments as OtpVerificationPageManager;
+        var values = settings.arguments as Map;
         return MaterialPageRoute(
             builder: (_) => OtpVerificationPageManager(
-                  phoneNumber: args.phoneNumber,
-                  continueWithPhoneOrEmail: args.continueWithPhoneOrEmail,
-                  resetPasswordWithEmail: args.resetPasswordWithEmail,
+                  value: values["value"],
+                  isEmailVerification: values["isEmailVerification"],
+                  isResetPassword: values["isResetPassword"],
                 ),
             settings: settings);
       case RouteConstants.signUpScreenManager:
-        final args = settings.arguments as SignUpScreenManager;
+        final args = settings.arguments as String;
         return MaterialPageRoute(
-            builder: (_) => SignUpScreenManager(email: args.email),
+            builder: (_) => SignUpScreenManager(email: args),
             settings: settings);
       case RouteConstants.emailAddressScreenManager:
-        final args = settings.arguments as EmailAddressScreenManager;
+        final args = settings.arguments as Map;
         return MaterialPageRoute(
             builder: (_) => EmailAddressScreenManager(
-                  fromForgotPassword: args.fromForgotPassword,
-                  routeForResetPassword: args.routeForResetPassword,
+                  isVerificationProcess: args["isVerificationProcess"],
+                  email: args["email"] ?? "",
+                  isResetPassword: args["isResetPassword"] ?? "",
                 ),
             settings: settings);
       case RouteConstants.notificationsScreenManager:
         return MaterialPageRoute(
-            builder: (_) => const NotificationsScreenManager(), settings: settings);
+            builder: (_) => const NotificationsScreenManager(),
+            settings: settings);
       case RouteConstants.appSettingsManager:
         return MaterialPageRoute(
             builder: (_) => AppSettingsManager(), settings: settings);
       case RouteConstants.loginScreenManager:
+        final email = settings.arguments as String;
         return MaterialPageRoute(
-            builder: (_) => LoginScreenManager(), settings: settings);
+            builder: (_) => LoginScreenManager(
+                  email: email,
+                ),
+            settings: settings);
       case RouteConstants.projectDetailsPageManager:
         final args = settings.arguments as ProjectDetailsPageManager;
         return MaterialPageRoute(
@@ -225,8 +231,7 @@ class OnGenerateRouter {
             builder: (_) => const CreateProjectManager(), settings: settings);
       case RouteConstants.addCrewPageManager:
         return MaterialPageRoute(
-            builder: (_) => AddCrewPageManager(),
-            settings: settings);
+            builder: (_) => AddCrewPageManager(), settings: settings);
       case RouteConstants.crewMemberAddByManager:
         final args = settings.arguments as CrewMemberAddByManager;
         return MaterialPageRoute(
@@ -237,14 +242,12 @@ class OnGenerateRouter {
       case RouteConstants.setRatesManager:
         final args = settings.arguments as SetRatesPageManager;
         return MaterialPageRoute(
-            builder: (_) => SetRatesPageManager(),
-            settings: settings);
+            builder: (_) => SetRatesPageManager(), settings: settings);
       case RouteConstants.projectSettingsPageManager:
         final args = settings.arguments as ProjectSettingsPageManager;
         return MaterialPageRoute(
             builder: (_) => ProjectSettingsPageManager(
-                  fromProjectOrCreateProject: args.fromProjectOrCreateProject
-                ),
+                fromProjectOrCreateProject: args.fromProjectOrCreateProject),
             settings: settings);
       case RouteConstants.addNotePageManager:
         final args = settings.arguments as AddNotePageManager;
@@ -287,21 +290,19 @@ class OnGenerateRouter {
             builder: (_) => const PaymentPageManager(), settings: settings);
       case RouteConstants.certificationPageManager:
         return MaterialPageRoute(
-            builder: (_) => const CertificationPageManager(), settings: settings);
+            builder: (_) => const CertificationPageManager(),
+            settings: settings);
       case RouteConstants.editProfilePageManager:
         return MaterialPageRoute(
             builder: (_) => const EditProfilePageManager(), settings: settings);
       case RouteConstants.changePasswordPageManager:
         return MaterialPageRoute(
-            builder: (_) => const ChangePasswordPageManager(), settings: settings);
-      case RouteConstants.resetPasswordScreenManager:
-        final args = settings.arguments as ResetPasswordScreenManager;
-        return MaterialPageRoute(
-            builder: (_) => ResetPasswordScreenManager(
-                  email: args.email,
-                  byPhoneOrEmail: args.byPhoneOrEmail,
-                ),
+            builder: (_) => const ChangePasswordPageManager(),
             settings: settings);
+      case RouteConstants.resetPasswordScreenManager:
+        final token = settings.arguments as String;
+        return MaterialPageRoute(
+            builder: (_) => ResetPasswordScreenManager(authToken: token,), settings: settings);
 
       default:
         return _onPageNotFound();

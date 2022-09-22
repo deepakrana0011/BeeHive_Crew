@@ -1,6 +1,7 @@
 class PhoneOtpResponseManager {
   bool? success;
   String? message;
+  String? token;
   Data? data;
 
   PhoneOtpResponseManager({this.success, this.message, this.data});
@@ -8,6 +9,7 @@ class PhoneOtpResponseManager {
   PhoneOtpResponseManager.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     message = json['message'];
+    token = json['Token'];
     data = json['data'] != null ? new Data.fromJson(json['data']) : null;
   }
 

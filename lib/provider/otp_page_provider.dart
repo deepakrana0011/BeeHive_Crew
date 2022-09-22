@@ -1,5 +1,8 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
+import 'package:beehive/helper/shared_prefs.dart';
 import 'package:beehive/provider/base_provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -10,45 +13,28 @@ import '../helper/dialog_helper.dart';
 import '../services/fetch_data_expection.dart';
 import '../view/light_theme_signup_login/reset_password_screen.dart';
 
-class OtpPageProvider extends BaseProvider{
-  final textEditController  = TextEditingController();
-  String otp= "";
+class OtpPageProvider extends BaseProvider {
+  final textEditController = TextEditingController();
+  String otp = "";
 
-  getOtp(String value){
+  getOtp(String value) {
     otp = value;
     notifyListeners();
+  }
 
-  }
-  Future otpVerificationCrewPhone(BuildContext context, String phoneNumber,) async {
+  Future verifyOtpEmailCrew(
+    BuildContext context,
+    String email,
+    bool isResetPassword,
+  ) async {
     setState(ViewState.busy);
     try {
-      var model = await api.verifyOtpCrewPhone(context,phoneNumber,otp );
-      if (model.success == true) {
-        setState(ViewState.idle);
-          Navigator.pushNamedAndRemoveUntil(context, RouteConstants.loginScreen, (route) => false);
-        DialogHelper.showMessage(context, model.message!);
-      } else {
-        setState(ViewState.idle);
-        DialogHelper.showMessage(context, model.message!);
-      }
-    } on FetchDataException catch (e) {
+      var model = await api.verifyOtpEmailCrew(context, email, otp);
       setState(ViewState.idle);
-      DialogHelper.showMessage(context, e.toString());
-    } on SocketException catch (e) {
-      setState(ViewState.idle);
-      DialogHelper.showMessage(context, "internet_connection".tr());
-    }
-  }
-  Future verifyEmailForOtp(BuildContext context, String email,) async {
-    setState(ViewState.busy);
-    try {
-      var model = await api.verifyEmailForOtp(context,email ,otp);
       if (model.success == true) {
-        setState(ViewState.idle);
-        Navigator.pushNamed(context, RouteConstants.loginScreen, );
-        DialogHelper.showMessage(context, model.message!);
+        Navigator.pushNamed(context, RouteConstants.resetPasswordScreen,
+            arguments: SharedPreference.prefs!.getString(SharedPreference.TOKEN)!);
       } else {
-        setState(ViewState.idle);
         DialogHelper.showMessage(context, model.message!);
       }
     } on FetchDataException catch (e) {
@@ -60,16 +46,25 @@ class OtpPageProvider extends BaseProvider{
     }
   }
 
-  Future verifyEmailForOtpResetPassword(BuildContext context, String email,) async {
+  Future verifyOtpSignupPhoneCrew(
+      BuildContext context, String phoneNumber, bool isResetPassword) async {
     setState(ViewState.busy);
     try {
-      var model = await api.verifyEmailForResetPassword(context,email ,otp);
+      var phoneNumberNew =
+      phoneNumber.substring(phoneNumber.indexOf("-") + 1, phoneNumber.length);
+      var countryCode = phoneNumber.substring(0, phoneNumber.indexOf("-"));
+      var model = await api.verifyOtpSignupPhoneCrew(context, phoneNumberNew, otp,countryCode);
+      setState(ViewState.idle);
       if (model.success == true) {
-        setState(ViewState.idle);
-        Navigator.pushNamed(context, RouteConstants.resetPasswordScreen,arguments: ResetPasswordScreen(email: email, byPhoneOrEmail: false,),);
-        DialogHelper.showMessage(context, model.message!);
+        SharedPreference.prefs!.setString(SharedPreference.TOKEN, model!.token!);
+        SharedPreference.prefs!.setBool(SharedPreference.isLogin, true);
+        SharedPreference.prefs!.setInt(SharedPreference.loginType, 1);
+        Navigator.pushNamedAndRemoveUntil(
+          context,
+          RouteConstants.bottomNavigationBar,
+              (route) => false,
+        );
       } else {
-        setState(ViewState.idle);
         DialogHelper.showMessage(context, model.message!);
       }
     } on FetchDataException catch (e) {
@@ -81,16 +76,20 @@ class OtpPageProvider extends BaseProvider{
     }
   }
 
-  Future verifyingOtpByPhone(BuildContext context, String phoneNumber,) async {
+  Future verifyOtpForgotPhoneCrew(
+      BuildContext context, String phoneNumber, bool isResetPassword) async {
     setState(ViewState.busy);
     try {
-      var model = await api.verifyingOtpByPhone(context,phoneNumber, otp);
+      var phoneNumberNew = phoneNumber.substring(
+          phoneNumber.indexOf("-") + 1, phoneNumber.length);
+      var countryCode = phoneNumber.substring(0, phoneNumber.indexOf("-"));
+      var model = await api.verifyOtpForgotPhoneCrew(context, phoneNumberNew, otp,countryCode);
+      setState(ViewState.idle);
       if (model.success == true) {
-        setState(ViewState.idle);
-        Navigator.pushNamed(context, RouteConstants.resetPasswordScreen,arguments: ResetPasswordScreen(email: phoneNumber, byPhoneOrEmail: true,));
-        DialogHelper.showMessage(context, model.message!);
+        var token = SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+        Navigator.pushNamed(context, RouteConstants.resetPasswordScreen,
+            arguments: token);
       } else {
-        setState(ViewState.idle);
         DialogHelper.showMessage(context, model.message!);
       }
     } on FetchDataException catch (e) {
@@ -101,13 +100,11 @@ class OtpPageProvider extends BaseProvider{
       DialogHelper.showMessage(context, "internet_connection".tr());
     }
   }
-
-
 
   Future resendOtpApiPhone(BuildContext context, String phoneNumber) async {
     setState(ViewState.busy);
     try {
-      var model = await api.resendOtpByPhoneApi(context,phoneNumber);
+      var model = await api.resendOtpByPhoneApi(context, phoneNumber);
       if (model.success == true) {
         setState(ViewState.idle);
         DialogHelper.showMessage(context, model.message!);
@@ -123,10 +120,11 @@ class OtpPageProvider extends BaseProvider{
       DialogHelper.showMessage(context, "internet_connection".tr());
     }
   }
+
   Future resendOtpApiEmail(BuildContext context, String email) async {
     setState(ViewState.busy);
     try {
-      var model = await api.resendOtpEmailApi(context,email);
+      var model = await api.resendOtpEmailApi(context, email);
       if (model.success == true) {
         setState(ViewState.idle);
         DialogHelper.showMessage(context, model.message!);
@@ -142,18 +140,4 @@ class OtpPageProvider extends BaseProvider{
       DialogHelper.showMessage(context, "internet_connection".tr());
     }
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 }

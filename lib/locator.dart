@@ -1,4 +1,5 @@
 import 'package:beehive/model/create_project_request.dart';
+import 'package:beehive/model/email_verified_response_manager.dart';
 import 'package:beehive/provider/add_crew_page_provider_manager.dart';
 import 'package:beehive/provider/add_note_page_manager_provider.dart';
 import 'package:beehive/provider/add_note_page_provider.dart';
@@ -16,6 +17,7 @@ import 'package:beehive/provider/crew_member_add_by_manager_provider.dart';
 import 'package:beehive/provider/crew_profile_page_provider_manager.dart';
 import 'package:beehive/provider/dashboard_page_manager_provider.dart';
 import 'package:beehive/provider/dashboard_provider.dart';
+import 'package:beehive/provider/drawer_manager_provider.dart';
 import 'package:beehive/provider/edit_profile_provider.dart';
 import 'package:beehive/provider/email_address_manager_provider.dart';
 import 'package:beehive/provider/email_address_screen_provider.dart';
@@ -57,6 +59,7 @@ void setUpLocator() {
   locator.registerFactory<AppSettingsProvider>(() => AppSettingsProvider());
   locator.registerFactory<BaseProvider>(() => BaseProvider());
   locator.registerFactory<SignUpProvider>(() => SignUpProvider());
+  locator.registerFactory<DrawerManagerProvider>(() => DrawerManagerProvider());
   locator.registerFactory<LoginProvider>(() => LoginProvider());
   locator.registerFactory<ResetPasswordProvider>(() => ResetPasswordProvider());
   locator.registerFactory<DashBoardPageManagerProvider>(
@@ -94,7 +97,7 @@ void setUpLocator() {
   locator.registerFactory(() => EmailAddressScreenManagerProvider());
   locator.registerFactory(() => EmailAddressScreenProvider());
   locator.registerFactory(() => ProfilePageProvider());
-  locator.registerLazySingleton(() => Api());;
+  locator.registerLazySingleton(() => Api());
   locator.registerLazySingleton(() => CreateProjectRequest());
   locator.registerLazySingleton<Dio>(() {
     Dio dio = Dio();

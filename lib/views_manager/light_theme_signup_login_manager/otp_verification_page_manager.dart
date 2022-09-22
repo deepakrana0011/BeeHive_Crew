@@ -3,6 +3,7 @@ import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/provider/otp_page_verification_manager.dart';
 import 'package:beehive/view/base_view.dart';
+import 'package:beehive/widget/custom_circular_bar.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -18,24 +19,33 @@ import '../../helper/dialog_helper.dart';
 import '../../widget/image_view.dart';
 
 class OtpVerificationPageManager extends StatelessWidget {
-  String phoneNumber;
-  bool continueWithPhoneOrEmail;
-  int resetPasswordWithEmail;
-  OtpVerificationPageManager({Key? key,required this.phoneNumber,required this.continueWithPhoneOrEmail,required this.resetPasswordWithEmail, }) : super(key: key);
+  String? value;
+  bool? isEmailVerification;
+  bool? isResetPassword;
+
+  OtpVerificationPageManager(
+      {Key? key,
+      this.value,
+      required this.isEmailVerification,
+      this.isResetPassword})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BaseView<OtpPageProviderManager>(
-        onModelReady: (provider){},
-        builder: (context,provider,_){
+        onModelReady: (provider) {},
+        builder: (context, provider, _) {
           return Scaffold(
-            body: Column(
+            body: Stack(
               children: [
-                Stack(
+                Column(
                   children: [
-                    const ImageView(path: ImageConstants.lightThemeSignUpBg),
-                    Positioned(
-                        child: Column(
+                    Stack(
+                      children: [
+                        const ImageView(
+                            path: ImageConstants.lightThemeSignUpBg),
+                        Positioned(
+                            child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Padding(
@@ -64,68 +74,90 @@ class OtpVerificationPageManager extends StatelessWidget {
                                   SizedBox(height: DimensionConstants.d75.h),
                                   SizedBox(
                                     width: DimensionConstants.d242.w,
-                                    child: Text(continueWithPhoneOrEmail == true?"verify_phone".tr():"verify_email".tr()).boldText(context,
-                                        DimensionConstants.d30.sp, TextAlign.left,
-                                        color: ColorConstants.colorBlack),
+                                    child: Text(!isEmailVerification!
+                                            ? "verify_phone".tr()
+                                            : "verify_email".tr())
+                                        .boldText(
+                                            context,
+                                            DimensionConstants.d30.sp,
+                                            TextAlign.left,
+                                            color: ColorConstants.colorBlack),
                                   ),
                                   SizedBox(height: DimensionConstants.d18.h),
-                                  Text("Code sent to ""$phoneNumber").boldText(
+                                  Text("Code sent to " "$value").boldText(
                                     context,
                                     DimensionConstants.d16.sp,
                                     TextAlign.center,
                                     color: ColorConstants.colorBlack,
                                   ),
                                   SizedBox(height: DimensionConstants.d60.h),
-                                  optVerifyFiled(context,provider),
+                                  optVerifyFiled(context, provider),
                                   SizedBox(height: DimensionConstants.d25.h),
                                   Align(
                                     alignment: Alignment.center,
                                     child: GestureDetector(
-                                      onTap: (){
+                                      onTap: () {
                                         CommonWidgets.hideKeyboard(context);
-                                       continueWithPhoneOrEmail == true ?provider.resendOtpApiPhone(context, phoneNumber):provider.resendOtpApiEmail(context, phoneNumber);
-                                      },
-                                      child: Text("resend_code".tr()).regularText(context,
-                                        DimensionConstants.d14.sp, TextAlign.center,
-                                        color: ColorConstants.colorBlack,
-                                        decoration: TextDecoration.underline),) ,
+                                        if(isEmailVerification!){
+                                          provider.resendOtpApiEmail(context, value!);
+                                        }else{
+                                          provider.resendOtpApiPhone(context, value!);
+                                        }},
+                                      child: Text("resend_code".tr())
+                                          .regularText(
+                                              context,
+                                              DimensionConstants.d14.sp,
+                                              TextAlign.center,
+                                              color: ColorConstants.colorBlack,
+                                              decoration:
+                                                  TextDecoration.underline),
+                                    ),
                                   ),
                                   SizedBox(height: DimensionConstants.d35.h),
-                             provider.state == ViewState.idle?     CommonWidgets.commonButton(context,  continueWithPhoneOrEmail == true?"verify_phone".tr():"verify_email".tr(),
-                                      onBtnTap: () {
-                                        CommonWidgets.hideKeyboard(context);
-                                        if(provider.otp == ""){
-                                          DialogHelper.showMessage(context, "Please enter OTP");
+                                  CommonWidgets.commonButton(
+                                      context,
+                                      !isEmailVerification!
+                                          ? "verify_phone".tr()
+                                          : "verify_email".tr(), onBtnTap: () {
+                                    CommonWidgets.hideKeyboard(context);
+                                    if (provider.otp == "") {
+                                      DialogHelper.showMessage(
+                                          context, "Please enter OTP");
+                                    } else {
+                                      if (isEmailVerification!) {
+                                        provider.verifyOtpEmailManager(
+                                            context, value ?? "",isResetPassword!);
+                                      } else {
+                                        if(isResetPassword!){
+                                         provider.verifyOtpForgotPhoneManager(context, value ?? "",isResetPassword!);
                                         }else{
-                                          if(resetPasswordWithEmail == 1){
-                                            provider.otpVerificationPhone(context, phoneNumber);
-                                          } else if(resetPasswordWithEmail == 2){
-                                            provider.verifyEmailForOtp(context, phoneNumber);
-                                          }else if(resetPasswordWithEmail == 3){
-                                            provider.verifyEmailForOtpResetPassword(context, phoneNumber);
-                                          }else if(resetPasswordWithEmail == 4){
-                                            provider.verifyingOtpByPhone(context, phoneNumber);
-                                          }
+                                          provider.verifyOtpSignupPhoneManager(
+                                              context, value ?? "",isResetPassword!);
                                         }
-                                      }, shadowRequired: true):Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,),)
+                                      }
+                                    }
+                                  }, shadowRequired: true)
                                 ],
                               ),
                             )
                           ],
                         ))
+                      ],
+                    ),
                   ],
                 ),
+                if (provider.state == ViewState.busy) const CustomCircularBar()
               ],
             ),
           );
-
-
-
         });
   }
 }
 
-Widget optFiled(BuildContext context, OtpPageProviderManager provider,) {
+Widget optFiled(
+  BuildContext context,
+  OtpPageProviderManager provider,
+) {
   return OtpTextField(
     fieldWidth: DimensionConstants.d60.w,
     numberOfFields: 4,
@@ -138,17 +170,15 @@ Widget optFiled(BuildContext context, OtpPageProviderManager provider,) {
     ),
     focusedBorderColor: ColorConstants.primaryColor,
     borderRadius: BorderRadius.circular(DimensionConstants.d20.r),
-    onCodeChanged: (String code) {
-
-    },
+    onCodeChanged: (String code) {},
     onSubmit: (String verificationCode) {
-     // provider.updateProvider(verificationCode);
+      // provider.updateProvider(verificationCode);
     }, // end onSubmit
   );
 }
 
 Widget optVerifyFiled(BuildContext context, OtpPageProviderManager provider) {
-  return  Container(
+  return Container(
     child: PinCodeTextField(
       appContext: context,
       pastedTextStyle: const TextStyle(
@@ -163,7 +193,7 @@ Widget optVerifyFiled(BuildContext context, OtpPageProviderManager provider) {
         fontWeight: FontWeight.w600,
       ),
       pinTheme: PinTheme(
-          activeColor:  ColorConstants.primaryColor,
+          activeColor: ColorConstants.primaryColor,
           disabledColor: ColorConstants.grayE0E0E0,
           inactiveFillColor: ColorConstants.colorWhite,
           inactiveColor: ColorConstants.grayE0E0E0,

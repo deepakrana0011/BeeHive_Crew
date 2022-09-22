@@ -1,4 +1,6 @@
- import 'dart:io';
+// ignore_for_file: use_build_context_synchronously
+
+import 'dart:io';
 
 import 'package:beehive/helper/shared_prefs.dart';
 import 'package:beehive/provider/base_provider.dart';
@@ -11,25 +13,23 @@ import '../enum/enum.dart';
 import '../helper/dialog_helper.dart';
 import '../services/fetch_data_expection.dart';
 
-class SignUpManagerProvider extends BaseProvider{
-
+class SignUpManagerProvider extends BaseProvider {
   bool nameContentPadding = false;
   bool passwordContentPadding = false;
   bool passwordVisible = false;
   final nameController = TextEditingController();
   final passwordController = TextEditingController();
 
-
-  Future signUp(BuildContext context,String emailController) async {
+  Future signUp(BuildContext context, String email) async {
     setState(ViewState.busy);
     try {
-      var model = await api.signUp(context, nameController.text,emailController, passwordController.text);
+      var model = await api.signUp(
+          context, nameController.text, email, passwordController.text);
       if (model.success == true) {
-        SharedPreference.prefs!.setString(SharedPreference.TOKEN, model.token!);
-        SharedPreference.prefs!.setString(SharedPreference.USER_ID, model.data!.sId!);
         setState(ViewState.idle);
-         Navigator.pushNamed(context, RouteConstants.continueWithPhoneManager,arguments: ContinueWithPhoneManager(routeForResetPassword: 1));
-        DialogHelper.showMessage(context, model.message!);
+        SharedPreference.prefs!.setString(SharedPreference.TOKEN, model.token!);
+        Navigator.pushNamed(context, RouteConstants.continueWithPhoneManager,
+            arguments: false);
       } else {
         setState(ViewState.idle);
         DialogHelper.showMessage(context, model.message!);
@@ -42,7 +42,4 @@ class SignUpManagerProvider extends BaseProvider{
       DialogHelper.showMessage(context, "internet_connection".tr());
     }
   }
-
-
-
 }

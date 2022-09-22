@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 
 import 'package:beehive/provider/base_provider.dart';
@@ -11,28 +13,30 @@ import '../helper/shared_prefs.dart';
 import '../services/fetch_data_expection.dart';
 import '../views_manager/bottom_bar_manager/bottom_navigation_bar_manager.dart';
 
-class LoginManagerProvider extends BaseProvider{
+class LoginManagerProvider extends BaseProvider {
   bool emailContentPadding = false;
   bool passwordContentPadding = false;
   bool passwordVisible = false;
 
-  Future loginManager(BuildContext context, String email,String password) async {
+  Future loginManager(
+      BuildContext context, String email, String password) async {
     setState(ViewState.busy);
     try {
-      var model = await api.loginManager(context,email,password);
+      var model = await api.loginManager(context, email, password);
       if (model.success == true) {
         setState(ViewState.idle);
         SharedPreference.prefs!.setString(SharedPreference.TOKEN, model.token!);
-        SharedPreference.prefs!.setString(SharedPreference.USER_ID, model.data!.sId!);
-
-        if(model.data!.status == 0){
-          SharedPreference.prefs!.setBool(SharedPreference.IS_LOGIN , true);
-          SharedPreference.prefs!.setBool(SharedPreference.ISMANAGER_LOGIN , true);
-          Navigator.pushNamed(context, RouteConstants.bottomBarManager,arguments: BottomBarManager(fromBottomNav: 1, pageIndex: 0));
-        }else{
-          Navigator.pushNamedAndRemoveUntil(context, RouteConstants.continueWithPhoneManager, (route) => false);
+        if (model.data!.status == 1) {
+          SharedPreference.prefs!
+              .setString(SharedPreference.USER_ID, model.data!.sId!);
+          SharedPreference.prefs!.setInt(SharedPreference.loginType, 2);
+          SharedPreference.prefs!.setBool(SharedPreference.isLogin, true);
+          Navigator.pushNamed(context, RouteConstants.bottomBarManager,
+              arguments: BottomBarManager(fromBottomNav: 1, pageIndex: 0));
+        } else {
+          Navigator.pushNamed(context, RouteConstants.continueWithPhoneManager,
+              arguments: false);
         }
-        DialogHelper.showMessage(context, model.message!);
       } else {
         setState(ViewState.idle);
         DialogHelper.showMessage(context, model.message!);
@@ -45,11 +49,4 @@ class LoginManagerProvider extends BaseProvider{
       DialogHelper.showMessage(context, "internet_connection".tr());
     }
   }
-
-
-
-
-
-
-
 }

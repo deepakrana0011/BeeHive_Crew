@@ -1,4 +1,3 @@
-
 import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/helper/shared_prefs.dart';
 import 'package:beehive/locator.dart';
@@ -19,7 +18,6 @@ Future<void> main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   SharedPreference.prefs = await SharedPreferences.getInstance();
-  // Set portrait orientation
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
@@ -32,7 +30,6 @@ Future<void> main() async {
     ],
     path: 'assets/langs',
     fallbackLocale: const Locale('en'),
-
     child: ChangeNotifierProvider<AppStateNotifier>(
       create: (context) => AppStateNotifier(),
       child: MyApp(),
@@ -46,42 +43,50 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Consumer<AppStateNotifier>(
-        builder: (context, appState, _) {
-          return ScreenUtilInit(
-              designSize: const Size(375, 812),
-              minTextAdapt: true,
-              splitScreenMode: true,
-              builder: (context , child) {
-                return  MaterialApp(
-                    theme: AppTheme.lightTheme,
-                    darkTheme: AppTheme.darkTheme,
-                    themeMode: SharedPreference.prefs!.getBool(SharedPreference.THEME_STATUS) == true ? ThemeMode.dark : ThemeMode.light,
-                    // themeMode: ThemeMode.dark,
-                    /* ThemeMode.system to follow system theme,
+      builder: (context, appState, _) {
+        return ScreenUtilInit(
+            designSize: const Size(375, 812),
+            minTextAdapt: true,
+            splitScreenMode: true,
+            builder: (context, child) {
+              return MaterialApp(
+                theme: AppTheme.lightTheme,
+                darkTheme: AppTheme.darkTheme,
+                themeMode: SharedPreference.prefs!
+                            .getBool(SharedPreference.THEME_STATUS) ==
+                        true
+                    ? ThemeMode.dark
+                    : ThemeMode.light,
+                // themeMode: ThemeMode.dark,
+                /* ThemeMode.system to follow system theme,
                      ThemeMode.light for light theme,
                      ThemeMode.dark for dark theme
                     */
-                    debugShowCheckedModeBanner: false,
-                    title: 'beehive'.tr(),
-                    localizationsDelegates: context.localizationDelegates,
-                    supportedLocales: context.supportedLocales,
-                    locale: context.locale,
-                    // theme: ThemeData(
-                    //   primarySwatch: color,
-                    // ),
-                    onGenerateRoute: router.OnGenerateRouter.onGenerate,
-                    initialRoute:SharedPreference.prefs!.getBool(SharedPreference.INTRODUCTION_COMPLETE ) == true ?
-                    (SharedPreference.prefs!.getBool(SharedPreference.IS_LOGIN)== true?
-                    (SharedPreference.prefs!.getBool(SharedPreference.ISMANAGER_LOGIN)== true? RouteConstants.bottomBarManager:RouteConstants.bottomNavigationBar):
-                    RouteConstants.selectToContinueScreen):
-                    RouteConstants.beehiveIntro,
-
-                );
-        });
+                debugShowCheckedModeBanner: false,
+                title: 'beehive'.tr(),
+                localizationsDelegates: context.localizationDelegates,
+                supportedLocales: context.supportedLocales,
+                locale: context.locale,
+                // theme: ThemeData(
+                //   primarySwatch: color,
+                // ),
+                onGenerateRoute: router.OnGenerateRouter.onGenerate,
+                initialRoute: SharedPreference.prefs!
+                            .getBool(SharedPreference.INTRODUCTION_COMPLETE) ==
+                        true
+                    ? (SharedPreference.prefs!
+                                .getBool(SharedPreference.isLogin)??false
+                        ? (SharedPreference.prefs!
+                                    .getInt(SharedPreference.loginType) ==
+                                2
+                            ? RouteConstants.bottomBarManager
+                            : RouteConstants.bottomNavigationBar)
+                        : RouteConstants.selectToContinueScreen)
+                    : RouteConstants.beehiveIntro,
+              );
+            });
       },
     );
   }
-
 }

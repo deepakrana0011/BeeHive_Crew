@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 import 'package:beehive/provider/base_provider.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -5,23 +7,22 @@ import 'package:flutter/cupertino.dart';
 import '../constants/route_constants.dart';
 import '../enum/enum.dart';
 import '../helper/dialog_helper.dart';
+import '../helper/shared_prefs.dart';
 import '../services/fetch_data_expection.dart';
 import '../view/ light_theme_signup_login/otp_verification_page.dart';
 
 class EmailAddressScreenProvider extends BaseProvider{
 
-
-  Future emailVerifcationCrew(BuildContext context, String email) async {
+  Future isEmailExist(BuildContext context, String email) async {
     setState(ViewState.busy);
     try {
-      var model = await api.verifyCrewEmail(context,email );
-      if (model.success == true) {
-        setState(ViewState.idle);
-        Navigator.pushNamed(context, RouteConstants.otpVerificationPage,arguments: OtpVerificationPage(phoneNumber: email, continueWithPhoneOrEmail: false, routeForResetPassword: 2,));
-        DialogHelper.showMessage(context, model.message!);
+      var status = await api.isEmailExistCrew(email);
+      setState(ViewState.idle);
+      if (status) {
+        Navigator.pushNamed(context, RouteConstants.loginScreen,arguments: email);
       } else {
-        setState(ViewState.idle);
-        DialogHelper.showMessage(context, model.message!);
+        Navigator.pushNamed(context, RouteConstants.signUpScreen,
+            arguments: email);
       }
     } on FetchDataException catch (e) {
       setState(ViewState.idle);
@@ -32,15 +33,20 @@ class EmailAddressScreenProvider extends BaseProvider{
     }
   }
 
-
-  Future verifyEmailForOtp(BuildContext context, String email,) async {
+  Future sendOtpEmailCrew(BuildContext context, String email,
+      bool isVerificationProcess, bool isResetPassword) async {
     setState(ViewState.busy);
     try {
-      var model = await api.getOtpForPasswordResetCrew(context,email );
+      var model = await api.sendOtpEmailCrew(context, email);
+      SharedPreference.prefs!.setString(SharedPreference.TOKEN, model!.token!);
+      setState(ViewState.idle);
       if (model.success == true) {
-        setState(ViewState.idle);
-        Navigator.pushNamed(context, RouteConstants.otpVerificationPage,arguments: OtpVerificationPage(phoneNumber: email, continueWithPhoneOrEmail: false, routeForResetPassword: 3,));
-        DialogHelper.showMessage(context, model.message!);
+        Navigator.pushNamed(context, RouteConstants.otpVerificationPage,
+            arguments: {
+              "value": email,
+              "isEmailVerification": true,
+              "isResetPassword": isResetPassword
+            });
       } else {
         setState(ViewState.idle);
         DialogHelper.showMessage(context, model.message!);
