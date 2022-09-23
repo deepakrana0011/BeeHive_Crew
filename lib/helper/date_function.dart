@@ -222,6 +222,39 @@ class DateFunctions {
     return dateString */ /*+ ", " + valueString*/ /*;
   }*/
 
+  static String amPmTime(String dateString) {
+    if (dateString == "") return "";
+    DateTime date = DateFormat("yyyy-mm-dd HH:mm").parse(dateString);
+    String newTime = DateFormat("hh:mm a").format(date);
+    return newTime.toLowerCase();
+  }
+
+  static String getTime(DateTime dateTime) {
+    String dayName = DateFormat("hh:mm a").format(dateTime);
+    return dayName.toUpperCase();
+  }
+
+  static String twentyFourHourTO12Hour(String dateString) {
+    if (dateString == "") return "";
+    DateTime date = DateFormat("HH:mm").parse(dateString);
+    String newTime = DateFormat("hh:mm a").format(date);
+    return newTime.toLowerCase();
+  }
+
+  static String dateTO12Hour(String dateString) {
+    if (dateString == "") return "";
+    DateTime date = DateFormat("yyyy-MM-dd HH:mm").parse(dateString);
+    String newTime = DateFormat("hh:mm a").format(date);
+    return newTime.toLowerCase();
+  }
+
+  static String getTimeInhhmmss(String dateString) {
+    if (dateString == "") return "";
+    DateTime date = DateFormat("HH:mm").parse(dateString);
+    String newTime = DateFormat("hh:mm:ss").format(date);
+    return newTime.toLowerCase();
+  }
+
   static String getMonthDay(DateTime dateTime) {
     String newTime = DateFormat("MMM dd").format(dateTime);
     return newTime.toLowerCase();
@@ -232,6 +265,7 @@ class DateFunctions {
     String dayName = DateFormat("yyyy-MM-dd").format(date);
     return dayName.toUpperCase();
   }
+
 
   static DateTime stringToDate(String dateString) {
     DateTime date = DateFormat("hh:mm a").parse(dateString);
@@ -258,8 +292,46 @@ class DateFunctions {
     }
   }
 
-  static String dateFormatyyyyMMddhhmmss(DateTime dateTime) {
-    String date = DateFormat("yyyy-MM-dd hh:mm:ss").format(dateTime);
+  static String dateFormatyyyyMMddHHmm(DateTime dateTime) {
+    String date = DateFormat("yyyy-MM-dd HH:mm").format(dateTime);
     return date;
   }
+
+  static String stringToDateAddMintues(String dateString,int minutes) {
+    DateTime date = DateFormat("HH:mm").parse(dateString).add(Duration(minutes: minutes));
+    String _24HourFormat = DateFormat("HH:mm").format(date);
+    return _24HourFormat;
+  }
+
+  static DateTime getDateTimeFromString(String date) {
+    DateTime dateTime = new DateFormat("yyyy-MM-dd HH:mm").parse(date);
+    return dateTime;
+  }
+
+  static String dateFormatWithDayName(DateTime dateTime) {
+    String date = DateFormat("EEE MMM, dd").format(dateTime);
+    return date;
+  }
+
+  static String durationToString(int minutes) {
+    var d = Duration(minutes:minutes);
+    List<String> parts = d.toString().split(':');
+    return '${parts[0].padLeft(2, '0')}:${parts[1].padLeft(2, '0')}';
+  }
+
+  static String tweleveTo24Hour(String? selectedCheckOutTime) {
+    DateTime date = DateFormat("hh:mm a").parse(selectedCheckOutTime!);
+    String _24HourFormat = DateFormat("HH:mm").format(date);
+    print("tweleve hour format string is ${_24HourFormat}");
+    return _24HourFormat;
+  }
+
+  static String calculateTotalHourTime(String checkInTime,String checkoutTime) {
+    var checkIntDateTime = DateFunctions.getDateTimeFromString(checkInTime);
+    var checkOutTime = DateFunctions.getDateTimeFromString(checkoutTime);
+    var timeInMinutes =checkOutTime.difference(checkIntDateTime).inMinutes;
+    var totalSpendTime = DateFunctions.durationToString(timeInMinutes);
+   return totalSpendTime;
+  }
+
 }

@@ -1073,37 +1073,17 @@ class Api {
   }
 
   Future<CrewDashboardResponse> dashBoardApi(
-    BuildContext context,
-  ) async {
+      BuildContext context, String startDate, String endDate) async {
     try {
       dio.options.headers["authorization"] =
           SharedPreference.prefs!.getString(SharedPreference.TOKEN);
-      var response = await dio
-          .post(ApiConstantsCrew.BASEURL + ApiConstantsCrew.crewDashboard);
+      var map = {"firstDate": startDate, "secondDate": endDate};
+      var response = await dio.post(
+          ApiConstantsCrew.BASEURL + ApiConstantsCrew.crewDashboard,
+          data: map);
       var responseString = response.toString();
       print("response string is ${responseString}");
       return CrewDashboardResponse.fromJson(json.decode(response.toString()));
-    } on DioError catch (e) {
-      if (e.response != null) {
-        var errorData = jsonDecode(e.response.toString());
-        var errorMessage = errorData["message"];
-        throw FetchDataException(errorMessage);
-      } else {
-        throw const SocketException("Socket Exception");
-      }
-    }
-  }
-
-  Future<WeeklyCheckInResponse> weeklyChekIn(
-      BuildContext context, String weekTo, String weekFrom) async {
-    try {
-      var map = {"firstDate": weekTo, "secondDate": weekFrom};
-      dio.options.headers["authorization"] =
-          SharedPreference.prefs!.getString(SharedPreference.TOKEN);
-      var response = await dio.post(
-          ApiConstantsCrew.BASEURL + ApiConstantsCrew.WEEKLY_CHECKIN,
-          data: map);
-      return WeeklyCheckInResponse.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());

@@ -11,6 +11,7 @@ class BaseProvider extends ChangeNotifier {
 
   Api api = locator<Api>();
   CustomClass customClass = locator<CustomClass>();
+
   ViewState get state => _state;
 
   void setState(ViewState viewState) {
@@ -19,26 +20,27 @@ class BaseProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
   bool loading = false;
 
-  updateLoadingStatus(bool val){
+  updateLoadingStatus(bool val) {
     loading = val;
     notifyListeners();
   }
 
   bool data = false;
 
-  updateData(bool val){
+  updateData(bool val) {
     data = val;
     notifyListeners();
   }
-
 
   void customNotify() {
     if (!_isDisposed) {
       notifyListeners();
     }
   }
+
   @override
   void dispose() {
     _isDisposed = true;

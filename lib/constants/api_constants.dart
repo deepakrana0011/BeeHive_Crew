@@ -62,7 +62,7 @@ class ApiConstantsCrew {
   static const String RESEND_OTP_PHONE = "resendtokenonphone";
   static const String RESEND_OTP_EMAIL = "resend";
   static const String CHECK_OUT_API = "checkouttime/";
-  static const String WEEKLY_CHECKIN = "weeklydata";
+
 
   static const String getAllCrewProjects = "crewActiveProjects";
 }

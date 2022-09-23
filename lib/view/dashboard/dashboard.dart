@@ -1,10 +1,17 @@
 // ignore_for_file: use_build_context_synchronously
 
+import 'dart:async';
+import 'dart:math';
+
 import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
+import 'package:beehive/helper/date_function.dart';
 import 'package:beehive/helper/shared_prefs.dart';
+import 'package:beehive/helper/validations.dart';
 import 'package:beehive/model/allProjectCrewResponse.dart';
 import 'package:beehive/model/check_box_model_crew.dart';
+import 'package:beehive/model/crew_dashboard_response.dart';
+import 'package:beehive/model/project_working_hour_detail.dart';
 import 'package:beehive/widget/custom_circular_bar.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -39,46 +46,52 @@ class _DashBoardPageState extends State<DashBoardPage>
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   DashboardProvider provider = locator<DashboardProvider>();
   TabController? controller;
+  Timer? timer;
 
   @override
   void dispose() {
     controller!.dispose();
+    timer?.cancel();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BaseView<DashboardProvider>(onModelReady: (provider) {
+    return BaseView<DashboardProvider>(onModelReady: (provider) async {
       controller = TabController(length: 3, vsync: this);
       this.provider = provider;
-      provider.getDashBoardData(context);
+      provider.startDate = DateFunctions.getCurrentDateMonthYear();
+      provider.endDate = DateFunctions.getCurrentDateMonthYear();
+      await provider.getDashBoardData(context);
+      provider.startTimer(timer);
     }, builder: (context, provider, _) {
       return Scaffold(
           key: _scaffoldKey,
           body: Stack(
             children: [
-              Column(
-                children: [
-                  provider.crewResponse?.projects == 0
-                      ? noProjectNotCheckedInContainer(
-                          context, "you_have_no_projects".tr(), false)
-                      : provider.crewResponse!.userCheckin != null
-                          ? projectsCheckOutContainer(
-                              provider.crewResponse!.userCheckin!
-                                      .assignProjectId?.address ??
-                                  "",
-                              provider)
-                          : noProjectNotCheckedInContainer(
-                              context, "you_are_not_checked_in".tr(), true,
-                              onTap: () {
-                              showCheckInDialog(context, provider);
-                            }),
-                  provider.crewResponse?.projects == 0
-                      ? whenDoNotHaveProject()
-                      : tabBarView(provider),
-                  SizedBox(height: DimensionConstants.d20.h),
-                ],
-              ),
+              if (provider.crewResponse != null)
+                Column(
+                  children: [
+                    provider.crewResponse?.projects == 0
+                        ? noProjectNotCheckedInContainer(
+                            context, "you_have_no_projects".tr(), false)
+                        : provider.crewResponse?.userCheckin != null
+                            ? projectsCheckOutContainer(
+                                provider.crewResponse!.userCheckin!
+                                        .assignProjectId?.address ??
+                                    "",
+                                provider)
+                            : noProjectNotCheckedInContainer(
+                                context, "you_are_not_checked_in".tr(), true,
+                                onTap: () {
+                                //showCheckInDialog(context, provider);
+                              }),
+                    provider.crewResponse?.projects == 0
+                        ? whenDoNotHaveProject()
+                        : tabBarView(provider),
+                    SizedBox(height: DimensionConstants.d20.h),
+                  ],
+                ),
               if (provider.state == ViewState.busy) (const CustomCircularBar())
             ],
           ));
@@ -266,7 +279,7 @@ class _DashBoardPageState extends State<DashBoardPage>
     );
   }
 
-  /// Widget after checkOut
+/*  /// Widget after checkOut
   Widget projectsCheckInContainer(String location) {
     return Container(
       width: double.infinity,
@@ -325,7 +338,7 @@ class _DashBoardPageState extends State<DashBoardPage>
         ],
       ),
     );
-  }
+  }*/
 
   Widget projectsCheckOutContainer(
       String location, DashboardProvider provider) {
@@ -348,7 +361,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                 children: [
                   const ImageView(path: ImageConstants.checkedInIcon),
                   SizedBox(width: DimensionConstants.d12.w),
-                  Text("${"checked_in".tr()} ${provider.timerHour}h ${provider.minuteCount}m")
+                  Text("${"checked_in".tr()} ${provider.timeFromLastCheckedIn.substring(0, 2)}h ${provider.timeFromLastCheckedIn.substring(3, 5)}m")
                       .regularText(
                           context, DimensionConstants.d16.sp, TextAlign.left,
                           color: ColorConstants.colorLightGreen),
@@ -359,13 +372,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                 ColorConstants.colorLightGreen,
                 onBtnTap: () {
                   stillCheckedInAlert(
-                      SharedPreference.prefs!
-                          .getString(SharedPreference.Crew_NAME)!,
-                      provider.minuteCount,
-                      provider.timerHour,
-                      location);
-                  provider.isCheckedIn = false;
-                  provider.updateLoadingStatus(true);
+                      provider.crewResponse?.crew?.name ?? "", location);
                 },
               )
             ],
@@ -380,11 +387,8 @@ class _DashBoardPageState extends State<DashBoardPage>
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                lastCheckInTotalHoursColumn(
-                    "${provider.hour <= 9 ? 0 : ""}${provider.hour}:${provider.minutes <= 9 ? 0 : ""}${provider.minutes}",
-                    "${GetTime.getAmAndPm(provider.hour)}",
-                    "last_check_in".tr()),
-                lastCheckInTotalHoursColumn("08:23", "HR", "total_hours".tr()),
+                lastCheckInTotalHoursColumn(provider, 1),
+                lastCheckInTotalHoursColumn(provider, 2),
               ],
             ),
           )
@@ -393,8 +397,31 @@ class _DashBoardPageState extends State<DashBoardPage>
     );
   }
 
-  Widget lastCheckInTotalHoursColumn(
-      String time, String timeFormat, String txt) {
+  // here type 1 means last check in widget and type 2 means total hours widget
+  Widget lastCheckInTotalHoursColumn(DashboardProvider provider, int type) {
+    var time = "";
+    var timeFormat = "";
+    var text = "";
+    if (type == 1) {
+      text = "last_check_in".tr();
+      if (provider.crewResponse!.userCheckin!.interuption!.length > 0) {
+        time = DateFunctions.amPmTime(provider
+            .crewResponse!
+            .userCheckin!
+            .interuption![
+                provider.crewResponse!.userCheckin!.interuption!.length - 1]
+            .endTime!);
+      } else {
+        time = DateFunctions.amPmTime(
+            provider.crewResponse!.userCheckin!.checkInTime!);
+      }
+      timeFormat = time.substring(6, time.length).toUpperCase();
+      time = time.substring(0, 6);
+    } else {
+      text = "total_hours".tr();
+      timeFormat = "HR";
+      time = provider.totalSpendTime;
+    }
     return Column(
       children: [
         Row(
@@ -410,7 +437,7 @@ class _DashBoardPageState extends State<DashBoardPage>
           ],
         ),
         SizedBox(height: DimensionConstants.d5.h),
-        Text(txt).regularText(
+        Text(text).regularText(
             context, DimensionConstants.d14.sp, TextAlign.left,
             color: ColorConstants.colorWhite),
       ],
@@ -581,8 +608,7 @@ class _DashBoardPageState extends State<DashBoardPage>
     );
   }
 
-  stillCheckedInAlert(
-      String nameOfUser, int hour, int mint, String projectName) {
+  stillCheckedInAlert(String nameOfUser, String projectName) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -616,7 +642,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                         children: [
                           const ImageView(path: ImageConstants.checkedInIcon),
                           SizedBox(width: DimensionConstants.d8.w),
-                          Text("${"checked_in".tr()} ${mint}h ${hour}m")
+                          Text("${"checked_in".tr()} ${provider.timeFromLastCheckedIn.substring(0, 2)}h ${provider.timeFromLastCheckedIn.substring(3, 5)}m")
                               .semiBoldText(context, DimensionConstants.d14.sp,
                                   TextAlign.left),
                         ],
@@ -671,109 +697,104 @@ class _DashBoardPageState extends State<DashBoardPage>
     showDialog(
         context: context,
         builder: (BuildContext context) {
-          return StatefulBuilder(builder: (context, setState) {
-            {
-              return AlertDialog(
-                  contentPadding: EdgeInsets.zero,
-                  insetPadding: EdgeInsets.fromLTRB(DimensionConstants.d16.w,
-                      0.0, DimensionConstants.d16.w, DimensionConstants.d75.h),
-                  shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.circular(DimensionConstants.d8.r),
-                  ),
-                  elevation: 0,
-                  content: Builder(builder: (context) {
-                    return Container(
-                      padding: EdgeInsets.fromLTRB(
-                          DimensionConstants.d24.w,
-                          DimensionConstants.d24.h,
-                          DimensionConstants.d24.w,
-                          DimensionConstants.d24.h),
-                      height: DimensionConstants.d276.h,
-                      width: DimensionConstants.d343.w,
-                      child: Column(
-                        children: [
-                          GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: const Align(
-                                alignment: Alignment.centerLeft,
-                                child: ImageView(
-                                    path: ImageConstants.smallBackIcon)),
-                          ),
-                          SizedBox(height: DimensionConstants.d9.h),
-                          Text("when_did_you_check_out".tr()).boldText(context,
-                              DimensionConstants.d18.sp, TextAlign.center),
-                          SizedBox(height: DimensionConstants.d13.h),
-                          GestureDetector(
-                            onTap: () {
-                              // provider.showTime(context);
-                            },
-                            child: Container(
+          return StatefulBuilder(builder: (buildContext, setState) {
+            provider.selectedCheckOutTime =
+                DateFunctions.twentyFourHourTO12Hour(
+                    provider.initialTime.format(context));
+            return AlertDialog(
+                contentPadding: EdgeInsets.zero,
+                insetPadding: EdgeInsets.fromLTRB(DimensionConstants.d16.w, 0.0,
+                    DimensionConstants.d16.w, DimensionConstants.d75.h),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
+                ),
+                elevation: 0,
+                content: Builder(builder: (buildContext) {
+                  return Container(
+                    padding: EdgeInsets.fromLTRB(
+                        DimensionConstants.d24.w,
+                        DimensionConstants.d24.h,
+                        DimensionConstants.d24.w,
+                        DimensionConstants.d24.h),
+                    height: DimensionConstants.d276.h,
+                    width: DimensionConstants.d343.w,
+                    child: Column(
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.of(context).pop();
+                          },
+                          child: const Align(
                               alignment: Alignment.centerLeft,
-                              height: DimensionConstants.d45.h,
-                              width: DimensionConstants.d171.w,
-                              decoration: BoxDecoration(
-                                  color: ColorConstants.colorLightGreyF2,
-                                  borderRadius: BorderRadius.all(
-                                      Radius.circular(
-                                          DimensionConstants.d8.r))),
-                              child: Row(
-                                children: [
-                                  SizedBox(width: DimensionConstants.d16.w),
-                                  const ImageView(
-                                      path: ImageConstants.clockIcon,
-                                      color: ColorConstants.colorBlack),
-                                  SizedBox(width: DimensionConstants.d16.w),
-                                  Text(provider.selectedCheckOutTime == null
-                                          ? ("${provider.initialTime.hour < 12 ? provider.initialTime.hour : (provider.initialTime.hour - 12)}:${provider.initialTime.minute} " +
-                                              GetTime.hoursAM(
-                                                  provider.initialTime))
-                                          : provider.selectedCheckOutTime!)
-                                      .boldText(
-                                          context,
-                                          DimensionConstants.d16.sp,
-                                          TextAlign.left,
-                                          color: ColorConstants.colorBlack),
-                                  Expanded(
-                                      child: SizedBox(
-                                          width: DimensionConstants.d2.w)),
-                                  const ImageView(
-                                      path: ImageConstants.downArrowIcon,
-                                      color: ColorConstants.colorBlack),
-                                  SizedBox(width: DimensionConstants.d14.w),
-                                ],
-                              ),
+                              child: ImageView(
+                                  path: ImageConstants.smallBackIcon)),
+                        ),
+                        SizedBox(height: DimensionConstants.d9.h),
+                        Text("when_did_you_check_out".tr()).boldText(context,
+                            DimensionConstants.d18.sp, TextAlign.center),
+                        SizedBox(height: DimensionConstants.d13.h),
+                        GestureDetector(
+                          onTap: () {
+                            provider
+                                .showTimePickerWidget(buildContext)
+                                .then((value) {
+                              setState(() {});
+                            });
+                          },
+                          child: Container(
+                            alignment: Alignment.centerLeft,
+                            height: DimensionConstants.d45.h,
+                            width: DimensionConstants.d171.w,
+                            decoration: BoxDecoration(
+                                color: ColorConstants.colorLightGreyF2,
+                                borderRadius: BorderRadius.all(
+                                    Radius.circular(DimensionConstants.d8.r))),
+                            child: Row(
+                              children: [
+                                SizedBox(width: DimensionConstants.d16.w),
+                                const ImageView(
+                                    path: ImageConstants.clockIcon,
+                                    color: ColorConstants.colorBlack),
+                                SizedBox(width: DimensionConstants.d16.w),
+                                Text(provider.selectedCheckOutTime
+                                            ?.toUpperCase() ??
+                                        "")
+                                    .boldText(
+                                        context,
+                                        DimensionConstants.d16.sp,
+                                        TextAlign.left,
+                                        color: ColorConstants.colorBlack),
+                                Expanded(
+                                    child: SizedBox(
+                                        width: DimensionConstants.d2.w)),
+                                const ImageView(
+                                    path: ImageConstants.downArrowIcon,
+                                    color: ColorConstants.colorBlack),
+                                SizedBox(width: DimensionConstants.d14.w),
+                              ],
                             ),
                           ),
-                          SizedBox(height: DimensionConstants.d12.h),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const ImageView(
-                                  path: ImageConstants.locationIcon),
-                              SizedBox(width: DimensionConstants.d8.w),
-                              Text(projectName).semiBoldText(context,
-                                  DimensionConstants.d14.sp, TextAlign.left),
-                            ],
-                          ),
-                          SizedBox(height: DimensionConstants.d22.h),
-                          CommonWidgets.commonButton(context, "check_out".tr(),
-                              height: 50, onBtnTap: () {
-                            provider.timeToSend(_scaffoldKey.currentContext);
-                            //provider.showTime(_scaffoldKey.currentContext);
-                            //SharedPreference.clearCheckIn();
-
-                            //Navigator.of(context).pop();
-                            provider.hasCheckInCheckOut = true;
-                            provider.updateLoadingStatus(true);
-                          })
-                        ],
-                      ),
-                    );
-                  }));
-            }
+                        ),
+                        SizedBox(height: DimensionConstants.d12.h),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const ImageView(path: ImageConstants.locationIcon),
+                            SizedBox(width: DimensionConstants.d8.w),
+                            Text(projectName).semiBoldText(context,
+                                DimensionConstants.d14.sp, TextAlign.left),
+                          ],
+                        ),
+                        SizedBox(height: DimensionConstants.d22.h),
+                        CommonWidgets.commonButton(context, "check_out".tr(),
+                            height: 50, onBtnTap: () {
+                          Navigator.of(context).pop();
+                          provider.checkOutApi(context);
+                        })
+                      ],
+                    ),
+                  );
+                }));
           });
         });
   }
@@ -810,9 +831,36 @@ class _DashBoardPageState extends State<DashBoardPage>
                 padding: EdgeInsets.zero,
                 controller: controller,
                 onTap: (index) {
-                  print("selected index ${index}");
-                  print("selected index controller ${controller!.index}");
                   provider.updateSelectedTabIndex(index);
+                  switch (index) {
+                    case 0:
+                      {
+                        provider.startDate =
+                            DateFunctions.getCurrentDateMonthYear();
+                        provider.endDate =
+                            DateFunctions.getCurrentDateMonthYear();
+                        provider.selectedStartDate = null;
+                        provider.selectedEndDate = null;
+                        provider.getDashBoardData(context);
+                        break;
+                      }
+                    case 1:
+                      {
+                        provider.selectedStartDate = null;
+                        provider.selectedEndDate = null;
+                        provider.nextWeekDays(7);
+                        provider.getDashBoardData(context);
+                        break;
+                      }
+                    case 2:
+                      {
+                        provider.selectedStartDate = null;
+                        provider.selectedEndDate = null;
+                        provider.nextWeekDays(14);
+                        provider.getDashBoardData(context);
+                        break;
+                      }
+                  }
                 },
                 tabs: [
                   Container(
@@ -855,19 +903,13 @@ class _DashBoardPageState extends State<DashBoardPage>
             Expanded(
               child: TabBarView(
                 controller: controller,
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 children: [
                   provider.crewResponse!.allCheckin!.isNotEmpty
                       ? projectsAndHoursCardList(provider)
                       : zeroProjectZeroHourCard(provider),
-                  /*//  provider.hasProjects ? projectsAndHoursCardList() : zeroProjectZeroHourCard(),
-                  widget.notCheckedIn == false? projectsAndHoursCardList(provider):
-                  widget.navigationValue ==2 ? projectsAndHoursCardList(provider):
-                  zeroProjectZeroHourCard(),
-                  weeklyTabBarContainer(provider),*/
-                  //Icon(Icons.directions_car, size: 350),
-                  Icon(Icons.directions_car, size: 350),
-                  Icon(Icons.directions_car, size: 350),
+                  weeklyTabBarContainer(provider),
+                  weeklyTabBarContainer(provider),
                 ],
               ),
             ),
@@ -898,10 +940,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   GestureDetector(
-                      onTap: () {
-                        //   provider.has2Projects = true;
-                        provider.updateLoadingStatus(true);
-                      },
+                      onTap: () {},
                       child: projectsHoursRow(
                           ImageConstants.mapIcon, "0 ${"projects".tr()}")),
                   Container(
@@ -964,114 +1003,58 @@ class _DashBoardPageState extends State<DashBoardPage>
           side: const BorderSide(color: ColorConstants.colorWhite, width: 1.0),
           borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
         ),
-        child: ListView.separated(
-          itemCount: 5,
-          itemBuilder: (BuildContext context, int index) {
-            return GestureDetector(
-              //  onTap: onTap,
-              child: Container(
-                color: Colors.transparent,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                      vertical: DimensionConstants.d11.h,
-                      horizontal: DimensionConstants.d16.w),
-                  child: Row(
-                    children: [
-                      Container(
-                        alignment: Alignment.center,
-                        padding: const EdgeInsets.all(DimensionConstants.d5),
-                        height: DimensionConstants.d40.h,
-                        width: DimensionConstants.d40.w,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: ColorConstants.blueGradient2Color,
-                        ),
-                        child:
-                            Text(provider.projectNameInitials[index].toString())
-                                .boldText(context, DimensionConstants.d16.sp,
-                                    TextAlign.center,
-                                    color: ColorConstants.colorWhite),
-                      ),
-                      SizedBox(width: DimensionConstants.d14.w),
-                      Container(
-                        width: DimensionConstants.d110.w,
-                        child: Text("test").boldText(context,
-                            DimensionConstants.d13.sp, TextAlign.center),
-                      ),
-                      SizedBox(
-                        width: DimensionConstants.d20.w,
-                      ),
-                      Text("deepak").regularText(
-                          context, DimensionConstants.d13.sp, TextAlign.center),
-                      SizedBox(width: DimensionConstants.d15.w),
-                      Text("test").semiBoldText(
-                          context, DimensionConstants.d13.sp, TextAlign.center),
-                      SizedBox(width: DimensionConstants.d11.w),
-                      ImageView(
-                          path: ImageConstants.forwardArrowIcon,
-                          color:
-                              (Theme.of(context).brightness == Brightness.dark
-                                  ? ColorConstants.colorWhite
-                                  : ColorConstants.colorBlack))
-                    ],
+        child: Expanded(
+          child: Column(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: (Theme.of(context).brightness == Brightness.dark
+                      ? ColorConstants.colorBlack
+                      : ColorConstants.colorWhite),
+                  border: Border.all(
+                    color: ColorConstants.colorLightGreyF2,
                   ),
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(DimensionConstants.d8.r),
+                      topRight: Radius.circular(DimensionConstants.d8.r)),
+                ),
+                height: DimensionConstants.d70.h,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    projectsHoursRow(ImageConstants.mapIcon,
+                        "${provider.crewResponse!.allCheckin!.length} ${"projects".tr()}"),
+                    Container(
+                      height: DimensionConstants.d70.h,
+                      width: DimensionConstants.d1.w,
+                      color: ColorConstants.colorLightGrey,
+                    ),
+                    projectsHoursRow(
+                        ImageConstants.clockIcon,
+                        provider.crewResponse!.allCheckin!.isEmpty
+                            ? "0 Hours"
+                            : "${provider.totalHours} ${"hours".tr()}")
+                  ],
                 ),
               ),
-            );
-          },
-          separatorBuilder: (BuildContext context, int index) {
-            return const Divider(
-                color: ColorConstants.colorGreyDrawer,
-                height: 0.0,
-                thickness: 1.5);
-          },
-        ),
-
-        /*Column(
-          children: [
-            Container(
-              color: (Theme.of(context).brightness == Brightness.dark
-                  ? ColorConstants.colorBlack
-                  : ColorConstants.colorWhite),
-              height: DimensionConstants.d70.h,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  projectsHoursRow(
-                      ImageConstants.mapIcon, "${provider.crewResponse!.activeProjects} ${"projects".tr()}"),
-                  Container(
-                    height: DimensionConstants.d70.h,
-                    width: DimensionConstants.d1.w,
-                    color: ColorConstants.colorLightGrey,
-                  ),
-                  projectsHoursRow(
-                      ImageConstants.clockIcon, "07.28 ${"hours".tr()}")
-                ],
+              ListView.separated(
+                itemCount: provider.crewResponse!.allCheckin!.length,
+                shrinkWrap: true,
+                itemBuilder: (BuildContext context, int index) {
+                  return projectDetailTile(context,
+                      checkInProjectDetail:
+                          provider.crewResponse!.allCheckin![index]);
+                },
+                separatorBuilder: (BuildContext context, int index) {
+                  return const Divider(
+                      color: ColorConstants.colorGreyDrawer,
+                      height: 0.0,
+                      thickness: 1.5);
+                },
               ),
-            ),
-            const Divider(
-                color: ColorConstants.colorGreyDrawer,
-                height: 0.0,
-                thickness: 1.5),
-            projectHourRow(Color(0xFFBB6BD9), "MS", "8:50a", "10:47a", "02:57h", commonStepper()),
-            const Divider(
-                color: ColorConstants.colorGreyDrawer,
-                height: 0.0,
-                thickness: 1.5),
-            projectHourRow(ColorConstants.primaryGradient1Color, "MS", "8:50a",
-                "10:47p", "02:57h", commonStepper()),
-            const Divider(
-                color: ColorConstants.colorGreyDrawer,
-                height: 0.0,
-                thickness: 1.5),
-            projectHourRow(ColorConstants.deepBlue, "AL", "8:50a", "10:47p",
-                "02:57h", stepperLineWithOneCoolIcon()),
-            const Divider(
-                color: ColorConstants.colorGreyDrawer,
-                height: 0.0,
-                thickness: 1.5),
-          ],
-        ),*/
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -1100,17 +1083,25 @@ class _DashBoardPageState extends State<DashBoardPage>
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         backNextBtn(ImageConstants.backIconIos, () {
-                          provider.previousWeekDates();
-                          provider.weeklyDataApi(context);
+                          provider.previousWeekDays(
+                              provider.selectedTabIndex == 1 ? 7 : 14);
+                          provider.getDashBoardData(context);
                         }),
-                        Text("${GetTime.getDayMonth(provider.initialDay2)} -${GetTime.getDayMonth(provider.initialDay1)}")
+                        Text("${DateFunctions.capitalize(provider.weekFirstDate ?? "")} - ${DateFunctions.capitalize(provider.weekEndDate ?? "")}")
                             .boldText(context, DimensionConstants.d16.sp,
                                 TextAlign.center,
                                 color: ColorConstants.colorWhite),
-                        backNextBtn(ImageConstants.nextIconIos, () {
-                          provider.nextWeekDates();
-                          provider.weeklyDataApi(context);
-                        })
+                        provider.endDate !=
+                                DateFormat("yyyy-MM-dd").format(DateTime.now())
+                            ? backNextBtn(ImageConstants.nextIconIos, () {
+                                provider.nextWeekDays(
+                                    provider.selectedTabIndex == 1 ? 7 : 14);
+                                provider.getDashBoardData(context);
+                              })
+                            : Visibility(
+                                visible: false,
+                                child: backNextBtn(
+                                    ImageConstants.nextIconIos, () {}))
                       ],
                     ),
                   ),
@@ -1144,131 +1135,125 @@ class _DashBoardPageState extends State<DashBoardPage>
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               projectsHoursRow(ImageConstants.mapIcon,
-                                  "${provider.crewResponse!.projects} ${"projects".tr()}"),
+                                  "${provider.crewResponse!.allCheckin!.length} ${"projects".tr()}"),
                               Container(
                                 height: DimensionConstants.d70.h,
                                 width: DimensionConstants.d1.w,
                                 color: ColorConstants.colorLightGrey,
                               ),
-                              projectsHoursRow(ImageConstants.clockIcon,
-                                  "07:28 ${"hours".tr()}")
+                              projectsHoursRow(
+                                  ImageConstants.clockIcon,
+                                  provider.crewResponse!.allCheckin!.isEmpty
+                                      ? "0 Hours"
+                                      : "${provider.totalHours} ${"hours".tr()}")
                             ],
                           ),
                         ),
-                        weeklyTabBarDateContainer("Tue, April 13"),
-                        projectHourRow(
-                            Color(0xFFBB6BD9),
-                            "MS",
-                            "8:50a",
-                            "10:47a",
-                            "02:57h",
-                            stepperLineWithTwoCoolIcon(), onTap: () {
-                          Navigator.pushNamed(
-                              context, RouteConstants.timeSheetsScreen);
-                        }),
-                        const Divider(
-                            color: ColorConstants.colorGreyDrawer,
-                            height: 0.0,
-                            thickness: 1.5),
-                        projectHourRow(
-                            ColorConstants.primaryGradient1Color,
-                            "MD",
-                            "8:50a",
-                            "10:47p",
-                            "02:57h",
-                            stepperWithGrayAndGreen(), onTap: () {
-                          Navigator.pushNamed(
-                              context, RouteConstants.timeSheetsScreen);
-                        }),
-                        weeklyTabBarDateContainer("Wed, April 14"),
-                        projectHourRow(Color(0xFFBB6BD9), "MS", "8:50a",
-                            "10:47p", "02:57h", commonStepper(), onTap: () {
-                          Navigator.pushNamed(
-                              context, RouteConstants.timeSheetsScreen);
-                        }),
-                        const Divider(
-                            color: ColorConstants.colorGreyDrawer,
-                            height: 0.0,
-                            thickness: 1.5),
-                        projectHourRow(
-                            ColorConstants.primaryGradient1Color,
-                            "MD",
-                            "8:50a",
-                            "10:47p",
-                            "02:57h",
-                            commonStepper(), onTap: () {
-                          Navigator.pushNamed(
-                              context, RouteConstants.timeSheetsScreen);
-                        }),
-                        projectHourRow(
-                            Color(0xFFBB6BD9),
-                            "MS",
-                            "8:50a",
-                            "10:47p",
-                            "02:57h",
-                            stepperLineWithOneCoolIcon(), onTap: () {
-                          Navigator.pushNamed(
-                              context, RouteConstants.timeSheetsScreen);
-                        }),
-                        const Divider(
-                            color: ColorConstants.colorGreyDrawer,
-                            height: 0.0,
-                            thickness: 1.5),
-                        projectHourRow(
-                            ColorConstants.primaryGradient1Color,
-                            "MD",
-                            "8:50a",
-                            "10:47p",
-                            "02:57h",
-                            commonStepper(), onTap: () {
-                          Navigator.pushNamed(
-                              context, RouteConstants.timeSheetsScreen);
-                        }),
-                        const Divider(
-                            color: ColorConstants.colorGreyDrawer,
-                            height: 0.0,
-                            thickness: 1.5),
-                        SizedBox(height: DimensionConstants.d12.h),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: DimensionConstants.d16.w),
-                          child: Column(
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                        provider.crewResponse!.allCheckin!.isEmpty
+                            ? SizedBox(
+                                height: DimensionConstants.d300.h,
+                                child: Center(
+                                  child: const Text(
+                                          "You have not checked out Any project yet")
+                                      .regularText(
+                                          context,
+                                          DimensionConstants.d14.sp,
+                                          TextAlign.center,
+                                          color: ColorConstants.colorBlack),
+                                ),
+                              )
+                            : Column(
                                 children: [
-                                  Text("total_hours".tr()).semiBoldText(
-                                      context,
-                                      DimensionConstants.d14.sp,
-                                      TextAlign.center),
-                                  Text("48:28 Hrs").semiBoldText(
-                                      context,
-                                      DimensionConstants.d14.sp,
-                                      TextAlign.center)
+                                  ListView.builder(
+                                      shrinkWrap: true,
+                                      itemCount: provider.weeklyData.length,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      itemBuilder: (context, index) {
+                                        return Column(
+                                          children: [
+                                            Container(
+                                              color: ColorConstants
+                                                  .colorLightGreyF2,
+                                              height: DimensionConstants.d32.h,
+                                              alignment: Alignment.center,
+                                              child: Text(provider.weeklyData[index].date??"").boldText(
+                                                  context,
+                                                  DimensionConstants.d13.sp,
+                                                  TextAlign.center,
+                                                  color: ColorConstants
+                                                      .colorBlack),
+                                            ),
+                                            ListView.separated(
+                                              shrinkWrap: true,
+                                              physics:
+                                                  const NeverScrollableScrollPhysics(),
+                                              itemCount: provider.weeklyData[index].checkInDataList!.length,
+                                              itemBuilder: (context, innerIndex) {
+                                                return projectDetailTile(
+                                                    context,checkInProjectDetail: provider.weeklyData[index].checkInDataList![innerIndex]);
+                                              },
+                                              separatorBuilder:
+                                                  (context, index) {
+                                                return const Divider(
+                                                    color: ColorConstants
+                                                        .colorGreyDrawer,
+                                                    height: 0.0,
+                                                    thickness: 1.5);
+                                              },
+                                            ),
+                                          ],
+                                        );
+                                      }),
+                                  const Divider(
+                                      color: ColorConstants.colorGreyDrawer,
+                                      height: 0.0,
+                                      thickness: 1.5),
+                                  SizedBox(height: DimensionConstants.d12.h),
+                                  Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: DimensionConstants.d16.w),
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text("total_hours".tr())
+                                                .semiBoldText(
+                                                    context,
+                                                    DimensionConstants.d14.sp,
+                                                    TextAlign.center),
+                                            Text("48:28 Hrs").semiBoldText(
+                                                context,
+                                                DimensionConstants.d14.sp,
+                                                TextAlign.center)
+                                          ],
+                                        ),
+                                        SizedBox(
+                                            height: DimensionConstants.d6.h),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text("x \$20.00/hr").semiBoldText(
+                                                context,
+                                                DimensionConstants.d14.sp,
+                                                TextAlign.center),
+                                            Text("\$805.00").semiBoldText(
+                                                context,
+                                                DimensionConstants.d14.sp,
+                                                TextAlign.center)
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  SizedBox(height: DimensionConstants.d16.h),
+                                  exportTimeSheetBtn(),
+                                  SizedBox(height: DimensionConstants.d16.h),
                                 ],
-                              ),
-                              SizedBox(height: DimensionConstants.d6.h),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text("x \$20.00/hr").semiBoldText(
-                                      context,
-                                      DimensionConstants.d14.sp,
-                                      TextAlign.center),
-                                  Text("\$805.00").semiBoldText(
-                                      context,
-                                      DimensionConstants.d14.sp,
-                                      TextAlign.center)
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(height: DimensionConstants.d16.h),
-                        exportTimeSheetBtn(),
-                        SizedBox(height: DimensionConstants.d16.h),
+                              )
                       ],
                     ),
                   )
@@ -1294,116 +1279,6 @@ class _DashBoardPageState extends State<DashBoardPage>
         ),
         child: ImageView(
           path: path,
-        ),
-      ),
-    );
-  }
-
-  Widget weeklyTabBarDateContainer(String date) {
-    return Container(
-      color: ColorConstants.colorLightGreyF2,
-      height: DimensionConstants.d32.h,
-      alignment: Alignment.center,
-      child: Text(date).boldText(
-          context, DimensionConstants.d13.sp, TextAlign.center,
-          color: ColorConstants.colorBlack),
-    );
-  }
-
-  Widget projectHourRow(Color color, String name, String startingTime,
-      String endTime, String totalTime, Widget stepper,
-      {VoidCallback? onTap}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        color: Colors.transparent,
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-              vertical: DimensionConstants.d11.h,
-              horizontal: DimensionConstants.d16.w),
-          child: Row(
-            children: [
-              Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(DimensionConstants.d5),
-                height: DimensionConstants.d40.h,
-                width: DimensionConstants.d40.w,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: color,
-                ),
-                child: Text(name).boldText(
-                    context, DimensionConstants.d16.sp, TextAlign.center,
-                    color: ColorConstants.colorWhite),
-              ),
-              SizedBox(width: DimensionConstants.d14.w),
-              Text(startingTime).regularText(
-                  context, DimensionConstants.d13.sp, TextAlign.center),
-              SizedBox(width: DimensionConstants.d14.w),
-              stepper,
-              SizedBox(width: DimensionConstants.d10.w),
-              Text(endTime).regularText(
-                  context, DimensionConstants.d13.sp, TextAlign.center),
-              SizedBox(width: DimensionConstants.d15.w),
-              Text(totalTime).boldText(
-                  context, DimensionConstants.d13.sp, TextAlign.center),
-              SizedBox(width: DimensionConstants.d11.w),
-              ImageView(
-                  path: ImageConstants.forwardArrowIcon,
-                  color: (Theme.of(context).brightness == Brightness.dark
-                      ? ColorConstants.colorWhite
-                      : ColorConstants.colorBlack))
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget projectHourRowManager(Color color, String name, String startingTime,
-      String endTime, String totalTime, Widget stepper,
-      {VoidCallback? onTap}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        color: Colors.transparent,
-        child: Padding(
-          padding: EdgeInsets.symmetric(
-              vertical: DimensionConstants.d11.h,
-              horizontal: DimensionConstants.d16.w),
-          child: Row(
-            children: [
-              Container(
-                alignment: Alignment.center,
-                padding: const EdgeInsets.all(DimensionConstants.d5),
-                height: DimensionConstants.d40.h,
-                width: DimensionConstants.d40.w,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: color,
-                ),
-                child: Text(name).boldText(
-                    context, DimensionConstants.d16.sp, TextAlign.center,
-                    color: ColorConstants.colorWhite),
-              ),
-              SizedBox(width: DimensionConstants.d14.w),
-              Text(startingTime).boldText(
-                  context, DimensionConstants.d13.sp, TextAlign.center),
-              SizedBox(width: DimensionConstants.d14.w),
-              SizedBox(width: DimensionConstants.d10.w),
-              Text(endTime).regularText(
-                  context, DimensionConstants.d13.sp, TextAlign.center),
-              SizedBox(width: DimensionConstants.d15.w),
-              Text(totalTime).semiBoldText(
-                  context, DimensionConstants.d13.sp, TextAlign.center),
-              SizedBox(width: DimensionConstants.d11.w),
-              ImageView(
-                  path: ImageConstants.forwardArrowIcon,
-                  color: (Theme.of(context).brightness == Brightness.dark
-                      ? ColorConstants.colorWhite
-                      : ColorConstants.colorBlack))
-            ],
-          ),
         ),
       ),
     );
@@ -1457,151 +1332,108 @@ class _DashBoardPageState extends State<DashBoardPage>
     );
   }
 
-  Widget stepperLineWithOneCoolIcon() {
-    return Padding(
-      padding: EdgeInsets.only(bottom: DimensionConstants.d13.h),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Container(
+  Widget stepperLineWithOneCoolIcon(CheckInProjectDetail checkInProjectDetail) {
+    List<Widget> widgetlist = [];
+    List<ProjectWorkingHourDetail> projectDetailLIst =
+        provider.getTimeForStepper(checkInProjectDetail);
+    for (int i = 0; i < projectDetailLIst.length; i++) {
+      if (projectDetailLIst[i].type == 1) {
+        widgetlist.add(Flexible(
+          flex: projectDetailLIst[i].timeInterval!,
+          child: Container(
             height: DimensionConstants.d4.h,
-            width: DimensionConstants.d10.w,
             color: ColorConstants.colorGreen,
           ),
-          SizedBox(width: DimensionConstants.d3.w),
-          Column(
-            children: [
-              const ImageView(path: ImageConstants.coolIcon),
-              SizedBox(height: DimensionConstants.d2.h),
-              Container(
-                height: DimensionConstants.d4.h,
-                width: DimensionConstants.d10.w,
-                color: ColorConstants.colorLightRed,
-              )
-            ],
-          ),
-          SizedBox(width: DimensionConstants.d3.w),
-          Container(
+        ));
+      } else if (projectDetailLIst[i].type == 2) {
+        widgetlist.add(Flexible(
+          flex: projectDetailLIst[i].timeInterval!,
+          child: Container(
             height: DimensionConstants.d4.h,
-            width: DimensionConstants.d45.w,
-            color: ColorConstants.colorGreen,
-          )
-        ],
-      ),
-    );
+            color: ColorConstants.colorGray,
+          ),
+        ));
+      } else {
+        widgetlist.add(Flexible(
+          flex: projectDetailLIst[i].timeInterval!,
+          child: Container(
+            height: DimensionConstants.d4.h,
+            color: ColorConstants.colorLightRed,
+          ),
+        ));
+      }
+    }
+    return Container(width:DimensionConstants.d75.w,child: Center(child: Flex(direction: Axis.horizontal,children: widgetlist,)));
   }
 
-  Widget stepperLineWithTwoCoolIcon() {
-    return Column(
-      children: [
-        SizedBox(
-          width: DimensionConstants.d80.w,
+  Widget projectDetailTile(BuildContext context,
+      {VoidCallback? onTap, CheckInProjectDetail? checkInProjectDetail}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        color: Colors.transparent,
+        width: DimensionConstants.d75.w,
+        child: Padding(
+          padding: EdgeInsets.symmetric(
+              vertical: DimensionConstants.d11.h,
+              horizontal: DimensionConstants.d16.w),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: <Widget>[
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
               Container(
-                height: DimensionConstants.d4.h,
-                width: DimensionConstants.d15.w,
+                alignment: Alignment.center,
+                padding: const EdgeInsets.all(DimensionConstants.d5),
+                height: DimensionConstants.d40.h,
+                width: DimensionConstants.d40.w,
                 decoration: BoxDecoration(
-                    color: ColorConstants.colorGreen,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(DimensionConstants.d4.r),
-                        bottomLeft: Radius.circular(DimensionConstants.d4.r))),
+                  shape: BoxShape.circle,
+                  color: checkInProjectDetail!.color,
+                ),
+                child: Text(Validations.getInitials(
+                        string:
+                            checkInProjectDetail.assignProjectId!.projectName ??
+                                "",
+                        limitTo: 2))
+                    .boldText(
+                        context, DimensionConstants.d16.sp, TextAlign.center,
+                        color: ColorConstants.colorWhite),
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  const ImageView(
-                    path: ImageConstants.coolIcon,
-                  ),
-                  SizedBox(
-                    height: DimensionConstants.d2.h,
-                  ),
-                  Container(
-                    height: DimensionConstants.d4.h,
-                    width: DimensionConstants.d5.w,
-                    color: ColorConstants.colorLightRed,
-                  ),
-                ],
-              ),
-              Container(
-                height: DimensionConstants.d4.h,
-                width: DimensionConstants.d17.w,
-                color: ColorConstants.colorGray,
-              ),
-              SizedBox(
-                width: DimensionConstants.d2.w,
-              ),
-              Container(
-                height: DimensionConstants.d4.h,
-                width: DimensionConstants.d8.w,
-                color: ColorConstants.colorGreen,
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  const ImageView(
-                    path: ImageConstants.coolIcon,
-                  ),
-                  SizedBox(
-                    height: DimensionConstants.d2.h,
-                  ),
-                  Container(
-                    height: DimensionConstants.d4.h,
-                    width: DimensionConstants.d3.w,
-                    color: ColorConstants.colorLightRed,
-                  ),
-                ],
-              ),
-              Container(
-                height: DimensionConstants.d4.h,
-                width: DimensionConstants.d8.w,
-                decoration: BoxDecoration(
-                    color: ColorConstants.colorGreen,
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(DimensionConstants.d4.r),
-                        bottomRight: Radius.circular(DimensionConstants.d4.r))),
-              ),
+              SizedBox(width: DimensionConstants.d12.w),
+              Text(DateFunctions.dateTO12Hour(checkInProjectDetail.checkInTime!)
+                      .substring(
+                          0,
+                          DateFunctions.dateTO12Hour(
+                                      checkInProjectDetail.checkInTime!)
+                                  .length -
+                              1))
+                  .regularText(
+                      context, DimensionConstants.d13.sp, TextAlign.center),
+              SizedBox(width: DimensionConstants.d12.w),
+              stepperLineWithOneCoolIcon(checkInProjectDetail),
+              SizedBox(width: DimensionConstants.d10.w),
+              Text(DateFunctions.dateTO12Hour(
+                          checkInProjectDetail.checkOutTime!)
+                      .substring(
+                          0,
+                          DateFunctions.dateTO12Hour(
+                                      checkInProjectDetail.checkOutTime!)
+                                  .length -
+                              1))
+                  .regularText(
+                      context, DimensionConstants.d13.sp, TextAlign.center),
+              SizedBox(width: DimensionConstants.d13.w),
+              Text("${DateFunctions.calculateTotalHourTime(checkInProjectDetail.checkInTime!, checkInProjectDetail.checkOutTime!)} h")
+                  .boldText(
+                      context, DimensionConstants.d13.sp, TextAlign.center),
+              SizedBox(width: DimensionConstants.d8.w),
+              ImageView(
+                  path: ImageConstants.forwardArrowIcon,
+                  color: (Theme.of(context).brightness == Brightness.dark
+                      ? ColorConstants.colorWhite
+                      : ColorConstants.colorBlack))
             ],
           ),
         ),
-        SizedBox(
-          height: DimensionConstants.d12.h,
-        )
-      ],
-    );
-  }
-
-  Widget stepperWithGrayAndGreen() {
-    return SizedBox(
-      width: DimensionConstants.d75.w,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Container(
-            height: DimensionConstants.d4.h,
-            width: DimensionConstants.d26.w,
-            decoration: BoxDecoration(
-                color: ColorConstants.colorGreen,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(DimensionConstants.d4.r),
-                    bottomLeft: Radius.circular(DimensionConstants.d4.r))),
-          ),
-          Container(
-            height: DimensionConstants.d4.h,
-            width: DimensionConstants.d18.w,
-            color: ColorConstants.colorGray,
-          ),
-          Container(
-            height: DimensionConstants.d4.h,
-            width: DimensionConstants.d26.w,
-            decoration: BoxDecoration(
-                color: ColorConstants.colorGreen,
-                borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(DimensionConstants.d4.r),
-                    bottomLeft: Radius.circular(DimensionConstants.d4.r))),
-          ),
-        ],
       ),
     );
   }

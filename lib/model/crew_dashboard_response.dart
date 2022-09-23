@@ -1,3 +1,7 @@
+import 'dart:math';
+
+import 'package:flutter/material.dart';
+
 class CrewDashboardResponse {
   CrewDashboardResponse({
     this.success,
@@ -46,14 +50,16 @@ class CheckInProjectDetail {
   String? id;
   String? crewId;
   AllCheckinAssignProjectId? assignProjectId;
-  DateTime? checkInTime;
+  String? checkInTime;
   int? hoursDiff;
   List<Break>? allCheckinBreak;
   int? status;
-  List<dynamic>? interuption;
+  List<Interruption>? interuption;
   DateTime? createdAt;
   int? v;
-  DateTime? checkOutTime;
+  String? checkOutTime;
+  Color color= Colors.primaries[Random().nextInt(Colors.primaries.length)];
+
 
   factory CheckInProjectDetail.fromJson(Map<String, dynamic> json) =>
       CheckInProjectDetail(
@@ -61,17 +67,19 @@ class CheckInProjectDetail {
         crewId: json["crewId"],
         assignProjectId:
             AllCheckinAssignProjectId.fromJson(json["assignProjectId"]),
-        checkInTime: DateTime.parse(json["checkInTime"]),
+        checkInTime: json["checkInTime"],
         hoursDiff: json["hoursDiff"],
-        allCheckinBreak:
-            List<Break>.from(json["break"].map((x) => Break.fromJson(x))),
+        allCheckinBreak: json["break"] != null
+            ? List<Break>.from(json["break"].map((x) => Break.fromJson(x)))
+            : [],
         status: json["status"],
-        interuption: List<dynamic>.from(json["interuption"].map((x) => x)),
+        interuption: json["interuption"] != null
+            ? List<Interruption>.from(
+                json["interuption"].map((x) => Interruption.fromJson(x)))
+            : [],
         createdAt: DateTime.parse(json["createdAt"]),
         v: json["__v"],
-        checkOutTime: json["checkOutTime"] == null
-            ? null
-            : DateTime.parse(json["checkOutTime"]),
+        checkOutTime: "2022-09-22 19:34",
       );
 }
 
@@ -89,6 +97,26 @@ class Break {
   factory Break.fromJson(Map<String, dynamic> json) => Break(
         startTime: json["startTime"],
         interval: json["interval"],
+        id: json["_id"],
+      );
+}
+
+class Interruption {
+  Interruption({
+    this.startTime,
+    this.endTime,
+    this.id,
+  });
+
+  String? startTime;
+  String? endTime;
+  String? id;
+  bool? selfMadeInterruption=false;
+  int ? type;  //  1 actual working hour, 2- interrption 3 break
+
+  factory Interruption.fromJson(Map<String, dynamic> json) => Interruption(
+        startTime: json["startTime"],
+        endTime: json["endTime"],
         id: json["_id"],
       );
 }

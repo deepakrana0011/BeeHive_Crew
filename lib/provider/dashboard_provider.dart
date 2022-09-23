@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_interpolation_to_compose_strings
+// ignore_for_file: prefer_interpolation_to_compose_strings, use_build_context_synchronously
 
 import 'dart:async';
 import 'dart:io';
@@ -11,8 +11,11 @@ import 'package:beehive/model/check_box_model_crew.dart';
 import 'package:beehive/model/check_in_response_crew.dart';
 import 'package:beehive/model/check_out_response_crew.dart';
 import 'package:beehive/model/dash_board_page_response_crew.dart';
+import 'package:beehive/model/project_working_hour_detail.dart';
+import 'package:beehive/model/weekely_data_model.dart';
 import 'package:beehive/provider/base_provider.dart';
 import 'package:beehive/widget/get_time.dart';
+import 'package:collection/collection.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
@@ -25,8 +28,7 @@ import '../services/fetch_data_expection.dart';
 class DashboardProvider extends BaseProvider {
   String projectName = '';
   bool checkedInNoProjects = false;
-  bool hasCheckInCheckOut = false;
-  bool isCheckedIn = false;
+
   int? hours;
   String? hourOut;
   String? minOut;
@@ -35,44 +37,56 @@ class DashboardProvider extends BaseProvider {
   String? time;
   TimeOfDay? selectedTime;
 
-  TimeOfDay initialTime = TimeOfDay.now();
-  List<CheckBoxModelCrew> checkInItems = [];
   int hour = 0;
   int minutes = 0;
   int timerHour = 0;
   int minuteCount = 0;
   Timer? timer;
-  String? selectedCheckOutTime;
+
   String? checkOutTime;
   String? firstDate;
   String? secondDate;
-  CrewDashboardResponse? crewResponse;
+
   String? currentCheckInProjectId;
   List<int> hoursList = [];
   List<Widget> widgetList = [];
   List<String> projectNameInitials = [];
-  DateTime initialDay1 = DateTime.now();
-  DateTime initialDay2 = DateTime.now().subtract(const Duration(days: 7));
-  String? initialDate;
-  String? day;
-  String? month;
-  String? year;
-  bool? isCheckOut;
 
+  String? initialDate;
+
+  CrewDashboardResponse? crewResponse;
   int selectedTabIndex = 0;
   AllProjectCrewResponse? allProjectCrewResponse;
   String assignProjectId = "";
+  String timeFromLastCheckedIn = "0h 0m";
+  String totalSpendTime = "0h 0m";
+  String? totalHours;
 
-  Future getDashBoardData(
-    BuildContext context,
-  ) async {
+  DateTime? selectedStartDate = DateTime.now();
+  DateTime? selectedEndDate = DateTime.now();
+
+  String? startDate;
+  String? endDate;
+
+  String? weekFirstDate;
+  String? weekEndDate;
+
+  TimeOfDay initialTime = TimeOfDay.now();
+  String? selectedCheckOutTime;
+  List<WeekelyDataModel> weeklyData = [];
+
+  Future getDashBoardData(BuildContext context
+      //BottomBarManagerProvider? managerProvider,
+      ) async {
     setState(ViewState.busy);
     try {
-      var model = await api.dashBoardApi(
-        context,
-      );
+      var model = await api.dashBoardApi(context, startDate!, endDate!);
       if (model.success ?? false) {
         crewResponse = model;
+        getToTalHours();
+        if (selectedTabIndex != 0) {
+          groupDataByDate();
+        }
         setState(ViewState.idle);
       } else {
         setState(ViewState.idle);
@@ -86,12 +100,65 @@ class DashboardProvider extends BaseProvider {
     }
   }
 
+  void getToTalHours() {
+    var totalMinutes = 0;
+    crewResponse!.allCheckin!.forEach((element) {
+      var startTime = DateFunctions.getDateTimeFromString(element.checkInTime!);
+      var endTime = DateFunctions.getDateTimeFromString(element.checkOutTime!);
+      var minutes = endTime.difference(startTime).inMinutes;
+      totalMinutes = totalMinutes + minutes;
+    });
+    totalHours = DateFunctions.durationToString(totalMinutes);
+    customNotify();
+  }
+
+  void groupDataByDate() {
+    weeklyData.clear();
+    for (int i = 0; i < crewResponse!.allCheckin!.length; i++) {
+      var selectedDate = DateFunctions.getDateTimeFromString(
+          crewResponse!.allCheckin![i].checkInTime!);
+      var dateTimeString = DateFunctions.dateFormatWithDayName(selectedDate);
+      if (weeklyData.isEmpty) {
+        List<CheckInProjectDetail> projectDetailList = [];
+        projectDetailList.add(crewResponse!.allCheckin![i]);
+        var weekelyDataObject = WeekelyDataModel();
+        weekelyDataObject.date = dateTimeString;
+        weekelyDataObject.checkInDataList = projectDetailList;
+        weeklyData.add(weekelyDataObject);
+      } else {
+        var index =
+            weeklyData.indexWhere((element) => element.date == dateTimeString);
+        if (index == -1) {
+          List<CheckInProjectDetail> projectDetailList = [];
+          projectDetailList.add(crewResponse!.allCheckin![i]);
+          var weekelyDataObject = WeekelyDataModel();
+          weekelyDataObject.date = dateTimeString;
+          weekelyDataObject.checkInDataList = projectDetailList;
+          weeklyData.add(weekelyDataObject);
+        } else {
+          weeklyData[index].checkInDataList!.add(crewResponse!.allCheckin![i]);
+        }
+      }
+    }
+  }
+
+  /*List<CheckInProjectDetail> checkInDetail = [];
+  var selectedDate = DateFunctions.getDateTimeFromString(element.checkInTime!);
+  if (firstSelectedDate != null && firstSelectedDate == selectedDate) {
+  var dayNameDate = DateFunctions.dateFormatWithDayName(selectedDate);
+  checkInDetail.add(element);
+  //weeklyData.add({""})
+  } else {
+  var dayNameDate = DateFunctions.dateFormatWithDayName(selectedDate);
+  weeklyData.add({""})
+  }*/
+
   Future checkInApi(
     context,
   ) async {
     setState(ViewState.busy);
     try {
-      var checkInTime = DateFunctions.dateFormatyyyyMMddhhmmss(DateTime.now());
+      var checkInTime = DateFunctions.dateFormatyyyyMMddHHmm(DateTime.now());
       var model = await api.checkInApi(context, assignProjectId, checkInTime);
       assignProjectId = "";
       if (model.success == true) {
@@ -114,16 +181,14 @@ class DashboardProvider extends BaseProvider {
   ) async {
     setState(ViewState.busy);
     try {
+      var checkoutTime = DateFunctions.tweleveTo24Hour(selectedCheckOutTime);
+      var value = DateFunctions.getCurrentDateMonthYear();
+      var checkInTimeFinal = value + " " + checkoutTime;
       var model = await api.checkOutApiCrew(
-          context, currentCheckInProjectId!, checkOutTime!);
-
+          context, crewResponse!.userCheckin!.id!, checkInTimeFinal);
       if (model.success == true) {
-        isCheckOut = true;
         setState(ViewState.idle);
-        DialogHelper.showMessage(context, model.message!);
-      } else {
-        setState(ViewState.idle);
-        DialogHelper.showMessage(context, model.message!);
+        getDashBoardData(context);
       }
     } on FetchDataException catch (e) {
       setState(ViewState.idle);
@@ -150,67 +215,14 @@ class DashboardProvider extends BaseProvider {
     }
   }
 
-  getCheckOutTimeWithCurrentDate(String time) {
-    DateTime date = DateTime.now();
-    day = date.day < 10 ? "0${date.day}" : date.day.toString();
-    month = date.month < 10 ? "0${date.month}" : date.month.toString();
-    year = date.year.toString();
-    checkOutTime = "$year-$month-$day $time";
-  }
-
-  convertTime(String timeToConvert) {
-    DateTime time = DateTime.parse(timeToConvert);
-    hour = time.hour;
-    minutes = time.minute;
-    notifyListeners();
-  }
-
   getTimeDifferenceBetweenTime(String timeDifference) {
     DateTime time = DateTime.parse(timeDifference);
     var getDifference = time.difference(DateTime.now()).inHours;
     print(getDifference);
   }
 
-  twoMinTimer() {
-    timer = Timer.periodic(
-      const Duration(minutes: 1),
-      (timer) {
-        minuteCount++;
-        if (minuteCount == 60) {
-          timerHour + 1;
-          minuteCount = 0;
-        }
-        notifyListeners();
-      },
-    );
-  }
-
-  Future weeklyDataApi(context) async {
-    setState(ViewState.busy);
-    try {
-      var model = await api.weeklyChekIn(
-          context,
-          GetTime.formattedDate(initialDay1),
-          GetTime.formattedDate(initialDay2));
-      if (model.success == true) {
-        isCheckOut = true;
-        setState(ViewState.idle);
-        //DialogHelper.showMessage(context, model.message!);
-      } else {
-        setState(ViewState.idle);
-        // DialogHelper.showMessage(context, model.message!);
-      }
-    } on FetchDataException catch (e) {
-      setState(ViewState.idle);
-      DialogHelper.showMessage(context, e.toString());
-    } on SocketException catch (e) {
-      setState(ViewState.idle);
-      DialogHelper.showMessage(context, "internet_connection".tr());
-    }
-  }
-
-  timeWidget(BuildContext context) {
-    return showTimePicker(
+  showTimePickerWidget(BuildContext context) async {
+    TimeOfDay? pickedTime = await showTimePicker(
       context: context,
       initialTime: initialTime,
       builder: (context, child) {
@@ -226,70 +238,29 @@ class DashboardProvider extends BaseProvider {
               ),
             ),
           ),
-          child: child!,
+          child: MediaQuery(
+            data: MediaQuery.of(context).copyWith(alwaysUse24HourFormat: false),
+            child: child!,
+          ),
         );
       },
     );
-  }
-
-  timeToSend(context) async {
-    selectedTime = await timeWidget(context);
-    hours = (selectedTime!.hour < 12
-        ? selectedTime!.hour
-        : (selectedTime!.hour - 12));
-    hourOut = (hours! < 10 ? "0${hours}" : hours).toString();
-    min = selectedTime!.minute < 10
-        ? "0${selectedTime!.minute}"
-        : selectedTime!.minute.toString();
-    time =
-        "${selectedTime!.hour < 10 ? "0${selectedTime!.hour}" : selectedTime!.hour}:${min}:00";
-    selectedCheckOutTime =
-        "${hourOut}:${min} " + GetTime.hoursAM(selectedTime!);
-    // getCheckOutTime(selectedCheckOutTime!);
-    getCheckOutTimeWithCurrentDate(time!);
-    /*DateTime checkInDate = DateFormat("yyyy-MM-dd hh:mm:ss")
-        .parse(checkInDetail!.checkInTime!.toString());*/
-    DateTime checkOutDate =
-        DateFormat("yyyy-MM-dd hh:mm:ss").parse(checkOutTime!);
-    if (true /*checkOutDate.isAfter(checkInDate)*/) {
-      print("DT1 is after DT2");
-      Navigator.pop(context);
-      checkOutApi(context).then((value) {
-        getDashBoardData(context);
-      });
-      getCheckOutSelectedTime();
-      notifyListeners();
-      print(selectedTime);
-    } else {
-      DialogHelper.showMessage(context, "Checkout time Cannot before checkIn");
+    if (pickedTime != null) {
+      var checkInDate = DateFunctions.getDateTimeFromString(
+          crewResponse!.userCheckin!.checkInTime!);
+      var pickedTimeString = DateFunctions.getCurrentDateMonthYear() +
+          " " +
+          pickedTime.format(context);
+      var checkOutDate = DateFunctions.getDateTimeFromString(pickedTimeString);
+      if (checkOutDate.isBefore(checkInDate)) {
+        DialogHelper.showMessage(
+            context, "Checkout Time should be greater than check in time");
+      } else {
+        initialTime = pickedTime;
+        selectedCheckOutTime =
+            DateFunctions.twentyFourHourTO12Hour(initialTime.format(context));
+      }
     }
-  }
-
-  getCheckOutSelectedTime() {
-    selectedCheckOutTime = selectedCheckOutTime == null
-        ? ("${initialTime.hour < 12 ? initialTime.hour : (initialTime.hour - 12)}:${initialTime.minute} " +
-            GetTime.hoursAM(initialTime))
-        : ("$hours:$min " + GetTime.hoursAM(selectedTime!));
-    notifyListeners();
-  }
-
-  nextWeekDates() {
-    initialDay1 = initialDay1.add(const Duration(days: 7));
-    initialDay2 = initialDay2.add(const Duration(days: 7));
-    firstDate = GetTime.formattedDate(initialDay1.add(const Duration(days: 7)));
-    secondDate =
-        GetTime.formattedDate(initialDay2.add(const Duration(days: 7)));
-    notifyListeners();
-  }
-
-  previousWeekDates() {
-    initialDay1 = initialDay1.subtract(const Duration(days: 7));
-    initialDay2 = initialDay2.subtract(const Duration(days: 7));
-    firstDate =
-        GetTime.formattedDate(initialDay1.subtract(const Duration(days: 7)));
-    secondDate =
-        GetTime.formattedDate(initialDay2.subtract(const Duration(days: 7)));
-    notifyListeners();
   }
 
   getInitials({required String string, required int limitTo}) {
@@ -304,5 +275,144 @@ class DashboardProvider extends BaseProvider {
   void updateSelectedTabIndex(int index) {
     selectedTabIndex = index;
     customNotify();
+  }
+
+  void calculateCheckInTime() {
+    var time;
+    if (crewResponse!.userCheckin!.interuption!.length > 0) {
+      time = crewResponse!
+          .userCheckin!
+          .interuption![crewResponse!.userCheckin!.interuption!.length - 1]
+          .endTime!;
+    } else {
+      time = crewResponse!.userCheckin!.checkInTime;
+    }
+    var checkIntDateTime = DateFunctions.getDateTimeFromString(time);
+    var timeInMinutes = DateTime.now().difference(checkIntDateTime).inMinutes;
+    timeFromLastCheckedIn = DateFunctions.durationToString(timeInMinutes);
+    customNotify();
+  }
+
+  void calculateTotalHourTime() {
+    var checkIntDateTime = DateFunctions.getDateTimeFromString(
+        crewResponse!.userCheckin!.checkInTime!);
+    var timeInMinutes = DateTime.now().difference(checkIntDateTime).inMinutes;
+    totalSpendTime = DateFunctions.durationToString(timeInMinutes);
+    customNotify();
+  }
+
+  void startTimer(Timer? timer) {
+    if (crewResponse!.userCheckin != null) {
+      timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
+        calculateCheckInTime();
+        calculateTotalHourTime();
+      });
+    }
+  }
+
+  void nextWeekDays(int numberOfDays) {
+    if (selectedEndDate == null) {
+      selectedStartDate = DateTime.now().subtract(Duration(days: numberOfDays));
+      selectedEndDate = DateTime.now();
+    } else {
+      selectedStartDate = selectedEndDate!.add(const Duration(days: 1));
+      var newDate = selectedEndDate!.add(Duration(days: numberOfDays));
+      if (newDate.isAfter(DateTime.now())) {
+        selectedEndDate = DateTime.now();
+      } else {
+        selectedEndDate = newDate;
+      }
+    }
+    startDate = DateFormat("yyyy-MM-dd").format(selectedStartDate!);
+    endDate = DateFormat("yyyy-MM-dd").format(selectedEndDate!);
+
+    weekFirstDate = DateFunctions.getMonthDay(selectedStartDate!);
+    weekEndDate = DateFunctions.getMonthDay(selectedEndDate!);
+    customNotify();
+  }
+
+  void previousWeekDays(int numberOfDays) {
+    selectedEndDate = selectedStartDate!.subtract(const Duration(days: 1));
+    var newDate = selectedEndDate!.subtract(Duration(days: numberOfDays));
+    selectedStartDate = newDate;
+
+    startDate = DateFormat("yyyy-MM-dd").format(selectedStartDate!);
+    endDate = DateFormat("yyyy-MM-dd").format(selectedEndDate!);
+
+    weekFirstDate = DateFunctions.getMonthDay(selectedStartDate!);
+    weekEndDate = DateFunctions.getMonthDay(selectedEndDate!);
+    customNotify();
+  }
+
+  List<ProjectWorkingHourDetail> getTimeForStepper(
+      CheckInProjectDetail detail) {
+    List<Interruption> timeString = [];
+    List<ProjectWorkingHourDetail> projectWorkingHourList = [];
+    for (int i = 0; i < detail.allCheckinBreak!.length; i++) {
+      var breakStartTimeString = DateFunctions.getCurrentDateMonthYear() +
+          " " +
+          detail.allCheckinBreak![i].startTime!;
+      var breakEndTimeString = DateFunctions.getCurrentDateMonthYear() +
+          " " +
+          DateFunctions.stringToDateAddMintues(
+              detail.allCheckinBreak![i].startTime!, 15);
+      var interruption = Interruption();
+      interruption.startTime = breakStartTimeString;
+      interruption.endTime = breakEndTimeString;
+      interruption.selfMadeInterruption = true;
+      timeString.add(interruption);
+    }
+    if (detail.interuption!.length > 0) {
+      timeString.addAll(detail.interuption!);
+    }
+    if (timeString.length > 0) {
+      var checkInDate = DateFunctions.getDateTimeFromString(detail.checkInTime!);
+      var checkInDateString = detail.checkInTime!;
+      for (var value in timeString) {
+        var breakStartTime = DateFunctions.getDateTimeFromString(value.startTime!);
+        var breakEndTime = DateFunctions.getDateTimeFromString(value.endTime!);
+        var workingMinutesDifference = breakStartTime.difference(checkInDate).inMinutes;
+        projectWorkingHourList.add(ProjectWorkingHourDetail(
+            startTime: checkInDateString,
+            endTime: value.startTime!,
+            timeInterval: workingMinutesDifference,
+            type: 1));
+
+        var breakMinutesDifference = breakEndTime.difference(breakStartTime).inMinutes;
+        if (value.selfMadeInterruption!) {
+          projectWorkingHourList.add(ProjectWorkingHourDetail(
+              startTime: value.startTime!,
+              endTime: value.endTime!,
+              timeInterval: breakMinutesDifference,
+              type: 2));
+        } else {
+          projectWorkingHourList.add(ProjectWorkingHourDetail(
+              startTime: value.startTime!,
+              endTime: value.endTime!,
+              timeInterval: breakMinutesDifference,
+              type: 3));
+        }
+        checkInDate = breakEndTime;
+        checkInDateString=value.endTime!;
+      }
+
+      var checkOutDate = DateFunctions.getDateTimeFromString(detail.checkOutTime!);
+      var checkOutDateString = detail.checkOutTime!;
+      var workingMinutesDifference = checkInDate.difference(checkOutDate).inMinutes;
+      projectWorkingHourList.add(ProjectWorkingHourDetail(
+          startTime: checkInDateString,
+          endTime: checkOutDateString,
+          timeInterval: workingMinutesDifference,
+          type: 1));
+    } else {
+      var checkInString = detail.checkInTime!;
+      var checkOutString = detail.checkOutTime!;
+      projectWorkingHourList.add(ProjectWorkingHourDetail(
+          startTime: checkInString,
+          endTime: checkOutString,
+          timeInterval: 1,
+          type: 1));
+    }
+    return projectWorkingHourList;
   }
 }
