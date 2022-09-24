@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:beehive/model/project_detail_response.dart';
 import 'package:beehive/model/project_details_response_manager.dart';
 import 'package:beehive/provider/base_provider.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -12,7 +13,7 @@ import '../enum/enum.dart';
 import '../helper/dialog_helper.dart';
 import '../services/fetch_data_expection.dart';
 
-class ProjectDetailsManagerProvider extends BaseProvider{
+class ProjectDetailsManagerProvider extends BaseProvider {
   Completer<GoogleMapController> controller = Completer();
   bool checkedInNoProjects = false;
   TabController? tabController;
@@ -22,7 +23,7 @@ class ProjectDetailsManagerProvider extends BaseProvider{
   double long = 0.0;
   BitmapDescriptor? pinLocationIconUser;
 
-
+  ProjectDetailResponseManager? projectDetailResponse;
 
   void setCustomMapPinUser() async {
     pinLocationIconUser = await BitmapDescriptor.fromAssetImage(
@@ -34,33 +35,25 @@ class ProjectDetailsManagerProvider extends BaseProvider{
       bearing: 192.8334901395799,
       target: LatLng(30.7333, 76.7794),
       tilt: 20,
-      zoom:10);
+      zoom: 10);
 
-
-
-
-
-  onMapCreated(GoogleMapController controller) {
-    setState(ViewState.busy);
+  onMapCreated() {
     markers.add(Marker(
       markerId: const MarkerId("ID1"),
-      position: LatLng(projectResponse!.data!.latitude!, projectResponse!.data!.longitude!),
+      position: const LatLng(30.7046, 76.7179),
       icon: pinLocationIconUser!,
       flat: true,
       anchor: const Offset(0.5, 0.5),
     ));
-    setState(ViewState.idle);
+    customNotify();
   }
 
-
-
-  ProjectDetailsResponseManager? projectResponse;
-  Future getCreatedProjectDetails(BuildContext context,String projectId) async {
+  Future getProjectDetail(BuildContext context, String projectId) async {
     setState(ViewState.busy);
     try {
-      var model = await api.getCreatedProjectDetails(context,projectId);
+      var model = await api.getProjectDetail(context, projectId);
       if (model.success == true) {
-        projectResponse = model;
+        projectDetailResponse = model;
         setState(ViewState.idle);
       } else {
         setState(ViewState.idle);
@@ -73,10 +66,4 @@ class ProjectDetailsManagerProvider extends BaseProvider{
       DialogHelper.showMessage(context, "internet_connection".tr());
     }
   }
-
-
-
-
-
-
 }

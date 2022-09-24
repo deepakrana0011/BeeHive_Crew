@@ -14,6 +14,7 @@ import 'package:beehive/model/dash_board_page_response_crew.dart';
 import 'package:beehive/model/project_working_hour_detail.dart';
 import 'package:beehive/model/weekely_data_model.dart';
 import 'package:beehive/provider/base_provider.dart';
+import 'package:beehive/provider/bottom_bar_provider.dart';
 import 'package:beehive/widget/get_time.dart';
 import 'package:collection/collection.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -73,16 +74,23 @@ class DashboardProvider extends BaseProvider {
 
   TimeOfDay initialTime = TimeOfDay.now();
   String? selectedCheckOutTime;
-  List<WeekelyDataModel> weeklyData = [];
+  List<WeekelyDataModelCrew> weeklyData = [];
 
-  Future getDashBoardData(BuildContext context
-      //BottomBarManagerProvider? managerProvider,
-      ) async {
+  Future getDashBoardData(
+    BuildContext context,
+    BottomBarProvider? managerProvider,
+  ) async {
     setState(ViewState.busy);
     try {
       var model = await api.dashBoardApi(context, startDate!, endDate!);
       if (model.success ?? false) {
         crewResponse = model;
+        managerProvider!.updateDrawerData(
+          model.crew?.name ?? '',
+          model.crew?.profileImage ?? '',
+        );
+        //model.crew?.companyLogo ?? ''//
+
         getToTalHours();
         if (selectedTabIndex != 0) {
           groupDataByDate();
@@ -102,12 +110,12 @@ class DashboardProvider extends BaseProvider {
 
   void getToTalHours() {
     var totalMinutes = 0;
-    crewResponse!.allCheckin!.forEach((element) {
+    for (var element in crewResponse!.allCheckin!) {
       var startTime = DateFunctions.getDateTimeFromString(element.checkInTime!);
       var endTime = DateFunctions.getDateTimeFromString(element.checkOutTime!);
       var minutes = endTime.difference(startTime).inMinutes;
       totalMinutes = totalMinutes + minutes;
-    });
+    }
     totalHours = DateFunctions.durationToString(totalMinutes);
     customNotify();
   }
@@ -119,9 +127,9 @@ class DashboardProvider extends BaseProvider {
           crewResponse!.allCheckin![i].checkInTime!);
       var dateTimeString = DateFunctions.dateFormatWithDayName(selectedDate);
       if (weeklyData.isEmpty) {
-        List<CheckInProjectDetail> projectDetailList = [];
+        List<CheckInProjectDetailCrew> projectDetailList = [];
         projectDetailList.add(crewResponse!.allCheckin![i]);
-        var weekelyDataObject = WeekelyDataModel();
+        var weekelyDataObject = WeekelyDataModelCrew();
         weekelyDataObject.date = dateTimeString;
         weekelyDataObject.checkInDataList = projectDetailList;
         weeklyData.add(weekelyDataObject);
@@ -129,9 +137,9 @@ class DashboardProvider extends BaseProvider {
         var index =
             weeklyData.indexWhere((element) => element.date == dateTimeString);
         if (index == -1) {
-          List<CheckInProjectDetail> projectDetailList = [];
+          List<CheckInProjectDetailCrew> projectDetailList = [];
           projectDetailList.add(crewResponse!.allCheckin![i]);
-          var weekelyDataObject = WeekelyDataModel();
+          var weekelyDataObject = WeekelyDataModelCrew();
           weekelyDataObject.date = dateTimeString;
           weekelyDataObject.checkInDataList = projectDetailList;
           weeklyData.add(weekelyDataObject);
@@ -142,19 +150,8 @@ class DashboardProvider extends BaseProvider {
     }
   }
 
-  /*List<CheckInProjectDetail> checkInDetail = [];
-  var selectedDate = DateFunctions.getDateTimeFromString(element.checkInTime!);
-  if (firstSelectedDate != null && firstSelectedDate == selectedDate) {
-  var dayNameDate = DateFunctions.dateFormatWithDayName(selectedDate);
-  checkInDetail.add(element);
-  //weeklyData.add({""})
-  } else {
-  var dayNameDate = DateFunctions.dateFormatWithDayName(selectedDate);
-  weeklyData.add({""})
-  }*/
-
   Future checkInApi(
-    context,
+    context, BottomBarProvider bottomBarProvider,
   ) async {
     setState(ViewState.busy);
     try {
@@ -162,7 +159,7 @@ class DashboardProvider extends BaseProvider {
       var model = await api.checkInApi(context, assignProjectId, checkInTime);
       assignProjectId = "";
       if (model.success == true) {
-        getDashBoardData(context);
+        getDashBoardData(context,bottomBarProvider);
       } else {
         setState(ViewState.idle);
         DialogHelper.showMessage(context, model.message!);
@@ -177,7 +174,7 @@ class DashboardProvider extends BaseProvider {
   }
 
   Future checkOutApi(
-    context,
+    context, BottomBarProvider bottomBarProvider,
   ) async {
     setState(ViewState.busy);
     try {
@@ -188,7 +185,7 @@ class DashboardProvider extends BaseProvider {
           context, crewResponse!.userCheckin!.id!, checkInTimeFinal);
       if (model.success == true) {
         setState(ViewState.idle);
-        getDashBoardData(context);
+        getDashBoardData(context,bottomBarProvider);
       }
     } on FetchDataException catch (e) {
       setState(ViewState.idle);
@@ -304,8 +301,12 @@ class DashboardProvider extends BaseProvider {
   void startTimer(Timer? timer) {
     if (crewResponse!.userCheckin != null) {
       timer = Timer.periodic(const Duration(seconds: 1), (Timer t) {
-        calculateCheckInTime();
-        calculateTotalHourTime();
+        if (crewResponse!.userCheckin == null) {
+          timer!.cancel();
+        } else {
+          calculateCheckInTime();
+          calculateTotalHourTime();
+        }
       });
     }
   }
@@ -345,60 +346,91 @@ class DashboardProvider extends BaseProvider {
   }
 
   List<ProjectWorkingHourDetail> getTimeForStepper(
-      CheckInProjectDetail detail) {
+      CheckInProjectDetailCrew detail) {
     List<Interruption> timeString = [];
     List<ProjectWorkingHourDetail> projectWorkingHourList = [];
     for (int i = 0; i < detail.allCheckinBreak!.length; i++) {
-      var breakStartTimeString = DateFunctions.getCurrentDateMonthYear() +
-          " " +
-          detail.allCheckinBreak![i].startTime!;
-      var breakEndTimeString = DateFunctions.getCurrentDateMonthYear() +
-          " " +
-          DateFunctions.stringToDateAddMintues(
-              detail.allCheckinBreak![i].startTime!, 15);
-      var interruption = Interruption();
-      interruption.startTime = breakStartTimeString;
-      interruption.endTime = breakEndTimeString;
-      interruption.selfMadeInterruption = true;
-      timeString.add(interruption);
+      if (detail.allCheckinBreak![i].interval != "Any") {
+        var breakStartTimeString = detail.checkInTime!.substring(0, 10) +
+            " " +
+            detail.allCheckinBreak![i].startTime!
+                .replaceAll("PM", "")
+                .replaceAll("AM", "");
+        var breakEndTimeString = detail.checkInTime!.substring(0, 10) +
+            " " +
+            DateFunctions.stringToDateAddMintues(
+                detail.allCheckinBreak![i].startTime!,
+                int.parse(
+                    detail.allCheckinBreak![i].interval!.substring(0, 2)));
+
+        var breakStartTimeDate =
+            DateFunctions.getDateTimeFromString(breakStartTimeString);
+        var checkInDate =
+            DateFunctions.getDateTimeFromString(detail.checkInTime!);
+        var checkOutDate =
+            DateFunctions.getDateTimeFromString(detail.checkOutTime!);
+        if (breakStartTimeDate.isAfter(checkInDate) &&
+            breakStartTimeDate.isBefore(checkOutDate)) {
+          var interruption = Interruption();
+          interruption.startTime = breakStartTimeString;
+          interruption.endTime = breakEndTimeString;
+          interruption.selfMadeInterruption = true;
+          timeString.add(interruption);
+        }
+      }
     }
     if (detail.interuption!.length > 0) {
       timeString.addAll(detail.interuption!);
     }
+
+    timeString.sort((a, b) {
+      var aValue = DateFunctions.getDateTimeFromString(a.startTime!);
+      var bValue = DateFunctions.getDateTimeFromString(b.startTime!);
+      return aValue.compareTo(bValue);
+    });
+
+    print("data sorted ${timeString}");
+
     if (timeString.length > 0) {
-      var checkInDate = DateFunctions.getDateTimeFromString(detail.checkInTime!);
+      var checkInDate =
+          DateFunctions.getDateTimeFromString(detail.checkInTime!);
       var checkInDateString = detail.checkInTime!;
       for (var value in timeString) {
-        var breakStartTime = DateFunctions.getDateTimeFromString(value.startTime!);
+        var breakStartTime =
+            DateFunctions.getDateTimeFromString(value.startTime!);
         var breakEndTime = DateFunctions.getDateTimeFromString(value.endTime!);
-        var workingMinutesDifference = breakStartTime.difference(checkInDate).inMinutes;
+        var workingMinutesDifference =
+            breakStartTime.difference(checkInDate).inMinutes;
         projectWorkingHourList.add(ProjectWorkingHourDetail(
             startTime: checkInDateString,
             endTime: value.startTime!,
-            timeInterval: workingMinutesDifference,
+            timeInterval: workingMinutesDifference.abs(),
             type: 1));
 
-        var breakMinutesDifference = breakEndTime.difference(breakStartTime).inMinutes;
+        var breakMinutesDifference =
+            breakEndTime.difference(breakStartTime).inMinutes;
         if (value.selfMadeInterruption!) {
           projectWorkingHourList.add(ProjectWorkingHourDetail(
               startTime: value.startTime!,
               endTime: value.endTime!,
-              timeInterval: breakMinutesDifference,
+              timeInterval: breakMinutesDifference.abs(),
               type: 2));
         } else {
           projectWorkingHourList.add(ProjectWorkingHourDetail(
               startTime: value.startTime!,
               endTime: value.endTime!,
-              timeInterval: breakMinutesDifference,
+              timeInterval: breakMinutesDifference.abs(),
               type: 3));
         }
         checkInDate = breakEndTime;
-        checkInDateString=value.endTime!;
+        checkInDateString = value.endTime!;
       }
 
-      var checkOutDate = DateFunctions.getDateTimeFromString(detail.checkOutTime!);
+      var checkOutDate =
+          DateFunctions.getDateTimeFromString(detail.checkOutTime!);
       var checkOutDateString = detail.checkOutTime!;
-      var workingMinutesDifference = checkInDate.difference(checkOutDate).inMinutes;
+      var workingMinutesDifference =
+          checkInDate.difference(checkOutDate).inMinutes;
       projectWorkingHourList.add(ProjectWorkingHourDetail(
           startTime: checkInDateString,
           endTime: checkOutDateString,

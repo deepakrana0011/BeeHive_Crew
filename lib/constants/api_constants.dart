@@ -11,6 +11,8 @@ class ApiConstantsManager {
       "verifyOtpForgotPhoneManager";
   static const String verifyOtpEmailManager = "verifyOtpEmailManager";
   static const String sendOtpForgotEmailManager = "sendOtpForgotEmailManager";
+  static const String allProjectsManager = "allProjects";
+  static const String singleProjectDetail = "singleProjectDetails/6325e87c29e33aada1968d49";
 
   static const String MANAGER_LOGIN = "managerlogin";
   static const String CREATE_PROJECT = "newproject";
@@ -65,4 +67,5 @@ class ApiConstantsCrew {
 
 
   static const String getAllCrewProjects = "crewActiveProjects";
+  static const String getAllCheckoutCrewProjects = "crewProjectsWithHours";
 }

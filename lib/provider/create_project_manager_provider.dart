@@ -35,6 +35,7 @@ class CreateProjectManagerProvider extends BaseProvider {
   var value;
   String pickUpLocation = "";
   double locationRadius = 0;
+  bool isCurrentAddress = true;
 
   Future getLngLt(context) async {
     setState(ViewState.busy);
@@ -43,6 +44,11 @@ class CreateProjectManagerProvider extends BaseProvider {
     longitude = value.longitude;
     getPickUpAddress(latitude, longitude);
     setState(ViewState.idle);
+  }
+
+  void updateCurrentAddressValue(bool value) {
+    isCurrentAddress = value;
+    customNotify();
   }
 
   void setCustomMapPinUser() async {

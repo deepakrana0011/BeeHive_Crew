@@ -8,7 +8,7 @@ import 'package:beehive/provider/dashboard_provider.dart';
 import 'package:beehive/view/base_view.dart';
 import 'package:beehive/view/dashboard/dashboard.dart';
 import 'package:beehive/view/profile/profile.dart';
-import 'package:beehive/view/projects/projects.dart';
+import 'package:beehive/view/projects/projects_crew.dart';
 import 'package:beehive/view/timesheets/timesheets_tab_bar.dart';
 import 'package:beehive/widget/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -30,7 +30,7 @@ class BottomBar extends StatefulWidget {
 class _BottomBarState extends State<BottomBar> {
   static final List<Widget> _widgetOptions = <Widget>[
     DashBoardPage(),
-    const Projects(),
+    const ProjectsCrew(),
     const TimeSheetsTabBar(),
     const Profile(),
   ];
@@ -257,8 +257,7 @@ Widget drawer(BuildContext context,BottomBarProvider provider) {
                             children: [
                               Padding(
                                 padding: EdgeInsets.only(top: DimensionConstants.d56.h),
-                                child:
-                                const ImageView(path: ImageConstants.drawerProfile),
+                                child: ImageView(path: ImageConstants.drawerProfile),
                               ),
                               // SizedBox(height: DimensionConstants.d19.h),
                               Padding(
@@ -271,7 +270,7 @@ Widget drawer(BuildContext context,BottomBarProvider provider) {
                                         DimensionConstants.d20.sp, TextAlign.center,
                                         color: ColorConstants.colorWhite),
                                     // SizedBox(height: DimensionConstants.d3.h),
-                                    Text(SharedPreference.prefs!.getString(SharedPreference.USER_NAME) == null? "":SharedPreference.prefs!.getString(SharedPreference.USER_NAME)!).boldText(context,
+                                    Text(provider.crewName??"").boldText(context,
                                         DimensionConstants.d30.sp, TextAlign.center,
                                         color: ColorConstants.colorWhite),
                                   ],

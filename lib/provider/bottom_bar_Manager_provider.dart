@@ -28,6 +28,9 @@ class BottomBarManagerProvider extends BaseProvider {
 
   String get companyLogo => _companyLogo ?? "";
 
+
+  String? projectId;
+
   void updateDrawerData(String name, String profilePic, String companyLogo) {
     _companyLogo = companyLogo;
     _managerProfilePic = profilePic;
@@ -35,11 +38,11 @@ class BottomBarManagerProvider extends BaseProvider {
     customNotify();
   }
 
-  updateNavigationValue(int newValue) {
+  updateNavigationValue(int newValue,{String? projectId}) {
     fromBottomNav = newValue;
+    this.projectId=projectId;
     notifyListeners();
   }
-
 
   void onItemTapped(int index) {
     selectedIndex = index;
@@ -62,9 +65,7 @@ class BottomBarManagerProvider extends BaseProvider {
     const ProfilePageManager(),
   ];
 
-  pageView(
-    int index,
-  ) {
+  pageView(int index) {
     if (index == 0) {
       return const DashBoardPageManager();
     } else if (index == 1) {
@@ -80,8 +81,8 @@ class BottomBarManagerProvider extends BaseProvider {
             archivedOrProject: false, fromProject: true);
       } else if (fromBottomNav == 5) {
         return ProjectDetailsPageManager(
-          createProject: true,
-          projectId: '',
+          createProject: false,
+          projectId: projectId!,
         );
       }
     } else if (index == 2) {

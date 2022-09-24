@@ -14,8 +14,8 @@ class CrewDashboardResponse {
   bool? success;
   CrewDetail? crew;
   int? projects;
-  List<CheckInProjectDetail>? allCheckin;
-  CheckInProjectDetail? userCheckin;
+  List<CheckInProjectDetailCrew>? allCheckin;
+  CheckInProjectDetailCrew? userCheckin;
 
   factory CrewDashboardResponse.fromJson(Map<String, dynamic> json) =>
       CrewDashboardResponse(
@@ -23,17 +23,17 @@ class CrewDashboardResponse {
         crew: CrewDetail.fromJson(json["crew"]),
         projects: json["projects"],
         allCheckin: json["allCheckin"] != null
-            ? List<CheckInProjectDetail>.from(
-                json["allCheckin"].map((x) => CheckInProjectDetail.fromJson(x)))
+            ? List<CheckInProjectDetailCrew>.from(json["allCheckin"]
+                .map((x) => CheckInProjectDetailCrew.fromJson(x)))
             : [],
         userCheckin: json["userCheckin"] != null
-            ? CheckInProjectDetail.fromJson(json["userCheckin"])
+            ? CheckInProjectDetailCrew.fromJson(json["userCheckin"])
             : null,
       );
 }
 
-class CheckInProjectDetail {
-  CheckInProjectDetail({
+class CheckInProjectDetailCrew {
+  CheckInProjectDetailCrew({
     this.id,
     this.crewId,
     this.assignProjectId,
@@ -58,11 +58,10 @@ class CheckInProjectDetail {
   DateTime? createdAt;
   int? v;
   String? checkOutTime;
-  Color color= Colors.primaries[Random().nextInt(Colors.primaries.length)];
+  Color color = Colors.primaries[Random().nextInt(Colors.primaries.length)];
 
-
-  factory CheckInProjectDetail.fromJson(Map<String, dynamic> json) =>
-      CheckInProjectDetail(
+  factory CheckInProjectDetailCrew.fromJson(Map<String, dynamic> json) =>
+      CheckInProjectDetailCrew(
         id: json["_id"],
         crewId: json["crewId"],
         assignProjectId:
@@ -79,7 +78,9 @@ class CheckInProjectDetail {
             : [],
         createdAt: DateTime.parse(json["createdAt"]),
         v: json["__v"],
-        checkOutTime: "2022-09-22 19:34",
+        checkOutTime: json["checkInTime"].toString().trim().isNotEmpty
+            ? json["checkInTime"]
+            : null,
       );
 }
 
@@ -111,8 +112,8 @@ class Interruption {
   String? startTime;
   String? endTime;
   String? id;
-  bool? selfMadeInterruption=false;
-  int ? type;  //  1 actual working hour, 2- interrption 3 break
+  bool? selfMadeInterruption = false;
+  int? type; //  1 actual working hour, 2- interrption 3 break
 
   factory Interruption.fromJson(Map<String, dynamic> json) => Interruption(
         startTime: json["startTime"],
@@ -126,6 +127,7 @@ class CrewDetail {
     this.id,
     this.email,
     this.name,
+    this.profileImage,
     this.password,
     this.status,
     this.createdAt,
@@ -136,6 +138,7 @@ class CrewDetail {
   String? email;
   String? name;
   String? password;
+  String? profileImage;
   int? status;
   DateTime? createdAt;
   int? v;
@@ -144,6 +147,7 @@ class CrewDetail {
         id: json["_id"],
         email: json["email"],
         name: json["name"],
+        profileImage: json["profileImage"] ?? "",
         password: json["password"],
         status: json["status"],
         createdAt: DateTime.parse(json["createdAt"]),

@@ -45,8 +45,16 @@ class _DashBoardPageState extends State<DashBoardPage>
     with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   DashboardProvider provider = locator<DashboardProvider>();
+
+  BottomBarProvider? bottomBarProvider;
   TabController? controller;
   Timer? timer;
+
+  @override
+  void initState() {
+    bottomBarProvider = Provider.of<BottomBarProvider>(context, listen: false);
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -62,7 +70,7 @@ class _DashBoardPageState extends State<DashBoardPage>
       this.provider = provider;
       provider.startDate = DateFunctions.getCurrentDateMonthYear();
       provider.endDate = DateFunctions.getCurrentDateMonthYear();
-      await provider.getDashBoardData(context);
+      await provider.getDashBoardData(context, bottomBarProvider);
       provider.startTimer(timer);
     }, builder: (context, provider, _) {
       return Scaffold(
@@ -240,10 +248,12 @@ class _DashBoardPageState extends State<DashBoardPage>
           children: [
             const ImageView(path: ImageConstants.locationIcon),
             SizedBox(width: DimensionConstants.d11.w),
-            Text(txt).boldText(
-                context, DimensionConstants.d16.sp, TextAlign.left,
-                color: ColorConstants.colorWhite),
-            Expanded(child: Container()),
+            Expanded(
+                child: Text(txt).boldText(
+                    context, DimensionConstants.d16.sp, TextAlign.left,
+                    color: ColorConstants.colorWhite,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis)),
             forwardIcon
                 ? ImageView(
                     path: ImageConstants.forwardArrowIcon,
@@ -278,67 +288,6 @@ class _DashBoardPageState extends State<DashBoardPage>
       ),
     );
   }
-
-/*  /// Widget after checkOut
-  Widget projectsCheckInContainer(String location) {
-    return Container(
-      width: double.infinity,
-      color: ColorConstants.deepBlue,
-      height: DimensionConstants.d194.h,
-      padding: EdgeInsets.fromLTRB(
-          DimensionConstants.d20.w,
-          DimensionConstants.d13.w,
-          DimensionConstants.d20.w,
-          DimensionConstants.d17.h),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  const ImageView(path: ImageConstants.checkoutIcon),
-                  SizedBox(width: DimensionConstants.d12.w),
-                  Text("checked_out".tr()).regularText(
-                      context, DimensionConstants.d16.sp, TextAlign.left,
-                      color: ColorConstants.colorWhite),
-                ],
-              ),
-              checkInCheckOutBtn(
-                "check_in".tr(),
-                ColorConstants.colorWhite,
-                onBtnTap: () {
-                  provider.isCheckedIn = true;
-                  provider.notifyListeners();
-                },
-              )
-            ],
-          ),
-          SizedBox(height: DimensionConstants.d10.h),
-          noProjectCheckedInLocationContainer(context, location,
-              forwardIcon: true),
-          SizedBox(height: DimensionConstants.d16.h),
-          Padding(
-            padding: EdgeInsets.fromLTRB(
-                DimensionConstants.d20.w, 0.0, DimensionConstants.d20.w, 0.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                GestureDetector(
-                    onTap: () {
-                      // stillCheckedInAlert(SharedPreference.prefs!.getString(SharedPreference.Crew_NAME)!,provider.minuteCount,location);
-                    },
-                    child: lastCheckInTotalHoursColumn(
-                        "12:50", "PM", "last_check_in".tr())),
-                lastCheckInTotalHoursColumn("08:23", "HR", "total_hours".tr()),
-              ],
-            ),
-          )
-        ],
-      ),
-    );
-  }*/
 
   Widget projectsCheckOutContainer(
       String location, DashboardProvider provider) {
@@ -596,7 +545,8 @@ class _DashBoardPageState extends State<DashBoardPage>
                           context, "Please Select Project");
                     } else {
                       Navigator.of(context).pop();
-                      provider.checkInApi(_scaffoldKey.currentContext);
+                      provider.checkInApi(
+                          _scaffoldKey.currentContext, bottomBarProvider!);
                     }
                   })
                 ],
@@ -608,7 +558,7 @@ class _DashBoardPageState extends State<DashBoardPage>
     );
   }
 
-  stillCheckedInAlert(String nameOfUser, String projectName) {
+  stillCheckedInAlert(String nameOfUser, String address) {
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -653,8 +603,11 @@ class _DashBoardPageState extends State<DashBoardPage>
                         children: [
                           const ImageView(path: ImageConstants.locationIcon),
                           SizedBox(width: DimensionConstants.d8.w),
-                          Text(projectName).semiBoldText(context,
-                              DimensionConstants.d14.sp, TextAlign.left),
+                          Expanded(
+                              child: Text(address).semiBoldText(context,
+                                  DimensionConstants.d14.sp, TextAlign.left,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis)),
                         ],
                       ),
                       SizedBox(height: DimensionConstants.d39.h),
@@ -670,7 +623,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                                     context, "no_check_out".tr(), height: 50,
                                     onBtnTap: () {
                                   Navigator.of(context).pop();
-                                  whenDidYouCheckOutAlert(projectName);
+                                  whenDidYouCheckOutAlert(address);
                                 })),
                             SizedBox(width: DimensionConstants.d9.w),
                             SizedBox(
@@ -781,15 +734,18 @@ class _DashBoardPageState extends State<DashBoardPage>
                           children: [
                             const ImageView(path: ImageConstants.locationIcon),
                             SizedBox(width: DimensionConstants.d8.w),
-                            Text(projectName).semiBoldText(context,
-                                DimensionConstants.d14.sp, TextAlign.left),
+                            Expanded(
+                                child: Text(projectName).semiBoldText(context,
+                                    DimensionConstants.d14.sp, TextAlign.left,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis)),
                           ],
                         ),
                         SizedBox(height: DimensionConstants.d22.h),
                         CommonWidgets.commonButton(context, "check_out".tr(),
                             height: 50, onBtnTap: () {
                           Navigator.of(context).pop();
-                          provider.checkOutApi(context);
+                          provider.checkOutApi(context, bottomBarProvider!);
                         })
                       ],
                     ),
@@ -841,7 +797,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                             DateFunctions.getCurrentDateMonthYear();
                         provider.selectedStartDate = null;
                         provider.selectedEndDate = null;
-                        provider.getDashBoardData(context);
+                        provider.getDashBoardData(context, bottomBarProvider);
                         break;
                       }
                     case 1:
@@ -849,7 +805,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                         provider.selectedStartDate = null;
                         provider.selectedEndDate = null;
                         provider.nextWeekDays(7);
-                        provider.getDashBoardData(context);
+                        provider.getDashBoardData(context, bottomBarProvider);
                         break;
                       }
                     case 2:
@@ -857,7 +813,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                         provider.selectedStartDate = null;
                         provider.selectedEndDate = null;
                         provider.nextWeekDays(14);
-                        provider.getDashBoardData(context);
+                        provider.getDashBoardData(context, bottomBarProvider);
                         break;
                       }
                   }
@@ -1085,7 +1041,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                         backNextBtn(ImageConstants.backIconIos, () {
                           provider.previousWeekDays(
                               provider.selectedTabIndex == 1 ? 7 : 14);
-                          provider.getDashBoardData(context);
+                          provider.getDashBoardData(context, bottomBarProvider);
                         }),
                         Text("${DateFunctions.capitalize(provider.weekFirstDate ?? "")} - ${DateFunctions.capitalize(provider.weekEndDate ?? "")}")
                             .boldText(context, DimensionConstants.d16.sp,
@@ -1096,7 +1052,8 @@ class _DashBoardPageState extends State<DashBoardPage>
                             ? backNextBtn(ImageConstants.nextIconIos, () {
                                 provider.nextWeekDays(
                                     provider.selectedTabIndex == 1 ? 7 : 14);
-                                provider.getDashBoardData(context);
+                                provider.getDashBoardData(
+                                    context, bottomBarProvider);
                               })
                             : Visibility(
                                 visible: false,
@@ -1177,21 +1134,33 @@ class _DashBoardPageState extends State<DashBoardPage>
                                                   .colorLightGreyF2,
                                               height: DimensionConstants.d32.h,
                                               alignment: Alignment.center,
-                                              child: Text(provider.weeklyData[index].date??"").boldText(
-                                                  context,
-                                                  DimensionConstants.d13.sp,
-                                                  TextAlign.center,
-                                                  color: ColorConstants
-                                                      .colorBlack),
+                                              child: Text(provider
+                                                          .weeklyData[index]
+                                                          .date ??
+                                                      "")
+                                                  .boldText(
+                                                      context,
+                                                      DimensionConstants.d13.sp,
+                                                      TextAlign.center,
+                                                      color: ColorConstants
+                                                          .colorBlack),
                                             ),
                                             ListView.separated(
                                               shrinkWrap: true,
                                               physics:
                                                   const NeverScrollableScrollPhysics(),
-                                              itemCount: provider.weeklyData[index].checkInDataList!.length,
-                                              itemBuilder: (context, innerIndex) {
+                                              itemCount: provider
+                                                  .weeklyData[index]
+                                                  .checkInDataList!
+                                                  .length,
+                                              itemBuilder:
+                                                  (context, innerIndex) {
                                                 return projectDetailTile(
-                                                    context,checkInProjectDetail: provider.weeklyData[index].checkInDataList![innerIndex]);
+                                                    context,
+                                                    checkInProjectDetail: provider
+                                                            .weeklyData[index]
+                                                            .checkInDataList![
+                                                        innerIndex]);
                                               },
                                               separatorBuilder:
                                                   (context, index) {
@@ -1332,7 +1301,8 @@ class _DashBoardPageState extends State<DashBoardPage>
     );
   }
 
-  Widget stepperLineWithOneCoolIcon(CheckInProjectDetail checkInProjectDetail) {
+  Widget stepperLineWithOneCoolIcon(
+      CheckInProjectDetailCrew checkInProjectDetail) {
     List<Widget> widgetlist = [];
     List<ProjectWorkingHourDetail> projectDetailLIst =
         provider.getTimeForStepper(checkInProjectDetail);
@@ -1363,11 +1333,17 @@ class _DashBoardPageState extends State<DashBoardPage>
         ));
       }
     }
-    return Container(width:DimensionConstants.d75.w,child: Center(child: Flex(direction: Axis.horizontal,children: widgetlist,)));
+    return Container(
+        width: DimensionConstants.d75.w,
+        child: Center(
+            child: Flex(
+          direction: Axis.horizontal,
+          children: widgetlist,
+        )));
   }
 
   Widget projectDetailTile(BuildContext context,
-      {VoidCallback? onTap, CheckInProjectDetail? checkInProjectDetail}) {
+      {VoidCallback? onTap, CheckInProjectDetailCrew? checkInProjectDetail}) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -1408,7 +1384,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                               1))
                   .regularText(
                       context, DimensionConstants.d13.sp, TextAlign.center),
-              SizedBox(width: DimensionConstants.d12.w),
+              SizedBox(width: DimensionConstants.d11.w),
               stepperLineWithOneCoolIcon(checkInProjectDetail),
               SizedBox(width: DimensionConstants.d10.w),
               Text(DateFunctions.dateTO12Hour(
@@ -1421,7 +1397,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                               1))
                   .regularText(
                       context, DimensionConstants.d13.sp, TextAlign.center),
-              SizedBox(width: DimensionConstants.d13.w),
+              SizedBox(width: DimensionConstants.d12.w),
               Text("${DateFunctions.calculateTotalHourTime(checkInProjectDetail.checkInTime!, checkInProjectDetail.checkOutTime!)} h")
                   .boldText(
                       context, DimensionConstants.d13.sp, TextAlign.center),

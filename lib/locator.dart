@@ -29,11 +29,12 @@ import 'package:beehive/provider/otp_page_provider.dart';
 import 'package:beehive/provider/otp_page_verification_manager.dart';
 import 'package:beehive/provider/profile_page_manager_provider.dart';
 import 'package:beehive/provider/profile_page_provider.dart';
+import 'package:beehive/provider/project_crew_provider.dart';
 import 'package:beehive/provider/project_details_manager_provider.dart';
 import 'package:beehive/provider/project_details_provider.dart';
 import 'package:beehive/provider/project_settings_manager_provider.dart';
 import 'package:beehive/provider/project_settings_provider.dart';
-import 'package:beehive/provider/projects_provider.dart';
+import 'package:beehive/provider/projects_manager_provider.dart';
 import 'package:beehive/provider/reset_password_manager_provider.dart';
 import 'package:beehive/provider/reset_password_provider.dart';
 import 'package:beehive/provider/set_rates_page_manager_provider.dart';
@@ -66,7 +67,7 @@ void setUpLocator() {
       () => DashBoardPageManagerProvider());
   locator.registerFactory<BottomBarManagerProvider>(
       () => BottomBarManagerProvider());
-  locator.registerFactory(() => ProjectsProvider());
+  locator.registerFactory(() => ProjectsManagerProvider());
   locator.registerFactory(() => CustomClass());
   locator.registerFactory(() => ProjectDetailsPageProvider());
   locator.registerFactory(() => TimeSheetTabBarProviderCrew());
@@ -97,6 +98,7 @@ void setUpLocator() {
   locator.registerFactory(() => EmailAddressScreenManagerProvider());
   locator.registerFactory(() => EmailAddressScreenProvider());
   locator.registerFactory(() => ProfilePageProvider());
+  locator.registerFactory(() => ProjectsCrewProvider());
   locator.registerLazySingleton(() => Api());
   locator.registerLazySingleton(() => CreateProjectRequest());
   locator.registerLazySingleton<Dio>(() {

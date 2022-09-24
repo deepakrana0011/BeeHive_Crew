@@ -5,18 +5,21 @@ import 'package:beehive/constants/image_constants.dart';
 import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
+import 'package:beehive/provider/bottom_bar_Manager_provider.dart';
 import 'package:beehive/provider/project_details_manager_provider.dart';
 import 'package:beehive/provider/project_details_provider.dart';
 import 'package:beehive/view/base_view.dart';
 import 'package:beehive/views_manager/projects_manager/add_crew_page_manager.dart';
 import 'package:beehive/views_manager/projects_manager/add_note_page_manager.dart';
 import 'package:beehive/views_manager/projects_manager/project_setting_page_manager.dart';
+import 'package:beehive/widget/custom_circular_bar.dart';
 import 'package:beehive/widget/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 
 import '../../constants/route_constants.dart';
 import '../../helper/dialog_helper.dart';
@@ -24,6 +27,7 @@ import '../../helper/dialog_helper.dart';
 class ProjectDetailsPageManager extends StatefulWidget {
   bool? createProject;
   String projectId;
+
   ProjectDetailsPageManager(
       {Key? key, this.createProject, required this.projectId})
       : super(key: key);
@@ -35,15 +39,22 @@ class ProjectDetailsPageManager extends StatefulWidget {
 
 class _ProjectDetailsPageManagerState extends State<ProjectDetailsPageManager>
     with TickerProviderStateMixin {
+  BottomBarManagerProvider? bottomBarProvider;
+
+  @override
+  void initState() {
+    bottomBarProvider =
+        Provider.of<BottomBarManagerProvider>(context, listen: false);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BaseView<ProjectDetailsManagerProvider>(
       onModelReady: (provider) {
         provider.tabController = TabController(length: 3, vsync: this);
-        widget.createProject == true
-            ? provider.getCreatedProjectDetails(context, widget.projectId).then((value) {provider.setCustomMapPinUser();
-              })
-            : null;
+        print("project id is ${widget.projectId}");
+        provider.getProjectDetail(context, widget.projectId);
       },
       builder: (context, provider, _) {
         return Scaffold(
@@ -54,12 +65,11 @@ class _ProjectDetailsPageManagerState extends State<ProjectDetailsPageManager>
             Navigator.pushNamed(
                 context, RouteConstants.projectSettingsPageManager,
                 arguments: ProjectSettingsPageManager(
-                  fromProjectOrCreateProject: false
-                ));
-
-          },
-          popFunction: (){CommonWidgets.hideKeyboard(context);
-          Navigator.pop(context);}),
+                    fromProjectOrCreateProject: false));
+          }, popFunction: () {
+            bottomBarProvider?.onItemTapped(0);
+            bottomBarProvider!.notifyListeners();
+          }),
           body: Padding(
             padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
             child: SingleChildScrollView(
@@ -69,19 +79,145 @@ class _ProjectDetailsPageManagerState extends State<ProjectDetailsPageManager>
                         SizedBox(
                           height: DimensionConstants.d16.h,
                         ),
-                        widget.createProject == true
-                            ? projectCreated(context, provider)
-                            : Container(),
+                        projectCreated(context, provider),
                         SizedBox(
                           height: DimensionConstants.d16.h,
                         ),
                         mapAndHoursDetails(
-                            context, provider, widget.createProject!),
+                            context, widget.createProject!, provider),
                         SizedBox(
                           height: DimensionConstants.d10.h,
                         ),
-                        tabBarView(context, provider.tabController!, provider,
-                            widget.createProject!,widget.projectId),
+                        tabBarView(
+                            context, provider.tabController!, provider, false),
+                        SizedBox(
+                          height: DimensionConstants.d24.h,
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Expanded(
+                                child: Text("notes".tr()).semiBoldText(context,
+                                    DimensionConstants.d20.sp, TextAlign.left,
+                                    color: Theme.of(context).brightness ==
+                                            Brightness.dark
+                                        ? ColorConstants.colorWhite
+                                        : ColorConstants.colorBlack)),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(
+                                    context, RouteConstants.addNotePageManager,
+                                    arguments: AddNotePageManager(
+                                      publicOrPrivate: false,
+                                      projectId: "1",
+                                    ));
+                              },
+                              child: Container(
+                                height: DimensionConstants.d40.h,
+                                width: DimensionConstants.d118,
+                                decoration: BoxDecoration(
+                                  color: ColorConstants.deepBlue,
+                                  border: Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? Border.all(
+                                          color: ColorConstants.colorWhite,
+                                          width: DimensionConstants.d1.w)
+                                      : null,
+                                  borderRadius: BorderRadius.circular(
+                                      DimensionConstants.d8.r),
+                                ),
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: DimensionConstants.d10.w),
+                                  child: Row(
+                                    children: <Widget>[
+                                      ImageView(
+                                        path: ImageConstants.addNotesIcon,
+                                        height: DimensionConstants.d16.h,
+                                        width: DimensionConstants.d16.w,
+                                      ),
+                                      SizedBox(
+                                        width: DimensionConstants.d8.w,
+                                      ),
+                                      Text("add_note".tr()).semiBoldText(
+                                          context,
+                                          DimensionConstants.d14.sp,
+                                          TextAlign.left,
+                                          color: Theme.of(context).brightness ==
+                                                  Brightness.dark
+                                              ? ColorConstants.colorWhite
+                                              : ColorConstants.colorWhite),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                        SizedBox(
+                          height: DimensionConstants.d25.h,
+                        ),
+                        notesList(context),
+                        SizedBox(
+                          height: DimensionConstants.d25.h,
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Text("crew".tr()).semiBoldText(context,
+                                DimensionConstants.d20.sp, TextAlign.left,
+                                color: ColorConstants.colorBlack),
+                            Expanded(child: Container()),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.pushNamed(
+                                    context, RouteConstants.addCrewPageManager,
+                                    arguments: AddCrewPageManager());
+                              },
+                              child: Container(
+                                height: DimensionConstants.d40.h,
+                                width: DimensionConstants.d118,
+                                decoration: BoxDecoration(
+                                  color: ColorConstants.deepBlue,
+                                  border: Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? Border.all(
+                                          color: ColorConstants.colorWhite,
+                                          width: DimensionConstants.d1.w)
+                                      : null,
+                                  borderRadius: BorderRadius.circular(
+                                      DimensionConstants.d8.r),
+                                ),
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: DimensionConstants.d10.w),
+                                  child: Row(
+                                    children: <Widget>[
+                                      ImageView(
+                                        path: ImageConstants.addNotesIcon,
+                                        height: DimensionConstants.d16.h,
+                                        width: DimensionConstants.d16.w,
+                                      ),
+                                      SizedBox(
+                                        width: DimensionConstants.d8.w,
+                                      ),
+                                      Text("add_crew".tr()).semiBoldText(
+                                          context,
+                                          DimensionConstants.d14.sp,
+                                          TextAlign.left,
+                                          color: Theme.of(context).brightness ==
+                                                  Brightness.dark
+                                              ? ColorConstants.colorWhite
+                                              : ColorConstants.colorWhite),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                        crewList(context, true, provider),
+                        SizedBox(
+                          height: DimensionConstants.d18.h,
+                        ),
                         widget.createProject == false
                             ? Padding(
                                 padding: EdgeInsets.symmetric(
@@ -109,9 +245,7 @@ class _ProjectDetailsPageManagerState extends State<ProjectDetailsPageManager>
                       ],
                     )
                   : const Center(
-                      child: CircularProgressIndicator(
-                        color: ColorConstants.primaryGradient2Color,
-                      ),
+                      child: CustomCircularBar(),
                     ),
             ),
           ),
@@ -121,73 +255,66 @@ class _ProjectDetailsPageManagerState extends State<ProjectDetailsPageManager>
   }
 }
 
-Widget mapAndHoursDetails(BuildContext context,
-    ProjectDetailsManagerProvider provider, bool createProject) {
+Widget mapAndHoursDetails(BuildContext context, bool createProject,
+    ProjectDetailsManagerProvider provider) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
-      Text(provider.projectResponse!.data!.projectName!.isEmpty
-              ? "ProjectNameXXX"
-              : provider.projectResponse!.data!.projectName!)
-          .semiBoldText(context, DimensionConstants.d20.sp, TextAlign.left,
-              color: ColorConstants.colorBlack),
+      Text("ProjectNameXXX").semiBoldText(
+          context, DimensionConstants.d20.sp, TextAlign.left,
+          color: ColorConstants.colorBlack),
       SizedBox(
         height: DimensionConstants.d15.h,
       ),
       Row(
         children: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(bottom: DimensionConstants.d10.h),
-            child: ImageView(
-              path: ImageConstants.locationIcon,
-              color: ColorConstants.primaryColor,
-              height: DimensionConstants.d24.h,
-              width: DimensionConstants.d24.w,
+          Expanded(
+            child: Row(
+              children: [
+                ImageView(
+                  path: ImageConstants.locationIcon,
+                  color: ColorConstants.primaryColor,
+                  height: DimensionConstants.d24.h,
+                  width: DimensionConstants.d24.w,
+                ),
+                SizedBox(
+                  width: DimensionConstants.d8.w,
+                ),
+                Expanded(
+                    child: Text("Northfield Road, Toronto, Ontario M1G 2h4 ")
+                        .regularText(
+                            context, DimensionConstants.d16.sp, TextAlign.left,
+                            color: ColorConstants.darkGray4F4F4F,
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis)),
+              ],
             ),
           ),
-          SizedBox(
-            width: DimensionConstants.d8.w,
-          ),
-          SizedBox(
-            height: DimensionConstants.d38.h,
-            width: DimensionConstants.d210.w,
-            child: Text(provider.projectResponse!.data!.address!.isEmpty
-                    ? "AddressXXX"
-                    : provider.projectResponse!.data!.address!)
-                .regularText(context, DimensionConstants.d16.sp, TextAlign.left,
-                    color: ColorConstants.darkGray4F4F4F),
-          ),
-          Expanded(child: Container()),
-          createProject != true
-              ? Container(
-                  height: DimensionConstants.d42.h,
-                  width: DimensionConstants.d94.w,
-                  decoration: BoxDecoration(
-                    border: Theme.of(context).brightness == Brightness.dark
-                        ? Border.all(
-                            color:
-                                Theme.of(context).brightness == Brightness.dark
-                                    ? ColorConstants.colorWhite
-                                    : ColorConstants.colorBlack,
-                            width: DimensionConstants.d1.w)
-                        : Border.all(
-                            color:
-                                Theme.of(context).brightness == Brightness.dark
-                                    ? ColorConstants.colorWhite
-                                    : ColorConstants.grayD2D2D7,
-                            width: DimensionConstants.d1.w),
-                    borderRadius:
-                        BorderRadius.circular(DimensionConstants.d8.r),
-                  ),
-                  child: Center(
-                    child: Text("directions".tr()).semiBoldText(
-                        context, DimensionConstants.d14.sp, TextAlign.center,
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? ColorConstants.colorWhite
-                            : ColorConstants.colorBlack),
-                  ),
-                )
-              : Container(),
+          Container(
+            height: DimensionConstants.d42.h,
+            width: DimensionConstants.d94.w,
+            decoration: BoxDecoration(
+              border: Theme.of(context).brightness == Brightness.dark
+                  ? Border.all(
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? ColorConstants.colorWhite
+                          : ColorConstants.colorBlack,
+                      width: DimensionConstants.d1.w)
+                  : Border.all(
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? ColorConstants.colorWhite
+                          : ColorConstants.grayD2D2D7,
+                      width: DimensionConstants.d1.w),
+              borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
+            ),
+            child: Center(
+              child: Text("directions".tr()).semiBoldText(
+                  context, DimensionConstants.d14.sp, TextAlign.center,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? ColorConstants.colorWhite
+                      : ColorConstants.colorBlack),
+            ),
+          )
         ],
       ),
       SizedBox(
@@ -207,12 +334,11 @@ Widget mapAndHoursDetails(BuildContext context,
             zoomControlsEnabled: false,
             scrollGesturesEnabled: true,
             markers: Set<Marker>.of(provider.markers),
-            initialCameraPosition: CameraPosition(
-              target: LatLng(provider.projectResponse!.data!.latitude!,
-                  provider.projectResponse!.data!.longitude!),
+            initialCameraPosition: const CameraPosition(
+              target: LatLng(30.7046, 76.7179),
               zoom: 11.0,
             ),
-            onMapCreated: provider.onMapCreated,
+            onMapCreated: provider.onMapCreated(),
           ),
         ),
       ),
@@ -242,7 +368,7 @@ Widget mapAndHoursDetails(BuildContext context,
                       ? ColorConstants.colorWhite
                       : ColorConstants.colorBlack),
               Expanded(child: Container()),
-              Text(createProject == false ? "1200" : provider.projectResponse!.totalHoursToDate.toString()).semiBoldText(
+              Text("1200").semiBoldText(
                   context, DimensionConstants.d14.sp, TextAlign.left,
                   color: Theme.of(context).brightness == Brightness.dark
                       ? ColorConstants.colorWhite
@@ -256,7 +382,7 @@ Widget mapAndHoursDetails(BuildContext context,
 }
 
 Widget tabBarView(BuildContext context, TabController controller,
-    ProjectDetailsManagerProvider provider, bool projectCreate,String projectId) {
+    ProjectDetailsManagerProvider provider, bool projectCreate) {
   return Column(
     children: [
       Card(
@@ -325,42 +451,110 @@ Widget tabBarView(BuildContext context, TabController controller,
         ),
       ),
       SizedBox(
-        height: controller.index == 0
-            ? DimensionConstants.d710.h
-            : projectCreate == true
-                ? 780
-                : 1145,
-        width: DimensionConstants.d343.w,
-        child: TabBarView(
-            physics: NeverScrollableScrollPhysics(),
-            controller: controller,
-            children: <Widget>[
-              todayTab(context, projectCreate == true ? false : true, provider, projectCreate,projectId
-              ),
-              todayTab(context, false, provider, projectCreate,projectId),
-              Container(),
-            ]),
-      )
+        height: DimensionConstants.d16.h,
+      ),
+      provider.tabController!.index == 0
+          ? todayTab(context, projectCreate == true ? false : true, provider,
+              projectCreate, "1")
+          : weeklyTabBarContainer(context),
+      /*TabBarView(
+          physics: NeverScrollableScrollPhysics(),
+          controller: controller,
+          children: <Widget>[
+            todayTab(context, projectCreate == true ? false : true, provider,
+                projectCreate, "1"),
+            todayTab(context, false, provider, projectCreate, "1"),
+            Container(),
+          ])*/
     ],
   );
 }
 
 Widget todayTab(
-  BuildContext context,
-  bool todayOrWeekly,
-  ProjectDetailsManagerProvider provider,
-  bool projectCreate,
-    String projectId
-) {
-  return SizedBox(
+    BuildContext context,
+    bool todayOrWeekly,
+    ProjectDetailsManagerProvider provider,
+    bool projectCreate,
+    String projectId) {
+  return Container(
+    height: DimensionConstants.d70.h,
+    decoration: BoxDecoration(
+      color: Theme.of(context).brightness == Brightness.dark
+          ? ColorConstants.colorBlack
+          : ColorConstants.littleDarkGray,
+      border: Theme.of(context).brightness == Brightness.dark
+          ? Border.all(
+              color: ColorConstants.colorWhite, width: DimensionConstants.d1.w)
+          : null,
+      borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
+    ),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("4.5h").boldText(
+                  context, DimensionConstants.d24.sp, TextAlign.start,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? ColorConstants.colorWhite
+                      : ColorConstants.colorBlack),
+              SizedBox(
+                height: DimensionConstants.d5.h,
+              ),
+              Text("total_hours".tr()).regularText(
+                  context, DimensionConstants.d14.sp, TextAlign.start,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? ColorConstants.colorWhite
+                      : ColorConstants.colorBlack),
+            ],
+          ),
+        ),
+        Container(
+          height: DimensionConstants.d70.h,
+          width: DimensionConstants.d1.w,
+          color: ColorConstants.lightGray,
+        ),
+        Expanded(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text("3").boldText(
+                  context, DimensionConstants.d24.sp, TextAlign.start,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? ColorConstants.colorWhite
+                      : ColorConstants.colorBlack),
+              SizedBox(
+                height: DimensionConstants.d5.h,
+              ),
+              Text("crew").regularText(
+                  context, DimensionConstants.d14.sp, TextAlign.start,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? ColorConstants.colorWhite
+                      : ColorConstants.colorBlack),
+            ],
+          ),
+        ),
+      ],
+    ),
+  );
+  /*return SizedBox(
+    height: DimensionConstants.d70.h,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         SizedBox(
           height: DimensionConstants.d15.h,
         ),
-        todayOrWeekly == true ? stepperLine(context, true, "") : projectCreate == true ? projectCreatedBox(context,provider) : provider.tabController!.index == 1 ? weeklyTabBarContainer(context) : Container(),
-        SizedBox(
+        todayOrWeekly == true
+            ? stepperLine(context, true, "")
+            : projectCreate == true
+                ? projectCreatedBox(context, provider)
+                : provider.tabController!.index == 1
+                    ? weeklyTabBarContainer(context)
+                    : Container(),
+        */ /*  SizedBox(
           height: DimensionConstants.d24.h,
         ),
         Row(
@@ -376,8 +570,10 @@ Widget todayTab(
                     onTap: () {
                       Navigator.pushNamed(
                           context, RouteConstants.addNotePageManager,
-                          arguments:
-                              AddNotePageManager(publicOrPrivate: false, projectId: projectId,));
+                          arguments: AddNotePageManager(
+                            publicOrPrivate: false,
+                            projectId: projectId,
+                          ));
                     },
                     child: Container(
                       height: DimensionConstants.d40.h,
@@ -432,7 +628,8 @@ Widget todayTab(
                 ? GestureDetector(
                     onTap: () {
                       Navigator.pushNamed(
-                          context, RouteConstants.addCrewPageManager,arguments: AddCrewPageManager());
+                          context, RouteConstants.addCrewPageManager,
+                          arguments: AddCrewPageManager());
                     },
                     child: Container(
                       height: DimensionConstants.d40.h,
@@ -478,15 +675,15 @@ Widget todayTab(
           height: projectCreate == false
               ? DimensionConstants.d25.h
               : DimensionConstants.d1.h,
-        ),
-        projectCreate == false ? scaleNotesWidget(context) : Container(),
+        ),*/ /*
+        */ /* projectCreate == false ? scaleNotesWidget(context) : Container(),
         SizedBox(
           height: DimensionConstants.d25.h,
         ),
-        crewWidget(context, projectCreate,provider),
+        crewWidget(context, projectCreate, provider),*/ /*
       ],
     ),
-  );
+  );*/
 }
 
 Widget stepperLine(BuildContext context, bool todayOrWeek, String date) {
@@ -713,9 +910,9 @@ Widget stepperLineError(BuildContext context, bool todayOrWeek, String date) {
   );
 }
 
-Widget scaleNotesWidget(BuildContext context) {
+Widget notesList(BuildContext context) {
   return Card(
-    elevation: 1,
+    elevation: 2,
     shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(DimensionConstants.d8.r)),
     child: Container(
@@ -781,14 +978,22 @@ Widget scaleNotesWidget(BuildContext context) {
   );
 }
 
-Widget crewWidget(BuildContext context, bool archivedOrNot,ProjectDetailsManagerProvider provider) {
-  return Column(
+Widget crewList(BuildContext context, bool archivedOrNot,
+    ProjectDetailsManagerProvider provider) {
+  return ListView.builder(
+    itemCount: 3,
+    shrinkWrap: true,
+    physics: NeverScrollableScrollPhysics(),
+    itemBuilder: (BuildContext context, int index) {
+      return crewWidget(context, true, "deepak", false, "");
+    },
+  ) /*Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
       SizedBox(
         height: DimensionConstants.d24.h,
       ),
-      managerDetails(context, true, provider.projectResponse!.crew!.managerId!.name!, archivedOrNot,provider.projectResponse!.crew!.crewId![0].profileImage ?? ""),
+      managerDetails(context, true, "deepak", archivedOrNot, ""),
       SizedBox(
         height: DimensionConstants.d8.h,
       ),
@@ -796,14 +1001,14 @@ Widget crewWidget(BuildContext context, bool archivedOrNot,ProjectDetailsManager
           onTap: () {
             // Navigator.pushNamed(context, RouteConstants.crewProfilePage);
           },
-          child:
-              managerDetails(context, false, provider.projectResponse!.crew!.crewId![0].name!, archivedOrNot,provider.projectResponse!.crew!.crewId![0].profileImage ?? "")),
-
+          child: managerDetails(context, false, "deepak", archivedOrNot, "")),
     ],
-  );
+  )*/
+      ;
 }
 
-Widget managerDetails(BuildContext context, bool managerOrNot, String name, bool archivedOrNot, String image) {
+Widget crewWidget(BuildContext context, bool managerOrNot, String name,
+    bool archivedOrNot, String image) {
   return Card(
     elevation: 1,
     shape: RoundedRectangleBorder(
@@ -826,9 +1031,12 @@ Widget managerDetails(BuildContext context, bool managerOrNot, String name, bool
                   child: SizedBox(
                     width: DimensionConstants.d50.w,
                     child: ClipRRect(
-                      borderRadius: BorderRadius.circular(DimensionConstants.d25.r),
+                      borderRadius:
+                          BorderRadius.circular(DimensionConstants.d25.r),
                       child: ImageView(
-                        path: image.isEmpty  ? ImageConstants.managerImage:"${ApiConstantsCrew.BASE_URL_IMAGE}$image",
+                        path: image.isEmpty
+                            ? ImageConstants.managerImage
+                            : "${ApiConstantsCrew.BASE_URL_IMAGE}$image",
                         height: DimensionConstants.d50.h,
                         width: DimensionConstants.d50.w,
                         fit: BoxFit.cover,
@@ -836,105 +1044,107 @@ Widget managerDetails(BuildContext context, bool managerOrNot, String name, bool
                     ),
                   ),
                 ),
-                managerOrNot == true
-                    ? Positioned(
-                        top: DimensionConstants.d23.h,
-                        left: DimensionConstants.d22.w,
-                        child: ImageView(
-                          path: ImageConstants.brandIocn,
-                          height: DimensionConstants.d27.h,
-                          width: DimensionConstants.d29.w,
-                        ))
-                    : Container(),
+                if (managerOrNot)
+                  Positioned(
+                      top: DimensionConstants.d23.h,
+                      left: DimensionConstants.d22.w,
+                      child: ImageView(
+                        path: ImageConstants.brandIocn,
+                        height: DimensionConstants.d27.h,
+                        width: DimensionConstants.d29.w,
+                      ))
               ],
             ),
             SizedBox(
               width: DimensionConstants.d13.w,
             ),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                SizedBox(
-                  height: DimensionConstants.d12.h,
-                ),
-                Text(name).boldText(
-                  context,
-                  DimensionConstants.d16.sp,
-                  TextAlign.left,
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? ColorConstants.colorWhite
-                      : ColorConstants.deepBlue,
-                ),
-                SizedBox(
-                  height: DimensionConstants.d5.h,
-                ),
-                managerOrNot == true
-                    ? Container(
-                        height: DimensionConstants.d21.h,
-                        width: DimensionConstants.d120.w,
-                        decoration: BoxDecoration(
-                          border:
-                              Theme.of(context).brightness == Brightness.dark
-                                  ? Border.all(
-                                      color: Theme.of(context).brightness ==
-                                              Brightness.dark
-                                          ? ColorConstants.colorWhite
-                                          : ColorConstants.deepBlue,
-                                      width: DimensionConstants.d1.w)
-                                  : null,
-                          color: ColorConstants.deepBlue,
-                          borderRadius:
-                              BorderRadius.circular(DimensionConstants.d8.r),
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: DimensionConstants.d10.w),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: <Widget>[
-                              const ImageView(
-                                path: ImageConstants.crewIcon,
-                              ),
-                              SizedBox(
-                                width: DimensionConstants.d4.w,
-                              ),
-                              Text("crew_manager".tr()).semiBoldText(context,
-                                  DimensionConstants.d10.sp, TextAlign.left,
-                                  color: ColorConstants.colorWhite),
-                            ],
-                          ),
-                        ),
-                      )
-                    : Row(
-                        children: <Widget>[
-                          Text("carpenter".tr()).regularText(
-                            context,
-                            DimensionConstants.d14.sp,
-                            TextAlign.left,
-                            color:
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  SizedBox(
+                    height: DimensionConstants.d12.h,
+                  ),
+                  Text(name).boldText(
+                    context,
+                    DimensionConstants.d16.sp,
+                    TextAlign.left,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? ColorConstants.colorWhite
+                        : ColorConstants.deepBlue,
+                  ),
+                  SizedBox(
+                    height: DimensionConstants.d5.h,
+                  ),
+                  managerOrNot == true
+                      ? Container(
+                          height: DimensionConstants.d21.h,
+                          width: DimensionConstants.d120.w,
+                          decoration: BoxDecoration(
+                            border:
                                 Theme.of(context).brightness == Brightness.dark
-                                    ? ColorConstants.colorWhite
-                                    : ColorConstants.deepBlue,
+                                    ? Border.all(
+                                        color: Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? ColorConstants.colorWhite
+                                            : ColorConstants.deepBlue,
+                                        width: DimensionConstants.d1.w)
+                                    : null,
+                            color: ColorConstants.deepBlue,
+                            borderRadius:
+                                BorderRadius.circular(DimensionConstants.d8.r),
                           ),
-                          archivedOrNot != true
-                              ? const Text("   \$20.00/hr").regularText(
-                                  context,
-                                  DimensionConstants.d14.sp,
-                                  TextAlign.left,
-                                  color: ColorConstants.deepBlue,
-                                )
-                              : Text("invite_pending".tr()).regularText(context,
-                                  DimensionConstants.d14.sp, TextAlign.left,
-                                  color: ColorConstants.redColorEB5757),
-                        ],
-                      )
-              ],
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: DimensionConstants.d10.w),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: <Widget>[
+                                const ImageView(
+                                  path: ImageConstants.crewIcon,
+                                ),
+                                SizedBox(
+                                  width: DimensionConstants.d4.w,
+                                ),
+                                Text("crew_manager".tr()).semiBoldText(context,
+                                    DimensionConstants.d10.sp, TextAlign.left,
+                                    color: ColorConstants.colorWhite),
+                              ],
+                            ),
+                          ),
+                        )
+                      : Row(
+                          children: <Widget>[
+                            Text("carpenter".tr()).regularText(
+                              context,
+                              DimensionConstants.d14.sp,
+                              TextAlign.left,
+                              color: Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? ColorConstants.colorWhite
+                                  : ColorConstants.deepBlue,
+                            ),
+                            archivedOrNot != true
+                                ? const Text("   \$20.00/hr").regularText(
+                                    context,
+                                    DimensionConstants.d14.sp,
+                                    TextAlign.left,
+                                    color: ColorConstants.deepBlue,
+                                  )
+                                : Text("invite_pending".tr()).regularText(
+                                    context,
+                                    DimensionConstants.d14.sp,
+                                    TextAlign.left,
+                                    color: ColorConstants.redColorEB5757),
+                          ],
+                        )
+                ],
+              ),
             ),
-            Expanded(child: Container()),
             ImageView(
               path: ImageConstants.arrowIcon,
-              height: DimensionConstants.d16.h,
-              width: DimensionConstants.d16.w,
+              height: DimensionConstants.d10.h,
+              width: DimensionConstants.d8.w,
               color: Theme.of(context).brightness == Brightness.dark
                   ? ColorConstants.colorWhite
                   : ColorConstants.colorBlack,
@@ -1134,7 +1344,8 @@ Widget projectCreated(
   );
 }
 
-Widget projectCreatedBox(BuildContext context,ProjectDetailsManagerProvider provider) {
+Widget projectCreatedBox(
+    BuildContext context, ProjectDetailsManagerProvider provider) {
   return Material(
     elevation: 1,
     shape: RoundedRectangleBorder(
@@ -1160,13 +1371,14 @@ Widget projectCreatedBox(BuildContext context,ProjectDetailsManagerProvider prov
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 projectsHoursRowProject(
-                    context, ImageConstants.mapIcon, "${provider.projectResponse!.crew!.crewId!.length} ${"crew".tr()}"),
+                    context, ImageConstants.mapIcon, "4 ${"crew".tr()}"),
                 Container(
                   height: DimensionConstants.d70.h,
                   width: DimensionConstants.d1.w,
                   color: ColorConstants.colorLightGrey,
                 ),
-                projectsHoursRowProject(context, ImageConstants.clockIcon, "0:00 ${"hrs".tr()}")
+                projectsHoursRowProject(
+                    context, ImageConstants.clockIcon, "0:00 ${"hrs".tr()}")
               ],
             ),
           ),

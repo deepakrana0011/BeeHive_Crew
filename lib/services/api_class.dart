@@ -5,6 +5,7 @@ import 'package:beehive/locator.dart';
 import 'package:beehive/model/add_crew_by_manager_response.dart';
 import 'package:beehive/model/add_crew_response_manager.dart';
 import 'package:beehive/model/add_note_manager_response.dart';
+import 'package:beehive/model/all_projects_manager_response.dart';
 import 'package:beehive/model/assign_project_response_manager.dart';
 import 'package:beehive/model/check_in_response_crew.dart';
 import 'package:beehive/model/create_project_request.dart';
@@ -16,6 +17,7 @@ import 'package:beehive/model/get_crew_profile_response.dart';
 import 'package:beehive/model/get_otp_fro_password.dart';
 import 'package:beehive/model/login_response_manager.dart';
 import 'package:beehive/model/phone_otp_response_manager.dart';
+import 'package:beehive/model/project_detail_response.dart';
 import 'package:beehive/model/project_details_response_manager.dart';
 import 'package:beehive/model/project_settings_break_request_manager.dart';
 import 'package:beehive/model/project_settings_response_manager.dart';
@@ -32,6 +34,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:syncfusion_flutter_sliders/sliders.dart';
 import '../constants/api_constants.dart';
 import '../model/allProjectCrewResponse.dart';
+import '../model/all_checkout_projects_crew.dart';
 import '../model/create_project_response_manager.dart';
 import '../model/crew_dashboard_response.dart';
 import '../model/dash_board_page_response_crew.dart';
@@ -586,7 +589,7 @@ class Api {
 
   Future<ManagerDashboardResponse> dashBoardApiManager(
       BuildContext context, String startDate, String endDate) async {
-    var map = {"startDate": startDate, "endDate": endDate};
+    var map = {"firstDate": startDate, "secondDate": endDate};
     try {
       dio.options.headers["authorization"] =
           SharedPreference.prefs!.getString(SharedPreference.TOKEN);
@@ -1195,7 +1198,72 @@ class Api {
       var response = await dio.get(
         ApiConstantsCrew.BASEURL + ApiConstantsCrew.getAllCrewProjects,
       );
+      var responseString = response.toString();
+      print("response string ${responseString}");
       return AllProjectCrewResponse.fromJson(json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+
+  Future<AllProjectsManagerResponse> getAllProjectsManager(
+      BuildContext context) async {
+    try {
+      dio.options.headers["authorization"] =
+          SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var response = await dio.get(
+        ApiConstantsManager.BASEURL + ApiConstantsManager.allProjectsManager,
+      );
+      var responseString = response.toString();
+      return AllProjectsManagerResponse.fromJson(
+          json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+
+  Future<AllCheckoutProjectCrewResponse> getAllCheckoutOutCrewProjects(
+      BuildContext context) async {
+    try {
+      dio.options.headers["authorization"] =
+          SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var response = await dio.get(
+        ApiConstantsCrew.BASEURL + ApiConstantsCrew.getAllCheckoutCrewProjects,
+      );
+      return AllCheckoutProjectCrewResponse.fromJson(
+          json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+
+  Future<ProjectDetailResponseManager> getProjectDetail(
+      BuildContext context, String projectId) async {
+    try {
+      dio.options.headers["authorization"] =
+          SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var response = await dio.get(
+        "${ApiConstantsCrew.BASEURL}${ApiConstantsManager.singleProjectDetail}/$projectId",
+      );
+      return ProjectDetailResponseManager.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());

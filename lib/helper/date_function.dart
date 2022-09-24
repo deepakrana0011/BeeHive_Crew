@@ -268,7 +268,7 @@ class DateFunctions {
 
 
   static DateTime stringToDate(String dateString) {
-    DateTime date = DateFormat("hh:mm a").parse(dateString);
+    DateTime date = DateFormat("hh:mm a").parse(dateString.toLowerCase());
     String _24HourFormat = DateFormat("HH:mm").format(date);
     DateTime _24HourFormatDate = DateFormat("hh:mm").parse(_24HourFormat);
     return _24HourFormatDate;
@@ -298,6 +298,7 @@ class DateFunctions {
   }
 
   static String stringToDateAddMintues(String dateString,int minutes) {
+    print("number of mintues added ${minutes}");
     DateTime date = DateFormat("HH:mm").parse(dateString).add(Duration(minutes: minutes));
     String _24HourFormat = DateFormat("HH:mm").format(date);
     return _24HourFormat;

@@ -49,6 +49,7 @@ import 'package:beehive/views_manager/projects_manager/set_rates_page_manager.da
 import 'package:beehive/views_manager/projects_manager/timesheets_screen_manager.dart';
 import 'package:beehive/views_manager/billing_information/payment_page_manager.dart';
 import 'package:beehive/views_manager/timesheet_manager/timesheet_from_crew.dart';
+import 'package:beehive/widget/autoCompletePlaces.dart';
 import 'package:flutter/material.dart';
 
 class OnGenerateRouter {
@@ -141,7 +142,10 @@ class OnGenerateRouter {
       case RouteConstants.resetPasswordScreen:
         final authToken = settings.arguments as String;
         return MaterialPageRoute(
-            builder: (_) => ResetPasswordScreen(authToken: authToken,), settings: settings);
+            builder: (_) => ResetPasswordScreen(
+                  authToken: authToken,
+                ),
+            settings: settings);
       case RouteConstants.continueWithPhone:
         final args = settings.arguments as bool;
         return MaterialPageRoute(
@@ -228,7 +232,7 @@ class OnGenerateRouter {
             settings: settings);
       case RouteConstants.createProjectManager:
         return MaterialPageRoute(
-            builder: (_) => const CreateProjectManager(), settings: settings);
+            builder: (_) => CreateProjectManager(), settings: settings);
       case RouteConstants.addCrewPageManager:
         return MaterialPageRoute(
             builder: (_) => AddCrewPageManager(), settings: settings);
@@ -299,10 +303,18 @@ class OnGenerateRouter {
         return MaterialPageRoute(
             builder: (_) => const ChangePasswordPageManager(),
             settings: settings);
+
+      case RouteConstants.autoComplete:
+        return MaterialPageRoute(
+            builder: (_) => CustomSearchScaffold(), settings: settings);
+
       case RouteConstants.resetPasswordScreenManager:
         final token = settings.arguments as String;
         return MaterialPageRoute(
-            builder: (_) => ResetPasswordScreenManager(authToken: token,), settings: settings);
+            builder: (_) => ResetPasswordScreenManager(
+                  authToken: token,
+                ),
+            settings: settings);
 
       default:
         return _onPageNotFound();

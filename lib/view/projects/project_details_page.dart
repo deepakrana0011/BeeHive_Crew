@@ -16,6 +16,7 @@ import '../../constants/route_constants.dart';
 
 class ProjectDetailsPage extends StatefulWidget {
   bool archivedOrProject;
+
   ProjectDetailsPage({Key? key, required this.archivedOrProject})
       : super(key: key);
 
@@ -38,9 +39,10 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage>
               actionIcon: ImageConstants.settingsIcon,
               actionButtonRequired: true, onTapAction: () {
             Navigator.pushNamed(context, RouteConstants.projectSettingsPage);
-          },
-              popFunction: () { CommonWidgets.hideKeyboard(context);
-              Navigator.pop(context);}),
+          }, popFunction: () {
+            CommonWidgets.hideKeyboard(context);
+            Navigator.pop(context);
+          }),
           body: Padding(
             padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
             child: SingleChildScrollView(
@@ -55,11 +57,13 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage>
                   SizedBox(
                     height: DimensionConstants.d16.h,
                   ),
-                  mapAndHoursDetails(context, provider,widget.archivedOrProject),
+                  mapAndHoursDetails(
+                      context, provider, widget.archivedOrProject),
                   SizedBox(
                     height: DimensionConstants.d10.h,
                   ),
-                  tabBarView(context, provider.tabController!, provider,widget.archivedOrProject)
+                  tabBarView(context, provider.tabController!, provider,
+                      widget.archivedOrProject)
                 ],
               ),
             ),
@@ -70,8 +74,8 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage>
   }
 }
 
-Widget mapAndHoursDetails(
-    BuildContext context, ProjectDetailsPageProvider provider,bool archivedOrNot) {
+Widget mapAndHoursDetails(BuildContext context,
+    ProjectDetailsPageProvider provider, bool archivedOrNot) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
@@ -107,31 +111,36 @@ Widget mapAndHoursDetails(
                         : ColorConstants.darkGray4F4F4F),
           ),
           Expanded(child: Container()),
-        archivedOrNot != true?  Container(
-            height: DimensionConstants.d42.h,
-            width: DimensionConstants.d94.w,
-            decoration: BoxDecoration(
-              border: Theme.of(context).brightness == Brightness.dark
-                  ? Border.all(
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? ColorConstants.colorWhite
-                          : ColorConstants.colorBlack,
-                      width: DimensionConstants.d1.w)
-                  : Border.all(
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? ColorConstants.colorWhite
-                          : ColorConstants.grayD2D2D7,
-                      width: DimensionConstants.d1.w),
-              borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
-            ),
-            child: Center(
-              child: Text("directions".tr()).semiBoldText(
-                  context, DimensionConstants.d14.sp, TextAlign.center,
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? ColorConstants.colorWhite
-                      : ColorConstants.colorBlack),
-            ),
-          ):Container()
+          archivedOrNot != true
+              ? Container(
+                  height: DimensionConstants.d42.h,
+                  width: DimensionConstants.d94.w,
+                  decoration: BoxDecoration(
+                    border: Theme.of(context).brightness == Brightness.dark
+                        ? Border.all(
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? ColorConstants.colorWhite
+                                    : ColorConstants.colorBlack,
+                            width: DimensionConstants.d1.w)
+                        : Border.all(
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? ColorConstants.colorWhite
+                                    : ColorConstants.grayD2D2D7,
+                            width: DimensionConstants.d1.w),
+                    borderRadius:
+                        BorderRadius.circular(DimensionConstants.d8.r),
+                  ),
+                  child: Center(
+                    child: Text("directions".tr()).semiBoldText(
+                        context, DimensionConstants.d14.sp, TextAlign.center,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? ColorConstants.colorWhite
+                            : ColorConstants.colorBlack),
+                  ),
+                )
+              : Container()
         ],
       ),
       SizedBox(
@@ -197,7 +206,7 @@ Widget mapAndHoursDetails(
 }
 
 Widget tabBarView(BuildContext context, TabController controller,
-    ProjectDetailsPageProvider provider,bool archivedOrNot) {
+    ProjectDetailsPageProvider provider, bool archivedOrNot) {
   return Column(
     children: [
       Card(
@@ -274,8 +283,8 @@ Widget tabBarView(BuildContext context, TabController controller,
             physics: NeverScrollableScrollPhysics(),
             controller: controller,
             children: <Widget>[
-              todayTab(context, true, provider,archivedOrNot),
-              todayTab(context, false, provider,archivedOrNot),
+              todayTab(context, true, provider, archivedOrNot),
+              todayTab(context, false, provider, archivedOrNot),
               Container(),
             ]),
       )
@@ -284,7 +293,7 @@ Widget tabBarView(BuildContext context, TabController controller,
 }
 
 Widget todayTab(BuildContext context, bool todayOrWeekly,
-    ProjectDetailsPageProvider provider,bool archivedOrNot) {
+    ProjectDetailsPageProvider provider, bool archivedOrNot) {
   return SizedBox(
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -306,45 +315,49 @@ Widget todayTab(BuildContext context, bool todayOrWeekly,
                     ? ColorConstants.colorWhite
                     : ColorConstants.colorBlack),
             Expanded(child: Container()),
-         archivedOrNot != true?   GestureDetector(
-              onTap: () {
-                Navigator.pushNamed(context, RouteConstants.addNotePage);
-              },
-              child: Container(
-                height: DimensionConstants.d40.h,
-                width: DimensionConstants.d118,
-                decoration: BoxDecoration(
-                  color: ColorConstants.deepBlue,
-                  border: Theme.of(context).brightness == Brightness.dark
-                      ? Border.all(
-                          color: ColorConstants.colorWhite,
-                          width: DimensionConstants.d1.w)
-                      : null,
-                  borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: DimensionConstants.d10.w),
-                  child: Row(
-                    children: <Widget>[
-                      ImageView(
-                        path: ImageConstants.addNotesIcon,
-                        height: DimensionConstants.d16.h,
-                        width: DimensionConstants.d16.w,
+            archivedOrNot != true
+                ? GestureDetector(
+                    onTap: () {
+                      Navigator.pushNamed(context, RouteConstants.addNotePage);
+                    },
+                    child: Container(
+                      height: DimensionConstants.d40.h,
+                      width: DimensionConstants.d118,
+                      decoration: BoxDecoration(
+                        color: ColorConstants.deepBlue,
+                        border: Theme.of(context).brightness == Brightness.dark
+                            ? Border.all(
+                                color: ColorConstants.colorWhite,
+                                width: DimensionConstants.d1.w)
+                            : null,
+                        borderRadius:
+                            BorderRadius.circular(DimensionConstants.d8.r),
                       ),
-                      SizedBox(
-                        width: DimensionConstants.d8.w,
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: DimensionConstants.d10.w),
+                        child: Row(
+                          children: <Widget>[
+                            ImageView(
+                              path: ImageConstants.addNotesIcon,
+                              height: DimensionConstants.d16.h,
+                              width: DimensionConstants.d16.w,
+                            ),
+                            SizedBox(
+                              width: DimensionConstants.d8.w,
+                            ),
+                            Text("add_note".tr()).semiBoldText(context,
+                                DimensionConstants.d14.sp, TextAlign.left,
+                                color: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? ColorConstants.colorWhite
+                                    : ColorConstants.colorWhite),
+                          ],
+                        ),
                       ),
-                      Text("add_note".tr()).semiBoldText(
-                          context, DimensionConstants.d14.sp, TextAlign.left,
-                          color: Theme.of(context).brightness == Brightness.dark
-                              ? ColorConstants.colorWhite
-                              : ColorConstants.colorWhite),
-                    ],
-                  ),
-                ),
-              ),
-            ):Container()
+                    ),
+                  )
+                : Container()
           ],
         ),
         SizedBox(
@@ -354,7 +367,7 @@ Widget todayTab(BuildContext context, bool todayOrWeekly,
         SizedBox(
           height: DimensionConstants.d25.h,
         ),
-        crewWidget(context,archivedOrNot),
+        crewWidget(context, archivedOrNot),
       ],
     ),
   );
@@ -362,8 +375,8 @@ Widget todayTab(BuildContext context, bool todayOrWeekly,
 
 Widget stepperLine(BuildContext context, bool todayOrWeek, String date) {
   return GestureDetector(
-    onTap: (){
-     Navigator.pushNamed(context, RouteConstants.timeSheetsScreen);
+    onTap: () {
+      Navigator.pushNamed(context, RouteConstants.timeSheetsScreen);
     },
     child: Card(
       margin: EdgeInsets.zero,
@@ -407,35 +420,37 @@ Widget stepperLine(BuildContext context, bool todayOrWeek, String date) {
                           ? ColorConstants.colorWhite
                           : ColorConstants.colorBlack,
                     )
-                  :Row(
-                children:<Widget> [
-                  Text(date).boldText(
-                    context,
-                    DimensionConstants.d13.sp,
-                    TextAlign.left,
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? ColorConstants.colorWhite
-                        : ColorConstants.colorBlack,
-                  ),
-                  SizedBox(
-                    width: DimensionConstants.d9.w,
-                  ),Text("8:50a").regularText(
-                    context,
-                    DimensionConstants.d13.sp,
-                    TextAlign.left,
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? ColorConstants.colorWhite
-                        : ColorConstants.colorBlack,
-                  )
-
-                ],
-              ),
-            SizedBox(
+                  : Row(
+                      children: <Widget>[
+                        Text(date).boldText(
+                          context,
+                          DimensionConstants.d13.sp,
+                          TextAlign.left,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? ColorConstants.colorWhite
+                              : ColorConstants.colorBlack,
+                        ),
+                        SizedBox(
+                          width: DimensionConstants.d9.w,
+                        ),
+                        Text("8:50a").regularText(
+                          context,
+                          DimensionConstants.d13.sp,
+                          TextAlign.left,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? ColorConstants.colorWhite
+                              : ColorConstants.colorBlack,
+                        )
+                      ],
+                    ),
+              SizedBox(
                 width: DimensionConstants.d5.w,
               ),
               Container(
                 height: DimensionConstants.d4.h,
-                width:todayOrWeek != true? DimensionConstants.d12.w:DimensionConstants.d20.w,
+                width: todayOrWeek != true
+                    ? DimensionConstants.d12.w
+                    : DimensionConstants.d20.w,
                 decoration: BoxDecoration(
                     color: ColorConstants.green6FCF97,
                     borderRadius: BorderRadius.only(
@@ -458,7 +473,9 @@ Widget stepperLine(BuildContext context, bool todayOrWeek, String date) {
                     ),
                     Container(
                       height: DimensionConstants.d4.h,
-                      width: todayOrWeek != true? DimensionConstants.d12.w:DimensionConstants.d20.w,
+                      width: todayOrWeek != true
+                          ? DimensionConstants.d12.w
+                          : DimensionConstants.d20.w,
                       color: ColorConstants.redColorEB5757,
                     ),
                   ],
@@ -469,7 +486,9 @@ Widget stepperLine(BuildContext context, bool todayOrWeek, String date) {
               ),
               Container(
                 height: DimensionConstants.d4.h,
-                width: todayOrWeek != true? DimensionConstants.d12.w:DimensionConstants.d15.w,
+                width: todayOrWeek != true
+                    ? DimensionConstants.d12.w
+                    : DimensionConstants.d15.w,
                 color: ColorConstants.grayD2D2D7,
               ),
               SizedBox(
@@ -477,7 +496,9 @@ Widget stepperLine(BuildContext context, bool todayOrWeek, String date) {
               ),
               Container(
                 height: DimensionConstants.d4.h,
-                width: todayOrWeek != true? DimensionConstants.d12.w:DimensionConstants.d20.w,
+                width: todayOrWeek != true
+                    ? DimensionConstants.d12.w
+                    : DimensionConstants.d20.w,
                 color: ColorConstants.green6FCF97,
               ),
               SizedBox(
@@ -496,7 +517,9 @@ Widget stepperLine(BuildContext context, bool todayOrWeek, String date) {
                     ),
                     Container(
                       height: DimensionConstants.d4.h,
-                      width: todayOrWeek != true? DimensionConstants.d12.w:DimensionConstants.d20.w,
+                      width: todayOrWeek != true
+                          ? DimensionConstants.d12.w
+                          : DimensionConstants.d20.w,
                       color: ColorConstants.redColorEB5757,
                     ),
                   ],
@@ -507,7 +530,9 @@ Widget stepperLine(BuildContext context, bool todayOrWeek, String date) {
               ),
               Container(
                 height: DimensionConstants.d4.h,
-                width:todayOrWeek != true? DimensionConstants.d8.w:DimensionConstants.d20.w,
+                width: todayOrWeek != true
+                    ? DimensionConstants.d8.w
+                    : DimensionConstants.d20.w,
                 decoration: BoxDecoration(
                     color: ColorConstants.green6FCF97,
                     borderRadius: BorderRadius.only(
@@ -628,7 +653,7 @@ Widget scaleNotesWidget(BuildContext context) {
   );
 }
 
-Widget crewWidget(BuildContext context,bool archivedOrNot) {
+Widget crewWidget(BuildContext context, bool archivedOrNot) {
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
@@ -643,7 +668,7 @@ Widget crewWidget(BuildContext context,bool archivedOrNot) {
       SizedBox(
         height: DimensionConstants.d24.h,
       ),
-      managerDetails(context, true, "Katharine Wells",archivedOrNot),
+      managerDetails(context, true, "Katharine Wells", archivedOrNot),
       SizedBox(
         height: DimensionConstants.d8.h,
       ),
@@ -651,16 +676,18 @@ Widget crewWidget(BuildContext context,bool archivedOrNot) {
           onTap: () {
             Navigator.pushNamed(context, RouteConstants.crewProfilePage);
           },
-          child: managerDetails(context, false, "Benjamin Poole",archivedOrNot)),
+          child:
+              managerDetails(context, false, "Benjamin Poole", archivedOrNot)),
       SizedBox(
         height: DimensionConstants.d8.h,
       ),
-      managerDetails(context, false, "Jason Smith",archivedOrNot)
+      managerDetails(context, false, "Jason Smith", archivedOrNot)
     ],
   );
 }
 
-Widget managerDetails(BuildContext context, bool managerOrNot, String name,bool archivedOrNot) {
+Widget managerDetails(
+    BuildContext context, bool managerOrNot, String name, bool archivedOrNot) {
   return Card(
     elevation: 1,
     shape: RoundedRectangleBorder(
@@ -768,26 +795,29 @@ Widget managerDetails(BuildContext context, bool managerOrNot, String name,bool 
                         ),
                       )
                     : Row(
-                  children:<Widget> [
-                    Text("carpenter".tr()).regularText(
-                      context,
-                      DimensionConstants.d14.sp,
-                      TextAlign.left,
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? ColorConstants.colorWhite
-                          : ColorConstants.deepBlue,
-                    ),
-                    archivedOrNot == true?const Text("   \$20.00/hr").regularText(
-                      context,
-                      DimensionConstants.d14.sp,
-                      TextAlign.left,
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? ColorConstants.colorWhite
-                          : ColorConstants.deepBlue,
-                    ):Container()
-
-                  ],
-                )
+                        children: <Widget>[
+                          Text("carpenter".tr()).regularText(
+                            context,
+                            DimensionConstants.d14.sp,
+                            TextAlign.left,
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? ColorConstants.colorWhite
+                                    : ColorConstants.deepBlue,
+                          ),
+                          archivedOrNot == true
+                              ? const Text("   \$20.00/hr").regularText(
+                                  context,
+                                  DimensionConstants.d14.sp,
+                                  TextAlign.left,
+                                  color: Theme.of(context).brightness ==
+                                          Brightness.dark
+                                      ? ColorConstants.colorWhite
+                                      : ColorConstants.deepBlue,
+                                )
+                              : Container()
+                        ],
+                      )
               ],
             ),
             Expanded(child: Container()),

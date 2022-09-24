@@ -165,9 +165,7 @@ class _BottomBarManagerState extends State<BottomBarManager> {
                     )
                   : null,
               body: Center(
-                child: provider.pageView(
-                  provider.selectedIndex,
-                ),
+                child: provider.pageView(provider.selectedIndex,),
               ),
               bottomNavigationBar: BottomNavigationBar(
                 items: <BottomNavigationBarItem>[

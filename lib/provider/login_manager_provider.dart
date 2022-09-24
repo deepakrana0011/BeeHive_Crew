@@ -31,7 +31,9 @@ class LoginManagerProvider extends BaseProvider {
               .setString(SharedPreference.USER_ID, model.data!.sId!);
           SharedPreference.prefs!.setInt(SharedPreference.loginType, 2);
           SharedPreference.prefs!.setBool(SharedPreference.isLogin, true);
-          Navigator.pushNamed(context, RouteConstants.bottomBarManager,
+
+          Navigator.of(context).pushNamedAndRemoveUntil(
+              RouteConstants.bottomBarManager, (route) => false,
               arguments: BottomBarManager(fromBottomNav: 1, pageIndex: 0));
         } else {
           Navigator.pushNamed(context, RouteConstants.continueWithPhoneManager,

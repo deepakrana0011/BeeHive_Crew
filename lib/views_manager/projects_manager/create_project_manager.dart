@@ -24,7 +24,8 @@ import '../../constants/dimension_constants.dart';
 import '../../helper/decoration.dart';
 
 class CreateProjectManager extends StatelessWidget {
-  const CreateProjectManager({Key? key}) : super(key: key);
+  CreateProjectManager({Key? key}) : super(key: key);
+  TextEditingController addressController=TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -62,11 +63,13 @@ class CreateProjectManager extends StatelessWidget {
                   SizedBox(
                     height: DimensionConstants.d20.h,
                   ),
-                  projectLocation(context),
-                  SizedBox(
-                    height: DimensionConstants.d16.h,
-                  ),
-                  locationFiled(context, provider),
+                  projectLocation(context, provider, addressController),
+                  if(provider.isCurrentAddress)Column(children: [
+                    SizedBox(
+                      height: DimensionConstants.d16.h,
+                    ),
+                    locationFiled(context, provider),
+                  ],),
                   SizedBox(
                     height: DimensionConstants.d16.h,
                   ),
@@ -156,7 +159,8 @@ Widget titleWidget(
   );
 }
 
-Widget projectLocation(BuildContext context) {
+Widget projectLocation(BuildContext context,
+    CreateProjectManagerProvider provider, TextEditingController controller) {
   return Padding(
     padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
     child: Column(
@@ -178,35 +182,56 @@ Widget projectLocation(BuildContext context) {
         SizedBox(
           height: DimensionConstants.d10.h,
         ),
-        Container(
-          height: DimensionConstants.d45.h,
-          decoration: BoxDecoration(
-            color: Theme.of(context).brightness == Brightness.dark
-                ? ColorConstants.littleDarkGray
-                : ColorConstants.colorBlack,
-            border: Theme.of(context).brightness == Brightness.dark
-                ? Border.all(
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? ColorConstants.colorWhite
-                        : Colors.transparent)
-                : null,
-            borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
-          ),
-          child: TextFormField(
-            maxLines: 10,
-            decoration: ViewDecoration.inputDecorationBox(
-              fieldName: "enter_address".tr(),
-              radius: DimensionConstants.d8.r,
-              fillColor: Theme.of(context).brightness == Brightness.dark
-                  ? ColorConstants.colorWhite
-                  : ColorConstants.littleDarkGray,
+        GestureDetector(
+          onTap: () {
+            Navigator.pushNamed(context, RouteConstants.autoComplete)
+                .then((value) {
+              if (value != null) {
+                Map<String, String> detail = value as Map<String, String>;
+                final lat = value["latitude"];
+                final lng = value["longitude"];
+                final selectedAddress = detail["address"];
+                provider.latitude = double.parse(lat ?? "0.0");
+                provider.longitude = double.parse(lng ?? "0.0");
+                provider.pickUpLocation = selectedAddress ?? "";
+                provider.updateCurrentAddressValue(false);
+
+                controller!.text = selectedAddress != null ? selectedAddress : "";
+              }
+            });
+          },
+          child: Container(
+            height: DimensionConstants.d45.h,
+            decoration: BoxDecoration(
               color: Theme.of(context).brightness == Brightness.dark
-                  ? ColorConstants.colorBlack
-                  : ColorConstants.littleDarkGray,
-              hintTextColor: Theme.of(context).brightness == Brightness.dark
-                  ? ColorConstants.colorWhite
-                  : ColorConstants.darkGray4F4F4F,
-              hintTextSize: DimensionConstants.d16.sp,
+                  ? ColorConstants.littleDarkGray
+                  : ColorConstants.colorBlack,
+              border: Theme.of(context).brightness == Brightness.dark
+                  ? Border.all(
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? ColorConstants.colorWhite
+                          : Colors.transparent)
+                  : null,
+              borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
+            ),
+            child: TextFormField(
+              maxLines: 10,
+              enabled: false,
+              controller: controller,
+              decoration: ViewDecoration.inputDecorationBox(
+                fieldName: "enter_address".tr(),
+                radius: DimensionConstants.d8.r,
+                fillColor: Theme.of(context).brightness == Brightness.dark
+                    ? ColorConstants.colorWhite
+                    : ColorConstants.littleDarkGray,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? ColorConstants.colorBlack
+                    : ColorConstants.littleDarkGray,
+                hintTextColor: Theme.of(context).brightness == Brightness.dark
+                    ? ColorConstants.colorWhite
+                    : ColorConstants.darkGray4F4F4F,
+                hintTextSize: DimensionConstants.d16.sp,
+              ),
             ),
           ),
         )
