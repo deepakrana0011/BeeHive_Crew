@@ -391,7 +391,7 @@ Widget addPrivateNote(BuildContext context) {
       GestureDetector(
         onTap: (){
           Navigator.pushNamed(
-              context, RouteConstants.addNotePageManager,arguments: AddNotePageManager(publicOrPrivate: true, projectId: '123213',));
+              context, RouteConstants.addNotePageManager,arguments: AddNotePageManager(isPrivate: true, projectId: '123213',));
         },
         child: Container(
           height: DimensionConstants.d40.h,

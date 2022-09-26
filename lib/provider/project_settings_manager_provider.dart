@@ -4,6 +4,7 @@ import 'package:beehive/locator.dart';
 import 'package:beehive/model/breakTimeModel.dart';
 import 'package:beehive/model/project_days_list_model.dart';
 import 'package:beehive/provider/base_provider.dart';
+import 'package:beehive/views_manager/projects_manager/projects_page_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -242,14 +243,20 @@ class ProjectSettingsManagerProvider extends BaseProvider {
           roundTimeSheet[selectedRoundSheetIndex];
       try {
         var model = await api.createProject(context, createProjectRequest);
+        if (model.success!) {
+          ProjectsPageManager.isProjectCreated = true;
+          ProjectsPageManager.projectId = model.data!.id!;
+          Navigator.popUntil(context, (route) {
+            if (route.settings.name == "bottomBarManager") {
+              return true;
+            } else {
+              return false;
+            }
+          });
+        } else {
+          DialogHelper.showMessage(context, model.message!);
+        }
         setState(ViewState.idle);
-        Navigator.popUntil(context, (route) {
-          if (route.settings.name == "bottomBarManager") {
-            return true;
-          } else {
-            return false;
-          }
-        });
       } on FetchDataException catch (e) {
         setState(ViewState.idle);
         DialogHelper.showMessage(context, e.toString());

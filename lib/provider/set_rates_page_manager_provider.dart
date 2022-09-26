@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:beehive/locator.dart';
 import 'package:beehive/model/create_project_request.dart';
 import 'package:beehive/model/get_assinged_crew_manager.dart';
+import 'package:beehive/model/update_crew_request.dart';
 import 'package:beehive/provider/base_provider.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -20,6 +21,8 @@ class SetRatesPageManageProvider extends BaseProvider {
 
   GetAssignedCrewInProject? assignedCrewInProject;
   bool isSameRate = false;
+  String? projectId;
+  bool? isUpdating;
 
   void updateSwitcherStatus(
     bool value,
@@ -34,15 +37,19 @@ class SetRatesPageManageProvider extends BaseProvider {
     notifyListeners();
   }
 
-  void navigateToNextPage(BuildContext context) {
+  void navigateToNextPage(BuildContext context, bool isUpdating) {
     if (isSameRate) {
       if (singleRateController.text.trim().isEmpty) {
         DialogHelper.showMessage(context, "Please enter the crew hourly rate");
       } else {
-        createProjectRequest.sameRate = singleRateController.text;
-        Navigator.pushNamed(context, RouteConstants.projectSettingsPageManager,
-            arguments:
-                ProjectSettingsPageManager(fromProjectOrCreateProject: true));
+        if(isUpdating){
+          updateCrewList(context);
+        }else{
+          createProjectRequest.sameRate = singleRateController.text;
+          Navigator.pushNamed(context, RouteConstants.projectSettingsPageManager,
+              arguments:
+              ProjectSettingsPageManager(fromProjectOrCreateProject: true));
+        }
       }
     } else {
       var index =
@@ -56,13 +63,59 @@ class SetRatesPageManageProvider extends BaseProvider {
           projectList.add(value);
         }
         createProjectRequest.projectRate = projectList;
-        Navigator.pushNamed(context, RouteConstants.projectSettingsPageManager,
-            arguments:
-                ProjectSettingsPageManager(fromProjectOrCreateProject: true));
+        if(isUpdating){
+          createProjectRequest.sameRate = singleRateController.text;
+          updateCrewList(context);
+        }else{
+          Navigator.pushNamed(context, RouteConstants.projectSettingsPageManager,
+              arguments:
+              ProjectSettingsPageManager(fromProjectOrCreateProject: true));
+        }
       } else {
         DialogHelper.showMessage(
             context, "Please enter the hourly rate for all crew members");
       }
+    }
+  }
+
+  Future<void> updateCrewList(BuildContext context) async {
+    var updateCrewRequest = UpdateCrewMemberRequest();
+    if (isSameRate) {
+      updateCrewRequest.sameRate = singleRateController.text;
+      var list=createProjectRequest.selectedCrewMember!.map((e) => e.id!).toList();
+      updateCrewRequest.crewId = list;
+    } else {
+      List<ProjectRate> projectList = [];
+      for (int i = 0; i < myController!.length; i++) {
+        ProjectRate value = ProjectRate();
+        value.crewId = createProjectRequest.selectedCrewMember![i].id;
+        value.price = myController![i].text;
+        projectList.add(value);
+      }
+      updateCrewRequest.projectRate = projectList;
+    }
+    setState(ViewState.busy);
+    try {
+      var model = await api.updateCrewList(context, projectId!, updateCrewRequest);
+      Navigator.popUntil(context, (route) {
+        if (route.settings.name == "bottomBarManager") {
+          return true;
+        } else {
+          return false;
+        }
+      });
+      /*if (model.success!) {
+
+         } else {
+           DialogHelper.showMessage(context, model.message!);
+         }*/
+      setState(ViewState.idle);
+    } on FetchDataException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, e.toString());
+    } on SocketException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, "internet_connection".tr());
     }
   }
 }

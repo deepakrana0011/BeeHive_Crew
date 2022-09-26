@@ -1,3 +1,5 @@
+import 'package:beehive/model/crew_dashboard_response.dart';
+
 class ManagerDashboardResponse {
   ManagerDashboardResponse({
     this.success,
@@ -57,7 +59,7 @@ class Manager {
         name: json["name"],
         password: json["password"],
         profileImage: json["profileImage"] ?? "",
-        companyLogo: json["companyLogo"]??"",
+        companyLogo: json["companyLogo"] ?? "",
         status: json["status"],
         createdAt: DateTime.parse(json["createdAt"]),
         v: json["__v"],
@@ -95,8 +97,8 @@ class ProjectDetail {
         crewId: List<String>.from(json["crewId"].map((x) => x)),
         roundTimesheets: json["roundTimesheets"],
         status: json["status"],
-        checkins: List<CheckInProjectDetailManager>.from(
-            json["checkins"].map((x) => CheckInProjectDetailManager.fromJson(x))),
+        checkins: List<CheckInProjectDetailManager>.from(json["checkins"]
+            .map((x) => CheckInProjectDetailManager.fromJson(x))),
       );
 }
 
@@ -109,33 +111,61 @@ class CheckInProjectDetailManager {
     this.checkinBreak,
     this.interuption,
     this.checkOutTime,
-    this.date,
+    this.crew
   });
 
   String? id;
   String? crewId;
+  CrewMemberDetail? crew;
   String? checkInTime;
   int? hoursDiff;
   List<Break>? checkinBreak;
-  List<Interuption>? interuption;
+  List<Interruption>? interuption;
   String? checkOutTime;
-  DateTime? date;
 
-  factory CheckInProjectDetailManager.fromJson(Map<String, dynamic> json) => CheckInProjectDetailManager(
+  factory CheckInProjectDetailManager.fromJson(Map<String, dynamic> json) =>
+      CheckInProjectDetailManager(
         id: json["_id"],
         crewId: json["crewId"],
+        crew: json["crew"] != null
+            ? CrewMemberDetail.fromJson(json["crew"])
+            : null,
         checkInTime: json["checkInTime"],
         hoursDiff: json["hoursDiff"],
         checkinBreak:
             List<Break>.from(json["break"].map((x) => Break.fromJson(x))),
-        interuption: List<Interuption>.from(
-            json["interuption"].map((x) => Interuption.fromJson(x))),
+        interuption: List<Interruption>.from(
+            json["interuption"].map((x) => Interruption.fromJson(x))),
         checkOutTime: json["checkOutTime"],
-        date: DateTime.parse(json["date"]),
       );
 }
 
-class Break {
+class CrewMemberDetail {
+  CrewMemberDetail({
+    this.id,
+    this.email,
+    this.name,
+    this.password,
+    this.status,
+  });
+
+  String? id;
+  String? email;
+  String? name;
+  String? password;
+  int? status;
+
+  factory CrewMemberDetail.fromJson(Map<String, dynamic> json) =>
+      CrewMemberDetail(
+        id: json["_id"],
+        email: json["email"],
+        name: json["name"],
+        password: json["password"],
+        status: json["status"],
+      );
+}
+
+/*class Break {
   Break({
     this.startTime,
     this.interval,
@@ -181,4 +211,4 @@ class Interuption {
         "endTime": endTime,
         "_id": id,
       };
-}
+}*/

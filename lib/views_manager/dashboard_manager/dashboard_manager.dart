@@ -441,7 +441,7 @@ Widget weeklyTabBarContainerManager(
                                       .checkInDataList!.length,
                                   itemBuilder: (context, innerIndex) {
                                     return projectDetailTile(context, provider,
-                                        checkInList: provider.weeklyData[index!].checkInDataList,
+                                        checkInList: provider.weeklyData[index].checkInDataList!,
                                         projectName: provider
                                             .weeklyData[index].projectName,
                                         crewCount: provider.weeklyData[index]

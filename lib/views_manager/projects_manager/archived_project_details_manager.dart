@@ -368,7 +368,7 @@ Widget todayTab(
                       Navigator.pushNamed(
                           context, RouteConstants.addNotePageManager,
                           arguments:
-                              AddNotePageManager(publicOrPrivate: false, projectId: '',));
+                              AddNotePageManager(isPrivate: false, projectId: '',));
                     },
                     child: Container(
                       height: DimensionConstants.d40.h,

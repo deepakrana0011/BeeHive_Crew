@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:beehive/constants/color_constants.dart';
 import 'package:beehive/constants/image_constants.dart';
 import 'package:beehive/enum/enum.dart';
+import 'package:beehive/helper/date_function.dart';
 import 'package:beehive/helper/dialog_helper.dart';
 import 'package:beehive/model/all_projects_manager_response.dart';
 import 'package:beehive/provider/base_provider.dart';
@@ -66,10 +67,10 @@ class ProjectsManagerProvider extends BaseProvider {
   }
 
   void getTotalHours() {
-    double value = 0.0;
+    int value = 0;
     allProjectsManagerResponse!.projectData!.forEach((element) {
       value = value + element.totalHours!;
     });
-    totalHours = value.toStringAsFixed(0);
+    totalHours = DateFunctions.minutesToHourString(value);
   }
 }

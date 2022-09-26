@@ -78,8 +78,8 @@ class CheckInProjectDetailCrew {
             : [],
         createdAt: DateTime.parse(json["createdAt"]),
         v: json["__v"],
-        checkOutTime: json["checkInTime"].toString().trim().isNotEmpty
-            ? json["checkInTime"]
+        checkOutTime: json["checkOutTime"].toString().trim().isNotEmpty
+            ? json["checkOutTime"]
             : null,
       );
 }

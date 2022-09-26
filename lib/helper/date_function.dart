@@ -268,7 +268,7 @@ class DateFunctions {
 
 
   static DateTime stringToDate(String dateString) {
-    DateTime date = DateFormat("hh:mm a").parse(dateString.toLowerCase());
+    DateTime date = DateFormat("hh:mm").parse(dateString.replaceAll("AM", "").replaceAll("PM", ""));
     String _24HourFormat = DateFormat("HH:mm").format(date);
     DateTime _24HourFormatDate = DateFormat("hh:mm").parse(_24HourFormat);
     return _24HourFormatDate;
@@ -314,7 +314,9 @@ class DateFunctions {
     return date;
   }
 
-  static String durationToString(int minutes) {
+
+
+  static String minutesToHourString(int minutes) {
     var d = Duration(minutes:minutes);
     List<String> parts = d.toString().split(':');
     return '${parts[0].padLeft(2, '0')}:${parts[1].padLeft(2, '0')}';
@@ -331,8 +333,10 @@ class DateFunctions {
     var checkIntDateTime = DateFunctions.getDateTimeFromString(checkInTime);
     var checkOutTime = DateFunctions.getDateTimeFromString(checkoutTime);
     var timeInMinutes =checkOutTime.difference(checkIntDateTime).inMinutes;
-    var totalSpendTime = DateFunctions.durationToString(timeInMinutes);
+    var totalSpendTime = DateFunctions.minutesToHourString(timeInMinutes);
    return totalSpendTime;
   }
+
+
 
 }

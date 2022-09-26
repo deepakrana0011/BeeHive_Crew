@@ -116,7 +116,7 @@ class DashboardProvider extends BaseProvider {
       var minutes = endTime.difference(startTime).inMinutes;
       totalMinutes = totalMinutes + minutes;
     }
-    totalHours = DateFunctions.durationToString(totalMinutes);
+    totalHours = DateFunctions.minutesToHourString(totalMinutes);
     customNotify();
   }
 
@@ -286,7 +286,7 @@ class DashboardProvider extends BaseProvider {
     }
     var checkIntDateTime = DateFunctions.getDateTimeFromString(time);
     var timeInMinutes = DateTime.now().difference(checkIntDateTime).inMinutes;
-    timeFromLastCheckedIn = DateFunctions.durationToString(timeInMinutes);
+    timeFromLastCheckedIn = DateFunctions.minutesToHourString(timeInMinutes);
     customNotify();
   }
 
@@ -294,7 +294,7 @@ class DashboardProvider extends BaseProvider {
     var checkIntDateTime = DateFunctions.getDateTimeFromString(
         crewResponse!.userCheckin!.checkInTime!);
     var timeInMinutes = DateTime.now().difference(checkIntDateTime).inMinutes;
-    totalSpendTime = DateFunctions.durationToString(timeInMinutes);
+    totalSpendTime = DateFunctions.minutesToHourString(timeInMinutes);
     customNotify();
   }
 

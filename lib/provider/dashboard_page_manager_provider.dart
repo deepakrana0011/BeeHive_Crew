@@ -154,7 +154,7 @@ class DashBoardPageManagerProvider extends BaseProvider {
       var minutes = endTime.difference(startTime).inMinutes;
       totalMinutes = totalMinutes + minutes;
     }
-    var totalHours = DateFunctions.durationToString(totalMinutes);
+    var totalHours = DateFunctions.minutesToHourString(totalMinutes);
     return totalHours;
   }
 
@@ -170,7 +170,7 @@ class DashBoardPageManagerProvider extends BaseProvider {
         totalMinutes = totalMinutes + minutes;
       }
     }
-    var totalHours = DateFunctions.durationToString(totalMinutes);
+    var totalHours = DateFunctions.minutesToHourString(totalMinutes);
     allProjectHour = totalHours;
   }
 

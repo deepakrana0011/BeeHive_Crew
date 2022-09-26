@@ -35,7 +35,7 @@ class ProjectDetail {
   String? projectName;
   List<String>? crewId;
   List<Checkin>? checkins;
-  double? totalHours;
+  int? totalHours;
   Color color = Colors.primaries[Random().nextInt(Colors.primaries.length)];
 
   factory ProjectDetail.fromJson(Map<String, dynamic> json) => ProjectDetail(
@@ -44,7 +44,7 @@ class ProjectDetail {
         crewId: List<String>.from(json["crewId"].map((x) => x)),
         checkins: List<Checkin>.from(
             json["checkins"].map((x) => Checkin.fromJson(x))),
-        totalHours: double.parse(json["totalHours"].toString()??"0.0"),
+        totalHours: json["totalHours"],
       );
 }
 

@@ -35,7 +35,7 @@ class ProjectDatum {
   String? projectName;
   List<String>? crewId;
   List<Checkin>? checkins;
-  double? totalHours;
+  int? totalHours;
   int? crew;
 
   factory ProjectDatum.fromJson(Map<String, dynamic> json) => ProjectDatum(
@@ -48,7 +48,7 @@ class ProjectDatum {
             ? List<Checkin>.from(
                 json["checkins"].map((x) => Checkin.fromJson(x)))
             : [],
-        totalHours: double.parse(json["totalHours"].toString()) ?? 0,
+        totalHours: json["totalHours"],
         crew: json["crew"] ?? 0,
       );
 }

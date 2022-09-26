@@ -19,12 +19,16 @@ import '../../helper/decoration.dart';
 import '../../widget/custom_switcher.dart';
 
 class SetRatesPageManager extends StatelessWidget {
-  SetRatesPageManager({Key? key}) : super(key: key);
+  bool? isUpdating;
+  String? projectId;
+  SetRatesPageManager({Key? key,this.isUpdating,this.projectId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BaseView<SetRatesPageManageProvider>(
       onModelReady: (provider) async {
+        provider.projectId=projectId;
+        provider.isUpdating=isUpdating;
         provider.myController = List.generate(
             provider.createProjectRequest.selectedCrewMember!.length,
             (i) => TextEditingController());
@@ -131,7 +135,7 @@ class SetRatesPageManager extends StatelessWidget {
                               color2: ColorConstants.primaryGradient1Color,
                               fontSize: DimensionConstants.d14.sp,
                               onBtnTap: () {
-                            provider.navigateToNextPage(context);
+                            provider.navigateToNextPage(context,isUpdating!);
                           }, shadowRequired: true),
                         ),
                       ],

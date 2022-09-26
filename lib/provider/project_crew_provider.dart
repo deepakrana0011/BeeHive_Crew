@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:beehive/Constants/color_constants.dart';
 import 'package:beehive/enum/enum.dart';
+import 'package:beehive/helper/date_function.dart';
 import 'package:beehive/helper/dialog_helper.dart';
 import 'package:beehive/model/all_checkout_projects_crew.dart';
 import 'package:beehive/provider/base_provider.dart';
@@ -64,11 +65,11 @@ class ProjectsCrewProvider extends BaseProvider {
   }
 
   void getTotalHours() {
-    double value = 0.0;
+    int value = 0;
     allCheckoutProjectCrewResponse!.projectData!.forEach((element) {
       value = value + element.totalHours!;
     });
-    totalHours = value.toStringAsFixed(0);
+    totalHours =DateFunctions.minutesToHourString(value);
   }
 
 }

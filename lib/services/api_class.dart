@@ -9,6 +9,7 @@ import 'package:beehive/model/all_projects_manager_response.dart';
 import 'package:beehive/model/assign_project_response_manager.dart';
 import 'package:beehive/model/check_in_response_crew.dart';
 import 'package:beehive/model/create_project_request.dart';
+import 'package:beehive/model/create_project_response.dart';
 import 'package:beehive/model/manager_dashboard_response.dart';
 import 'package:beehive/model/email_verification_response_manager.dart';
 import 'package:beehive/model/email_verified_response_manager.dart';
@@ -17,8 +18,8 @@ import 'package:beehive/model/get_crew_profile_response.dart';
 import 'package:beehive/model/get_otp_fro_password.dart';
 import 'package:beehive/model/login_response_manager.dart';
 import 'package:beehive/model/phone_otp_response_manager.dart';
-import 'package:beehive/model/project_detail_response.dart';
-import 'package:beehive/model/project_details_response_manager.dart';
+import 'package:beehive/model/project_detail_crew_response.dart';
+import 'package:beehive/model/project_detail_manager_response.dart';
 import 'package:beehive/model/project_settings_break_request_manager.dart';
 import 'package:beehive/model/project_settings_response_manager.dart';
 import 'package:beehive/model/resend_otp_response.dart';
@@ -28,6 +29,7 @@ import 'package:beehive/model/reset_password_response_crew.dart';
 import 'package:beehive/model/set_crew_rate_Manger_response.dart';
 import 'package:beehive/model/set_project_rate_request.dart';
 import 'package:beehive/model/update_crew_profile_response.dart';
+import 'package:beehive/model/update_crew_request.dart';
 import 'package:beehive/model/weekly_check_in_Response.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
@@ -520,29 +522,6 @@ class Api {
               projectId,
           data: map);
       return ProjectSettingsResponseManager.fromJson(
-          json.decode(response.toString()));
-    } on DioError catch (e) {
-      if (e.response != null) {
-        var errorData = jsonDecode(e.response.toString());
-        var errorMessage = errorData["message"];
-        throw FetchDataException(errorMessage);
-      } else {
-        throw const SocketException("Socket Exception");
-      }
-    }
-  }
-
-  Future<ProjectDetailsResponseManager> getCreatedProjectDetails(
-      BuildContext context, String projectId) async {
-    try {
-      dio.options.headers["authorization"] =
-          SharedPreference.prefs!.getString(SharedPreference.TOKEN);
-      var response = await dio.get(
-        ApiConstantsManager.BASEURL +
-            ApiConstantsManager.GET_PROJECT_DETAILS +
-            projectId,
-      );
-      return ProjectDetailsResponseManager.fromJson(
           json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
@@ -1170,7 +1149,7 @@ class Api {
     }
   }
 
-  Future<Response> createProject(
+  Future<CreateProjectResponse> createProject(
       BuildContext context, CreateProjectRequest request) async {
     var requestToServer = request.toJson();
     try {
@@ -1178,7 +1157,7 @@ class Api {
           SharedPreference.prefs!.getString(SharedPreference.TOKEN);
       var response = await dio.post(ApiConstantsManager.BASEURL + "newproject",
           data: requestToServer);
-      return response;
+      return CreateProjectResponse.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());
@@ -1221,6 +1200,7 @@ class Api {
         ApiConstantsManager.BASEURL + ApiConstantsManager.allProjectsManager,
       );
       var responseString = response.toString();
+      print("responseString ${responseString}");
       return AllProjectsManagerResponse.fromJson(
           json.decode(response.toString()));
     } on DioError catch (e) {
@@ -1256,14 +1236,73 @@ class Api {
   }
 
   Future<ProjectDetailResponseManager> getProjectDetail(
-      BuildContext context, String projectId) async {
+    BuildContext context,
+    String projectId,
+    String startDate,
+    String endDate,
+  ) async {
     try {
       dio.options.headers["authorization"] =
           SharedPreference.prefs!.getString(SharedPreference.TOKEN);
-      var response = await dio.get(
-        "${ApiConstantsCrew.BASEURL}${ApiConstantsManager.singleProjectDetail}/$projectId",
-      );
-      return ProjectDetailResponseManager.fromJson(json.decode(response.toString()));
+
+      var map = {"firstDate": startDate, "secondDate": endDate};
+      var response = await dio.post(
+          "${ApiConstantsManager.BASEURL}${ApiConstantsManager.singleProjectDetail}/$projectId",
+          data: map);
+      print("response string ${response.toString()}");
+      return ProjectDetailResponseManager.fromJson(
+          json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+
+  Future<Response> updateCrewList(BuildContext context, String projectId,
+      UpdateCrewMemberRequest request) async {
+    try {
+      var requestToServer = request.toJson();
+      dio.options.headers["authorization"] =
+          SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var response = await dio.put(
+          "${ApiConstantsManager.BASEURL}${ApiConstantsManager.updateCrewMember}/$projectId",
+          data: requestToServer);
+      print("response string ${response.toString()}");
+      return response;
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+
+  Future<ProjectDetailCrewResponse> getProjectDetailCrew(
+    BuildContext context,
+    String projectId,
+    String startDate,
+    String endDate,
+  ) async {
+    try {
+      dio.options.headers["authorization"] =
+          SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+
+      var map = {"firstDate": startDate, "secondDate": endDate};
+      var response = await dio.post(
+          "${ApiConstantsCrew.BASEURL}${ApiConstantsCrew.crewProjectDetail}/$projectId",
+          data: map);
+      var responseString = response.toString();
+      print("response string ${responseString}");
+      return ProjectDetailCrewResponse.fromJson(
+          json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());

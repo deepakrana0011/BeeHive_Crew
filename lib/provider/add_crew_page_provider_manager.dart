@@ -4,6 +4,7 @@ import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/locator.dart';
 import 'package:beehive/model/add_crew_response_manager.dart';
 import 'package:beehive/model/create_project_request.dart';
+import 'package:beehive/model/manager_dashboard_response.dart';
 import 'package:beehive/provider/base_provider.dart';
 import 'package:beehive/views_manager/projects_manager/set_rates_page_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -16,6 +17,9 @@ import '../services/fetch_data_expection.dart';
 
 class AddCrewPageManagerProvider extends BaseProvider {
   CreateProjectRequest createProjectRequest = locator<CreateProjectRequest>();
+
+  List<CrewMemberDetail>? alreadyMemberList;
+  String? projectId;
 
   void onShare(BuildContext context) async {
     final box = context.findRenderObject() as RenderBox?;
@@ -45,7 +49,7 @@ class AddCrewPageManagerProvider extends BaseProvider {
   }
 
   Future getCrewList(
-    BuildContext context,
+    BuildContext context
   ) async {
     setState(ViewState.busy);
     try {
@@ -53,6 +57,9 @@ class AddCrewPageManagerProvider extends BaseProvider {
       if (model.success == true) {
         crewList.clear();
         crewList.addAll(model.data!);
+        if (alreadyMemberList != null) {
+          removeAlreadySelectedCrewMember(alreadyMemberList!);
+        }
         setState(ViewState.idle);
       } else {
         setState(ViewState.idle);
@@ -66,13 +73,21 @@ class AddCrewPageManagerProvider extends BaseProvider {
     }
   }
 
+  void removeAlreadySelectedCrewMember(
+      List<CrewMemberDetail> alreadyMemberList) {
+    for (int i = 0; i < alreadyMemberList.length; i++) {
+      crewList.removeWhere((element) => element.id == alreadyMemberList[i].id);
+    }
+  }
+
   void navigateToNextPage(BuildContext context) {
     if (selectedCrew.isNotEmpty) {
+      var isUpdating=alreadyMemberList!=null?true:false;
       createProjectRequest.crewId =
           selectedCrew.map((e) => e.id.toString()).toList();
       createProjectRequest.selectedCrewMember = selectedCrew;
       Navigator.pushNamed(context, RouteConstants.setRatesManager,
-          arguments: SetRatesPageManager());
+          arguments: SetRatesPageManager(isUpdating: isUpdating,projectId: projectId,));
     } else {
       DialogHelper.showMessage(
           context, "Please choose at least one crew member");

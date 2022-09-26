@@ -5,6 +5,10 @@ import 'package:beehive/constants/image_constants.dart';
 import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
+import 'package:beehive/helper/date_function.dart';
+import 'package:beehive/model/manager_dashboard_response.dart';
+import 'package:beehive/model/project_detail_manager_response.dart';
+import 'package:beehive/model/project_working_hour_detail.dart';
 import 'package:beehive/provider/bottom_bar_Manager_provider.dart';
 import 'package:beehive/provider/project_details_manager_provider.dart';
 import 'package:beehive/provider/project_details_provider.dart';
@@ -20,6 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../constants/route_constants.dart';
 import '../../helper/dialog_helper.dart';
@@ -52,9 +57,12 @@ class _ProjectDetailsPageManagerState extends State<ProjectDetailsPageManager>
   Widget build(BuildContext context) {
     return BaseView<ProjectDetailsManagerProvider>(
       onModelReady: (provider) {
+        provider.projectId = widget.projectId;
         provider.tabController = TabController(length: 3, vsync: this);
-        print("project id is ${widget.projectId}");
-        provider.getProjectDetail(context, widget.projectId);
+        provider.startDate = DateFunctions.getCurrentDateMonthYear();
+        provider.endDate = DateFunctions.getCurrentDateMonthYear();
+        provider.setCustomMapPinUser();
+        provider.getProjectDetail(context);
       },
       builder: (context, provider, _) {
         return Scaffold(
@@ -70,184 +78,202 @@ class _ProjectDetailsPageManagerState extends State<ProjectDetailsPageManager>
             bottomBarProvider?.onItemTapped(0);
             bottomBarProvider!.notifyListeners();
           }),
-          body: Padding(
-            padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
-            child: SingleChildScrollView(
-              child: provider.state == ViewState.idle
-                  ? Column(
-                      children: <Widget>[
-                        SizedBox(
-                          height: DimensionConstants.d16.h,
-                        ),
-                        projectCreated(context, provider),
-                        SizedBox(
-                          height: DimensionConstants.d16.h,
-                        ),
-                        mapAndHoursDetails(
-                            context, widget.createProject!, provider),
-                        SizedBox(
-                          height: DimensionConstants.d10.h,
-                        ),
-                        tabBarView(
-                            context, provider.tabController!, provider, false),
-                        SizedBox(
-                          height: DimensionConstants.d24.h,
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Expanded(
-                                child: Text("notes".tr()).semiBoldText(context,
-                                    DimensionConstants.d20.sp, TextAlign.left,
-                                    color: Theme.of(context).brightness ==
-                                            Brightness.dark
-                                        ? ColorConstants.colorWhite
-                                        : ColorConstants.colorBlack)),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.pushNamed(
-                                    context, RouteConstants.addNotePageManager,
-                                    arguments: AddNotePageManager(
-                                      publicOrPrivate: false,
-                                      projectId: "1",
-                                    ));
-                              },
-                              child: Container(
-                                height: DimensionConstants.d40.h,
-                                width: DimensionConstants.d118,
-                                decoration: BoxDecoration(
-                                  color: ColorConstants.deepBlue,
-                                  border: Theme.of(context).brightness ==
-                                          Brightness.dark
-                                      ? Border.all(
-                                          color: ColorConstants.colorWhite,
-                                          width: DimensionConstants.d1.w)
-                                      : null,
-                                  borderRadius: BorderRadius.circular(
-                                      DimensionConstants.d8.r),
-                                ),
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: DimensionConstants.d10.w),
-                                  child: Row(
-                                    children: <Widget>[
-                                      ImageView(
-                                        path: ImageConstants.addNotesIcon,
-                                        height: DimensionConstants.d16.h,
-                                        width: DimensionConstants.d16.w,
-                                      ),
-                                      SizedBox(
-                                        width: DimensionConstants.d8.w,
-                                      ),
-                                      Text("add_note".tr()).semiBoldText(
-                                          context,
-                                          DimensionConstants.d14.sp,
-                                          TextAlign.left,
-                                          color: Theme.of(context).brightness ==
-                                                  Brightness.dark
-                                              ? ColorConstants.colorWhite
-                                              : ColorConstants.colorWhite),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                        SizedBox(
-                          height: DimensionConstants.d25.h,
-                        ),
-                        notesList(context),
-                        SizedBox(
-                          height: DimensionConstants.d25.h,
-                        ),
-                        Row(
-                          children: <Widget>[
-                            Text("crew".tr()).semiBoldText(context,
-                                DimensionConstants.d20.sp, TextAlign.left,
-                                color: ColorConstants.colorBlack),
-                            Expanded(child: Container()),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.pushNamed(
-                                    context, RouteConstants.addCrewPageManager,
-                                    arguments: AddCrewPageManager());
-                              },
-                              child: Container(
-                                height: DimensionConstants.d40.h,
-                                width: DimensionConstants.d118,
-                                decoration: BoxDecoration(
-                                  color: ColorConstants.deepBlue,
-                                  border: Theme.of(context).brightness ==
-                                          Brightness.dark
-                                      ? Border.all(
-                                          color: ColorConstants.colorWhite,
-                                          width: DimensionConstants.d1.w)
-                                      : null,
-                                  borderRadius: BorderRadius.circular(
-                                      DimensionConstants.d8.r),
-                                ),
-                                child: Padding(
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: DimensionConstants.d10.w),
-                                  child: Row(
-                                    children: <Widget>[
-                                      ImageView(
-                                        path: ImageConstants.addNotesIcon,
-                                        height: DimensionConstants.d16.h,
-                                        width: DimensionConstants.d16.w,
-                                      ),
-                                      SizedBox(
-                                        width: DimensionConstants.d8.w,
-                                      ),
-                                      Text("add_crew".tr()).semiBoldText(
-                                          context,
-                                          DimensionConstants.d14.sp,
-                                          TextAlign.left,
-                                          color: Theme.of(context).brightness ==
-                                                  Brightness.dark
-                                              ? ColorConstants.colorWhite
-                                              : ColorConstants.colorWhite),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            )
-                          ],
-                        ),
-                        crewList(context, true, provider),
-                        SizedBox(
-                          height: DimensionConstants.d18.h,
-                        ),
-                        widget.createProject == false
-                            ? Padding(
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: DimensionConstants.d3.w),
-                                child: CommonWidgets.commonButton(
-                                    context, "delete_project".tr(),
-                                    color1: ColorConstants.redColorEB5757,
-                                    color2: ColorConstants.redColorEB5757,
-                                    fontSize: DimensionConstants.d16.sp,
-                                    onBtnTap: () {
-                                  showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) =>
-                                          DialogHelper.deleteDialogBoxManager(
-                                            context,
-                                            cancel: () {},
-                                            delete: () {},
-                                          ));
-                                }, shadowRequired: false),
-                              )
-                            : Container(),
-                        SizedBox(
-                          height: DimensionConstants.d60.h,
-                        ),
-                      ],
-                    )
-                  : const Center(
-                      child: CustomCircularBar(),
+          body: Stack(
+            children: [
+              Padding(
+                padding:
+                    EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
+                child: SingleChildScrollView(
+                    child: Column(
+                  children: <Widget>[
+                    if (widget.createProject ?? false)
+                      Column(
+                        children: [
+                          SizedBox(
+                            height: DimensionConstants.d16.h,
+                          ),
+                          projectCreated(context, provider),
+                        ],
+                      ),
+                    SizedBox(
+                      height: DimensionConstants.d16.h,
                     ),
-            ),
+                    mapAndHoursDetails(
+                        context, widget.createProject!, provider),
+                    SizedBox(
+                      height: DimensionConstants.d10.h,
+                    ),
+                    tabBarView(
+                        context, provider.tabController!, provider, false),
+                    SizedBox(
+                      height: DimensionConstants.d24.h,
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Expanded(
+                            child: Text("notes".tr()).semiBoldText(context,
+                                DimensionConstants.d20.sp, TextAlign.left,
+                                color: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? ColorConstants.colorWhite
+                                    : ColorConstants.colorBlack)),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(
+                                context, RouteConstants.addNotePageManager,
+                                arguments: AddNotePageManager(
+                                  isPrivate: false,
+                                  projectId: provider.projectDetailResponse!
+                                      .projectData!.projectDataId!,
+                                )).then((value) {
+                              provider.getProjectDetail(context);
+                            });
+                          },
+                          child: Container(
+                            height: DimensionConstants.d40.h,
+                            width: DimensionConstants.d118,
+                            decoration: BoxDecoration(
+                              color: ColorConstants.deepBlue,
+                              border: Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? Border.all(
+                                      color: ColorConstants.colorWhite,
+                                      width: DimensionConstants.d1.w)
+                                  : null,
+                              borderRadius: BorderRadius.circular(
+                                  DimensionConstants.d8.r),
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: DimensionConstants.d10.w),
+                              child: Row(
+                                children: <Widget>[
+                                  ImageView(
+                                    path: ImageConstants.addNotesIcon,
+                                    height: DimensionConstants.d16.h,
+                                    width: DimensionConstants.d16.w,
+                                  ),
+                                  SizedBox(
+                                    width: DimensionConstants.d8.w,
+                                  ),
+                                  Text("add_note".tr()).semiBoldText(context,
+                                      DimensionConstants.d14.sp, TextAlign.left,
+                                      color: Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? ColorConstants.colorWhite
+                                          : ColorConstants.colorWhite),
+                                ],
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                    if (provider.projectDetailResponse != null &&
+                        provider.projectDetailResponse!.projectData!.notes!
+                            .isNotEmpty)
+                      Column(
+                        children: [
+                          SizedBox(
+                            height: DimensionConstants.d25.h,
+                          ),
+                          notesList(
+                              context,
+                              provider
+                                  .projectDetailResponse!.projectData!.notes!),
+                        ],
+                      ),
+                    SizedBox(
+                      height: DimensionConstants.d25.h,
+                    ),
+                    Row(
+                      children: <Widget>[
+                        Text("crew".tr()).semiBoldText(
+                            context, DimensionConstants.d20.sp, TextAlign.left,
+                            color: ColorConstants.colorBlack),
+                        Expanded(child: Container()),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(
+                                context, RouteConstants.addCrewPageManager,
+                                arguments: AddCrewPageManager(crewList: provider.projectDetailResponse!.projectData!.crews!,projectId: provider.projectId));
+                          },
+                          child: Container(
+                            height: DimensionConstants.d40.h,
+                            width: DimensionConstants.d118,
+                            decoration: BoxDecoration(
+                              color: ColorConstants.deepBlue,
+                              border: Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? Border.all(
+                                      color: ColorConstants.colorWhite,
+                                      width: DimensionConstants.d1.w)
+                                  : null,
+                              borderRadius: BorderRadius.circular(
+                                  DimensionConstants.d8.r),
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: DimensionConstants.d10.w),
+                              child: Row(
+                                children: <Widget>[
+                                  ImageView(
+                                    path: ImageConstants.addNotesIcon,
+                                    height: DimensionConstants.d16.h,
+                                    width: DimensionConstants.d16.w,
+                                  ),
+                                  SizedBox(
+                                    width: DimensionConstants.d8.w,
+                                  ),
+                                  Text("add_crew".tr()).semiBoldText(context,
+                                      DimensionConstants.d14.sp, TextAlign.left,
+                                      color: Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? ColorConstants.colorWhite
+                                          : ColorConstants.colorWhite),
+                                ],
+                              ),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                    if (provider.projectDetailResponse != null &&
+                        provider.projectDetailResponse!.projectData!.crews!
+                            .isNotEmpty)
+                      crewList(context, true, provider, bottomBarProvider!),
+                    SizedBox(
+                      height: DimensionConstants.d18.h,
+                    ),
+                    /*widget.createProject == false
+                        ? Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: DimensionConstants.d3.w),
+                            child: CommonWidgets.commonButton(
+                                context, "delete_project".tr(),
+                                color1: ColorConstants.redColorEB5757,
+                                color2: ColorConstants.redColorEB5757,
+                                fontSize: DimensionConstants.d16.sp,
+                                onBtnTap: () {
+                              showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) =>
+                                      DialogHelper.deleteDialogBoxManager(
+                                        context,
+                                        cancel: () {},
+                                        delete: () {},
+                                      ));
+                            }, shadowRequired: false),
+                          )
+                        : Container(),*/
+                    SizedBox(
+                      height: DimensionConstants.d60.h,
+                    ),
+                  ],
+                )),
+              ),
+              if (provider.state == ViewState.busy) CustomCircularBar()
+            ],
           ),
         );
       },
@@ -260,9 +286,9 @@ Widget mapAndHoursDetails(BuildContext context, bool createProject,
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: <Widget>[
-      Text("ProjectNameXXX").semiBoldText(
-          context, DimensionConstants.d20.sp, TextAlign.left,
-          color: ColorConstants.colorBlack),
+      Text(provider.projectDetailResponse?.projectData?.projectName ?? "")
+          .semiBoldText(context, DimensionConstants.d20.sp, TextAlign.left,
+              color: ColorConstants.colorBlack),
       SizedBox(
         height: DimensionConstants.d15.h,
       ),
@@ -281,7 +307,9 @@ Widget mapAndHoursDetails(BuildContext context, bool createProject,
                   width: DimensionConstants.d8.w,
                 ),
                 Expanded(
-                    child: Text("Northfield Road, Toronto, Ontario M1G 2h4 ")
+                    child: Text(provider
+                                .projectDetailResponse?.projectData?.address ??
+                            "")
                         .regularText(
                             context, DimensionConstants.d16.sp, TextAlign.left,
                             color: ColorConstants.darkGray4F4F4F,
@@ -290,29 +318,36 @@ Widget mapAndHoursDetails(BuildContext context, bool createProject,
               ],
             ),
           ),
-          Container(
-            height: DimensionConstants.d42.h,
-            width: DimensionConstants.d94.w,
-            decoration: BoxDecoration(
-              border: Theme.of(context).brightness == Brightness.dark
-                  ? Border.all(
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? ColorConstants.colorWhite
-                          : ColorConstants.colorBlack,
-                      width: DimensionConstants.d1.w)
-                  : Border.all(
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? ColorConstants.colorWhite
-                          : ColorConstants.grayD2D2D7,
-                      width: DimensionConstants.d1.w),
-              borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
-            ),
-            child: Center(
-              child: Text("directions".tr()).semiBoldText(
-                  context, DimensionConstants.d14.sp, TextAlign.center,
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? ColorConstants.colorWhite
-                      : ColorConstants.colorBlack),
+          GestureDetector(
+            onTap: () async {
+              String googleUrl =
+                  'https://www.google.com/maps/search/?api=1&query=${provider.projectDetailResponse!.projectData!.latitude},${provider.projectDetailResponse!.projectData!.longitude}';
+              await launchUrl(Uri.parse(googleUrl));
+            },
+            child: Container(
+              height: DimensionConstants.d42.h,
+              width: DimensionConstants.d94.w,
+              decoration: BoxDecoration(
+                border: Theme.of(context).brightness == Brightness.dark
+                    ? Border.all(
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? ColorConstants.colorWhite
+                            : ColorConstants.colorBlack,
+                        width: DimensionConstants.d1.w)
+                    : Border.all(
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? ColorConstants.colorWhite
+                            : ColorConstants.grayD2D2D7,
+                        width: DimensionConstants.d1.w),
+                borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
+              ),
+              child: Center(
+                child: Text("directions".tr()).semiBoldText(
+                    context, DimensionConstants.d14.sp, TextAlign.center,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? ColorConstants.colorWhite
+                        : ColorConstants.colorBlack),
+              ),
             ),
           )
         ],
@@ -334,11 +369,16 @@ Widget mapAndHoursDetails(BuildContext context, bool createProject,
             zoomControlsEnabled: false,
             scrollGesturesEnabled: true,
             markers: Set<Marker>.of(provider.markers),
-            initialCameraPosition: const CameraPosition(
-              target: LatLng(30.7046, 76.7179),
+            initialCameraPosition: CameraPosition(
+              target: LatLng(
+                  provider.projectDetailResponse?.projectData?.latitude ?? 0.0,
+                  provider.projectDetailResponse?.projectData?.latitude ?? 0.0),
               zoom: 11.0,
             ),
-            onMapCreated: provider.onMapCreated(),
+            onMapCreated: (controller) {
+              provider.googleMapController = controller;
+              provider.customNotify();
+            },
           ),
         ),
       ),
@@ -368,11 +408,14 @@ Widget mapAndHoursDetails(BuildContext context, bool createProject,
                       ? ColorConstants.colorWhite
                       : ColorConstants.colorBlack),
               Expanded(child: Container()),
-              Text("1200").semiBoldText(
-                  context, DimensionConstants.d14.sp, TextAlign.left,
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? ColorConstants.colorWhite
-                      : ColorConstants.colorBlack),
+              Text(DateFunctions.minutesToHourString(
+                      provider.projectDetailResponse?.projectData?.totalHours ??
+                          0))
+                  .semiBoldText(
+                      context, DimensionConstants.d14.sp, TextAlign.left,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? ColorConstants.colorWhite
+                          : ColorConstants.colorBlack),
             ],
           ),
         ),
@@ -409,8 +452,33 @@ Widget tabBarView(BuildContext context, TabController controller,
           padding: EdgeInsets.zero,
           controller: controller,
           onTap: (index) {
-            if (controller.indexIsChanging) {
-              provider.updateLoadingStatus(true);
+            provider.customNotify();
+            switch (index) {
+              case 0:
+                {
+                  provider.startDate = DateFunctions.getCurrentDateMonthYear();
+                  provider.endDate = DateFunctions.getCurrentDateMonthYear();
+                  provider.selectedStartDate = null;
+                  provider.selectedEndDate = null;
+                  provider.getProjectDetail(context);
+                  break;
+                }
+              case 1:
+                {
+                  provider.selectedStartDate = null;
+                  provider.selectedEndDate = null;
+                  provider.nextWeekDays(7);
+                  provider.getProjectDetail(context);
+                  break;
+                }
+              case 2:
+                {
+                  provider.selectedStartDate = null;
+                  provider.selectedEndDate = null;
+                  provider.nextWeekDays(14);
+                  provider.getProjectDetail(context);
+                  break;
+                }
             }
           },
           tabs: [
@@ -454,28 +522,13 @@ Widget tabBarView(BuildContext context, TabController controller,
         height: DimensionConstants.d16.h,
       ),
       provider.tabController!.index == 0
-          ? todayTab(context, projectCreate == true ? false : true, provider,
-              projectCreate, "1")
-          : weeklyTabBarContainer(context),
-      /*TabBarView(
-          physics: NeverScrollableScrollPhysics(),
-          controller: controller,
-          children: <Widget>[
-            todayTab(context, projectCreate == true ? false : true, provider,
-                projectCreate, "1"),
-            todayTab(context, false, provider, projectCreate, "1"),
-            Container(),
-          ])*/
+          ? todayTab(context, provider)
+          : weeklyTabBarContainer(context, provider),
     ],
   );
 }
 
-Widget todayTab(
-    BuildContext context,
-    bool todayOrWeekly,
-    ProjectDetailsManagerProvider provider,
-    bool projectCreate,
-    String projectId) {
+Widget todayTab(BuildContext context, ProjectDetailsManagerProvider provider) {
   return Container(
     height: DimensionConstants.d70.h,
     decoration: BoxDecoration(
@@ -495,11 +548,13 @@ Widget todayTab(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("4.5h").boldText(
-                  context, DimensionConstants.d24.sp, TextAlign.start,
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? ColorConstants.colorWhite
-                      : ColorConstants.colorBlack),
+              Text(provider.projectDetailResponse?.projectData?.totalHours
+                          ?.toStringAsFixed(0) ??
+                      "0")
+                  .boldText(context, DimensionConstants.d24.sp, TextAlign.start,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? ColorConstants.colorWhite
+                          : ColorConstants.colorBlack),
               SizedBox(
                 height: DimensionConstants.d5.h,
               ),
@@ -520,11 +575,13 @@ Widget todayTab(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("3").boldText(
-                  context, DimensionConstants.d24.sp, TextAlign.start,
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? ColorConstants.colorWhite
-                      : ColorConstants.colorBlack),
+              Text(provider.projectDetailResponse?.projectData?.crews!.length
+                          .toString() ??
+                      '0')
+                  .boldText(context, DimensionConstants.d24.sp, TextAlign.start,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? ColorConstants.colorWhite
+                          : ColorConstants.colorBlack),
               SizedBox(
                 height: DimensionConstants.d5.h,
               ),
@@ -539,249 +596,12 @@ Widget todayTab(
       ],
     ),
   );
-  /*return SizedBox(
-    height: DimensionConstants.d70.h,
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: <Widget>[
-        SizedBox(
-          height: DimensionConstants.d15.h,
-        ),
-        todayOrWeekly == true
-            ? stepperLine(context, true, "")
-            : projectCreate == true
-                ? projectCreatedBox(context, provider)
-                : provider.tabController!.index == 1
-                    ? weeklyTabBarContainer(context)
-                    : Container(),
-        */ /*  SizedBox(
-          height: DimensionConstants.d24.h,
-        ),
-        Row(
-          children: <Widget>[
-            Text("notes".tr()).semiBoldText(
-                context, DimensionConstants.d20.sp, TextAlign.left,
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? ColorConstants.colorWhite
-                    : ColorConstants.colorBlack),
-            Expanded(child: Container()),
-            projectCreate == true
-                ? GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(
-                          context, RouteConstants.addNotePageManager,
-                          arguments: AddNotePageManager(
-                            publicOrPrivate: false,
-                            projectId: projectId,
-                          ));
-                    },
-                    child: Container(
-                      height: DimensionConstants.d40.h,
-                      width: DimensionConstants.d118,
-                      decoration: BoxDecoration(
-                        color: ColorConstants.deepBlue,
-                        border: Theme.of(context).brightness == Brightness.dark
-                            ? Border.all(
-                                color: ColorConstants.colorWhite,
-                                width: DimensionConstants.d1.w)
-                            : null,
-                        borderRadius:
-                            BorderRadius.circular(DimensionConstants.d8.r),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: DimensionConstants.d10.w),
-                        child: Row(
-                          children: <Widget>[
-                            ImageView(
-                              path: ImageConstants.addNotesIcon,
-                              height: DimensionConstants.d16.h,
-                              width: DimensionConstants.d16.w,
-                            ),
-                            SizedBox(
-                              width: DimensionConstants.d8.w,
-                            ),
-                            Text("add_note".tr()).semiBoldText(context,
-                                DimensionConstants.d14.sp, TextAlign.left,
-                                color: Theme.of(context).brightness ==
-                                        Brightness.dark
-                                    ? ColorConstants.colorWhite
-                                    : ColorConstants.colorWhite),
-                          ],
-                        ),
-                      ),
-                    ),
-                  )
-                : Container()
-          ],
-        ),
-        SizedBox(
-          height: DimensionConstants.d16.h,
-        ),
-        Row(
-          children: <Widget>[
-            Text("crew".tr()).semiBoldText(
-                context, DimensionConstants.d20.sp, TextAlign.left,
-                color: ColorConstants.colorBlack),
-            Expanded(child: Container()),
-            projectCreate == true
-                ? GestureDetector(
-                    onTap: () {
-                      Navigator.pushNamed(
-                          context, RouteConstants.addCrewPageManager,
-                          arguments: AddCrewPageManager());
-                    },
-                    child: Container(
-                      height: DimensionConstants.d40.h,
-                      width: DimensionConstants.d118,
-                      decoration: BoxDecoration(
-                        color: ColorConstants.deepBlue,
-                        border: Theme.of(context).brightness == Brightness.dark
-                            ? Border.all(
-                                color: ColorConstants.colorWhite,
-                                width: DimensionConstants.d1.w)
-                            : null,
-                        borderRadius:
-                            BorderRadius.circular(DimensionConstants.d8.r),
-                      ),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: DimensionConstants.d10.w),
-                        child: Row(
-                          children: <Widget>[
-                            ImageView(
-                              path: ImageConstants.addNotesIcon,
-                              height: DimensionConstants.d16.h,
-                              width: DimensionConstants.d16.w,
-                            ),
-                            SizedBox(
-                              width: DimensionConstants.d8.w,
-                            ),
-                            Text("add_crew".tr()).semiBoldText(context,
-                                DimensionConstants.d14.sp, TextAlign.left,
-                                color: Theme.of(context).brightness ==
-                                        Brightness.dark
-                                    ? ColorConstants.colorWhite
-                                    : ColorConstants.colorWhite),
-                          ],
-                        ),
-                      ),
-                    ),
-                  )
-                : Container()
-          ],
-        ),
-        SizedBox(
-          height: projectCreate == false
-              ? DimensionConstants.d25.h
-              : DimensionConstants.d1.h,
-        ),*/ /*
-        */ /* projectCreate == false ? scaleNotesWidget(context) : Container(),
-        SizedBox(
-          height: DimensionConstants.d25.h,
-        ),
-        crewWidget(context, projectCreate, provider),*/ /*
-      ],
-    ),
-  );*/
 }
 
-Widget stepperLine(BuildContext context, bool todayOrWeek, String date) {
-  return GestureDetector(
-    onTap: () {
-      //  Navigator.pushNamed(context, RouteConstants.timeSheetsScreen);
-    },
-    child: Card(
-      margin: EdgeInsets.zero,
-      elevation: 1,
-      shape: RoundedRectangleBorder(
-          borderRadius: todayOrWeek == true
-              ? BorderRadius.circular(DimensionConstants.d8.r)
-              : BorderRadius.zero,
-          side: todayOrWeek == true
-              ? BorderSide.none
-              : BorderSide(
-                  width: DimensionConstants.d1.w,
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? ColorConstants.colorWhite
-                      : ColorConstants.littleDarkGray)),
-      child: Container(
-        height: DimensionConstants.d60.h,
-        decoration: BoxDecoration(
-          color: Theme.of(context).brightness == Brightness.dark
-              ? ColorConstants.colorBlack
-              : ColorConstants.colorWhite,
-          borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
-          border: todayOrWeek == true
-              ? Theme.of(context).brightness == Brightness.dark
-                  ? Border.all(
-                      color: ColorConstants.colorWhite,
-                      width: DimensionConstants.d1.w)
-                  : null
-              : null,
-        ),
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
-          child: Row(
-            children: <Widget>[
-              SizedBox(
-                width: DimensionConstants.d10.w,
-              ),
-              const Text("John\nDoe").boldText(
-                  context, DimensionConstants.d13.sp, TextAlign.left,
-                  color: ColorConstants.colorBlack),
-              SizedBox(
-                width: DimensionConstants.d13.w,
-              ),
-              const Text("8:02a").regularText(
-                  context, DimensionConstants.d13.sp, TextAlign.left,
-                  color: ColorConstants.colorBlack),
-              SizedBox(
-                width: DimensionConstants.d15.w,
-              ),
-              Container(
-                height: DimensionConstants.d4.h,
-                width: DimensionConstants.d75.w,
-                decoration: BoxDecoration(
-                    color: ColorConstants.green6FCF97,
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(DimensionConstants.d8.r),
-                        bottomRight: Radius.circular(DimensionConstants.d8.r),
-                        topLeft: Radius.circular(DimensionConstants.d8.r),
-                        bottomLeft: Radius.circular(DimensionConstants.d8.r))),
-              ),
-              SizedBox(
-                width: DimensionConstants.d13.w,
-              ),
-              const Text("4:47p").regularText(
-                  context, DimensionConstants.d13.sp, TextAlign.left,
-                  color: ColorConstants.colorBlack),
-              SizedBox(
-                width: DimensionConstants.d13.w,
-              ),
-              const Text("08:49h").boldText(
-                  context, DimensionConstants.d13.sp, TextAlign.left,
-                  color: ColorConstants.colorBlack),
-              SizedBox(
-                width: DimensionConstants.d13.w,
-              ),
-              ImageView(
-                path: ImageConstants.arrowIcon,
-                height: DimensionConstants.d10.h,
-                width: DimensionConstants.d8.w,
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? ColorConstants.colorWhite
-                    : ColorConstants.colorBlack,
-              ),
-            ],
-          ),
-        ),
-      ),
-    ),
-  );
-}
-
-Widget stepperLineError(BuildContext context, bool todayOrWeek, String date) {
+Widget checkUserDetail(
+    BuildContext context,
+    ProjectDetailsManagerProvider provider,
+    CheckInProjectDetailManager checkInDetail) {
   return GestureDetector(
     onTap: () {
       //  Navigator.pushNamed(context, RouteConstants.timeSheetsScreen);
@@ -789,108 +609,55 @@ Widget stepperLineError(BuildContext context, bool todayOrWeek, String date) {
     child: Card(
       margin: EdgeInsets.zero,
       elevation: 0,
-      shape: RoundedRectangleBorder(
-          borderRadius: todayOrWeek == true
-              ? BorderRadius.circular(DimensionConstants.d8.r)
-              : BorderRadius.zero,
-          side: todayOrWeek == true
-              ? BorderSide.none
-              : BorderSide(
-                  width: DimensionConstants.d1.w,
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? ColorConstants.colorWhite
-                      : ColorConstants.littleDarkGray)),
       child: Container(
         height: DimensionConstants.d60.h,
         decoration: BoxDecoration(
-          color: Theme.of(context).brightness == Brightness.dark
-              ? ColorConstants.colorBlack
-              : ColorConstants.colorWhite,
-          borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
-          border: todayOrWeek == true
-              ? Theme.of(context).brightness == Brightness.dark
-                  ? Border.all(
-                      color: ColorConstants.colorWhite,
-                      width: DimensionConstants.d1.w)
-                  : null
-              : null,
-        ),
+            color: Theme.of(context).brightness == Brightness.dark
+                ? ColorConstants.colorBlack
+                : ColorConstants.colorWhite,
+            borderRadius: BorderRadius.circular(DimensionConstants.d8.r)),
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
+          padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d5.w),
           child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               SizedBox(
-                width: DimensionConstants.d10.w,
-              ),
-              const Text("John\nDoe").boldText(
-                  context, DimensionConstants.d13.sp, TextAlign.left,
-                  color: ColorConstants.colorBlack),
-              SizedBox(
-                width: DimensionConstants.d13.w,
-              ),
-              const Text("8:02a").regularText(
-                  context, DimensionConstants.d13.sp, TextAlign.left,
-                  color: ColorConstants.colorBlack),
-              SizedBox(
-                width: DimensionConstants.d15.w,
-              ),
-              Container(
-                height: DimensionConstants.d4.h,
-                width: DimensionConstants.d17.w,
-                decoration: BoxDecoration(
-                    color: ColorConstants.green6FCF97,
-                    borderRadius: BorderRadius.only(
-                        topLeft: Radius.circular(DimensionConstants.d8.r),
-                        bottomLeft: Radius.circular(DimensionConstants.d8.r))),
-              ),
-              SizedBox(
-                width: DimensionConstants.d3.w,
-              ),
-              Padding(
-                padding: EdgeInsets.only(bottom: DimensionConstants.d19.h),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    const ImageView(
-                      path: ImageConstants.coolIcon,
-                    ),
-                    SizedBox(
-                      height: DimensionConstants.d5.h,
-                    ),
-                    Container(
-                      height: DimensionConstants.d4.h,
-                      width: todayOrWeek != true
-                          ? DimensionConstants.d12.w
-                          : DimensionConstants.d20.w,
-                      color: ColorConstants.redColorEB5757,
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                width: DimensionConstants.d5.w,
-              ),
-              Container(
-                height: DimensionConstants.d4.h,
-                width: DimensionConstants.d36.w,
-                decoration: BoxDecoration(
-                    color: ColorConstants.green6FCF97,
-                    borderRadius: BorderRadius.only(
-                        topRight: Radius.circular(DimensionConstants.d8.r),
-                        bottomRight: Radius.circular(DimensionConstants.d8.r))),
+                width: DimensionConstants.d45.w,
+                child: Text(checkInDetail.crew?.name ?? "").boldText(
+                    context, DimensionConstants.d13.sp, TextAlign.left,
+                    color: ColorConstants.colorBlack),
               ),
               SizedBox(
                 width: DimensionConstants.d13.w,
               ),
-              const Text("4:47p").regularText(
-                  context, DimensionConstants.d13.sp, TextAlign.left,
-                  color: ColorConstants.colorBlack),
+              Text(DateFunctions.dateTO12Hour(checkInDetail.checkInTime!)
+                      .substring(
+                          0,
+                          DateFunctions.dateTO12Hour(checkInDetail.checkInTime!)
+                                  .length -
+                              1))
+                  .regularText(
+                      context, DimensionConstants.d13.sp, TextAlign.left,
+                      color: ColorConstants.colorBlack),
+              SizedBox(width: DimensionConstants.d11.w),
+              customStepper(provider, checkInDetail),
+              SizedBox(width: DimensionConstants.d10.w),
+              Text(DateFunctions.dateTO12Hour(checkInDetail.checkOutTime!)
+                      .substring(
+                          0,
+                          DateFunctions.dateTO12Hour(
+                                      checkInDetail.checkOutTime!)
+                                  .length -
+                              1))
+                  .regularText(
+                      context, DimensionConstants.d13.sp, TextAlign.left,
+                      color: ColorConstants.colorBlack),
               SizedBox(
-                width: DimensionConstants.d13.w,
+                width: DimensionConstants.d12.w,
               ),
-              const Text("08:49h").boldText(
-                  context, DimensionConstants.d13.sp, TextAlign.left,
-                  color: ColorConstants.colorBlack),
+              Text("${DateFunctions.calculateTotalHourTime(checkInDetail.checkInTime!, checkInDetail.checkOutTime!)} h")
+                  .boldText(context, DimensionConstants.d13.sp, TextAlign.left,
+                      color: ColorConstants.colorBlack),
               SizedBox(
                 width: DimensionConstants.d13.w,
               ),
@@ -910,82 +677,72 @@ Widget stepperLineError(BuildContext context, bool todayOrWeek, String date) {
   );
 }
 
-Widget notesList(BuildContext context) {
+Widget notesList(BuildContext context, List<Note> notes) {
   return Card(
     elevation: 2,
     shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(DimensionConstants.d8.r)),
-    child: Container(
-      height: DimensionConstants.d186.h,
-      decoration: BoxDecoration(
-        border: Theme.of(context).brightness == Brightness.dark
-            ? Border.all(
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? ColorConstants.colorWhite
-                    : Colors.transparent,
-                width: DimensionConstants.d1.w)
-            : null,
-        color: Theme.of(context).brightness == Brightness.dark
-            ? ColorConstants.colorBlack
-            : ColorConstants.colorWhite,
-        borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
-      ),
-      child: ListView.builder(
-        itemCount: 3,
-        physics: NeverScrollableScrollPhysics(),
-        itemBuilder: (BuildContext context, int index) {
-          return Column(
-            children: <Widget>[
-              SizedBox(
-                height: DimensionConstants.d25.h,
+    child: ListView.builder(
+      itemCount: notes.length,
+      shrinkWrap: true,
+      physics: const NeverScrollableScrollPhysics(),
+      itemBuilder: (BuildContext context, int index) {
+        return Column(
+          children: <Widget>[
+            SizedBox(
+              height: DimensionConstants.d25.h,
+            ),
+            Padding(
+              padding:
+                  EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                      child: Text(notes[index].title ?? "").regularText(
+                          context, DimensionConstants.d14.sp, TextAlign.left,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? ColorConstants.colorWhite
+                              : ColorConstants.colorBlack,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis)),
+                  ImageView(
+                    path: ImageConstants.arrowIcon,
+                    height: DimensionConstants.d10.h,
+                    width: DimensionConstants.d8.w,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? ColorConstants.colorWhite
+                        : ColorConstants.colorBlack,
+                  ),
+                ],
               ),
-              Padding(
-                padding:
-                    EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
-                child: Row(
-                  children: <Widget>[
-                    Text("water_pipe_scale_notes".tr()).regularText(
-                        context, DimensionConstants.d14.sp, TextAlign.left,
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? ColorConstants.colorWhite
-                            : ColorConstants.colorBlack),
-                    Expanded(child: Container()),
-                    ImageView(
-                      path: ImageConstants.arrowIcon,
-                      height: DimensionConstants.d10.h,
-                      width: DimensionConstants.d8.w,
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? ColorConstants.colorWhite
-                          : ColorConstants.colorBlack,
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(
-                height: DimensionConstants.d20.h,
-              ),
-              Container(
-                height: DimensionConstants.d1.h,
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? ColorConstants.colorWhite
-                    : ColorConstants.grayF1F1F1,
-              ),
-            ],
-          );
-        },
-      ),
+            ),
+            SizedBox(
+              height: DimensionConstants.d20.h,
+            ),
+            Container(
+              height: DimensionConstants.d1.h,
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? ColorConstants.colorWhite
+                  : ColorConstants.grayF1F1F1,
+            ),
+          ],
+        );
+      },
     ),
   );
 }
 
-Widget crewList(BuildContext context, bool archivedOrNot,
-    ProjectDetailsManagerProvider provider) {
+Widget crewList(
+    BuildContext context,
+    bool archivedOrNot,
+    ProjectDetailsManagerProvider provider,
+    BottomBarManagerProvider bottomBarProvider) {
   return ListView.builder(
-    itemCount: 3,
+    itemCount: provider.projectDetailResponse!.projectData!.crews!.length + 1,
     shrinkWrap: true,
-    physics: NeverScrollableScrollPhysics(),
+    physics: const NeverScrollableScrollPhysics(),
     itemBuilder: (BuildContext context, int index) {
-      return crewWidget(context, true, "deepak", false, "");
+      return crewWidget(context, false, bottomBarProvider, provider, index);
     },
   ) /*Column(
     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1007,8 +764,20 @@ Widget crewList(BuildContext context, bool archivedOrNot,
       ;
 }
 
-Widget crewWidget(BuildContext context, bool managerOrNot, String name,
-    bool archivedOrNot, String image) {
+Widget crewWidget(
+    BuildContext context,
+    bool archivedOrNot,
+    BottomBarManagerProvider bottomBarProvider,
+    ProjectDetailsManagerProvider provider,
+    int index) {
+  // : "${ApiConstantsCrew.BASE_URL_IMAGE}$image",
+  var name;
+  if (index == 0) {
+    name = bottomBarProvider.managerName ?? "";
+  } else {
+    name = provider.projectDetailResponse!.projectData!.crews![index - 1].name;
+  }
+
   return Card(
     elevation: 1,
     shape: RoundedRectangleBorder(
@@ -1022,38 +791,12 @@ Widget crewWidget(BuildContext context, bool managerOrNot, String name,
         padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
         child: Row(
           children: <Widget>[
-            Stack(
-              children: <Widget>[
-                Padding(
-                  padding: managerOrNot == false
-                      ? EdgeInsets.only(top: DimensionConstants.d15.h)
-                      : EdgeInsets.all(0),
-                  child: SizedBox(
-                    width: DimensionConstants.d50.w,
-                    child: ClipRRect(
-                      borderRadius:
-                          BorderRadius.circular(DimensionConstants.d25.r),
-                      child: ImageView(
-                        path: image.isEmpty
-                            ? ImageConstants.managerImage
-                            : "${ApiConstantsCrew.BASE_URL_IMAGE}$image",
-                        height: DimensionConstants.d50.h,
-                        width: DimensionConstants.d50.w,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  ),
-                ),
-                if (managerOrNot)
-                  Positioned(
-                      top: DimensionConstants.d23.h,
-                      left: DimensionConstants.d22.w,
-                      child: ImageView(
-                        path: ImageConstants.brandIocn,
-                        height: DimensionConstants.d27.h,
-                        width: DimensionConstants.d29.w,
-                      ))
-              ],
+            ImageView(
+              path: ImageConstants.managerImage,
+              height: DimensionConstants.d50.h,
+              width: DimensionConstants.d50.w,
+              fit: BoxFit.cover,
+              circleCrop: true,
             ),
             SizedBox(
               width: DimensionConstants.d13.w,
@@ -1076,7 +819,7 @@ Widget crewWidget(BuildContext context, bool managerOrNot, String name,
                   SizedBox(
                     height: DimensionConstants.d5.h,
                   ),
-                  managerOrNot == true
+                  index == 0
                       ? Container(
                           height: DimensionConstants.d21.h,
                           width: DimensionConstants.d120.w,
@@ -1156,92 +899,133 @@ Widget crewWidget(BuildContext context, bool managerOrNot, String name,
   );
 }
 
-Widget weeklyTabBarContainer(BuildContext context) {
+Widget weeklyTabBarContainer(
+    BuildContext context, ProjectDetailsManagerProvider provider) {
   return Container(
-    height: DimensionConstants.d565.h,
     decoration: BoxDecoration(
         color: ColorConstants.deepBlue,
         borderRadius:
             BorderRadius.all(Radius.circular(DimensionConstants.d8.r))),
-    child: SingleChildScrollView(
-      child: Column(
-        children: [
-          SizedBox(height: DimensionConstants.d17.h),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              backNextBtn(ImageConstants.backIconIos),
-              SizedBox(
-                width: DimensionConstants.d27.w,
-              ),
-              const Text("Apr13 - Apr19").boldText(
-                  context, DimensionConstants.d16.sp, TextAlign.center,
-                  color: ColorConstants.colorWhite),
-              SizedBox(
-                width: DimensionConstants.d27.w,
-              ),
-              backNextBtn(ImageConstants.nextIconIos)
-            ],
-          ),
-          SizedBox(
-            height: DimensionConstants.d20.h,
-          ),
-          Container(
-            height: DimensionConstants.d502.h,
-            decoration: BoxDecoration(
-                color: ColorConstants.colorWhite,
-                borderRadius:
-                    BorderRadius.all(Radius.circular(DimensionConstants.d8.r))),
-            child: Column(
-              children: <Widget>[
-                Container(
-                  decoration: BoxDecoration(
-                    color: (Theme.of(context).brightness == Brightness.dark
-                        ? ColorConstants.colorBlack
-                        : ColorConstants.colorWhite),
-                    border: Border.all(
-                      color: ColorConstants.colorLightGreyF2,
-                    ),
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(DimensionConstants.d8.r),
-                      topRight: Radius.circular(DimensionConstants.d8.r),
-                    ),
+    child: Column(
+      children: [
+        SizedBox(height: DimensionConstants.d17.h),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            GestureDetector(
+                onTap: () {
+                  provider.previousWeekDays(
+                      provider.tabController!.index == 1 ? 7 : 14);
+                  provider.getProjectDetail(
+                    context,
+                  );
+                },
+                child: backNextBtn(ImageConstants.backIconIos)),
+            SizedBox(
+              width: DimensionConstants.d16.w,
+            ),
+            Text("${DateFunctions.capitalize(provider.weekFirstDate ?? "")} - ${DateFunctions.capitalize(provider.weekEndDate ?? "")}")
+                .boldText(context, DimensionConstants.d16.sp, TextAlign.center,
+                    color: ColorConstants.colorWhite),
+            SizedBox(
+              width: DimensionConstants.d16.w,
+            ),
+            provider.endDate != DateFormat("yyyy-MM-dd").format(DateTime.now())
+                ? GestureDetector(
+                    onTap: () {
+                      provider.nextWeekDays(
+                          provider.tabController!.index == 1 ? 7 : 14);
+                      provider.getProjectDetail(
+                        context,
+                      );
+                    },
+                    child: backNextBtn(ImageConstants.nextIconIos),
+                  )
+                : Visibility(
+                    visible: false,
+                    child: backNextBtn(ImageConstants.nextIconIos)),
+          ],
+        ),
+        SizedBox(
+          height: DimensionConstants.d20.h,
+        ),
+        Container(
+          decoration: BoxDecoration(
+              color: ColorConstants.colorWhite,
+              borderRadius:
+                  BorderRadius.all(Radius.circular(DimensionConstants.d8.r))),
+          child: Column(
+            children: <Widget>[
+              Container(
+                decoration: BoxDecoration(
+                  color: (Theme.of(context).brightness == Brightness.dark
+                      ? ColorConstants.colorBlack
+                      : ColorConstants.colorWhite),
+                  border: Border.all(
+                    color: ColorConstants.colorLightGreyF2,
                   ),
-                  height: DimensionConstants.d70.h,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      SizedBox(
-                        width: DimensionConstants.d10.w,
-                      ),
-                      projectsHoursRow(context, ImageConstants.twoUserIcon,
-                          "4 ${"crew".tr()}"),
-                      SizedBox(
-                        width: DimensionConstants.d15.w,
-                      ),
-                      Container(
-                        height: DimensionConstants.d70.h,
-                        width: DimensionConstants.d1.w,
-                        color: ColorConstants.colorLightGrey,
-                      ),
-                      projectsHoursRow(context, ImageConstants.clockIcon,
-                          "107:02 ${"hours".tr()}")
-                    ],
+                  borderRadius: BorderRadius.only(
+                    topLeft: Radius.circular(DimensionConstants.d8.r),
+                    topRight: Radius.circular(DimensionConstants.d8.r),
                   ),
                 ),
-                stepperLineError(context, false, "Apr 13"),
-                weeklyTabBarDateContainer(context, "Wed, April 14"),
-                stepperLine(context, false, "Apr 14"),
-                stepperLine(context, false, "Apr 15"),
-                weeklyTabBarDateContainer(context, "Wed, April 14"),
-                stepperLineError(context, false, "Apr 16"),
-                stepperLine(context, false, "Apr 17"),
-                stepperLineError(context, false, "Apr 16"),
-              ],
-            ),
+                height: DimensionConstants.d70.h,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    SizedBox(
+                      width: DimensionConstants.d10.w,
+                    ),
+                    projectsHoursRow(context, ImageConstants.twoUserIcon,
+                        "${provider.projectDetailResponse?.projectData?.crews!.length ?? 0} ${"crew".tr()}"),
+                    SizedBox(
+                      width: DimensionConstants.d15.w,
+                    ),
+                    Container(
+                      height: DimensionConstants.d70.h,
+                      width: DimensionConstants.d1.w,
+                      color: ColorConstants.colorLightGrey,
+                    ),
+                    projectsHoursRow(context, ImageConstants.clockIcon,
+                        "${DateFunctions.minutesToHourString(provider.projectDetailResponse?.projectData?.totalHours ?? 0)} ${"hours".tr()}")
+                  ],
+                ),
+              ),
+              ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: provider.weeklyData.length,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    return Column(
+                      children: [
+                        weeklyTabBarDateContainer(
+                            context, provider.weeklyData[index].date ?? ""),
+                        ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: provider
+                              .weeklyData[index].checkInDataList!.length,
+                          itemBuilder: (context, innerIndex) {
+                            return checkUserDetail(
+                                context,
+                                provider,
+                                provider.weeklyData[index]
+                                    .checkInDataList![innerIndex]!);
+                          },
+                          separatorBuilder: (context, index) {
+                            return const Divider(
+                                color: ColorConstants.colorGreyDrawer,
+                                height: 0.0,
+                                thickness: 1.5);
+                          },
+                        ),
+                      ],
+                    );
+                  })
+            ],
           ),
-        ],
-      ),
+        ),
+      ],
     ),
   );
 }
@@ -1441,4 +1225,45 @@ Widget addBreakButton(BuildContext context) {
       ),
     ),
   );
+}
+
+Widget customStepper(ProjectDetailsManagerProvider provider,
+    CheckInProjectDetailManager checkInProjectDetail) {
+  List<Widget> widgetlist = [];
+  List<ProjectWorkingHourDetail> projectDetailLIst =
+      provider.getTimeForStepper(checkInProjectDetail);
+  for (int i = 0; i < projectDetailLIst.length; i++) {
+    if (projectDetailLIst[i].type == 1) {
+      widgetlist.add(Flexible(
+        flex: projectDetailLIst[i].timeInterval!,
+        child: Container(
+          height: DimensionConstants.d4.h,
+          color: ColorConstants.colorGreen,
+        ),
+      ));
+    } else if (projectDetailLIst[i].type == 2) {
+      widgetlist.add(Flexible(
+        flex: projectDetailLIst[i].timeInterval!,
+        child: Container(
+          height: DimensionConstants.d4.h,
+          color: ColorConstants.colorGray,
+        ),
+      ));
+    } else {
+      widgetlist.add(Flexible(
+        flex: projectDetailLIst[i].timeInterval!,
+        child: Container(
+          height: DimensionConstants.d4.h,
+          color: ColorConstants.colorLightRed,
+        ),
+      ));
+    }
+  }
+  return Container(
+      width: DimensionConstants.d75.w,
+      child: Center(
+          child: Flex(
+        direction: Axis.horizontal,
+        children: widgetlist,
+      )));
 }

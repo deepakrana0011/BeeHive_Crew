@@ -38,7 +38,7 @@ class BottomBarManager extends StatefulWidget {
 class _BottomBarManagerState extends State<BottomBarManager> {
   static final List<Widget> _widgetOptions = <Widget>[
     const DashBoardPageManager(),
-    const ProjectsPageManager(),
+    ProjectsPageManager(),
     const TimeSheetPageManager(),
     const ProfilePageManager(),
   ];
@@ -165,7 +165,9 @@ class _BottomBarManagerState extends State<BottomBarManager> {
                     )
                   : null,
               body: Center(
-                child: provider.pageView(provider.selectedIndex,),
+                child: provider.pageView(
+                  provider.selectedIndex,
+                ),
               ),
               bottomNavigationBar: BottomNavigationBar(
                 items: <BottomNavigationBarItem>[

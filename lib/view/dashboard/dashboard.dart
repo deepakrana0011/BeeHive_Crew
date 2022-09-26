@@ -857,18 +857,12 @@ class _DashBoardPageState extends State<DashBoardPage>
               ),
             ),
             Expanded(
-              child: TabBarView(
-                controller: controller,
-                physics: const NeverScrollableScrollPhysics(),
-                children: [
-                  provider.crewResponse!.allCheckin!.isNotEmpty
+              child: provider.selectedTabIndex == 0
+                  ? provider.crewResponse!.allCheckin!.isNotEmpty
                       ? projectsAndHoursCardList(provider)
-                      : zeroProjectZeroHourCard(provider),
-                  weeklyTabBarContainer(provider),
-                  weeklyTabBarContainer(provider),
-                ],
-              ),
-            ),
+                      : zeroProjectZeroHourCard(provider)
+                  : weeklyTabBarContainer(provider),
+            )
           ],
         ),
       ),
@@ -1301,8 +1295,7 @@ class _DashBoardPageState extends State<DashBoardPage>
     );
   }
 
-  Widget stepperLineWithOneCoolIcon(
-      CheckInProjectDetailCrew checkInProjectDetail) {
+  Widget customStepper(CheckInProjectDetailCrew checkInProjectDetail) {
     List<Widget> widgetlist = [];
     List<ProjectWorkingHourDetail> projectDetailLIst =
         provider.getTimeForStepper(checkInProjectDetail);
@@ -1385,7 +1378,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                   .regularText(
                       context, DimensionConstants.d13.sp, TextAlign.center),
               SizedBox(width: DimensionConstants.d11.w),
-              stepperLineWithOneCoolIcon(checkInProjectDetail),
+              customStepper(checkInProjectDetail),
               SizedBox(width: DimensionConstants.d10.w),
               Text(DateFunctions.dateTO12Hour(
                           checkInProjectDetail.checkOutTime!)

@@ -7,6 +7,7 @@ import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
 import 'package:beehive/helper/dialog_helper.dart';
+import 'package:beehive/model/manager_dashboard_response.dart';
 import 'package:beehive/provider/add_crew_page_provider_manager.dart';
 import 'package:beehive/view/base_view.dart';
 import 'package:beehive/views_manager/projects_manager/crew_mamber_add_by_manager.dart';
@@ -20,12 +21,17 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../helper/decoration.dart';
 
 class AddCrewPageManager extends StatelessWidget {
-  const AddCrewPageManager({Key? key}) : super(key: key);
+  List<CrewMemberDetail>? crewList;
+  String? projectId;
+
+  AddCrewPageManager({Key? key,this.crewList,this.projectId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BaseView<AddCrewPageManagerProvider>(
       onModelReady: (provider) {
+        provider.alreadyMemberList=crewList;
+        provider.projectId=projectId;
         provider.getCrewList(context);
       },
       builder: (context, provider, _) {

@@ -4,6 +4,7 @@ import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
+import 'package:beehive/helper/date_function.dart';
 import 'package:beehive/provider/bottom_bar_Manager_provider.dart';
 import 'package:beehive/provider/projects_manager_provider.dart';
 import 'package:beehive/view/base_view.dart';
@@ -20,7 +21,10 @@ import '../../constants/color_constants.dart';
 import '../../widget/bottom_sheet_project_details.dart';
 
 class ProjectsPageManager extends StatefulWidget {
-  const ProjectsPageManager({Key? key}) : super(key: key);
+  static bool? isProjectCreated = false;
+  static String? projectId = "";
+
+  ProjectsPageManager({Key? key}) : super(key: key);
 
   @override
   State<ProjectsPageManager> createState() => _ProjectsPageManagerState();
@@ -50,7 +54,7 @@ class _ProjectsPageManagerState extends State<ProjectsPageManager>
               ? ColorConstants.colorBlack
               : ColorConstants.colorWhite,
           body: provider.state == ViewState.idle
-              ? provider.allProjectsManagerResponse!.projectData!.length > 0
+              ? provider.allProjectsManagerResponse!.projectData!.isNotEmpty
                   ? SingleChildScrollView(
                       child: Column(
                         children: <Widget>[
@@ -74,9 +78,23 @@ class _ProjectsPageManagerState extends State<ProjectsPageManager>
                                           fontSize: DimensionConstants.d16.sp,
                                           shadowRequired: true, onBtnTap: () {
                                         Navigator.pushNamed(
-                                            context,
-                                            RouteConstants
-                                                .createProjectManager);
+                                                context,
+                                                RouteConstants
+                                                    .createProjectManager)
+                                            .then((value) {
+                                          if (ProjectsPageManager
+                                              .isProjectCreated!) {
+                                            bottomBarProvider
+                                                ?.updateNavigationValue(5,
+                                                projectId:
+                                                ProjectsPageManager
+                                                    .projectId!,createProject: true);
+                                            bottomBarProvider?.pageView(1);
+                                          } else {
+                                            ProjectsPageManager
+                                                .isProjectCreated = false;
+                                          }
+                                        });
                                       }),
                                       SizedBox(
                                         height: DimensionConstants.d80.h,
@@ -530,7 +548,9 @@ Widget projectDetails(BuildContext context, ProjectsManagerProvider provider,
             child: GestureDetector(
               onTap: () {
                 bottomBarProvider?.pageView(1);
-                bottomBarProvider?.updateNavigationValue(5);
+                bottomBarProvider?.updateNavigationValue(5,
+                    projectId: provider
+                        .allProjectsManagerResponse?.projectData![index].id);
               },
               child: Material(
                 elevation: 2,
@@ -607,10 +627,12 @@ Widget projectDetails(BuildContext context, ProjectsManagerProvider provider,
                                   left: DimensionConstants.d40.w),
                               child: Column(
                                 children: <Widget>[
-                                  Text(provider.allProjectsManagerResponse
-                                              ?.projectData![index].totalHours
-                                              ?.toStringAsFixed(0) ??
-                                          "")
+                                  Text(DateFunctions.minutesToHourString(
+                                          provider
+                                                  .allProjectsManagerResponse
+                                                  ?.projectData![index]
+                                                  .totalHours ??
+                                              0))
                                       .semiBoldText(
                                           context,
                                           DimensionConstants.d20.sp,

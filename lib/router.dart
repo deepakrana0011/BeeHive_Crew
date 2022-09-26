@@ -1,4 +1,5 @@
 import 'package:beehive/constants/route_constants.dart';
+import 'package:beehive/model/manager_dashboard_response.dart';
 import 'package:beehive/view/%20light_theme_signup_login/continue_with_phone.dart';
 import 'package:beehive/view/%20light_theme_signup_login/otp_verification_page.dart';
 import 'package:beehive/view/bottom_bar/bottom_navigation_bar.dart';
@@ -72,7 +73,7 @@ class OnGenerateRouter {
         final args = settings.arguments as ProjectDetailsPage;
         return MaterialPageRoute(
             builder: (_) =>
-                ProjectDetailsPage(archivedOrProject: args.archivedOrProject),
+                ProjectDetailsPage(archivedOrProject: args.archivedOrProject,projectId: args.projectId,totalHoursToDate: args.totalHoursToDate,),
             settings: settings);
       case RouteConstants.addNotePage:
         return MaterialPageRoute(
@@ -234,8 +235,16 @@ class OnGenerateRouter {
         return MaterialPageRoute(
             builder: (_) => CreateProjectManager(), settings: settings);
       case RouteConstants.addCrewPageManager:
+        List<CrewMemberDetail>? list;
+        var projectId="";
+        if (settings.arguments != null) {
+          var args = settings.arguments as AddCrewPageManager;
+          list = args.crewList!;
+          projectId = args.projectId!;
+        }
         return MaterialPageRoute(
-            builder: (_) => AddCrewPageManager(), settings: settings);
+            builder: (_) => AddCrewPageManager(crewList: list,projectId: projectId,),
+            settings: settings);
       case RouteConstants.crewMemberAddByManager:
         final args = settings.arguments as CrewMemberAddByManager;
         return MaterialPageRoute(
@@ -246,7 +255,8 @@ class OnGenerateRouter {
       case RouteConstants.setRatesManager:
         final args = settings.arguments as SetRatesPageManager;
         return MaterialPageRoute(
-            builder: (_) => SetRatesPageManager(), settings: settings);
+            builder: (_) => SetRatesPageManager(isUpdating: args.isUpdating,projectId: args.projectId,),
+            settings: settings);
       case RouteConstants.projectSettingsPageManager:
         final args = settings.arguments as ProjectSettingsPageManager;
         return MaterialPageRoute(
@@ -257,7 +267,7 @@ class OnGenerateRouter {
         final args = settings.arguments as AddNotePageManager;
         return MaterialPageRoute(
             builder: (_) => AddNotePageManager(
-                  publicOrPrivate: args.publicOrPrivate,
+                  isPrivate: args.isPrivate,
                   projectId: args.projectId,
                 ),
             settings: settings);

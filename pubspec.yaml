@@ -62,6 +62,7 @@ dependencies:
   pin_code_fields: ^7.4.0
   collection: ^1.16.0
   flutter_google_places: ^0.3.0
+  url_launcher: ^6.0.18
 
 dev_dependencies:
   flutter_test:

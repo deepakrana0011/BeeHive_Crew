@@ -4,6 +4,7 @@ import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
+import 'package:beehive/helper/date_function.dart';
 import 'package:beehive/helper/validations.dart';
 import 'package:beehive/model/all_checkout_projects_crew.dart';
 import 'package:beehive/provider/project_crew_provider.dart';
@@ -260,12 +261,14 @@ Widget projectList(BuildContext context, ProjectsCrewProvider provider) {
 }
 
 Widget projectDetailWidget(BuildContext context, ProjectDetail projectDetail) {
+  var value=DateFunctions.minutesToHourString(
+      projectDetail.totalHours!);
   return Padding(
     padding: EdgeInsets.symmetric(vertical: DimensionConstants.d5.h),
     child: GestureDetector(
       onTap: () {
         Navigator.pushNamed(context, RouteConstants.projectDetailsPage,
-            arguments: ProjectDetailsPage(archivedOrProject: false));
+            arguments: ProjectDetailsPage(archivedOrProject: false,projectId: projectDetail.id,totalHoursToDate: value,));
       },
       child: Material(
         elevation: 2,
@@ -361,7 +364,7 @@ Widget projectDetailWidget(BuildContext context, ProjectDetail projectDetail) {
                             ? ColorConstants.colorWhite
                             : ColorConstants.colorBlack),
                     Expanded(child: Container()),
-                    Text(projectDetail.totalHours?.toStringAsFixed(0) ?? "0")
+                    Text(value)
                         .semiBoldText(context, DimensionConstants.d20.sp,
                             TextAlign.center,
                             color:
