@@ -54,234 +54,200 @@ class _ProjectsPageManagerState extends State<ProjectsPageManager>
               ? ColorConstants.colorBlack
               : ColorConstants.colorWhite,
           body: provider.state == ViewState.idle
-              ? provider.allProjectsManagerResponse!.projectData!.isNotEmpty
-                  ? SingleChildScrollView(
-                      child: Column(
-                        children: <Widget>[
-                          tabBarView(context, tabController, provider,
-                              bottomBarProvider),
-                          tabController.index == 0
-                              ? Padding(
+              ? Column(
+                  children: <Widget>[
+                    Expanded(
+                      child: provider.allProjectsManagerResponse!.projectData!
+                              .isNotEmpty
+                          ? tabBarView(context, tabController, provider,
+                              bottomBarProvider)
+                          : Center(
+                              child: Text("No Project Found").boldText(context,
+                                  DimensionConstants.d16.sp, TextAlign.left,
+                                  color: ColorConstants.deepBlue)),
+                    ),
+                    tabController.index == 0
+                        ? Padding(
+                            padding: EdgeInsets.only(
+                                left: DimensionConstants.d18.w,
+                                right: DimensionConstants.d18.w,
+                                top: DimensionConstants.d15.h,
+                                bottom: DimensionConstants.d10.h),
+                            child: Column(
+                              children: [
+                                CommonWidgets.commonButton(
+                                    context, "create_a_new_project".tr(),
+                                    color1:
+                                        ColorConstants.primaryGradient1Color,
+                                    color2:
+                                        ColorConstants.primaryGradient2Color,
+                                    fontSize: DimensionConstants.d16.sp,
+                                    shadowRequired: true, onBtnTap: () {
+                                  Navigator.pushNamed(context,
+                                          RouteConstants.createProjectManager)
+                                      .then((value) {
+                                    if (ProjectsPageManager.isProjectCreated!) {
+                                      bottomBarProvider?.updateNavigationValue(
+                                          5,
+                                          projectId:
+                                              ProjectsPageManager.projectId!,
+                                          createProject: true);
+                                      bottomBarProvider?.pageView(1);
+                                    } else {
+                                      ProjectsPageManager.isProjectCreated =
+                                          false;
+                                    }
+                                  });
+                                }),
+                              ],
+                            ),
+                          )
+                        : Container(),
+                    tabController.index == 1
+                        ? Container(
+                            child: Column(
+                              children: [
+                                Padding(
                                   padding: EdgeInsets.only(
-                                      left: DimensionConstants.d18.w,
-                                      right: DimensionConstants.d18.w,
-                                      top: DimensionConstants.d15.h,
-                                      bottom: DimensionConstants.d40.h),
-                                  child: Column(
-                                    children: [
-                                      CommonWidgets.commonButton(
-                                          context, "create_a_new_project".tr(),
-                                          color1: ColorConstants
-                                              .primaryGradient1Color,
-                                          color2: ColorConstants
-                                              .primaryGradient2Color,
-                                          fontSize: DimensionConstants.d16.sp,
-                                          shadowRequired: true, onBtnTap: () {
-                                        Navigator.pushNamed(
-                                                context,
-                                                RouteConstants
-                                                    .createProjectManager)
-                                            .then((value) {
-                                          if (ProjectsPageManager
-                                              .isProjectCreated!) {
-                                            bottomBarProvider
-                                                ?.updateNavigationValue(5,
-                                                projectId:
-                                                ProjectsPageManager
-                                                    .projectId!,createProject: true);
-                                            bottomBarProvider?.pageView(1);
-                                          } else {
-                                            ProjectsPageManager
-                                                .isProjectCreated = false;
-                                          }
-                                        });
-                                      }),
-                                      SizedBox(
-                                        height: DimensionConstants.d80.h,
-                                      )
-                                    ],
-                                  ),
-                                )
-                              : Container(),
-                          tabController.index == 1
-                              ? Container(
-                                  child: Column(
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                            left: DimensionConstants.d40.w),
-                                        child: Row(
-                                          children: <Widget>[
-                                            Row(
-                                              children: <Widget>[
-                                                Container(
-                                                  height:
-                                                      DimensionConstants.d10.h,
-                                                  width:
-                                                      DimensionConstants.d10.w,
-                                                  decoration: BoxDecoration(
-                                                    color: ColorConstants
-                                                        .schedule5,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            DimensionConstants
-                                                                .d5.r),
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  width:
-                                                      DimensionConstants.d5.w,
-                                                ),
-                                                Text("Momentum Smart Project")
-                                                    .regularText(
-                                                        context,
-                                                        DimensionConstants
-                                                            .d14.sp,
-                                                        TextAlign.left,
-                                                        color: Theme.of(context)
-                                                                    .brightness ==
-                                                                Brightness.dark
-                                                            ? ColorConstants
-                                                                .colorWhite
-                                                            : ColorConstants
-                                                                .colorBlack),
-                                              ],
+                                      left: DimensionConstants.d40.w),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Row(
+                                        children: <Widget>[
+                                          Container(
+                                            height: DimensionConstants.d10.h,
+                                            width: DimensionConstants.d10.w,
+                                            decoration: BoxDecoration(
+                                              color: ColorConstants.schedule5,
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                      DimensionConstants.d5.r),
                                             ),
-                                            SizedBox(
-                                              width: DimensionConstants.d15.w,
-                                            ),
-                                            Row(
-                                              children: <Widget>[
-                                                Container(
-                                                  height:
-                                                      DimensionConstants.d10.h,
-                                                  width:
-                                                      DimensionConstants.d10.w,
-                                                  decoration: BoxDecoration(
-                                                    color: ColorConstants
-                                                        .green6FCF97,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            DimensionConstants
-                                                                .d5.r),
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  width:
-                                                      DimensionConstants.d5.w,
-                                                ),
-                                                Text("Momentum Digital")
-                                                    .regularText(
-                                                        context,
-                                                        DimensionConstants
-                                                            .d14.sp,
-                                                        TextAlign.left,
-                                                        color: Theme.of(context)
-                                                                    .brightness ==
-                                                                Brightness.dark
-                                                            ? ColorConstants
-                                                                .colorWhite
-                                                            : ColorConstants
-                                                                .colorBlack),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
+                                          ),
+                                          SizedBox(
+                                            width: DimensionConstants.d5.w,
+                                          ),
+                                          Text("Momentum Smart Project")
+                                              .regularText(
+                                                  context,
+                                                  DimensionConstants.d14.sp,
+                                                  TextAlign.left,
+                                                  color: Theme.of(context)
+                                                              .brightness ==
+                                                          Brightness.dark
+                                                      ? ColorConstants
+                                                          .colorWhite
+                                                      : ColorConstants
+                                                          .colorBlack),
+                                        ],
                                       ),
                                       SizedBox(
-                                        height: DimensionConstants.d15.h,
+                                        width: DimensionConstants.d15.w,
                                       ),
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                            left: DimensionConstants.d40.w),
-                                        child: Row(
-                                          children: <Widget>[
-                                            Row(
-                                              children: <Widget>[
-                                                Container(
-                                                  height:
-                                                      DimensionConstants.d10.h,
-                                                  width:
-                                                      DimensionConstants.d10.w,
-                                                  decoration: BoxDecoration(
-                                                    color: ColorConstants
-                                                        .schedule5,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            DimensionConstants
-                                                                .d5.r),
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  width:
-                                                      DimensionConstants.d5.w,
-                                                ),
-                                                Text("Adam’s Lodge").regularText(
-                                                    context,
-                                                    DimensionConstants.d14.sp,
-                                                    TextAlign.left,
-                                                    color: Theme.of(context)
-                                                                .brightness ==
-                                                            Brightness.dark
-                                                        ? ColorConstants
-                                                            .colorWhite
-                                                        : ColorConstants
-                                                            .colorBlack),
-                                              ],
+                                      Row(
+                                        children: <Widget>[
+                                          Container(
+                                            height: DimensionConstants.d10.h,
+                                            width: DimensionConstants.d10.w,
+                                            decoration: BoxDecoration(
+                                              color: ColorConstants.green6FCF97,
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                      DimensionConstants.d5.r),
                                             ),
-                                            SizedBox(
-                                              width: DimensionConstants.d15.w,
-                                            ),
-                                            Row(
-                                              children: <Widget>[
-                                                Container(
-                                                  height:
-                                                      DimensionConstants.d10.h,
-                                                  width:
-                                                      DimensionConstants.d10.w,
-                                                  decoration: BoxDecoration(
-                                                    color: ColorConstants
-                                                        .green6FCF97,
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            DimensionConstants
-                                                                .d5.r),
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  width:
-                                                      DimensionConstants.d5.w,
-                                                ),
-                                                Text("Kennedy House").regularText(
-                                                    context,
-                                                    DimensionConstants.d14.sp,
-                                                    TextAlign.left,
-                                                    color: Theme.of(context)
-                                                                .brightness ==
-                                                            Brightness.dark
-                                                        ? ColorConstants
-                                                            .colorWhite
-                                                        : ColorConstants
-                                                            .colorBlack),
-                                              ],
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        height: DimensionConstants.d120.h,
+                                          ),
+                                          SizedBox(
+                                            width: DimensionConstants.d5.w,
+                                          ),
+                                          Text("Momentum Digital").regularText(
+                                              context,
+                                              DimensionConstants.d14.sp,
+                                              TextAlign.left,
+                                              color: Theme.of(context)
+                                                          .brightness ==
+                                                      Brightness.dark
+                                                  ? ColorConstants.colorWhite
+                                                  : ColorConstants.colorBlack),
+                                        ],
                                       ),
                                     ],
                                   ),
-                                )
-                              : Container(),
-                        ],
-                      ),
-                    )
-                  : Center(
-                      child: Text("No Data Found").boldText(
-                          context, DimensionConstants.d16.sp, TextAlign.left,
-                          color: ColorConstants.deepBlue))
+                                ),
+                                SizedBox(
+                                  height: DimensionConstants.d15.h,
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                      left: DimensionConstants.d40.w),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Row(
+                                        children: <Widget>[
+                                          Container(
+                                            height: DimensionConstants.d10.h,
+                                            width: DimensionConstants.d10.w,
+                                            decoration: BoxDecoration(
+                                              color: ColorConstants.schedule5,
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                      DimensionConstants.d5.r),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: DimensionConstants.d5.w,
+                                          ),
+                                          Text("Adam’s Lodge").regularText(
+                                              context,
+                                              DimensionConstants.d14.sp,
+                                              TextAlign.left,
+                                              color: Theme.of(context)
+                                                          .brightness ==
+                                                      Brightness.dark
+                                                  ? ColorConstants.colorWhite
+                                                  : ColorConstants.colorBlack),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                        width: DimensionConstants.d15.w,
+                                      ),
+                                      Row(
+                                        children: <Widget>[
+                                          Container(
+                                            height: DimensionConstants.d10.h,
+                                            width: DimensionConstants.d10.w,
+                                            decoration: BoxDecoration(
+                                              color: ColorConstants.green6FCF97,
+                                              borderRadius:
+                                                  BorderRadius.circular(
+                                                      DimensionConstants.d5.r),
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            width: DimensionConstants.d5.w,
+                                          ),
+                                          Text("Kennedy House").regularText(
+                                              context,
+                                              DimensionConstants.d14.sp,
+                                              TextAlign.left,
+                                              color: Theme.of(context)
+                                                          .brightness ==
+                                                      Brightness.dark
+                                                  ? ColorConstants.colorWhite
+                                                  : ColorConstants.colorBlack),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: DimensionConstants.d120.h,
+                                ),
+                              ],
+                            ),
+                          )
+                        : Container(),
+                  ],
+                )
               : const CustomCircularBar(),
         );
       },
@@ -395,17 +361,13 @@ Widget tabBarView(
           ),
         ),
       ),
-      Container(
-        height: DimensionConstants.d520.h,
-        // width: DimensionConstants.d313.w,
-        child: TabBarView(
-            physics: const NeverScrollableScrollPhysics(),
-            controller: controller,
-            children: [
-              allProjects(provider, context, bottomBarProvider),
-              schedule(context, provider),
-            ]),
-      ),
+      Expanded(
+        child: SingleChildScrollView(
+          child: controller.index == 0
+              ? allProjects(provider, context, bottomBarProvider)
+              : schedule(context, provider),
+        ),
+      )
     ],
   );
 }
@@ -533,106 +495,139 @@ Widget allProjects(ProjectsManagerProvider provider, BuildContext context,
 
 Widget projectDetails(BuildContext context, ProjectsManagerProvider provider,
     BottomBarManagerProvider? bottomBarProvider) {
-  return Container(
-    height: DimensionConstants.d410.h,
-    width: DimensionConstants.d343.w,
-    color: Theme.of(context).brightness == Brightness.dark
-        ? ColorConstants.colorBlack
-        : ColorConstants.colorWhite,
-    child: ListView.builder(
-        physics: NeverScrollableScrollPhysics(),
-        itemCount: provider.allProjectsManagerResponse?.projectData?.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Padding(
-            padding: EdgeInsets.symmetric(vertical: DimensionConstants.d5.h),
-            child: GestureDetector(
-              onTap: () {
-                bottomBarProvider?.pageView(1);
-                bottomBarProvider?.updateNavigationValue(5,
-                    projectId: provider
-                        .allProjectsManagerResponse?.projectData![index].id);
-              },
-              child: Material(
-                elevation: 2,
-                shape: RoundedRectangleBorder(
-                    borderRadius:
-                        BorderRadius.circular(DimensionConstants.d8.r)),
-                child: Container(
-                  height: DimensionConstants.d126.h,
-                  // width: DimensionConstants.d343.w,
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? ColorConstants.colorBlack
-                          : ColorConstants.colorWhite,
-                      border: Theme.of(context).brightness == Brightness.dark
-                          ? Border.all(
-                              color: Theme.of(context).brightness ==
-                                      Brightness.dark
-                                  ? ColorConstants.colorWhite
-                                  : Colors.transparent,
-                              width: DimensionConstants.d1.w)
-                          : null,
+  return Padding(
+    padding: const EdgeInsets.all(8.0),
+    child: Container(
+      width: DimensionConstants.d343.w,
+      color: Theme.of(context).brightness == Brightness.dark
+          ? ColorConstants.colorBlack
+          : ColorConstants.colorWhite,
+      child: ListView.builder(
+          physics: NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: provider.allProjectsManagerResponse?.projectData?.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Padding(
+              padding: EdgeInsets.symmetric(vertical: DimensionConstants.d5.h),
+              child: GestureDetector(
+                onTap: () {
+                  bottomBarProvider?.pageView(1);
+                  bottomBarProvider?.updateNavigationValue(5,
+                      projectId: provider
+                          .allProjectsManagerResponse?.projectData![index].id);
+                },
+                child: Material(
+                  elevation: 2,
+                  shape: RoundedRectangleBorder(
                       borderRadius:
                           BorderRadius.circular(DimensionConstants.d8.r)),
-                  child: Column(
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.only(
-                            left: DimensionConstants.d15.w,
-                            right: DimensionConstants.d26.w,
-                            top: DimensionConstants.d16.h,
-                            bottom: DimensionConstants.d15.h),
-                        child: Row(
-                          children: <Widget>[
-                            SizedBox(
-                              width: DimensionConstants.d16.w,
-                            ),
-                            Text(provider.allProjectsManagerResponse
-                                        ?.projectData![index].projectName ??
-                                    "")
-                                .semiBoldText(context,
-                                    DimensionConstants.d14.sp, TextAlign.center,
-                                    color: Theme.of(context).brightness ==
-                                            Brightness.dark
-                                        ? ColorConstants.colorWhite
-                                        : ColorConstants.colorBlack),
-                            Expanded(child: Container()),
-                            ImageView(
-                              path: ImageConstants.arrowIcon,
-                              width: DimensionConstants.d5.w,
-                              height: DimensionConstants.d10.h,
-                              color: Theme.of(context).brightness ==
-                                      Brightness.dark
-                                  ? ColorConstants.colorWhite
-                                  : ColorConstants.colorBlack,
-                            ),
-                          ],
+                  child: Container(
+                    height: DimensionConstants.d126.h,
+                    // width: DimensionConstants.d343.w,
+                    decoration: BoxDecoration(
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? ColorConstants.colorBlack
+                            : ColorConstants.colorWhite,
+                        border: Theme.of(context).brightness == Brightness.dark
+                            ? Border.all(
+                                color: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? ColorConstants.colorWhite
+                                    : Colors.transparent,
+                                width: DimensionConstants.d1.w)
+                            : null,
+                        borderRadius:
+                            BorderRadius.circular(DimensionConstants.d8.r)),
+                    child: Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(
+                              left: DimensionConstants.d15.w,
+                              right: DimensionConstants.d26.w,
+                              top: DimensionConstants.d16.h,
+                              bottom: DimensionConstants.d15.h),
+                          child: Row(
+                            children: <Widget>[
+                              SizedBox(
+                                width: DimensionConstants.d16.w,
+                              ),
+                              Text(provider.allProjectsManagerResponse
+                                          ?.projectData![index].projectName ??
+                                      "")
+                                  .semiBoldText(
+                                      context,
+                                      DimensionConstants.d14.sp,
+                                      TextAlign.center,
+                                      color: Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? ColorConstants.colorWhite
+                                          : ColorConstants.colorBlack),
+                              Expanded(child: Container()),
+                              ImageView(
+                                path: ImageConstants.arrowIcon,
+                                width: DimensionConstants.d5.w,
+                                height: DimensionConstants.d10.h,
+                                color: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? ColorConstants.colorWhite
+                                    : ColorConstants.colorBlack,
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      Container(
-                        height: DimensionConstants.d1.h,
-                        width: DimensionConstants.d343.w,
-                        color: ColorConstants.lightGray,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(
-                            left: DimensionConstants.d15.w,
-                            right: DimensionConstants.d26.w,
-                            top: DimensionConstants.d20.h,
-                            bottom: DimensionConstants.d8.h),
-                        child: Row(
-                          children: <Widget>[
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  left: DimensionConstants.d40.w),
-                              child: Column(
+                        Container(
+                          height: DimensionConstants.d1.h,
+                          width: DimensionConstants.d343.w,
+                          color: ColorConstants.lightGray,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(
+                              left: DimensionConstants.d15.w,
+                              right: DimensionConstants.d26.w,
+                              top: DimensionConstants.d20.h,
+                              bottom: DimensionConstants.d8.h),
+                          child: Row(
+                            children: <Widget>[
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    left: DimensionConstants.d40.w),
+                                child: Column(
+                                  children: <Widget>[
+                                    Text(DateFunctions.minutesToHourString(
+                                            provider
+                                                    .allProjectsManagerResponse
+                                                    ?.projectData![index]
+                                                    .totalHours ??
+                                                0))
+                                        .semiBoldText(
+                                            context,
+                                            DimensionConstants.d20.sp,
+                                            TextAlign.center,
+                                            color: Theme.of(context)
+                                                        .brightness ==
+                                                    Brightness.dark
+                                                ? ColorConstants.colorWhite
+                                                : ColorConstants.colorBlack),
+                                    Text("total_hours".tr()).regularText(
+                                        context,
+                                        DimensionConstants.d14.sp,
+                                        TextAlign.center,
+                                        color: Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? ColorConstants.colorWhite
+                                            : ColorConstants.colorBlack),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(
+                                width: DimensionConstants.d120.w,
+                              ),
+                              Column(
                                 children: <Widget>[
-                                  Text(DateFunctions.minutesToHourString(
-                                          provider
-                                                  .allProjectsManagerResponse
-                                                  ?.projectData![index]
-                                                  .totalHours ??
-                                              0))
+                                  Text(provider.allProjectsManagerResponse
+                                              ?.projectData![index].crew
+                                              ?.toString() ??
+                                          "0")
                                       .semiBoldText(
                                           context,
                                           DimensionConstants.d20.sp,
@@ -641,7 +636,7 @@ Widget projectDetails(BuildContext context, ProjectsManagerProvider provider,
                                                   Brightness.dark
                                               ? ColorConstants.colorWhite
                                               : ColorConstants.colorBlack),
-                                  Text("total_hours".tr()).regularText(
+                                  Text("crew".tr()).regularText(
                                       context,
                                       DimensionConstants.d14.sp,
                                       TextAlign.center,
@@ -651,42 +646,17 @@ Widget projectDetails(BuildContext context, ProjectsManagerProvider provider,
                                           : ColorConstants.colorBlack),
                                 ],
                               ),
-                            ),
-                            SizedBox(
-                              width: DimensionConstants.d120.w,
-                            ),
-                            Column(
-                              children: <Widget>[
-                                Text(provider.allProjectsManagerResponse
-                                            ?.projectData![index].crew
-                                            ?.toString() ??
-                                        "0")
-                                    .semiBoldText(
-                                        context,
-                                        DimensionConstants.d20.sp,
-                                        TextAlign.center,
-                                        color: Theme.of(context).brightness ==
-                                                Brightness.dark
-                                            ? ColorConstants.colorWhite
-                                            : ColorConstants.colorBlack),
-                                Text("crew".tr()).regularText(context,
-                                    DimensionConstants.d14.sp, TextAlign.center,
-                                    color: Theme.of(context).brightness ==
-                                            Brightness.dark
-                                        ? ColorConstants.colorWhite
-                                        : ColorConstants.colorBlack),
-                              ],
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          );
-        }),
+            );
+          }),
+    ),
   );
 }
 

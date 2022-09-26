@@ -141,8 +141,7 @@ class CreateProjectManagerProvider extends BaseProvider {
       createProjectRequest.longitude = longitude.toString();
       createProjectRequest.address = pickUpLocation;
       createProjectRequest.locationRadius = locationRadius.toString();
-      Navigator.pushNamed(context, RouteConstants.addCrewPageManager,
-          arguments: AddCrewPageManager());
+      Navigator.pushNamed(context, RouteConstants.addCrewPageManager);
     }
   }
 }

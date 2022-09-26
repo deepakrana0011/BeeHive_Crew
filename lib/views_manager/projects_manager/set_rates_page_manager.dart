@@ -40,107 +40,112 @@ class SetRatesPageManager extends StatelessWidget {
             CommonWidgets.hideKeyboard(context);
             Navigator.pop(context);
           }),
-          body: SingleChildScrollView(
-              child: provider.state == ViewState.idle
-                  ? Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        notificationSwitcher(
-                          context,
-                          provider,
-                        ),
-                        SizedBox(
-                          height: DimensionConstants.d14.h,
-                        ),
-                        provider.isSameRate == true
-                            ? rateBoxWidget(context, provider)
-                            : Container(),
-                        SizedBox(
-                          height: provider.isSameRate == true
-                              ? DimensionConstants.d30.h
-                              : DimensionConstants.d15.h,
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: DimensionConstants.d16.w),
-                          child: Row(
-                            children: <Widget>[
-                              Divider(
-                                  DimensionConstants.d2.h,
-                                  DimensionConstants.d137.w,
-                                  ColorConstants.grayF3F3F3),
-                              SizedBox(
-                                width: DimensionConstants.d25.w,
-                              ),
-                              const Text("or").boldText(context,
-                                  DimensionConstants.d16.sp, TextAlign.center,
-                                  color: ColorConstants.gray828282),
-                              SizedBox(
-                                width: DimensionConstants.d25.w,
-                              ),
-                              Divider(
-                                  DimensionConstants.d2.h,
-                                  DimensionConstants.d137.w,
-                                  ColorConstants.grayF3F3F3),
-                            ],
+          body: provider.state == ViewState.idle
+              ? Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    notificationSwitcher(
+                      context,
+                      provider,
+                    ),
+                    SizedBox(
+                      height: DimensionConstants.d14.h,
+                    ),
+                    provider.isSameRate == true
+                        ? rateBoxWidget(context, provider)
+                        : Container(),
+                    SizedBox(
+                      height: provider.isSameRate == true
+                          ? DimensionConstants.d30.h
+                          : DimensionConstants.d15.h,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: DimensionConstants.d16.w),
+                      child: Row(
+                        children: <Widget>[
+                          Divider(
+                              DimensionConstants.d2.h,
+                              DimensionConstants.d137.w,
+                              ColorConstants.grayF3F3F3),
+                          SizedBox(
+                            width: DimensionConstants.d25.w,
+                          ),
+                          const Text("or").boldText(context,
+                              DimensionConstants.d16.sp, TextAlign.center,
+                              color: ColorConstants.gray828282),
+                          SizedBox(
+                            width: DimensionConstants.d25.w,
+                          ),
+                          Divider(
+                              DimensionConstants.d2.h,
+                              DimensionConstants.d137.w,
+                              ColorConstants.grayF3F3F3),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: DimensionConstants.d20.h,
+                    ),
+                    Expanded(
+                      child: perCrewRates(context, provider.isSameRate, provider,
+                          provider.myController!),
+                    ),
+
+                    Column(children: [
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: DimensionConstants.d16.w),
+                        child: Container(
+                          height: DimensionConstants.d50.h,
+                          decoration: BoxDecoration(
+                            color: ColorConstants.redColorEB5757
+                                .withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(
+                                DimensionConstants.d8.r),
+                          ),
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: DimensionConstants.d16.w),
+                            child: Row(
+                              children: <Widget>[
+                                const ImageView(
+                                  path: ImageConstants.warningIcon,
+                                ),
+                                SizedBox(
+                                  width: DimensionConstants.d16.w,
+                                ),
+                                Text("warning_text".tr()).regularText(context,
+                                    DimensionConstants.d13.sp, TextAlign.left,
+                                    color: ColorConstants.colorBlack),
+                              ],
+                            ),
                           ),
                         ),
-                        SizedBox(
-                          height: DimensionConstants.d20.h,
-                        ),
-                        perCrewRates(context, provider.isSameRate, provider,
-                            provider.myController!),
-                        SizedBox(
-                          height: DimensionConstants.d200.h,
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: DimensionConstants.d16.w),
-                          child: Container(
-                            height: DimensionConstants.d50.h,
-                            decoration: BoxDecoration(
-                              color: ColorConstants.redColorEB5757
-                                  .withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(
-                                  DimensionConstants.d8.r),
-                            ),
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: DimensionConstants.d16.w),
-                              child: Row(
-                                children: <Widget>[
-                                  const ImageView(
-                                    path: ImageConstants.warningIcon,
-                                  ),
-                                  SizedBox(
-                                    width: DimensionConstants.d16.w,
-                                  ),
-                                  Text("warning_text".tr()).regularText(context,
-                                      DimensionConstants.d13.sp, TextAlign.left,
-                                      color: ColorConstants.colorBlack),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: DimensionConstants.d25.h,
-                        ),
-                        Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: DimensionConstants.d16.w),
-                          child: CommonWidgets.commonButton(
-                              context, "next".tr(),
-                              color1: ColorConstants.primaryGradient2Color,
-                              color2: ColorConstants.primaryGradient1Color,
-                              fontSize: DimensionConstants.d14.sp,
-                              onBtnTap: () {
-                            provider.navigateToNextPage(context,isUpdating!);
-                          }, shadowRequired: true),
-                        ),
-                      ],
-                    )
-                  : const CustomCircularBar()),
+                      ),
+                      SizedBox(
+                        height: DimensionConstants.d25.h,
+                      ),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: DimensionConstants.d16.w),
+                        child: CommonWidgets.commonButton(
+                            context, "next".tr(),
+                            color1: ColorConstants.primaryGradient2Color,
+                            color2: ColorConstants.primaryGradient1Color,
+                            fontSize: DimensionConstants.d14.sp,
+                            onBtnTap: () {
+                              provider.navigateToNextPage(context,isUpdating!);
+                            }, shadowRequired: true),
+                      ),
+                    ],),
+                    SizedBox(
+                      height: DimensionConstants.d20.h,
+                    ),
+
+                  ],
+                )
+              : const CustomCircularBar(),
         );
       },
     );
@@ -292,9 +297,9 @@ Widget perCrewRates(
   return Padding(
     padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
     child: Container(
-      height: DimensionConstants.d100.h,
       width: DimensionConstants.d400.w,
       child: ListView.builder(
+        shrinkWrap: true,
           itemCount: provider.createProjectRequest.selectedCrewMember!.length,
           itemBuilder: (BuildContext context, int index) {
             return Padding(

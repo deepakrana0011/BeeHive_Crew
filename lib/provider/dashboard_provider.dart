@@ -90,7 +90,6 @@ class DashboardProvider extends BaseProvider {
           model.crew?.profileImage ?? '',
         );
         //model.crew?.companyLogo ?? ''//
-
         getToTalHours();
         if (selectedTabIndex != 0) {
           groupDataByDate();
@@ -158,6 +157,8 @@ class DashboardProvider extends BaseProvider {
     try {
       var checkInTime = DateFunctions.dateFormatyyyyMMddHHmm(DateTime.now());
       var model = await api.checkInApi(context, assignProjectId, checkInTime);
+      SharedPreference.prefs!
+          .setString(SharedPreference.popUpShowTime, checkInTime);
       assignProjectId = "";
       if (model.success == true) {
         getDashBoardData(context, bottomBarProvider);
@@ -181,7 +182,8 @@ class DashboardProvider extends BaseProvider {
     setState(ViewState.busy);
     try {
       print("selected checkout time ${selectedCheckOutTime}");
-      var checkoutTime = DateFunctions.tweleveTo24Hour(selectedCheckOutTime!.substring(0, 4));
+      var checkoutTime =
+          DateFunctions.tweleveTo24Hour(selectedCheckOutTime!.toUpperCase());
       var value = crewResponse!.userCheckin!.checkInTime!.substring(0, 10);
       var checkInTimeFinal = value + " " + checkoutTime;
       var model = await api.checkOutApiCrew(
@@ -258,7 +260,8 @@ class DashboardProvider extends BaseProvider {
             context, "Checkout Time should be greater than check in time");
       } else {
         initialTime = pickedTime;
-        selectedCheckOutTime = DateFunctions.twentyFourHourTO12Hour(initialTime.format(context));
+        selectedCheckOutTime =
+            DateFunctions.twentyFourHourTO12Hour(initialTime.format(context));
       }
     }
   }
@@ -353,7 +356,7 @@ class DashboardProvider extends BaseProvider {
     List<Interruption> timeString = [];
     List<ProjectWorkingHourDetail> projectWorkingHourList = [];
     for (int i = 0; i < detail.allCheckinBreak!.length; i++) {
-      if (detail.allCheckinBreak![i].interval != "Any") {
+      if (detail.allCheckinBreak![i].startTime != "Any Time") {
         var breakStartTimeString = detail.checkInTime!.substring(0, 10) +
             " " +
             detail.allCheckinBreak![i].startTime!
@@ -449,5 +452,23 @@ class DashboardProvider extends BaseProvider {
           type: 1));
     }
     return projectWorkingHourList;
+  }
+
+  bool oneHourSpendForCheckin() {
+    var value =
+        SharedPreference.prefs!.getString(SharedPreference.popUpShowTime);
+    if (value != null) {
+      print("stored time ${value}");
+      var timeNow = DateTime.now();
+      var lastTimePopShow = DateFunctions.getDateTimeFromString(value);
+      var difference = timeNow.difference(lastTimePopShow).inHours;
+      print("difference");
+      if (difference > 1) {
+        return true;
+      } else {
+        return false;
+      }
+    } else
+      return false;
   }
 }

@@ -268,9 +268,9 @@ class DateFunctions {
 
 
   static DateTime stringToDate(String dateString) {
-    DateTime date = DateFormat("hh:mm").parse(dateString.replaceAll("AM", "").replaceAll("PM", ""));
+    DateTime date = DateFormat("hh:mm a").parse(dateString.toUpperCase());
     String _24HourFormat = DateFormat("HH:mm").format(date);
-    DateTime _24HourFormatDate = DateFormat("hh:mm").parse(_24HourFormat);
+    DateTime _24HourFormatDate = DateFormat("HH:mm").parse(_24HourFormat);
     return _24HourFormatDate;
   }
 
@@ -299,6 +299,7 @@ class DateFunctions {
 
   static String stringToDateAddMintues(String dateString,int minutes) {
     print("number of mintues added ${minutes}");
+    print("dateString ${dateString}");
     DateTime date = DateFormat("HH:mm").parse(dateString).add(Duration(minutes: minutes));
     String _24HourFormat = DateFormat("HH:mm").format(date);
     return _24HourFormat;
@@ -323,7 +324,7 @@ class DateFunctions {
   }
 
   static String tweleveTo24Hour(String? selectedCheckOutTime) {
-    DateTime date = DateFormat("hh:mm").parse(selectedCheckOutTime!);
+    DateTime date = DateFormat("hh:mm a").parse(selectedCheckOutTime!);
     String _24HourFormat = DateFormat("HH:mm").format(date);
     print("tweleve hour format string is ${_24HourFormat}");
     return _24HourFormat;

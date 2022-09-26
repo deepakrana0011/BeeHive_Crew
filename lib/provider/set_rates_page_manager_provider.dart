@@ -46,6 +46,14 @@ class SetRatesPageManageProvider extends BaseProvider {
           updateCrewList(context);
         } else {
           createProjectRequest.sameRate = singleRateController.text;
+          List<ProjectRate> projectList = [];
+          for (int i = 0; i < myController!.length; i++) {
+            ProjectRate value = ProjectRate();
+            value.crewId = createProjectRequest.selectedCrewMember![i].id;
+            value.price = singleRateController.text;
+            projectList.add(value);
+          }
+          createProjectRequest.projectRate = projectList;
           Navigator.pushNamed(
               context, RouteConstants.projectSettingsPageManager,
               arguments:
@@ -65,7 +73,6 @@ class SetRatesPageManageProvider extends BaseProvider {
         }
         createProjectRequest.projectRate = projectList;
         if (isUpdating) {
-          createProjectRequest.sameRate = singleRateController.text;
           updateCrewList(context);
         } else {
           Navigator.pushNamed(
@@ -87,6 +94,14 @@ class SetRatesPageManageProvider extends BaseProvider {
     updateCrewRequest.crewId = list;
     if (isSameRate) {
       updateCrewRequest.sameRate = singleRateController.text;
+      List<ProjectRate> projectList = [];
+      for (int i = 0; i < myController!.length; i++) {
+        ProjectRate value = ProjectRate();
+        value.crewId = createProjectRequest.selectedCrewMember![i].id;
+        value.price = singleRateController.text;
+        projectList.add(value);
+      }
+      updateCrewRequest.projectRate = projectList;
     } else {
       List<ProjectRate> projectList = [];
       for (int i = 0; i < myController!.length; i++) {

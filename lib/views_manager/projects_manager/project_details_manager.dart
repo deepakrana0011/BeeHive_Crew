@@ -196,7 +196,9 @@ class _ProjectDetailsPageManagerState extends State<ProjectDetailsPageManager>
                           onTap: () {
                             Navigator.pushNamed(
                                 context, RouteConstants.addCrewPageManager,
-                                arguments: AddCrewPageManager(crewList: provider.projectDetailResponse!.projectData!.crews!,projectId: provider.projectId));
+                                arguments: AddCrewPageManager(crewList: provider.projectDetailResponse!.projectData!.crews!,projectId: provider.projectId)).then((value) {
+                              provider.getProjectDetail(context);
+                            });
                           },
                           child: Container(
                             height: DimensionConstants.d40.h,
@@ -777,7 +779,7 @@ Widget crewWidget(
     name = bottomBarProvider.managerName ?? "";
   } else {
     name = provider.projectDetailResponse!.projectData!.crews![index - 1].name;
-    hourlyRate = provider.projectDetailResponse!.projectData!.crews![index - 1].projectRate!;
+    hourlyRate = double.parse(provider.projectDetailResponse!.projectData!.crews![index - 1].projectRate!).toStringAsFixed(2);
   }
 
   return Card(
@@ -870,7 +872,7 @@ Widget crewWidget(
                                   : ColorConstants.deepBlue,
                             ),
                             archivedOrNot != true
-                                ?  Text("  $hourlyRate").regularText(
+                                ?  Text("  \$${hourlyRate}/h").regularText(
                                     context,
                                     DimensionConstants.d14.sp,
                                     TextAlign.left,

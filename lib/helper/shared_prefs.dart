@@ -18,6 +18,7 @@ class SharedPreference {
   static const Crew_NAME = "crewName";
   static const loginType = "loginType";    // 1 for crew 2 // manager
   static const isLogin = "isLogin";    // 1 for crew 2 // manager
+  static const popUpShowTime = "popUpShowTime";    // 1 for crew 2 // manager
 
  static SharedPreferences? prefs;
   static clearSharedPrefs() async {
