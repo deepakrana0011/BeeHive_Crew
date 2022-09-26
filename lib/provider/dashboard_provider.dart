@@ -62,6 +62,8 @@ class DashboardProvider extends BaseProvider {
   String timeFromLastCheckedIn = "0h 0m";
   String totalSpendTime = "0h 0m";
   String? totalHours;
+  String? totalEarnings;
+  String? averageRatePerHour;
 
   DateTime? selectedStartDate = DateTime.now();
   DateTime? selectedEndDate = DateTime.now();
@@ -109,13 +111,23 @@ class DashboardProvider extends BaseProvider {
 
   void getToTalHours() {
     var totalMinutes = 0;
+    var totalPrice = 0.0;
     for (var element in crewResponse!.allCheckin!) {
       var startTime = DateFunctions.getDateTimeFromString(element.checkInTime!);
       var endTime = DateFunctions.getDateTimeFromString(element.checkOutTime!);
       var minutes = endTime.difference(startTime).inMinutes;
       totalMinutes = totalMinutes + minutes;
+
+      totalPrice = totalPrice +
+          double.parse(
+              element.assignProjectId!.projectRate![0].price.toString());
     }
     totalHours = DateFunctions.minutesToHourString(totalMinutes);
+    double averagePricePerHour = totalPrice / crewResponse!.allCheckin!.length;
+    averageRatePerHour = averagePricePerHour.toStringAsFixed(2);
+    double hoursForEarning=totalMinutes/60;
+    var value = hoursForEarning * averagePricePerHour;
+    totalEarnings = value.toStringAsFixed(2);
     customNotify();
   }
 

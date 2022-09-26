@@ -1227,11 +1227,11 @@ class _DashBoardPageState extends State<DashBoardPage>
                                     mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text("x \$20.00/hr").semiBoldText(
+                                      Text("x \$${provider.averageRatePerHour}/hr").semiBoldText(
                                           context,
                                           DimensionConstants.d14.sp,
                                           TextAlign.center),
-                                      Text("\$805.00").semiBoldText(
+                                      Text("\$${provider.totalEarnings}").semiBoldText(
                                           context,
                                           DimensionConstants.d14.sp,
                                           TextAlign.center)

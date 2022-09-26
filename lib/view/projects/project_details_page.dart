@@ -500,9 +500,6 @@ Widget todayTab(BuildContext context, ProjectDetailsPageProvider provider) {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
-        SizedBox(
-          height: DimensionConstants.d15.h,
-        ),
         if (provider.projectDetailCrewResponse != null &&
             provider.projectDetailCrewResponse!.projectData!.checkins!.length >
                 0)
@@ -522,94 +519,98 @@ Widget crewDetail(BuildContext context, ProjectDetailsPageProvider provider,
     onTap: () {
       Navigator.pushNamed(context, RouteConstants.timeSheetsScreen);
     },
-    child: Card(
-      margin: EdgeInsets.zero,
-      elevation: 1,
-      child: Container(
-        height: DimensionConstants.d61.h,
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
-          child: Row(
-            children: <Widget>[
-              if (!isToday)
-                Row(
-                  children: [
-                    Text(DateFunctions.capitalize(DateFunctions.getMonthDay(
-                            DateFunctions.getDateTimeFromString(
-                                checkInDetail.checkInTime!))))
-                        .boldText(
-                      context,
-                      DimensionConstants.d13.sp,
-                      TextAlign.left,
-                      color: Theme.of(context).brightness == Brightness.dark
-                          ? ColorConstants.colorWhite
-                          : ColorConstants.colorBlack,
-                    ),
-                    SizedBox(
-                      width: DimensionConstants.d9.w,
-                    ),
-                  ],
+    child: Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Card(
+        margin: EdgeInsets.zero,
+        elevation: 1,
+        child: Container(
+          height: DimensionConstants.d61.h,
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                if (!isToday)
+                  Row(
+                    children: [
+                      Text(DateFunctions.capitalize(DateFunctions.getMonthDay(
+                              DateFunctions.getDateTimeFromString(
+                                  checkInDetail.checkInTime!))))
+                          .boldText(
+                        context,
+                        DimensionConstants.d13.sp,
+                        TextAlign.left,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? ColorConstants.colorWhite
+                            : ColorConstants.colorBlack,
+                      ),
+                      SizedBox(
+                        width: DimensionConstants.d9.w,
+                      ),
+                    ],
+                  ),
+                Text(DateFunctions.dateTO12Hour(checkInDetail.checkInTime!)
+                        .substring(
+                            0,
+                            DateFunctions.dateTO12Hour(checkInDetail.checkInTime!)
+                                    .length -
+                                1))
+                    .regularText(
+                  context,
+                  DimensionConstants.d13.sp,
+                  TextAlign.left,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? ColorConstants.colorWhite
+                      : ColorConstants.colorBlack,
                 ),
-              Text(DateFunctions.dateTO12Hour(checkInDetail.checkInTime!)
-                      .substring(
-                          0,
-                          DateFunctions.dateTO12Hour(checkInDetail.checkInTime!)
-                                  .length -
-                              1))
-                  .regularText(
-                context,
-                DimensionConstants.d13.sp,
-                TextAlign.left,
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? ColorConstants.colorWhite
-                    : ColorConstants.colorBlack,
-              ),
-              SizedBox(
-                width: DimensionConstants.d9.w,
-              ),
-              customStepper(provider, checkInDetail),
-              SizedBox(
-                width: DimensionConstants.d9.w,
-              ),
-              Text(DateFunctions.dateTO12Hour(checkInDetail.checkOutTime!)
-                      .substring(
-                          0,
-                          DateFunctions.dateTO12Hour(
-                                      checkInDetail.checkOutTime!)
-                                  .length -
-                              1))
-                  .regularText(
-                context,
-                DimensionConstants.d13.sp,
-                TextAlign.left,
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? ColorConstants.colorWhite
-                    : ColorConstants.colorBlack,
-              ),
-              SizedBox(
-                width: DimensionConstants.d14.w,
-              ),
-              Text("${DateFunctions.calculateTotalHourTime(checkInDetail.checkInTime!, checkInDetail.checkOutTime!)} h")
-                  .boldText(
-                context,
-                DimensionConstants.d13.sp,
-                TextAlign.left,
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? ColorConstants.colorWhite
-                    : ColorConstants.colorBlack,
-              ),
-              SizedBox(
-                width: DimensionConstants.d10.w,
-              ),
-              ImageView(
-                path: ImageConstants.arrowIcon,
-                height: DimensionConstants.d10.h,
-                width: DimensionConstants.d8.w,
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? ColorConstants.colorWhite
-                    : ColorConstants.colorBlack,
-              ),
-            ],
+                SizedBox(
+                  width: DimensionConstants.d9.w,
+                ),
+                customStepper(provider, checkInDetail),
+                SizedBox(
+                  width: DimensionConstants.d9.w,
+                ),
+                Text(DateFunctions.dateTO12Hour(checkInDetail.checkOutTime!)
+                        .substring(
+                            0,
+                            DateFunctions.dateTO12Hour(
+                                        checkInDetail.checkOutTime!)
+                                    .length -
+                                1))
+                    .regularText(
+                  context,
+                  DimensionConstants.d13.sp,
+                  TextAlign.left,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? ColorConstants.colorWhite
+                      : ColorConstants.colorBlack,
+                ),
+                SizedBox(
+                  width: DimensionConstants.d14.w,
+                ),
+                Text("${DateFunctions.calculateTotalHourTime(checkInDetail.checkInTime!, checkInDetail.checkOutTime!)} h")
+                    .boldText(
+                  context,
+                  DimensionConstants.d13.sp,
+                  TextAlign.left,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? ColorConstants.colorWhite
+                      : ColorConstants.colorBlack,
+                ),
+                SizedBox(
+                  width: DimensionConstants.d10.w,
+                ),
+                ImageView(
+                  path: ImageConstants.arrowIcon,
+                  height: DimensionConstants.d10.h,
+                  width: DimensionConstants.d8.w,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? ColorConstants.colorWhite
+                      : ColorConstants.colorBlack,
+                ),
+              ],
+            ),
           ),
         ),
       ),
