@@ -46,8 +46,7 @@ class ProjectDetailsPageProvider extends BaseProvider {
   Future getProjectDetail(BuildContext context) async {
     setState(ViewState.busy);
     try {
-      projectDetailCrewResponse = await api.getProjectDetailCrew(
-          context, projectId!, startDate!, endDate!);
+      projectDetailCrewResponse = await api.getProjectDetailCrew(context, projectId!, startDate!, endDate!);
       createMarker();
       setState(ViewState.idle);
     } on FetchDataException catch (e) {

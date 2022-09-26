@@ -83,8 +83,7 @@ class AddCrewPageManagerProvider extends BaseProvider {
   void navigateToNextPage(BuildContext context) {
     if (selectedCrew.isNotEmpty) {
       var isUpdating=alreadyMemberList!=null?true:false;
-      createProjectRequest.crewId =
-          selectedCrew.map((e) => e.id.toString()).toList();
+      createProjectRequest.crewId = selectedCrew.map((e) => e.id.toString()).toList();
       createProjectRequest.selectedCrewMember = selectedCrew;
       Navigator.pushNamed(context, RouteConstants.setRatesManager,
           arguments: SetRatesPageManager(isUpdating: isUpdating,projectId: projectId,));

@@ -42,13 +42,14 @@ class SetRatesPageManageProvider extends BaseProvider {
       if (singleRateController.text.trim().isEmpty) {
         DialogHelper.showMessage(context, "Please enter the crew hourly rate");
       } else {
-        if(isUpdating){
+        if (isUpdating) {
           updateCrewList(context);
-        }else{
+        } else {
           createProjectRequest.sameRate = singleRateController.text;
-          Navigator.pushNamed(context, RouteConstants.projectSettingsPageManager,
+          Navigator.pushNamed(
+              context, RouteConstants.projectSettingsPageManager,
               arguments:
-              ProjectSettingsPageManager(fromProjectOrCreateProject: true));
+                  ProjectSettingsPageManager(fromProjectOrCreateProject: true));
         }
       }
     } else {
@@ -63,13 +64,14 @@ class SetRatesPageManageProvider extends BaseProvider {
           projectList.add(value);
         }
         createProjectRequest.projectRate = projectList;
-        if(isUpdating){
+        if (isUpdating) {
           createProjectRequest.sameRate = singleRateController.text;
           updateCrewList(context);
-        }else{
-          Navigator.pushNamed(context, RouteConstants.projectSettingsPageManager,
+        } else {
+          Navigator.pushNamed(
+              context, RouteConstants.projectSettingsPageManager,
               arguments:
-              ProjectSettingsPageManager(fromProjectOrCreateProject: true));
+                  ProjectSettingsPageManager(fromProjectOrCreateProject: true));
         }
       } else {
         DialogHelper.showMessage(
@@ -80,10 +82,11 @@ class SetRatesPageManageProvider extends BaseProvider {
 
   Future<void> updateCrewList(BuildContext context) async {
     var updateCrewRequest = UpdateCrewMemberRequest();
+    var list =
+        createProjectRequest.selectedCrewMember!.map((e) => e.id!).toList();
+    updateCrewRequest.crewId = list;
     if (isSameRate) {
       updateCrewRequest.sameRate = singleRateController.text;
-      var list=createProjectRequest.selectedCrewMember!.map((e) => e.id!).toList();
-      updateCrewRequest.crewId = list;
     } else {
       List<ProjectRate> projectList = [];
       for (int i = 0; i < myController!.length; i++) {
@@ -96,7 +99,8 @@ class SetRatesPageManageProvider extends BaseProvider {
     }
     setState(ViewState.busy);
     try {
-      var model = await api.updateCrewList(context, projectId!, updateCrewRequest);
+      var model =
+          await api.updateCrewList(context, projectId!, updateCrewRequest);
       Navigator.popUntil(context, (route) {
         if (route.settings.name == "bottomBarManager") {
           return true;

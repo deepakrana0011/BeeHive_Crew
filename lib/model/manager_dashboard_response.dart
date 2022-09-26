@@ -147,6 +147,7 @@ class CrewMemberDetail {
     this.name,
     this.password,
     this.status,
+    this.projectRate
   });
 
   String? id;
@@ -154,6 +155,7 @@ class CrewMemberDetail {
   String? name;
   String? password;
   int? status;
+  String ? projectRate;
 
   factory CrewMemberDetail.fromJson(Map<String, dynamic> json) =>
       CrewMemberDetail(
@@ -162,6 +164,7 @@ class CrewMemberDetail {
         name: json["name"],
         password: json["password"],
         status: json["status"],
+        projectRate: json["sameRate"] ?? json["projectRate"] ?? "",
       );
 }
 

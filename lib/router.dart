@@ -239,7 +239,7 @@ class OnGenerateRouter {
         var projectId="";
         if (settings.arguments != null) {
           var args = settings.arguments as AddCrewPageManager;
-          list = args.crewList!;
+          list = args.crewList!.cast<CrewMemberDetail>();
           projectId = args.projectId!;
         }
         return MaterialPageRoute(

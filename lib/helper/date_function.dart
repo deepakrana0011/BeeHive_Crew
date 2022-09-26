@@ -323,7 +323,7 @@ class DateFunctions {
   }
 
   static String tweleveTo24Hour(String? selectedCheckOutTime) {
-    DateTime date = DateFormat("hh:mm a").parse(selectedCheckOutTime!);
+    DateTime date = DateFormat("hh:mm").parse(selectedCheckOutTime!);
     String _24HourFormat = DateFormat("HH:mm").format(date);
     print("tweleve hour format string is ${_24HourFormat}");
     return _24HourFormat;

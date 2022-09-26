@@ -151,7 +151,8 @@ class DashboardProvider extends BaseProvider {
   }
 
   Future checkInApi(
-    context, BottomBarProvider bottomBarProvider,
+    context,
+    BottomBarProvider bottomBarProvider,
   ) async {
     setState(ViewState.busy);
     try {
@@ -159,7 +160,7 @@ class DashboardProvider extends BaseProvider {
       var model = await api.checkInApi(context, assignProjectId, checkInTime);
       assignProjectId = "";
       if (model.success == true) {
-        getDashBoardData(context,bottomBarProvider);
+        getDashBoardData(context, bottomBarProvider);
       } else {
         setState(ViewState.idle);
         DialogHelper.showMessage(context, model.message!);
@@ -174,18 +175,20 @@ class DashboardProvider extends BaseProvider {
   }
 
   Future checkOutApi(
-    context, BottomBarProvider bottomBarProvider,
+    context,
+    BottomBarProvider bottomBarProvider,
   ) async {
     setState(ViewState.busy);
     try {
-      var checkoutTime = DateFunctions.tweleveTo24Hour(selectedCheckOutTime);
-      var value = DateFunctions.getCurrentDateMonthYear();
+      print("selected checkout time ${selectedCheckOutTime}");
+      var checkoutTime = DateFunctions.tweleveTo24Hour(selectedCheckOutTime!.substring(0, 4));
+      var value = crewResponse!.userCheckin!.checkInTime!.substring(0, 10);
       var checkInTimeFinal = value + " " + checkoutTime;
       var model = await api.checkOutApiCrew(
           context, crewResponse!.userCheckin!.id!, checkInTimeFinal);
       if (model.success == true) {
         setState(ViewState.idle);
-        getDashBoardData(context,bottomBarProvider);
+        getDashBoardData(context, bottomBarProvider);
       }
     } on FetchDataException catch (e) {
       setState(ViewState.idle);
@@ -245,17 +248,17 @@ class DashboardProvider extends BaseProvider {
     if (pickedTime != null) {
       var checkInDate = DateFunctions.getDateTimeFromString(
           crewResponse!.userCheckin!.checkInTime!);
-      var pickedTimeString = DateFunctions.getCurrentDateMonthYear() +
-          " " +
-          pickedTime.format(context);
+      var pickedTimeString =
+          crewResponse!.userCheckin!.checkInTime!.substring(0, 10) +
+              " " +
+              pickedTime.format(context);
       var checkOutDate = DateFunctions.getDateTimeFromString(pickedTimeString);
       if (checkOutDate.isBefore(checkInDate)) {
         DialogHelper.showMessage(
             context, "Checkout Time should be greater than check in time");
       } else {
         initialTime = pickedTime;
-        selectedCheckOutTime =
-            DateFunctions.twentyFourHourTO12Hour(initialTime.format(context));
+        selectedCheckOutTime = DateFunctions.twentyFourHourTO12Hour(initialTime.format(context));
       }
     }
   }

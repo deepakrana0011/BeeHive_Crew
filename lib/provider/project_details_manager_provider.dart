@@ -87,7 +87,12 @@ class ProjectDetailsManagerProvider extends BaseProvider {
       flat: true,
       anchor: const Offset(0.5, 0.5),
     ));
+    animateCamera();
+  }
 
+  void animateCamera(){
+    double latitude = projectDetailResponse?.projectData?.latitude ?? 0.0;
+    double longitude = projectDetailResponse?.projectData?.longitude ?? 0.0;
     googleMapController?.animateCamera(
         CameraUpdate.newLatLngZoom(LatLng(latitude, longitude), 14));
   }

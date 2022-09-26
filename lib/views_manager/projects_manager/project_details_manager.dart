@@ -377,7 +377,7 @@ Widget mapAndHoursDetails(BuildContext context, bool createProject,
             ),
             onMapCreated: (controller) {
               provider.googleMapController = controller;
-              provider.customNotify();
+              provider.animateCamera();
             },
           ),
         ),
@@ -770,12 +770,14 @@ Widget crewWidget(
     BottomBarManagerProvider bottomBarProvider,
     ProjectDetailsManagerProvider provider,
     int index) {
+  var hourlyRate="";
   // : "${ApiConstantsCrew.BASE_URL_IMAGE}$image",
   var name;
   if (index == 0) {
     name = bottomBarProvider.managerName ?? "";
   } else {
     name = provider.projectDetailResponse!.projectData!.crews![index - 1].name;
+    hourlyRate = provider.projectDetailResponse!.projectData!.crews![index - 1].projectRate!;
   }
 
   return Card(
@@ -868,7 +870,7 @@ Widget crewWidget(
                                   : ColorConstants.deepBlue,
                             ),
                             archivedOrNot != true
-                                ? const Text("   \$20.00/hr").regularText(
+                                ?  Text("  $hourlyRate").regularText(
                                     context,
                                     DimensionConstants.d14.sp,
                                     TextAlign.left,

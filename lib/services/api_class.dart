@@ -1249,7 +1249,8 @@ class Api {
       var response = await dio.post(
           "${ApiConstantsManager.BASEURL}${ApiConstantsManager.singleProjectDetail}/$projectId",
           data: map);
-      print("response string ${response.toString()}");
+      var value=response.toString();
+      print("response string $value");
       return ProjectDetailResponseManager.fromJson(
           json.decode(response.toString()));
     } on DioError catch (e) {
