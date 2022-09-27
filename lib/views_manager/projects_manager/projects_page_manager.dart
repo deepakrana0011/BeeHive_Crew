@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/constants/image_constants.dart';
 import 'package:beehive/constants/route_constants.dart';
@@ -47,6 +49,16 @@ class _ProjectsPageManagerState extends State<ProjectsPageManager>
     return BaseView<ProjectsManagerProvider>(
       onModelReady: (provider) {
         provider.getAllManagerProject(context);
+        tabController.addListener(() {
+          if(tabController.indexIsChanging){
+            if(tabController.index == 1){
+              provider.getProjectSchedulesManager(context);
+              tabController.index = 1;
+            }
+          }
+        });
+         // provider.nextWeekDays(7);
+         // provider.previousWeekDays(7);
       },
       builder: (context, provider, _) {
         return Scaffold(
@@ -104,147 +116,79 @@ class _ProjectsPageManagerState extends State<ProjectsPageManager>
                           )
                         : Container(),
                     tabController.index == 1
-                        ? Container(
-                            child: Column(
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      left: DimensionConstants.d40.w),
-                                  child: Row(
+                        ? Column(
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  left: DimensionConstants.d40.w),
+                              child: Row(
+                                children: <Widget>[
+                                  Row(
                                     children: <Widget>[
-                                      Row(
-                                        children: <Widget>[
-                                          Container(
-                                            height: DimensionConstants.d10.h,
-                                            width: DimensionConstants.d10.w,
-                                            decoration: BoxDecoration(
-                                              color: ColorConstants.schedule5,
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                      DimensionConstants.d5.r),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: DimensionConstants.d5.w,
-                                          ),
-                                          Text("Momentum Smart Project")
-                                              .regularText(
-                                                  context,
-                                                  DimensionConstants.d14.sp,
-                                                  TextAlign.left,
-                                                  color: Theme.of(context)
-                                                              .brightness ==
-                                                          Brightness.dark
-                                                      ? ColorConstants
-                                                          .colorWhite
-                                                      : ColorConstants
-                                                          .colorBlack),
-                                        ],
+                                      Container(
+                                        height: DimensionConstants.d10.h,
+                                        width: DimensionConstants.d10.w,
+                                        decoration: BoxDecoration(
+                                          color: ColorConstants.schedule5,
+                                          borderRadius:
+                                              BorderRadius.circular(
+                                                  DimensionConstants.d5.r),
+                                        ),
                                       ),
                                       SizedBox(
-                                        width: DimensionConstants.d15.w,
+                                        width: DimensionConstants.d5.w,
                                       ),
-                                      Row(
-                                        children: <Widget>[
-                                          Container(
-                                            height: DimensionConstants.d10.h,
-                                            width: DimensionConstants.d10.w,
-                                            decoration: BoxDecoration(
-                                              color: ColorConstants.green6FCF97,
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                      DimensionConstants.d5.r),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: DimensionConstants.d5.w,
-                                          ),
-                                          Text("Momentum Digital").regularText(
+                                      Text("Momentum Smart Project")
+                                          .regularText(
                                               context,
                                               DimensionConstants.d14.sp,
                                               TextAlign.left,
                                               color: Theme.of(context)
                                                           .brightness ==
                                                       Brightness.dark
-                                                  ? ColorConstants.colorWhite
-                                                  : ColorConstants.colorBlack),
-                                        ],
-                                      ),
+                                                  ? ColorConstants
+                                                      .colorWhite
+                                                  : ColorConstants
+                                                      .colorBlack),
                                     ],
                                   ),
-                                ),
-                                SizedBox(
-                                  height: DimensionConstants.d15.h,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      left: DimensionConstants.d40.w),
-                                  child: Row(
+                                  SizedBox(
+                                    width: DimensionConstants.d15.w,
+                                  ),
+                                  Row(
                                     children: <Widget>[
-                                      Row(
-                                        children: <Widget>[
-                                          Container(
-                                            height: DimensionConstants.d10.h,
-                                            width: DimensionConstants.d10.w,
-                                            decoration: BoxDecoration(
-                                              color: ColorConstants.schedule5,
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                      DimensionConstants.d5.r),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: DimensionConstants.d5.w,
-                                          ),
-                                          Text("Adam’s Lodge").regularText(
-                                              context,
-                                              DimensionConstants.d14.sp,
-                                              TextAlign.left,
-                                              color: Theme.of(context)
-                                                          .brightness ==
-                                                      Brightness.dark
-                                                  ? ColorConstants.colorWhite
-                                                  : ColorConstants.colorBlack),
-                                        ],
+                                      Container(
+                                        height: DimensionConstants.d10.h,
+                                        width: DimensionConstants.d10.w,
+                                        decoration: BoxDecoration(
+                                          color: ColorConstants.green6FCF97,
+                                          borderRadius:
+                                              BorderRadius.circular(
+                                                  DimensionConstants.d5.r),
+                                        ),
                                       ),
                                       SizedBox(
-                                        width: DimensionConstants.d15.w,
+                                        width: DimensionConstants.d5.w,
                                       ),
-                                      Row(
-                                        children: <Widget>[
-                                          Container(
-                                            height: DimensionConstants.d10.h,
-                                            width: DimensionConstants.d10.w,
-                                            decoration: BoxDecoration(
-                                              color: ColorConstants.green6FCF97,
-                                              borderRadius:
-                                                  BorderRadius.circular(
-                                                      DimensionConstants.d5.r),
-                                            ),
-                                          ),
-                                          SizedBox(
-                                            width: DimensionConstants.d5.w,
-                                          ),
-                                          Text("Kennedy House").regularText(
-                                              context,
-                                              DimensionConstants.d14.sp,
-                                              TextAlign.left,
-                                              color: Theme.of(context)
-                                                          .brightness ==
-                                                      Brightness.dark
-                                                  ? ColorConstants.colorWhite
-                                                  : ColorConstants.colorBlack),
-                                        ],
-                                      ),
+                                      Text("Momentum Digital").regularText(
+                                          context,
+                                          DimensionConstants.d14.sp,
+                                          TextAlign.left,
+                                          color: Theme.of(context)
+                                                      .brightness ==
+                                                  Brightness.dark
+                                              ? ColorConstants.colorWhite
+                                              : ColorConstants.colorBlack),
                                     ],
                                   ),
-                                ),
-                                SizedBox(
-                                  height: DimensionConstants.d120.h,
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          )
+                            SizedBox(
+                              height: DimensionConstants.d15.h,
+                            ),
+                          ],
+                        )
                         : Container(),
                   ],
                 )
@@ -661,7 +605,9 @@ Widget projectDetails(BuildContext context, ProjectsManagerProvider provider,
 }
 
 Widget schedule(BuildContext context, ProjectsManagerProvider provider) {
-  return Padding(
+  return provider.state == ViewState.busy ?
+  const CustomCircularBar()
+      : Padding(
     padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
     child: Column(
       children: [
@@ -683,21 +629,34 @@ Widget schedule(BuildContext context, ProjectsManagerProvider provider) {
           child: Column(
             children: [
               SizedBox(height: DimensionConstants.d17.h),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  backNextBtn(ImageConstants.backIconIos),
-                  SizedBox(
-                    width: DimensionConstants.d27.w,
-                  ),
-                  const Text("Apr13 - Apr19").boldText(
-                      context, DimensionConstants.d16.sp, TextAlign.center,
-                      color: ColorConstants.colorWhite),
-                  SizedBox(
-                    width: DimensionConstants.d27.w,
-                  ),
-                  backNextBtn(ImageConstants.nextIconIos)
-                ],
+              Padding(
+                padding: EdgeInsets.fromLTRB(
+                    DimensionConstants.d16.w,
+                    0.0,
+                    DimensionConstants.d16.w,
+                    0.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    backNextBtn(ImageConstants.backIconIos, onTap: () {
+                      provider.previousWeekDays(6);
+                    }),
+                    Text("${DateFunctions.capitalize(
+                        provider.weekFirstDate ?? "")} - ${DateFunctions
+                        .capitalize(provider.weekEndDate ?? "")}")
+                        .boldText(context, DimensionConstants.d16.sp,
+                        TextAlign.center,
+                        color: ColorConstants.colorWhite),
+                    provider.endDate !=
+                        DateFormat("yyyy-MM-dd").format(DateTime.now())
+                        ? backNextBtn(ImageConstants.nextIconIos , onTap: () {
+                      provider.nextWeekDays(6);
+                    })
+                        : Visibility(
+                        visible: false,
+                        child: backNextBtn(ImageConstants.nextIconIos))
+                  ],
+                ),
               ),
               SizedBox(
                 height: DimensionConstants.d20.h,
@@ -738,7 +697,7 @@ Widget schedule(BuildContext context, ProjectsManagerProvider provider) {
                               );
                             })),
                     Container(
-                        height: DimensionConstants.d37.h,
+                        height: DimensionConstants.d337.h,
                         color: Theme.of(context).brightness == Brightness.dark
                             ? ColorConstants.colorBlack
                             : ColorConstants.grayF1F1F1,
@@ -746,275 +705,36 @@ Widget schedule(BuildContext context, ProjectsManagerProvider provider) {
                             scrollDirection: Axis.horizontal,
                             itemCount: provider.days.length,
                             itemBuilder: (BuildContext context, int index) {
-                              return Padding(
-                                padding: EdgeInsets.only(
-                                    left: DimensionConstants.d19.w,
-                                    right: DimensionConstants.d14.w,
-                                    top: DimensionConstants.d9.h),
-                                child: Text("${provider.days[index]}")
-                                    .semiBoldText(
-                                        context,
-                                        DimensionConstants.d14.sp,
-                                        TextAlign.center,
-                                        color: Theme.of(context).brightness ==
-                                                Brightness.dark
-                                            ? ColorConstants.colorWhite
-                                            : ColorConstants.colorBlack),
-                              );
-                            })),
-                    Container(
-                        height: DimensionConstants.d45.h,
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? ColorConstants.colorBlack
-                            : ColorConstants.colorWhite,
-                        child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: provider.name.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return GestureDetector(
-                                onTap: () {
-                                  bottomSheetProjectDetails(
-                                    context,
-                                    onTap: () {},
-                                    timeSheetOrSchedule: true,
-                                  );
-                                },
-                                child: Padding(
+                              return Column(
+                                children: [
+                                  Padding(
                                     padding: EdgeInsets.only(
-                                        left: DimensionConstants.d10.w,
-                                        right: DimensionConstants.d2.w,
-                                        top: DimensionConstants.d9.h),
-                                    child: Container(
-                                        height: DimensionConstants.d35.h,
-                                        width: DimensionConstants.d35.w,
-                                        decoration: BoxDecoration(
-                                            color: provider.colors[index],
-                                            borderRadius: BorderRadius.circular(
-                                                DimensionConstants.d20.r)),
-                                        child: Center(
-                                          child: Text("${provider.name[index]}")
-                                              .semiBoldText(
-                                                  context,
-                                                  DimensionConstants.d14.sp,
-                                                  TextAlign.center,
-                                                  color: ColorConstants
-                                                      .colorWhite),
-                                        ))),
+                                        left: DimensionConstants.d19.w,
+                                        right: DimensionConstants.d14.w,
+                                        top: DimensionConstants.d9.h, bottom: DimensionConstants.d9.h),
+                                    child: Text(provider.days[index])
+                                        .semiBoldText(
+                                            context,
+                                            DimensionConstants.d14.sp,
+                                            TextAlign.center,
+                                            color: Theme.of(context).brightness ==
+                                                    Brightness.dark
+                                                ? ColorConstants.colorWhite
+                                                : ColorConstants.colorBlack),
+                                  ),
+                                Expanded(
+                                  child: Container(
+                                        width: DimensionConstants.d45.w,
+                                        // color: Theme.of(context).brightness == Brightness.dark
+                                        //     ? ColorConstants.colorBlack
+                                        //     : ColorConstants.colorWhite,
+                                        child: checkByWeekSubstring(context, provider, index)
+                                              ),
+                                ) ,
+                                ],
                               );
                             })),
-                    Container(
-                        height: DimensionConstants.d45.h,
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? ColorConstants.colorBlack
-                            : ColorConstants.colorWhite,
-                        child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: provider.days2.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return GestureDetector(
-                                onTap: () {
-                                  bottomSheetProjectDetails(
-                                    context,
-                                    onTap: () {},
-                                    timeSheetOrSchedule: true,
-                                  );
-                                },
-                                child: Padding(
-                                    padding: EdgeInsets.only(
-                                        left: DimensionConstants.d10.w,
-                                        right: DimensionConstants.d2.w,
-                                        top: DimensionConstants.d9.h),
-                                    child: Container(
-                                        height: DimensionConstants.d35.h,
-                                        width: DimensionConstants.d35.w,
-                                        decoration: BoxDecoration(
-                                            color: provider.colors2[index],
-                                            borderRadius: BorderRadius.circular(
-                                                DimensionConstants.d20.r)),
-                                        child: Center(
-                                          child:
-                                              Text("${provider.days2[index]}")
-                                                  .semiBoldText(
-                                                      context,
-                                                      DimensionConstants.d14.sp,
-                                                      TextAlign.center,
-                                                      color: ColorConstants
-                                                          .colorWhite),
-                                        ))),
-                              );
-                            })),
-                    Container(
-                        height: DimensionConstants.d45.h,
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? ColorConstants.colorBlack
-                            : ColorConstants.colorWhite,
-                        child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: provider.days3.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return GestureDetector(
-                                onTap: () {
-                                  bottomSheetProjectDetails(
-                                    context,
-                                    onTap: () {},
-                                    timeSheetOrSchedule: true,
-                                  );
-                                },
-                                child: Padding(
-                                    padding: EdgeInsets.only(
-                                        left: DimensionConstants.d10.w,
-                                        right: DimensionConstants.d2.w,
-                                        top: DimensionConstants.d9.h),
-                                    child: Container(
-                                        height: DimensionConstants.d35.h,
-                                        width: DimensionConstants.d35.w,
-                                        decoration: BoxDecoration(
-                                            color: provider.colors3[index],
-                                            borderRadius: BorderRadius.circular(
-                                                DimensionConstants.d20.r)),
-                                        child: Center(
-                                          child:
-                                              Text("${provider.days3[index]}")
-                                                  .semiBoldText(
-                                                      context,
-                                                      DimensionConstants.d14.sp,
-                                                      TextAlign.center,
-                                                      color: ColorConstants
-                                                          .colorWhite),
-                                        ))),
-                              );
-                            })),
-                    SizedBox(
-                      height: DimensionConstants.d28.h,
-                    ),
-                    SizedBox(
-                        height: DimensionConstants.d37.h,
-                        child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: provider.dates2.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return Padding(
-                                padding: EdgeInsets.only(
-                                    left: DimensionConstants.d19.w,
-                                    right: DimensionConstants.d12.w,
-                                    top: DimensionConstants.d9.h),
-                                child: Text("${provider.dates2[index]}")
-                                    .semiBoldText(
-                                        context,
-                                        DimensionConstants.d14.sp,
-                                        TextAlign.center,
-                                        color: Theme.of(context).brightness ==
-                                                Brightness.dark
-                                            ? ColorConstants.colorWhite
-                                            : ColorConstants.colorBlack),
-                              );
-                            })),
-                    Container(
-                        height: DimensionConstants.d37.h,
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? ColorConstants.colorBlack
-                            : ColorConstants.grayF1F1F1,
-                        child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: provider.days.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return Padding(
-                                padding: EdgeInsets.only(
-                                    left: DimensionConstants.d19.w,
-                                    right: DimensionConstants.d14.w,
-                                    top: DimensionConstants.d9.h),
-                                child: Text("${provider.days[index]}")
-                                    .semiBoldText(
-                                        context,
-                                        DimensionConstants.d14.sp,
-                                        TextAlign.center,
-                                        color: Theme.of(context).brightness ==
-                                                Brightness.dark
-                                            ? ColorConstants.colorWhite
-                                            : ColorConstants.colorBlack),
-                              );
-                            })),
-                    Container(
-                        height: DimensionConstants.d45.h,
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? ColorConstants.colorBlack
-                            : ColorConstants.colorWhite,
-                        child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: provider.name.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return GestureDetector(
-                                onTap: () {
-                                  bottomSheetProjectDetails(
-                                    context,
-                                    onTap: () {},
-                                    timeSheetOrSchedule: true,
-                                  );
-                                },
-                                child: Padding(
-                                    padding: EdgeInsets.only(
-                                        left: DimensionConstants.d10.w,
-                                        right: DimensionConstants.d2.w,
-                                        top: DimensionConstants.d9.h),
-                                    child: Container(
-                                        height: DimensionConstants.d35.h,
-                                        width: DimensionConstants.d35.w,
-                                        decoration: BoxDecoration(
-                                            color: provider.colors[index],
-                                            borderRadius: BorderRadius.circular(
-                                                DimensionConstants.d20.r)),
-                                        child: Center(
-                                          child: Text("${provider.name[index]}")
-                                              .semiBoldText(
-                                                  context,
-                                                  DimensionConstants.d14.sp,
-                                                  TextAlign.center,
-                                                  color: ColorConstants
-                                                      .colorWhite),
-                                        ))),
-                              );
-                            })),
-                    Container(
-                        height: DimensionConstants.d45.h,
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? ColorConstants.colorBlack
-                            : ColorConstants.colorWhite,
-                        child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: provider.days3.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return GestureDetector(
-                                onTap: () {
-                                  bottomSheetProjectDetails(
-                                    context,
-                                    onTap: () {},
-                                    timeSheetOrSchedule: true,
-                                  );
-                                },
-                                child: Padding(
-                                    padding: EdgeInsets.only(
-                                        left: DimensionConstants.d10.w,
-                                        right: DimensionConstants.d2.w,
-                                        top: DimensionConstants.d9.h),
-                                    child: Container(
-                                        height: DimensionConstants.d35.h,
-                                        width: DimensionConstants.d35.w,
-                                        decoration: BoxDecoration(
-                                            color: provider.colors3[index],
-                                            borderRadius: BorderRadius.circular(
-                                                DimensionConstants.d20.r)),
-                                        child: Center(
-                                          child:
-                                              Text("${provider.days3[index]}")
-                                                  .semiBoldText(
-                                                      context,
-                                                      DimensionConstants.d14.sp,
-                                                      TextAlign.center,
-                                                      color: ColorConstants
-                                                          .colorWhite),
-                                        ))),
-                              );
-                            })),
+
                   ],
                 ),
               ),
@@ -1024,4 +744,52 @@ Widget schedule(BuildContext context, ProjectsManagerProvider provider) {
       ],
     ),
   );
+
+}
+
+Widget checkByWeekSubstring(BuildContext context, ProjectsManagerProvider provider, int i){
+  for(int x = 0; x < provider.projectNameList.length ; x++){
+    if(provider.projectNameList[x].weekId == provider.daysUpperCase[i]){
+      return projectNameSubStringContainer(context, provider, x);
+    }
+  }
+  return Container();
+}
+
+Widget projectNameSubStringContainer(BuildContext context, ProjectsManagerProvider provider, int weekDaysIndex){
+  return  ListView.builder(
+      scrollDirection: Axis.vertical,
+      itemCount: provider.projectNameList[weekDaysIndex].projectName.length,
+      itemBuilder: (BuildContext context, int index) {
+        return GestureDetector(
+          onTap: () {
+            bottomSheetProjectDetails(
+              context,
+              onTap: () {},
+              timeSheetOrSchedule: true,
+            );
+          },
+          child: Padding(
+              padding: EdgeInsets.only(
+                  left: DimensionConstants.d10.w,
+                  right: DimensionConstants.d2.w,
+                  top: DimensionConstants.d9.h),
+              child: Container(
+                  height: DimensionConstants.d35.h,
+                  width: DimensionConstants.d35.w,
+                  decoration: BoxDecoration(
+                      color: Colors.primaries[Random().nextInt(Colors.primaries.length)],
+                      borderRadius: BorderRadius.circular(
+                          DimensionConstants.d20.r)),
+                  child: Center(
+                    child: Text(provider.projectNameList[weekDaysIndex].projectName[index].projectName!.substring(0,2).toUpperCase())
+                        .semiBoldText(
+                        context,
+                        DimensionConstants.d14.sp,
+                        TextAlign.center,
+                        color: ColorConstants
+                            .colorWhite),
+                  ))),
+        );
+  });
 }

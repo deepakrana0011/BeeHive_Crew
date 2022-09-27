@@ -1161,17 +1161,20 @@ Widget weeklyTabBarContainer(BuildContext context) {
   );
 }
 
-Widget backNextBtn(String path) {
-  return Container(
-    alignment: Alignment.center,
-    width: DimensionConstants.d25.w,
-    height: DimensionConstants.d26.h,
-    decoration: const BoxDecoration(
-      color: ColorConstants.colorWhite30,
-      shape: BoxShape.circle,
-    ),
-    child: ImageView(
-      path: path,
+Widget backNextBtn(String path, {onTap}) {
+  return GestureDetector(
+    onTap: onTap,
+    child: Container(
+      alignment: Alignment.center,
+      width: DimensionConstants.d25.w,
+      height: DimensionConstants.d26.h,
+      decoration: const BoxDecoration(
+        color: ColorConstants.colorWhite30,
+        shape: BoxShape.circle,
+      ),
+      child: ImageView(
+        path: path,
+      ),
     ),
   );
 }

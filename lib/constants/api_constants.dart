@@ -35,6 +35,8 @@ class ApiConstantsManager {
   static const String ADD_NEW_CREW_BY_MANAGER = "addingcrew";
   static const String RESEND_OTP = "resend";
   static const String RESEND_OTP_PHONE = "resendtokenonphone";
+
+  static const String projectSchedule = "projectSchedule";
 }
 
 class ApiConstantsCrew {

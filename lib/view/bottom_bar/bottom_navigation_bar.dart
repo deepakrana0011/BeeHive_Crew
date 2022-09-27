@@ -29,7 +29,7 @@ class BottomBar extends StatefulWidget {
 
 class _BottomBarState extends State<BottomBar> {
   static final List<Widget> _widgetOptions = <Widget>[
-    DashBoardPage(),
+    const DashBoardPage(),
     const ProjectsCrew(),
     const TimeSheetsTabBar(),
     const Profile(),
