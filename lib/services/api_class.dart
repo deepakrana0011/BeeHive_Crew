@@ -20,7 +20,7 @@ import 'package:beehive/model/login_response_manager.dart';
 import 'package:beehive/model/phone_otp_response_manager.dart';
 import 'package:beehive/model/project_detail_crew_response.dart';
 import 'package:beehive/model/project_detail_manager_response.dart';
-import 'package:beehive/model/project_schduele_manager.dart';
+import 'package:beehive/model/project_schduele_manager_crew.dart';
 import 'package:beehive/model/project_settings_break_request_manager.dart';
 import 'package:beehive/model/project_settings_response_manager.dart';
 import 'package:beehive/model/resend_otp_response.dart';
@@ -1298,9 +1298,7 @@ class Api {
           SharedPreference.prefs!.getString(SharedPreference.TOKEN);
 
       var map = {"firstDate": startDate, "secondDate": endDate};
-      var response = await dio.post(
-          "${ApiConstantsCrew.BASEURL}${ApiConstantsCrew.crewProjectDetail}/$projectId",
-          data: map);
+      var response = await dio.post("${ApiConstantsCrew.BASEURL}${ApiConstantsCrew.crewProjectDetail}/$projectId", data: map);
       var responseString = response.toString();
       print("response string ${responseString}");
       return ProjectDetailCrewResponse.fromJson(
@@ -1316,15 +1314,13 @@ class Api {
     }
   }
 
-  Future<ProjectScheduleManager> getProjectSchedulesManager(
-      BuildContext context) async {
+  Future<ProjectScheduleManagerCrew> getProjectSchedulesManagerCrew(
+      BuildContext context, String api) async {
     try {
       dio.options.headers["authorization"] =
           SharedPreference.prefs!.getString(SharedPreference.TOKEN);
-      var response = await dio.post(
-        ApiConstantsManager.BASEURL + ApiConstantsManager.projectSchedule,
-      );
-      return ProjectScheduleManager.fromJson(json.decode(response.toString()));
+      var response = await dio.post(api);
+      return ProjectScheduleManagerCrew.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());

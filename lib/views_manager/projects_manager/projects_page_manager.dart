@@ -57,6 +57,7 @@ class _ProjectsPageManagerState extends State<ProjectsPageManager>
             }
           }
         });
+        provider.weekTabBar();
          // provider.nextWeekDays(7);
          // provider.previousWeekDays(7);
       },
@@ -116,78 +117,54 @@ class _ProjectsPageManagerState extends State<ProjectsPageManager>
                           )
                         : Container(),
                     tabController.index == 1
-                        ? Column(
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  left: DimensionConstants.d40.w),
-                              child: Row(
-                                children: <Widget>[
-                                  Row(
-                                    children: <Widget>[
-                                      Container(
-                                        height: DimensionConstants.d10.h,
-                                        width: DimensionConstants.d10.w,
-                                        decoration: BoxDecoration(
-                                          color: ColorConstants.schedule5,
-                                          borderRadius:
-                                              BorderRadius.circular(
-                                                  DimensionConstants.d5.r),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: DimensionConstants.d5.w,
-                                      ),
-                                      Text("Momentum Smart Project")
-                                          .regularText(
-                                              context,
-                                              DimensionConstants.d14.sp,
-                                              TextAlign.left,
-                                              color: Theme.of(context)
-                                                          .brightness ==
-                                                      Brightness.dark
-                                                  ? ColorConstants
-                                                      .colorWhite
-                                                  : ColorConstants
-                                                      .colorBlack),
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    width: DimensionConstants.d15.w,
-                                  ),
-                                  Row(
-                                    children: <Widget>[
-                                      Container(
-                                        height: DimensionConstants.d10.h,
-                                        width: DimensionConstants.d10.w,
-                                        decoration: BoxDecoration(
-                                          color: ColorConstants.green6FCF97,
-                                          borderRadius:
-                                              BorderRadius.circular(
-                                                  DimensionConstants.d5.r),
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: DimensionConstants.d5.w,
-                                      ),
-                                      Text("Momentum Digital").regularText(
-                                          context,
-                                          DimensionConstants.d14.sp,
-                                          TextAlign.left,
-                                          color: Theme.of(context)
-                                                      .brightness ==
-                                                  Brightness.dark
-                                              ? ColorConstants.colorWhite
-                                              : ColorConstants.colorBlack),
-                                    ],
-                                  ),
-                                ],
+                        ? SizedBox(
+                          height: DimensionConstants.d150.h,
+                          child: GridView.builder(
+                              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                                childAspectRatio: 1,
                               ),
-                            ),
-                            SizedBox(
-                              height: DimensionConstants.d15.h,
-                            ),
-                          ],
+                              shrinkWrap: true,
+                              padding: EdgeInsets.zero,
+                              itemCount: provider.projectNames.length,
+                              itemBuilder: (context, index) {
+                                return  Padding(
+                                  padding: EdgeInsets.only(
+                                      left: DimensionConstants.d30.w, bottom: DimensionConstants.d10.h),
+                                  child: Row(
+                                    children: <Widget>[
+                                      Container(
+                                        height: DimensionConstants.d10.h,
+                                        width: DimensionConstants.d10.w,
+                                        decoration: BoxDecoration(
+                                          color: provider.projectColors[index],
+                                          borderRadius:
+                                          BorderRadius.circular(
+                                              DimensionConstants.d5.r),
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: DimensionConstants.d5.w,
+                                      ),
+                                      SizedBox(
+                                        width: DimensionConstants.d140.w,
+                                        child: Text(provider.projectNames[index])
+                                            .regularText(
+                                            context,
+                                            DimensionConstants.d14.sp,
+                                            TextAlign.left,
+                                            color: Theme.of(context)
+                                                .brightness ==
+                                                Brightness.dark
+                                                ? ColorConstants
+                                                .colorWhite
+                                                : ColorConstants
+                                                .colorBlack, maxLines: 1, overflow: TextOverflow.ellipsis),
+                                      )
+                                    ],
+                                  ),
+                                );
+                              }),
                         )
                         : Container(),
                   ],
@@ -650,7 +627,7 @@ Widget schedule(BuildContext context, ProjectsManagerProvider provider) {
                     provider.endDate !=
                         DateFormat("yyyy-MM-dd").format(DateTime.now())
                         ? backNextBtn(ImageConstants.nextIconIos , onTap: () {
-                      provider.nextWeekDays(6);
+                      provider.nextWeekDays(7);
                     })
                         : Visibility(
                         visible: false,
@@ -681,7 +658,11 @@ Widget schedule(BuildContext context, ProjectsManagerProvider provider) {
                             itemCount: provider.dates.length,
                             itemBuilder: (BuildContext context, int index) {
                               return Padding(
-                                padding: EdgeInsets.only(
+                                padding: provider.dates[index] <= 9 ?
+                                EdgeInsets.only(
+                                    left: DimensionConstants.d25.w,
+                                    right: DimensionConstants.d14.w,
+                                    top: DimensionConstants.d9.h): EdgeInsets.only(
                                     left: DimensionConstants.d19.w,
                                     right: DimensionConstants.d12.w,
                                     top: DimensionConstants.d9.h),
@@ -778,7 +759,7 @@ Widget projectNameSubStringContainer(BuildContext context, ProjectsManagerProvid
                   height: DimensionConstants.d35.h,
                   width: DimensionConstants.d35.w,
                   decoration: BoxDecoration(
-                      color: Colors.primaries[Random().nextInt(Colors.primaries.length)],
+                      color: provider.projectNameList[weekDaysIndex].projectName[index].color,
                       borderRadius: BorderRadius.circular(
                           DimensionConstants.d20.r)),
                   child: Center(

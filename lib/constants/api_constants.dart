@@ -36,7 +36,7 @@ class ApiConstantsManager {
   static const String RESEND_OTP = "resend";
   static const String RESEND_OTP_PHONE = "resendtokenonphone";
 
-  static const String projectSchedule = "projectSchedule";
+  static const String managerProjectSchedule = "projectSchedule";
 }
 
 class ApiConstantsCrew {
@@ -51,7 +51,7 @@ class ApiConstantsCrew {
   static const String verifyOtpForgotPhoneCrew = "verifyOtpForgotPhoneCrew";
   static const String verifyOtpEmailCrew = "verifyOtpEmailCrew";
   static const String sendOtpForgotEmailCrew = "sendOtpForgotEmailCrew";
-  static const String crewProjectDetail = "crewProjectsDetail";
+  static const String crewProjectDetail = "singleProjectDetails";
 
   static const String CREW_LOGIN = "crewlogin";
   static const String resetPasswordCrew = "resetPassword";
@@ -72,4 +72,6 @@ class ApiConstantsCrew {
 
   static const String getAllCrewProjects = "crewActiveProjects";
   static const String getAllCheckoutCrewProjects = "crewProjectsWithHours";
+
+  static const String crewProjectSchedule = "crewProjectSchedule";
 }

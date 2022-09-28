@@ -1,5 +1,7 @@
 import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/model/manager_dashboard_response.dart';
+import 'package:beehive/model/project_detail_crew_response.dart';
+import 'package:beehive/model/project_detail_manager_response.dart' as manager_note;
 import 'package:beehive/view/%20light_theme_signup_login/continue_with_phone.dart';
 import 'package:beehive/view/%20light_theme_signup_login/otp_verification_page.dart';
 import 'package:beehive/view/bottom_bar/bottom_navigation_bar.dart';
@@ -20,6 +22,7 @@ import 'package:beehive/view/projects/add_note_page.dart';
 import 'package:beehive/view/projects/crew_profile_page.dart';
 import 'package:beehive/view/projects/project_details_page.dart';
 import 'package:beehive/view/projects/project_settings_page.dart';
+import 'package:beehive/view/projects/show_note_page_crew.dart';
 import 'package:beehive/view/sign_in/sign_in_screen.dart';
 import 'package:beehive/view/timesheets/timesheets_screen.dart';
 import 'package:beehive/view/upgrade_crew_manager/payment_page.dart';
@@ -47,6 +50,7 @@ import 'package:beehive/views_manager/projects_manager/crew_profile_page_manager
 import 'package:beehive/views_manager/projects_manager/project_details_manager.dart';
 import 'package:beehive/views_manager/projects_manager/project_setting_page_manager.dart';
 import 'package:beehive/views_manager/projects_manager/set_rates_page_manager.dart';
+import 'package:beehive/views_manager/projects_manager/show_note_page_manager.dart';
 import 'package:beehive/views_manager/projects_manager/timesheets_screen_manager.dart';
 import 'package:beehive/views_manager/billing_information/payment_page_manager.dart';
 import 'package:beehive/views_manager/timesheet_manager/timesheet_from_crew.dart';
@@ -325,6 +329,14 @@ class OnGenerateRouter {
                   authToken: token,
                 ),
             settings: settings);
+
+      case RouteConstants.showNotePageManager:
+        return MaterialPageRoute(
+            builder: (_) => ShowNotePageManager(noteData: args as manager_note.Note,), settings: settings);
+
+      case RouteConstants.showNotePageCrew:
+        return MaterialPageRoute(
+            builder: (_) => ShowNotePageCrew(noteData: args as Note,), settings: settings);
 
       default:
         return _onPageNotFound();

@@ -1168,17 +1168,20 @@ Widget weeklyTabBarContainer(
   );
 }
 
-Widget backNextBtn(String path) {
-  return Container(
-    alignment: Alignment.center,
-    width: DimensionConstants.d25.w,
-    height: DimensionConstants.d26.h,
-    decoration: const BoxDecoration(
-      color: ColorConstants.colorWhite30,
-      shape: BoxShape.circle,
-    ),
-    child: ImageView(
-      path: path,
+Widget backNextBtn(String path, {onTap}) {
+  return GestureDetector(
+    onTap: onTap,
+    child: Container(
+      alignment: Alignment.center,
+      width: DimensionConstants.d25.w,
+      height: DimensionConstants.d26.h,
+      decoration: const BoxDecoration(
+        color: ColorConstants.colorWhite30,
+        shape: BoxShape.circle,
+      ),
+      child: ImageView(
+        path: path,
+      ),
     ),
   );
 }
@@ -1221,45 +1224,51 @@ Widget notesList(BuildContext context, List<Note> notes) {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (BuildContext context, int index) {
-        return Column(
-          children: <Widget>[
-            SizedBox(
-              height: DimensionConstants.d25.h,
-            ),
-            Padding(
-              padding:
-                  EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                      child: Text(notes[index].title ?? "").regularText(
-                          context, DimensionConstants.d14.sp, TextAlign.left,
-                          color: Theme.of(context).brightness == Brightness.dark
-                              ? ColorConstants.colorWhite
-                              : ColorConstants.colorBlack,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis)),
-                  ImageView(
-                    path: ImageConstants.arrowIcon,
-                    height: DimensionConstants.d10.h,
-                    width: DimensionConstants.d8.w,
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? ColorConstants.colorWhite
-                        : ColorConstants.colorBlack,
-                  ),
-                ],
+        return GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: (){
+            Navigator.pushNamed(context, RouteConstants.showNotePageCrew, arguments: notes[index]);
+          },
+          child: Column(
+            children: <Widget>[
+              SizedBox(
+                height: DimensionConstants.d25.h,
               ),
-            ),
-            SizedBox(
-              height: DimensionConstants.d20.h,
-            ),
-            Container(
-              height: DimensionConstants.d1.h,
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? ColorConstants.colorWhite
-                  : ColorConstants.grayF1F1F1,
-            ),
-          ],
+              Padding(
+                padding:
+                    EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                        child: Text(notes[index].title ?? "").regularText(
+                            context, DimensionConstants.d14.sp, TextAlign.left,
+                            color: Theme.of(context).brightness == Brightness.dark
+                                ? ColorConstants.colorWhite
+                                : ColorConstants.colorBlack,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis)),
+                    ImageView(
+                      path: ImageConstants.arrowIcon,
+                      height: DimensionConstants.d10.h,
+                      width: DimensionConstants.d8.w,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? ColorConstants.colorWhite
+                          : ColorConstants.colorBlack,
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: DimensionConstants.d20.h,
+              ),
+              Container(
+                height: DimensionConstants.d1.h,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? ColorConstants.colorWhite
+                    : ColorConstants.grayF1F1F1,
+              ),
+            ],
+          ),
         );
       },
     ),

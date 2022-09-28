@@ -180,7 +180,7 @@ class _ProjectDetailsPageManagerState extends State<ProjectDetailsPageManager>
                           notesList(
                               context,
                               provider
-                                  .projectDetailResponse!.projectData!.notes!),
+                                  .projectDetailResponse!.projectData!.notes!, provider),
                         ],
                       ),
                     SizedBox(
@@ -679,7 +679,7 @@ Widget checkUserDetail(
   );
 }
 
-Widget notesList(BuildContext context, List<Note> notes) {
+Widget notesList(BuildContext context, List<Note> notes, ProjectDetailsManagerProvider provider) {
   return Card(
     elevation: 2,
     shape: RoundedRectangleBorder(
@@ -689,45 +689,51 @@ Widget notesList(BuildContext context, List<Note> notes) {
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (BuildContext context, int index) {
-        return Column(
-          children: <Widget>[
-            SizedBox(
-              height: DimensionConstants.d25.h,
-            ),
-            Padding(
-              padding:
-                  EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                      child: Text(notes[index].title ?? "").regularText(
-                          context, DimensionConstants.d14.sp, TextAlign.left,
-                          color: Theme.of(context).brightness == Brightness.dark
-                              ? ColorConstants.colorWhite
-                              : ColorConstants.colorBlack,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis)),
-                  ImageView(
-                    path: ImageConstants.arrowIcon,
-                    height: DimensionConstants.d10.h,
-                    width: DimensionConstants.d8.w,
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? ColorConstants.colorWhite
-                        : ColorConstants.colorBlack,
-                  ),
-                ],
+        return GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          onTap: (){
+            Navigator.pushNamed(context, RouteConstants.showNotePageManager, arguments: notes[index]);
+          },
+          child: Column(
+            children: <Widget>[
+              SizedBox(
+                height: DimensionConstants.d25.h,
               ),
-            ),
-            SizedBox(
-              height: DimensionConstants.d20.h,
-            ),
-            Container(
-              height: DimensionConstants.d1.h,
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? ColorConstants.colorWhite
-                  : ColorConstants.grayF1F1F1,
-            ),
-          ],
+              Padding(
+                padding:
+                    EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                        child: Text(notes[index].title ?? "").regularText(
+                            context, DimensionConstants.d14.sp, TextAlign.left,
+                            color: Theme.of(context).brightness == Brightness.dark
+                                ? ColorConstants.colorWhite
+                                : ColorConstants.colorBlack,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis)),
+                    ImageView(
+                      path: ImageConstants.arrowIcon,
+                      height: DimensionConstants.d10.h,
+                      width: DimensionConstants.d8.w,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? ColorConstants.colorWhite
+                          : ColorConstants.colorBlack,
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(
+                height: DimensionConstants.d20.h,
+              ),
+              Container(
+                height: DimensionConstants.d1.h,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? ColorConstants.colorWhite
+                    : ColorConstants.grayF1F1F1,
+              ),
+            ],
+          ),
         );
       },
     ),

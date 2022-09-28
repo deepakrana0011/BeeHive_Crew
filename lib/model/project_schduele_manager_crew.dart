@@ -2,11 +2,11 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
-class ProjectScheduleManager {
+class ProjectScheduleManagerCrew {
   bool? success;
   List<Data> data = [];
 
-  ProjectScheduleManager.fromJson(Map<String, dynamic> json) {
+  ProjectScheduleManagerCrew.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     if (json['data'] != null) {
       data = <Data>[];
@@ -32,9 +32,9 @@ class Data {
 class ProjectName {
   String? projectName;
   String? sId;
-  Color color = Colors.primaries[Random().nextInt(Colors.primaries.length)];
+  Color? color;
 
-  ProjectName({this.projectName, this.sId});
+  ProjectName({this.projectName, this.sId, this.color});
 
   ProjectName.fromJson(Map<String, dynamic> json) {
     projectName = json['projectName'];

@@ -51,4 +51,6 @@ class RouteConstants{
   static const String changePasswordPageManager = "changePasswordPageManager";
   static const String resetPasswordScreenManager = "resetPasswordScreenManager";
   static const String autoComplete = "autoComplete";
+  static const String showNotePageManager = "showNotePageManager";
+  static const String showNotePageCrew = "showNotePageCrew";
  }
