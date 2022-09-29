@@ -2,14 +2,17 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:beehive/helper/shared_prefs.dart';
 import 'package:beehive/locator.dart';
+import 'package:beehive/model/add_certificate_response.dart';
 import 'package:beehive/model/add_crew_by_manager_response.dart';
 import 'package:beehive/model/add_crew_response_manager.dart';
 import 'package:beehive/model/add_note_manager_response.dart';
 import 'package:beehive/model/all_projects_manager_response.dart';
 import 'package:beehive/model/assign_project_response_manager.dart';
+import 'package:beehive/model/change_password_response.dart';
 import 'package:beehive/model/check_in_response_crew.dart';
 import 'package:beehive/model/create_project_request.dart';
 import 'package:beehive/model/create_project_response.dart';
+import 'package:beehive/model/crew_on_this_project_response.dart';
 import 'package:beehive/model/manager_dashboard_response.dart';
 import 'package:beehive/model/email_verification_response_manager.dart';
 import 'package:beehive/model/email_verified_response_manager.dart';
@@ -621,7 +624,7 @@ class Api {
     required String name,
     required String phone,
     required String email,
-    required HSVColor color,
+    required String color,
     required bool imageChanged,
     required bool companyChanged,
   }) async {
@@ -631,14 +634,14 @@ class Api {
           : null;
       companyLogo = companyChanged == true
           ? MultipartFile.fromFileSync(companyLogoChanged,
-              filename: "image.jpg")
+              filename: "logo.jpg")
           : null;
-      var map = imageChanged == true
+      var map = (imageChanged == true || companyChanged == true)
           ? {
               "companyLogo": companyLogo,
               "profileImage": profileImage,
               "address": address,
-              "position": title,
+              "title": title,
               "company": company,
               "name": name,
               "phoneNumber": phone,
@@ -647,7 +650,7 @@ class Api {
             }
           : {
               "address": address,
-              "position": title,
+              "title": title,
               "company": company,
               "name": name,
               "phoneNumber": phone,
@@ -656,10 +659,7 @@ class Api {
             };
       dio.options.headers["authorization"] =
           SharedPreference.prefs!.getString(SharedPreference.TOKEN);
-      var response = await dio.post(
-          ApiConstantsManager.BASEURL +
-              ApiConstantsManager.UPDATE_MANAGER_PROFILE,
-          data: FormData.fromMap(map));
+      var response = await dio.post(ApiConstantsManager.BASEURL + ApiConstantsManager.UPDATE_MANAGER_PROFILE, data: FormData.fromMap(map));
       return EditProfileManagerResponse.fromJson(
           json.decode(response.toString()));
     } on DioError catch (e) {
@@ -1331,4 +1331,67 @@ class Api {
       }
     }
   }
+
+  Future<CrewOnThisProjectResponse> crewOnThisProject(
+      BuildContext context, String id) async {
+    try {
+      dio.options.headers["authorization"] =
+          SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var response = await dio.get(ApiConstantsManager.BASEURL + ApiConstantsManager.crewOnThisProject + id);
+      return CrewOnThisProjectResponse.fromJson(json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+
+  Future<AddCertificateResponse> addCertificate(
+      BuildContext context, String api, String certImage, String certName) async {
+    try {
+      var map = <String, dynamic>{"certName": certName};
+      var image = MultipartFile.fromFileSync(certImage, filename: "cert_image.jpg");
+      var imageMap = {
+        'certImage': image,
+      };
+      map.addAll(imageMap);
+
+      dio.options.headers["authorization"] =
+          SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var response = await dio.post(api, data: FormData.fromMap(map));
+      return AddCertificateResponse.fromJson(json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+
+  Future<ChangePasswordResponse> changePassword(
+      BuildContext context, String api, String oldPassword, String newPassword) async {
+    try {
+      dio.options.headers["authorization"] =
+          SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var map = {"oldPassword": oldPassword, "password": newPassword};
+      var response = await dio.put(api, data: map);
+      return ChangePasswordResponse.fromJson(json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+
 }

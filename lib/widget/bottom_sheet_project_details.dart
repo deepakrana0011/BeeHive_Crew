@@ -1,15 +1,18 @@
 
+import 'package:beehive/constants/api_constants.dart';
 import 'package:beehive/constants/color_constants.dart';
 import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/extension/all_extensions.dart';
+import 'package:beehive/helper/date_function.dart';
+import 'package:beehive/model/crew_on_this_project_response.dart';
 import 'package:beehive/views_manager/projects_manager/timesheets_screen_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../constants/image_constants.dart';
 import 'image_view.dart';
 
-bottomSheetProjectDetails(BuildContext context, {required VoidCallback onTap, required bool timeSheetOrSchedule,
+bottomSheetProjectDetails(BuildContext context, {required VoidCallback onTap, required bool timeSheetOrSchedule, ProjectData? projectData, Color? projectColor
 }) {
   showModalBottomSheet(
       isScrollControlled: true,
@@ -40,17 +43,14 @@ bottomSheetProjectDetails(BuildContext context, {required VoidCallback onTap, re
                       SizedBox(
                         height: DimensionConstants.d28.h,
                       ),
-                      projectInformation(context),
+                      projectInformation(context, projectData!, projectColor),
                       SizedBox(
-                        height: DimensionConstants.d28.h,
+                        height: DimensionConstants.d15.h,
                       ),
-                      userProfile(context, ImageConstants.managerImage,timeSheetOrSchedule),
+                      crewOnThisProjectListView(context, timeSheetOrSchedule, projectData),
                       SizedBox(
-                        height: DimensionConstants.d8.h,
+                        height: DimensionConstants.d10.h,
                       ),
-                      userProfile(context, ImageConstants.personIcon,timeSheetOrSchedule),
-
-
                     ],
                   ),
                 ),
@@ -72,30 +72,44 @@ bottomSheetProjectDetails(BuildContext context, {required VoidCallback onTap, re
       });
 }
 
-Widget projectInformation(BuildContext context){
+Widget projectInformation(BuildContext context, ProjectData projectData, color){
   return Column(
     children:<Widget> [
       Container(
         height: DimensionConstants.d40.h,
         width: DimensionConstants.d40.w,
         decoration: BoxDecoration(
-          color: ColorConstants.schedule5,
+          color: color,
           borderRadius: BorderRadius.circular(DimensionConstants.d20.r),
         ),
         child: Center(
-          child: Text("MS").boldText(context, DimensionConstants.d16.sp, TextAlign.center,color: ColorConstants.colorWhite),
+          child: Text(projectData.projectName.toString().substring(0,2).toUpperCase()).boldText(context, DimensionConstants.d16.sp, TextAlign.center,color: ColorConstants.colorWhite),
         )
       ),
       SizedBox(height: DimensionConstants.d11.h,),
-      Text("Momentum Smart Project").boldText(context, DimensionConstants.d18.sp, TextAlign.center,color: ColorConstants.colorBlack),
+      Text(projectData.projectName.toString()).boldText(context, DimensionConstants.d18.sp, TextAlign.center,color: ColorConstants.colorBlack,
+          maxLines: 1, overflow: TextOverflow.ellipsis),
       SizedBox(height: DimensionConstants.d6.h,),
-      Text("Monday, June 13 2021").boldText(context, DimensionConstants.d16.sp, TextAlign.center,color: ColorConstants.colorBlack),
+      Text(DateFunctions.dateTimeWithWeek(DateTime.parse(projectData.createdAt.toString()).toLocal())).boldText(context, DimensionConstants.d16.sp, TextAlign.center,color: ColorConstants.colorBlack),
     ],
   );
 
-
 }
-Widget userProfile(BuildContext context,String image, bool timeSheetOrSchedule){
+
+Widget crewOnThisProjectListView(BuildContext context,bool timeSheetOrSchedule, ProjectData projectData){
+  return SizedBox(
+    height: DimensionConstants.d180.h,
+    child: ListView.builder(
+      padding: EdgeInsets.zero,
+      shrinkWrap: true,
+      itemCount: projectData.crews!.length,
+        itemBuilder: (context, index){
+      return userProfile(context, timeSheetOrSchedule, projectData.crews![index]);
+    }),
+  );
+}
+
+Widget userProfile(BuildContext context, bool timeSheetOrSchedule, Crews crewData){
   return GestureDetector(
     onTap: (){
       if(timeSheetOrSchedule == true){
@@ -120,17 +134,29 @@ Widget userProfile(BuildContext context,String image, bool timeSheetOrSchedule){
           padding:  EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
           child: Row(
             children:<Widget> [
-              ImageView(path: image,
-              height: DimensionConstants.d50.h,
+            crewData.profileImage == null ?
+                Container(
+                  height: DimensionConstants.d50.h,
+                  width: DimensionConstants.d50.w,
+                  decoration: const BoxDecoration(
+                      color: ColorConstants.primaryColor,
+                    shape: BoxShape.circle
+                  ),
+                )
+                : SizedBox(
+                height: DimensionConstants.d50.h,
                 width: DimensionConstants.d50.w,
+                child: ImageView(path: (ApiConstantsCrew.BASE_URL_IMAGE + crewData.profileImage.toString()),
+                fit: BoxFit.cover,
+                ),
               ),
               SizedBox(width: DimensionConstants.d16.w,),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children:<Widget> [
-                  Text("Benjamin Poole").boldText(context, DimensionConstants.d16.sp, TextAlign.left,color: ColorConstants.deepBlue),
-                  Text("Carpenter    \$20.00/hr").regularText(context, DimensionConstants.d14.sp, TextAlign.left,color: ColorConstants.deepBlue),
+                  Text(crewData.name.toString()).boldText(context, DimensionConstants.d16.sp, TextAlign.left,color: ColorConstants.deepBlue),
+                  Text(crewData.position != null ? "${crewData.position}    \$${crewData.projectRate}/hr" : "\$${crewData.projectRate}/hr").regularText(context, DimensionConstants.d14.sp, TextAlign.left,color: ColorConstants.deepBlue),
                 ],
               ),
               Expanded(child: Container()),

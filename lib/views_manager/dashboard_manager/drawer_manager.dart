@@ -83,12 +83,12 @@ class _DrawerManagerState extends State<DrawerManager> {
                                                   const EdgeInsets.all(5.0),
                                               child: ImageView(
                                                 path: widget.provider!
-                                                        .companyLogo!.isEmpty
+                                                        .managerProfilePic.isEmpty
                                                     ? ""
                                                     : ApiConstantsCrew
                                                             .BASE_URL_IMAGE +
                                                         widget.provider!
-                                                            .companyLogo!,
+                                                            .managerProfilePic,
                                                 height:
                                                     DimensionConstants.d110.h,
                                                 width:
@@ -99,8 +99,7 @@ class _DrawerManagerState extends State<DrawerManager> {
                                             ),
                                           ),
                                         ),
-                                        if (widget.provider!.managerProfilePic!
-                                            .isNotEmpty)
+                                        if (widget.provider!.companyLogo.isNotEmpty)
                                           Positioned(
                                               bottom: 10,
                                               right: 5,
@@ -113,7 +112,7 @@ class _DrawerManagerState extends State<DrawerManager> {
                                                   path: ApiConstantsCrew
                                                           .BASE_URL_IMAGE +
                                                       widget.provider!
-                                                          .managerProfilePic!,
+                                                          .companyLogo,
                                                   height:
                                                       DimensionConstants.d55.h,
                                                   width:

@@ -248,11 +248,13 @@
   "verify_email": "Verify Email",
   "please_enter_project_name": "Please name can't be empty",
   "internet_connection": "Internet Connection",
-  "photos": "Photos"
-
-
-
-
-
-
+  "photos": "Photos",
+  "no_data_found" : "No data found, please try again....",
+  "required" : "Required.",
+  "name_required" : "Name can't be empty",
+  "phone_required" : "Phone no required",
+  "certification_name_required" : "Certification Name Required.",
+  "add_certification_image" : "Add Certification Image",
+  "all_fields_required" : "All fields Required",
+  "new_password_not_matched" : "New password and Re-new password not matched."
 }

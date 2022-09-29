@@ -1,4 +1,5 @@
 import 'package:beehive/constants/route_constants.dart';
+import 'package:beehive/model/get_profile_response_manager.dart' as manager_cert;
 import 'package:beehive/model/manager_dashboard_response.dart';
 import 'package:beehive/model/project_detail_crew_response.dart';
 import 'package:beehive/model/project_detail_manager_response.dart' as manager_note;
@@ -55,6 +56,7 @@ import 'package:beehive/views_manager/projects_manager/timesheets_screen_manager
 import 'package:beehive/views_manager/billing_information/payment_page_manager.dart';
 import 'package:beehive/views_manager/timesheet_manager/timesheet_from_crew.dart';
 import 'package:beehive/widget/autoCompletePlaces.dart';
+import 'package:beehive/views_manager/profile_manager/show_cerfication_manager_page.dart';
 import 'package:flutter/material.dart';
 
 class OnGenerateRouter {
@@ -308,14 +310,14 @@ class OnGenerateRouter {
             builder: (_) => const PaymentPageManager(), settings: settings);
       case RouteConstants.certificationPageManager:
         return MaterialPageRoute(
-            builder: (_) => const CertificationPageManager(),
+            builder: (_) => CertificationPageManager(),
             settings: settings);
       case RouteConstants.editProfilePageManager:
         return MaterialPageRoute(
             builder: (_) => const EditProfilePageManager(), settings: settings);
       case RouteConstants.changePasswordPageManager:
         return MaterialPageRoute(
-            builder: (_) => const ChangePasswordPageManager(),
+            builder: (_) => ChangePasswordPageManager(),
             settings: settings);
 
       case RouteConstants.autoComplete:
@@ -337,6 +339,10 @@ class OnGenerateRouter {
       case RouteConstants.showNotePageCrew:
         return MaterialPageRoute(
             builder: (_) => ShowNotePageCrew(noteData: args as Note,), settings: settings);
+
+      case RouteConstants.showCertificationManagerPage:
+        return MaterialPageRoute(
+            builder: (_) => ShowCertificateManagerPage(certificationData: args as manager_cert.Cert), settings: settings);
 
       default:
         return _onPageNotFound();

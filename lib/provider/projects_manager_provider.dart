@@ -8,6 +8,7 @@ import 'package:beehive/enum/enum.dart';
 import 'package:beehive/helper/date_function.dart';
 import 'package:beehive/helper/dialog_helper.dart';
 import 'package:beehive/model/all_projects_manager_response.dart';
+import 'package:beehive/model/crew_on_this_project_response.dart';
 import 'package:beehive/model/project_schduele_manager_crew.dart';
 import 'package:beehive/provider/base_provider.dart';
 import 'package:beehive/services/fetch_data_expection.dart';
@@ -284,6 +285,30 @@ class ProjectsManagerProvider extends BaseProvider {
       default:
         daysUpperCase = ["M", "TU", "W", "TH", "F", "SA", "SU"];
         return ["M", "Tu", "W", "Th", "F", "Sa", "Su"];
+    }
+  }
+
+  /// crew on this project~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+  ProjectData? projectData;
+
+  Future<bool> crewOnThisProject(BuildContext context, String id) async {
+    setState(ViewState.busy);
+    try {
+     var model = await api.crewOnThisProject(context, id);
+     if(model.projectData != null){
+       projectData = model.projectData;
+     }
+      setState(ViewState.idle);
+     return true;
+    } on FetchDataException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, e.toString());
+      return false;
+    } on SocketException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, "internet_connection".tr());
+      return false;
     }
   }
 }

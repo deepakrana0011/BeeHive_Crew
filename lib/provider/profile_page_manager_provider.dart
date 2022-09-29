@@ -51,29 +51,33 @@ class ProfilePageManagerProvider extends BaseProvider {
     notifyListeners();
   }
 
+
   bool status = false;
   void updateSwitcherStatus(bool value) {
     status = value;
     notifyListeners();
   }
 
- Future getDataFromEditProfileScreen(BuildContext context) async {
-    HSVColor result = await Navigator.push(context, MaterialPageRoute(builder: (context) => EditProfilePageManager()));
-    currentColor = result;
-    notifyListeners();
-  }
   Color? colorOfApp;
 
 
   setEditProfilePageController() {
-    profileImage = ApiConstantsCrew.BASE_URL_IMAGE + profileResponse!.data!.profileImage!;
-    companyIcon = ApiConstantsCrew.BASE_URL_IMAGE + profileResponse!.data!.companyLogo!;
-    nameController.text = profileResponse!.data!.name!;
-    titleController.text = profileResponse!.data!.title!;
-    companyController.text = profileResponse!.data!.company!;
-    phoneController.text = profileResponse!.data!.phoneNumber!.toString();
-    emailController.text = profileResponse!.data!.email!;
-    addressController.text = profileResponse!.data!.address!;
+    profileImage = profileResponse!.data!.profileImage == null ? "" :
+    ApiConstantsCrew.BASE_URL_IMAGE + profileResponse!.data!.profileImage!;
+    companyIcon = profileResponse!.data!.companyLogo == null ? "" :
+        ApiConstantsCrew.BASE_URL_IMAGE + profileResponse!.data!.companyLogo!;
+    nameController.text = profileResponse!.data!.name == null ? "" :
+    profileResponse!.data!.name!;
+    titleController.text = profileResponse!.data!.title == null ? "" :
+    profileResponse!.data!.title!;
+    companyController.text = profileResponse!.data!.company == null ? "" :
+    profileResponse!.data!.company!;
+    phoneController.text = profileResponse!.data!.phoneNumber == null ? "" :
+        profileResponse!.data!.phoneNumber!.toString();
+    emailController.text = profileResponse!.data!.email == null ? "" :
+    profileResponse!.data!.email!;
+    addressController.text = profileResponse!.data!.address == null ? "" :
+    profileResponse!.data!.address!;
     notifyListeners();
   }
 
@@ -97,9 +101,11 @@ class ProfilePageManagerProvider extends BaseProvider {
 
   addImage(XFile image, int profileOrCompanyIcon) {
     if (profileOrCompanyIcon == 1) {
+      profileImage = "";
       profileImage = image.path.toString();
       notifyListeners();
     } else {
+      companyIcon = "";
       companyIcon = image.path.toString();
       notifyListeners();
     }
@@ -129,6 +135,7 @@ class ProfilePageManagerProvider extends BaseProvider {
     }
   }
 
+  /// update manager profile
   Future updateProfileManager(
     BuildContext context,
   ) async {
@@ -143,10 +150,10 @@ class ProfilePageManagerProvider extends BaseProvider {
           company: companyController.text,
           imageChanged: isImageChanged,
           name: nameController.text,
-          profile: profileImage, color: currentColor, companyChanged: isCompanyLogo);
+          profile: profileImage, color: currentColor.toColor().toString().substring(6, 16), companyChanged: isCompanyLogo);
       if (model.success == true) {
         setState(ViewState.idle);
-          Navigator.pop(context,currentColor);
+          Navigator.pop(context);
       } else {
         setState(ViewState.idle);
       }
@@ -158,4 +165,6 @@ class ProfilePageManagerProvider extends BaseProvider {
       DialogHelper.showMessage(context, "internet_connection".tr());
     }
   }
+
 }
+

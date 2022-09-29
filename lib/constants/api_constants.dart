@@ -30,13 +30,16 @@ class ApiConstantsManager {
   static const String GET_PROJECT_DETAILS = "projectdetails/";
   static const String ADD_NOTE_MANAGER = "addingnote";
   static const String DASHBOARD_API = "managerdashboard";
-  static const String GET_MANAGER_PROFILE = "managerprofile";
+  static const String GET_MANAGER_PROFILE = "getManagerProfile";
   static const String UPDATE_MANAGER_PROFILE = "updatemanagerprofile";
   static const String ADD_NEW_CREW_BY_MANAGER = "addingcrew";
   static const String RESEND_OTP = "resend";
   static const String RESEND_OTP_PHONE = "resendtokenonphone";
 
   static const String managerProjectSchedule = "projectSchedule";
+  static const String crewOnThisProject = "crewOnThisProject/";
+  static const String managerCertificates = "managerCertificates";
+  static const String managerNewPassword = "managerNewPassword";
 }
 
 class ApiConstantsCrew {
@@ -56,7 +59,7 @@ class ApiConstantsCrew {
   static const String CREW_LOGIN = "crewlogin";
   static const String resetPasswordCrew = "resetPassword";
 
-  static const String GET_CREW_PROFILE = "getuserprofile";
+  static const String GET_CREW_PROFILE = "getCrewProfile";
   static const String UPDATE_CREW_PROFILE = "updateprofile/";
   static const String GET_OTP_FOR_PASSWORD = "forgotpassword";
   static const String VERIFY_OTP_RESETPASSWORD = "verifyforgot";

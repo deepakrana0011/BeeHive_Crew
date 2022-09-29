@@ -33,23 +33,26 @@ class Profile extends StatelessWidget {
                       provider.getCrewProfile(context);
                     });
                   },provider),
-                  SizedBox(
+                  provider.getObj!.data!.company == null ? Container() : SizedBox(
                     height: DimensionConstants.d38.h,
                   ),
-                  profileDetailsWidget(context, ImageConstants.companyIcon, provider.getObj!.data!.company == null?"xyz Company":provider.getObj!.data!.company!, false),
-                  SizedBox(
+                  provider.getObj!.data!.company == null ? Container() :
+                  profileDetailsWidget(context, ImageConstants.companyIcon, provider.getObj!.data!.company!, false),
+                  provider.getObj!.data!.phoneNumber == null ? Container() : SizedBox(
                     height: DimensionConstants.d38.h,
                   ),
-                  profileDetailsWidget(
-                      context, ImageConstants.callerIcon, provider.getObj!.data!.phoneNumber == null?"123-555-2514":provider.getObj!.data!.phoneNumber!.toString(), false),
-                  SizedBox(
+                  provider.getObj!.data!.phoneNumber == null ? Container() : profileDetailsWidget(
+                      context, ImageConstants.callerIcon, provider.getObj!.data!.phoneNumber!.toString(), false),
+                  provider.getObj!.data!.email == null ? Container() :  SizedBox(
                     height: DimensionConstants.d38.h,
                   ),
-                  profileDetailsWidget(context, ImageConstants.mailerIcon, provider.getObj!.data!.email == null?"johnsmith@gmail.comxxx":provider.getObj!.data!.email!, false),
-                  SizedBox(
+                  provider.getObj!.data!.email == null ? Container() :
+                  profileDetailsWidget(context, ImageConstants.mailerIcon, provider.getObj!.data!.email!, false),
+                  provider.getObj!.data!.address == null ? Container() :  SizedBox(
                     height: DimensionConstants.d38.h,
                   ),
-                  profileDetailsWidget(context, ImageConstants.locationIcon, provider.getObj!.data!.address == null?"88 Bloor St E. Toronto ONM4W3G9":provider.getObj!.data!.address!, false),
+                  provider.getObj!.data!.address == null ? Container() :
+                  profileDetailsWidget(context, ImageConstants.locationIcon, provider.getObj!.data!.address!, false),
                   SizedBox(
                     height: DimensionConstants.d38.h,
                   ),

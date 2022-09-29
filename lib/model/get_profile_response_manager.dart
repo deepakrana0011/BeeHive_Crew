@@ -1,16 +1,23 @@
 class GetManagerProfileResponse {
   bool? success;
   Data? data;
+  List<Cert> cert = [];
 
   GetManagerProfileResponse({this.success, this.data});
 
   GetManagerProfileResponse.fromJson(Map<String, dynamic> json) {
     success = json['success'];
-    data = json['data'] != null ? new Data.fromJson(json['data']) : null;
+    data = json['profile'] != null ? Data.fromJson(json['profile']) : null;
+    if (json['cert'] != null) {
+      cert = <Cert>[];
+      json['cert'].forEach((v) {
+        cert.add(Cert.fromJson(v));
+      });
+    }
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['success'] = this.success;
     if (this.data != null) {
       data['data'] = this.data!.toJson();
@@ -32,7 +39,7 @@ class Data {
   int? verifyCode;
   String? address;
   String? company;
-  String? customColor;
+  dynamic customColor;
   String? profileImage;
   String? title;
   String? companyLogo;
@@ -75,7 +82,7 @@ class Data {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = Map<String, dynamic>();
     data['_id'] = this.sId;
     data['email'] = this.email;
     data['name'] = this.name;
@@ -92,6 +99,48 @@ class Data {
     data['profileImage'] = this.profileImage;
     data['title'] = this.title;
     data['companyLogo'] = this.companyLogo;
+    return data;
+  }
+
+}
+
+class Cert {
+  String? sId;
+  String? managerId;
+  String? certName;
+  int? status;
+  String? createdAt;
+  String? certImage;
+  int? iV;
+
+  Cert(
+      {this.sId,
+        this.managerId,
+        this.certName,
+        this.status,
+        this.createdAt,
+        this.certImage,
+        this.iV});
+
+  Cert.fromJson(Map<String, dynamic> json) {
+    sId = json['_id'];
+    managerId = json['managerId'];
+    certName = json['certName'];
+    status = json['status'];
+    createdAt = json['createdAt'];
+    certImage = json['certImage'];
+    iV = json['__v'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = Map<String, dynamic>();
+    data['_id'] = this.sId;
+    data['managerId'] = this.managerId;
+    data['certName'] = this.certName;
+    data['status'] = this.status;
+    data['createdAt'] = this.createdAt;
+    data['certImage'] = this.certImage;
+    data['__v'] = this.iV;
     return data;
   }
 }

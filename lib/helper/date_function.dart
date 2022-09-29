@@ -338,6 +338,17 @@ class DateFunctions {
    return totalSpendTime;
   }
 
+  static List<String> monthsList = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+  static List<String> weekList = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
 
+  ///  "Monday, June 13 2021"
+  static String dateTimeWithWeek(DateTime dateTime){
+    int day = dateTime.day;
+    int mon = dateTime.month;
+    int year = dateTime.year;
+    int weekDay = dateTime.weekday;
+
+    return "${weekList[weekDay]}, ${monthsList[mon-1]} $day $year";
+  }
 
 }

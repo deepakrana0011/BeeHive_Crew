@@ -89,13 +89,12 @@ class _BottomBarManagerState extends State<BottomBarManager> {
                               borderRadius: BorderRadius.circular(
                                   DimensionConstants.d24.r),
                               child: ImageView(
-                                path: provider.companyLogo!.isEmpty
+                                path: provider.companyLogo.isEmpty
                                     ? menuName.elementAt(
                                         provider.selectedIndex,
                                       )
                                     : ApiConstantsCrew.BASE_URL_IMAGE +
-                                        SharedPreference.prefs!.getString(
-                                            SharedPreference.USER_LOGO)!,
+                                    provider.companyLogo,
                                 height: DimensionConstants.d48.h,
                                 width: DimensionConstants.d48.w,
                                 fit: BoxFit.cover,

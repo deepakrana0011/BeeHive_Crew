@@ -7,6 +7,7 @@ import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/provider/profile_page_manager_provider.dart';
 import 'package:beehive/view/base_view.dart';
+import 'package:beehive/views_manager/profile_manager/edit_profile_page_manager.dart';
 import 'package:beehive/widget/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -25,21 +26,40 @@ class ProfilePageManager extends StatelessWidget {
         builder: (context,provider,_){
           return Scaffold(
             body: SingleChildScrollView(
-              child:provider.state ==ViewState.idle? Column(
+              child: provider.state ==ViewState.idle ?
+                  provider.profileResponse?.data == null ? Center(
+                    child: Container(
+                      alignment: Alignment.center,
+                      height: MediaQuery.of(context).size.height*0.8,
+                      child: Text("no_data_found".tr()).boldText(
+                          context, DimensionConstants.d16.sp, TextAlign.left,
+                          color: ColorConstants.colorBlack),
+                    )
+                  ):
+             (Column(
                 children: <Widget>[
-                  profileWidget(context, () {
-                   provider.getDataFromEditProfileScreen(context).then((value) => {
-                     provider.getManagerProfile(context),
+                  profileWidget(context, provider, onTapOnEditButton: () {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => EditProfilePageManager())).then((value) {
+                     provider.getManagerProfile(context);
                    });
-                  },provider),
+                  }
+                 ),
+                  provider.profileResponse!.data!.company == null ? Container() :
                   SizedBox(height: DimensionConstants.d38.h,),
-                  profileDetailsWidget(context, ImageConstants.companyIcon, provider.profileResponse!.data!.company == null?"xyz Company": provider.profileResponse!.data!.company!, false),
+                  provider.profileResponse!.data!.company == null ? Container() :
+                  profileDetailsWidget(context, ImageConstants.companyIcon, provider.profileResponse!.data!.company!, false),
+                  provider.profileResponse!.data!.phoneNumber == null? Container() :
                   SizedBox(height: DimensionConstants.d38.h,),
-                  profileDetailsWidget(context, ImageConstants.callerIcon, provider.profileResponse!.data!.phoneNumber == null?"123-555-2514":provider.profileResponse!.data!.phoneNumber.toString(), false),
+                  provider.profileResponse!.data!.phoneNumber == null? Container() :
+                  profileDetailsWidget(context, ImageConstants.callerIcon, provider.profileResponse!.data!.phoneNumber.toString(), false),
+                  provider.profileResponse!.data!.email == null? Container() :
                   SizedBox(height: DimensionConstants.d38.h,),
-                  profileDetailsWidget(context, ImageConstants.mailerIcon, provider.profileResponse!.data!.email == null?"johnsmith@gmail.com":provider.profileResponse!.data!.email!, false),
+                  provider.profileResponse!.data!.email == null? Container() :
+                  profileDetailsWidget(context, ImageConstants.mailerIcon, provider.profileResponse!.data!.email!, false),
+                  provider.profileResponse!.data!.address == null? Container() :
                   SizedBox(height: DimensionConstants.d38.h,),
-                  profileDetailsWidget(context, ImageConstants.locationIcon, provider.profileResponse!.data!.address == null?"88 Bloor St E. Toronto ONM4W3G9":provider.profileResponse!.data!.address!, false),
+                  provider.profileResponse!.data!.address == null? Container() :
+                  profileDetailsWidget(context, ImageConstants.locationIcon, provider.profileResponse!.data!.address!, false),
                   SizedBox(height: DimensionConstants.d38.h,),
                   GestureDetector(
                       onTap: () {
@@ -51,11 +71,11 @@ class ProfilePageManager extends StatelessWidget {
                   SizedBox(
                     height: DimensionConstants.d50.h,
                   ),
-                  certificationAndAddButtonWidget(context),
+                  certificationAndAddButtonWidget(context, provider),
                   SizedBox(
                     height: DimensionConstants.d25.h,
                   ),
-                  scaleNotesWidget(context),
+                provider.profileResponse!.cert.isEmpty ? Container() :  scaleNotesWidget(context, provider),
                   SizedBox(
                     height: DimensionConstants.d25.h,
                   ),
@@ -63,7 +83,7 @@ class ProfilePageManager extends StatelessWidget {
                     height: DimensionConstants.d80.h,
                   ),
                 ],
-              ): Padding(
+              )): Padding(
                 padding:  EdgeInsets.only(top: DimensionConstants.d260.h),
                 child: Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,),),
               ),
@@ -73,12 +93,13 @@ class ProfilePageManager extends StatelessWidget {
   }
 }
 
-Widget profileWidget(BuildContext context, VoidCallback onTapOnEditButton, ProfilePageManagerProvider provider) {
+Widget profileWidget(BuildContext context, ProfilePageManagerProvider provider, {VoidCallback? onTapOnEditButton}) {
   return Container(
     height: DimensionConstants.d359.h,
     width: MediaQuery.of(context).size.width,
     decoration: BoxDecoration(
-        color: provider.currentColor.toColor(),
+        color: provider.profileResponse!.data!.customColor == null ? provider.currentColor.toColor() :
+        Color(int.parse(provider.profileResponse!.data!.customColor.toString())),
         borderRadius: BorderRadius.only(
             bottomLeft: Radius.circular(DimensionConstants.d40.r),
             bottomRight: Radius.circular(DimensionConstants.d40.r))),
@@ -137,9 +158,12 @@ Widget profileWidget(BuildContext context, VoidCallback onTapOnEditButton, Profi
             child: Center(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(DimensionConstants.d75.r),
-                child: ImageView(
-                  path:provider.profileResponse!.data!.profileImage==null? ImageConstants.managerImage:
-                  ApiConstantsCrew.BASE_URL_IMAGE+provider.profileResponse!.data!.profileImage!,
+                child: provider.profileResponse!.data!.profileImage== null ?
+                Container(
+                  height: DimensionConstants.d150.h,
+                  width: DimensionConstants.d150.w,
+                  color: ColorConstants.primaryColor,) : ImageView(
+                  path: ApiConstantsCrew.BASE_URL_IMAGE+provider.profileResponse!.data!.profileImage!,
                   height: DimensionConstants.d150.h,
                   width: DimensionConstants.d150.w,
                   fit: BoxFit.cover,
@@ -148,20 +172,22 @@ Widget profileWidget(BuildContext context, VoidCallback onTapOnEditButton, Profi
             ),
           ),
         ),
-        Padding(
+        Container(
+          alignment: Alignment.center,
           padding: EdgeInsets.only(
-              top: DimensionConstants.d220.h, left: DimensionConstants.d90.w),
+              top: DimensionConstants.d220.h, left: DimensionConstants.d10.w, right: DimensionConstants.d10.w),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Text(provider.profileResponse!.data!.name == null? "xxx":provider.profileResponse!.data!.name!).boldText(
+              Text(provider.profileResponse!.data!.name == null? "":provider.profileResponse!.data!.name!).boldText(
                   context, DimensionConstants.d30.sp, TextAlign.center,
-                  color: ColorConstants.colorWhite),
+                  color: ColorConstants.colorWhite, maxLines: 1, overflow: TextOverflow.ellipsis),
               SizedBox(
                 height: DimensionConstants.d5.h,
               ),
-              Text(provider.profileResponse!.data!.company == null?"xxx":provider.profileResponse!.data!.company!).boldText(
+              Text(provider.profileResponse!.data!.company == null?"":provider.profileResponse!.data!.company!).boldText(
                   context, DimensionConstants.d18.sp, TextAlign.center,
-                  color: ColorConstants.colorWhite),
+                  color: ColorConstants.colorWhite, maxLines: 1, overflow: TextOverflow.ellipsis),
               SizedBox(
                 height: DimensionConstants.d14.h,
               ),
@@ -236,10 +262,13 @@ Widget profileDetailsWidget(
           SizedBox(
             width: DimensionConstants.d16.w,
           ),
-          Text(text).regularText(
-            context,
-            DimensionConstants.d14.sp,
-            TextAlign.left,
+          SizedBox(
+            width: DimensionConstants.d275.w,
+            child: Text(text).regularText(
+                context,
+                DimensionConstants.d14.sp,
+                TextAlign.left, maxLines: 1, overflow: TextOverflow.ellipsis
+            ),
           ),
           Expanded(child: Container()),
           arrowTrueOrFalse == true
@@ -258,7 +287,7 @@ Widget profileDetailsWidget(
   );
 }
 
-Widget certificationAndAddButtonWidget(BuildContext context) {
+Widget certificationAndAddButtonWidget(BuildContext context, ProfilePageManagerProvider provider) {
   return Padding(
     padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d17.w),
     child: Row(
@@ -272,7 +301,9 @@ Widget certificationAndAddButtonWidget(BuildContext context) {
         GestureDetector(
           onTap: () {
             Navigator.pushNamed(
-                context, RouteConstants.certificationPageManager);
+                context, RouteConstants.certificationPageManager).then((value) {
+                  provider.getManagerProfile(context);
+            });
           },
           child: Container(
             height: DimensionConstants.d40.h,
@@ -314,7 +345,8 @@ Widget certificationAndAddButtonWidget(BuildContext context) {
   );
 }
 
-Widget scaleNotesWidget(BuildContext context) {
+
+Widget scaleNotesWidget(BuildContext context, ProfilePageManagerProvider provider) {
   return Padding(
     padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d12.w),
     child: Card(
@@ -337,46 +369,51 @@ Widget scaleNotesWidget(BuildContext context) {
           borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
         ),
         child: ListView.builder(
-          itemCount: 3,
-          physics: NeverScrollableScrollPhysics(),
+          itemCount: provider.profileResponse!.cert.length,
+        //  physics: NeverScrollableScrollPhysics(),
           itemBuilder: (BuildContext context, int index) {
-            return Column(
-              children: <Widget>[
-                SizedBox(
-                  height: DimensionConstants.d25.h,
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: DimensionConstants.d16.w),
-                  child: Row(
-                    children: <Widget>[
-                      Text("Certifications Name 1").regularText(
-                          context, DimensionConstants.d14.sp, TextAlign.left,
+            return GestureDetector(
+              onTap: (){
+                Navigator.pushNamed(context, RouteConstants.showCertificationManagerPage, arguments: provider.profileResponse!.cert[index]);
+              },
+              child: Column(
+                children: <Widget>[
+                  SizedBox(
+                    height: DimensionConstants.d25.h,
+                  ),
+                  Container(
+                    width: double.infinity,
+                    padding: EdgeInsets.symmetric(
+                        horizontal: DimensionConstants.d16.w),
+                    child: Row(
+                      children: <Widget>[
+                       Expanded(child:  Text(provider.profileResponse!.cert[index].certName.toString()).regularText(
+                           context, DimensionConstants.d14.sp, TextAlign.left,
+                           color: Theme.of(context).brightness == Brightness.dark
+                               ? ColorConstants.colorWhite
+                               : ColorConstants.colorBlack, maxLines: 1, overflow: TextOverflow.ellipsis),),
+                        ImageView(
+                          path: ImageConstants.arrowIcon,
+                          height: DimensionConstants.d10.h,
+                          width: DimensionConstants.d8.w,
                           color: Theme.of(context).brightness == Brightness.dark
                               ? ColorConstants.colorWhite
-                              : ColorConstants.colorBlack),
-                      Expanded(child: Container()),
-                      ImageView(
-                        path: ImageConstants.arrowIcon,
-                        height: DimensionConstants.d10.h,
-                        width: DimensionConstants.d8.w,
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? ColorConstants.colorWhite
-                            : ColorConstants.colorBlack,
-                      ),
-                    ],
+                              : ColorConstants.colorBlack,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                SizedBox(
-                  height: DimensionConstants.d20.h,
-                ),
-                Container(
-                  height: DimensionConstants.d1.h,
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? ColorConstants.colorWhite
-                      : ColorConstants.grayF1F1F1,
-                ),
-              ],
+                  SizedBox(
+                    height: DimensionConstants.d20.h,
+                  ),
+                  Container(
+                    height: DimensionConstants.d1.h,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? ColorConstants.colorWhite
+                        : ColorConstants.grayF1F1F1,
+                  ),
+                ],
+              ),
             );
           },
         ),
