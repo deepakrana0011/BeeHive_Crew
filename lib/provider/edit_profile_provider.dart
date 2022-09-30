@@ -53,15 +53,15 @@ class EditProfileProvider extends BaseProvider {
   }
 
   setAllController() {
-    profileImage =
-    "${ApiConstantsCrew.BASE_URL_IMAGE}${getObj!.data!.profileImage == null ? ImageConstants.personIcon : getObj!.data!.profileImage}";
-    nameController.text = getObj!.data!.name!;
-    titleController.text = getObj!.data!.position!;
-    specialityController.text = getObj!.data!.speciality!;
-    companyNameController.text = getObj!.data!.company!;
-    phoneNumberController.text = getObj!.data!.phoneNumber.toString();
-    emailController.text = getObj!.data!.email!;
-    addressController.text = getObj!.data!.address!;
+    profileImage = (getObj!.data!.profileImage == null ? " " :
+    (ApiConstantsCrew.BASE_URL_IMAGE + getObj!.data!.profileImage.toString()));
+    nameController.text = getObj!.data!.name == null ? "" : getObj!.data!.name!;
+    titleController.text = getObj!.data!.position == null ? "" : getObj!.data!.position!;
+    specialityController.text = getObj!.data!.speciality == null ? "" : getObj!.data!.speciality!;
+    companyNameController.text = getObj!.data!.company == null ? "" : getObj!.data!.company!;
+    phoneNumberController.text = getObj!.data!.phoneNumber == null ? "" : getObj!.data!.phoneNumber.toString();
+    emailController.text = getObj!.data!.email == null ? "" : getObj!.data!.email!;
+    addressController.text = getObj!.data!.address == null ? "" : getObj!.data!.address!;
     notifyListeners();
   }
 
@@ -72,8 +72,8 @@ class EditProfileProvider extends BaseProvider {
     try {
       var model = await api.getCrewProfile(context);
       if (model.success == true) {
-        SharedPreference.prefs!.setString(SharedPreference.USER_PROFILE, model.data!.profileImage!);
-        SharedPreference.prefs!.setString(SharedPreference.USER_NAME, model.data!.name!);
+        SharedPreference.prefs!.setString(SharedPreference.USER_PROFILE, model.data!.profileImage ?? "");
+        SharedPreference.prefs!.setString(SharedPreference.USER_NAME, model.data!.name ?? "");
         getObj = model;
         setState(ViewState.idle);
       } else {
@@ -107,9 +107,7 @@ class EditProfileProvider extends BaseProvider {
       );
       if (model.success == true) {
         setState(ViewState.idle);
-        Navigator.pop(
-          context,
-        );
+        Navigator.pop(context,);
         DialogHelper.showMessage(context, model.message!);
       } else {
         setState(ViewState.idle);

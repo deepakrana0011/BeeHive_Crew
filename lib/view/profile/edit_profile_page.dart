@@ -10,6 +10,7 @@ import 'package:beehive/widget/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../helper/decoration.dart';
@@ -80,11 +81,11 @@ class EditProfilePage extends StatelessWidget {
                 SizedBox(
                   height: DimensionConstants.d16.h,
                 ),
-                textFiledName(context, "phone", "123-555-2514",provider.phoneNumberController),
+                textFiledName(context, "phone", "123-555-2514",provider.phoneNumberController, phoneNo: true),
                 SizedBox(
                   height: DimensionConstants.d16.h,
                 ),
-                textFiledName(context, "email", "johnsmith@gmail.com",provider.emailController),
+                textFiledName(context, "email", "johnsmith@gmail.com",provider.emailController, readOnly: true),
                 SizedBox(
                   height: DimensionConstants.d16.h,
                 ),
@@ -100,7 +101,14 @@ class EditProfilePage extends StatelessWidget {
                       color1: ColorConstants.primaryGradient2Color,
                       color2: ColorConstants.primaryGradient1Color,
                       fontSize: DimensionConstants.d14.sp, onBtnTap: () {
-                   provider.updateCrewProfile(context);
+                        if(provider.nameController.text.trim().isEmpty){
+                          DialogHelper.showMessage(context, "name_required".tr());
+                        } else  if(provider.phoneNumberController.text.trim().isEmpty){
+                          DialogHelper.showMessage(context, "phone_required".tr());
+                        } else{
+                          provider.updateCrewProfile(context);
+                        }
+
                   },
                     shadowRequired: true
                   ),
@@ -151,7 +159,7 @@ Widget profilePic(BuildContext context, VoidCallback changePhotoTap,
   );
 }
 
-Widget textFiledName(BuildContext context, String title, String hintName, TextEditingController controller) {
+Widget textFiledName(BuildContext context, String title, String hintName, TextEditingController controller, {bool readOnly = false, bool phoneNo = false}) {
   return Padding(
     padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
     child: Column(
@@ -180,6 +188,10 @@ Widget textFiledName(BuildContext context, String title, String hintName, TextEd
             borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
           ),
           child: TextFormField(
+            inputFormatters: phoneNo ? <TextInputFormatter>[
+              FilteringTextInputFormatter.digitsOnly
+            ] : [],
+            readOnly: readOnly,
             controller: controller,
             cursorColor: Theme.of(context).brightness == Brightness.dark
                 ? ColorConstants.colorWhite

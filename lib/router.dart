@@ -1,4 +1,5 @@
 import 'package:beehive/constants/route_constants.dart';
+import 'package:beehive/model/get_crew_profile_response.dart';
 import 'package:beehive/model/get_profile_response_manager.dart' as manager_cert;
 import 'package:beehive/model/manager_dashboard_response.dart';
 import 'package:beehive/model/project_detail_crew_response.dart';
@@ -19,6 +20,7 @@ import 'package:beehive/view/light_theme_signup_login/sign_up_screen.dart';
 import 'package:beehive/view/profile/certification_page.dart';
 import 'package:beehive/view/profile/change_password_page.dart';
 import 'package:beehive/view/profile/edit_profile_page.dart';
+import 'package:beehive/view/profile/show_certificate_crew.dart';
 import 'package:beehive/view/projects/add_note_page.dart';
 import 'package:beehive/view/projects/crew_profile_page.dart';
 import 'package:beehive/view/projects/project_details_page.dart';
@@ -95,10 +97,10 @@ class OnGenerateRouter {
             builder: (_) => const EditProfilePage(), settings: settings);
       case RouteConstants.changePasswordPage:
         return MaterialPageRoute(
-            builder: (_) => const ChangePasswordPage(), settings: settings);
+            builder: (_) => ChangePasswordPage(), settings: settings);
       case RouteConstants.certificationPage:
         return MaterialPageRoute(
-            builder: (_) => const CertificationPage(), settings: settings);
+            builder: (_) => CertificationPage(), settings: settings);
       case RouteConstants.upgradePage:
         return MaterialPageRoute(
             builder: (_) => const UpgradePage(), settings: settings);
@@ -343,6 +345,10 @@ class OnGenerateRouter {
       case RouteConstants.showCertificationManagerPage:
         return MaterialPageRoute(
             builder: (_) => ShowCertificateManagerPage(certificationData: args as manager_cert.Cert), settings: settings);
+
+      case RouteConstants.showCertificationCrewPage:
+        return MaterialPageRoute(
+            builder: (_) => ShowCertificateCrewPage(certificationData: args as Cert), settings: settings);
 
       default:
         return _onPageNotFound();

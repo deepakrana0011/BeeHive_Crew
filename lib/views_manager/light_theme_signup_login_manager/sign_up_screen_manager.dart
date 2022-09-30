@@ -159,6 +159,13 @@ class SignUpScreenManager extends StatelessWidget {
         }
         provider.updateLoadingStatus(true);
       },
+      validator: (value) {
+        if (value!.trim().isEmpty) {
+          return "name_required_".tr();
+        }{
+          return null;
+        }
+      },
     );
   }
 

@@ -21,6 +21,7 @@ class BottomBarManagerProvider extends BaseProvider {
   String? _managerName;
   String? _managerProfilePic;
   String? _companyLogo;
+  String? _drawerBgColor;
 
   String get managerName => _managerName ?? "";
 
@@ -28,14 +29,17 @@ class BottomBarManagerProvider extends BaseProvider {
 
   String get companyLogo => _companyLogo ?? "";
 
+  String get drawerBgColor => _drawerBgColor ?? "";
+
 
   String? projectId;
   bool createProject=false;
 
-  void updateDrawerData(String name, String profilePic, String companyLogo) {
+  void updateDrawerData(String name, String profilePic, String companyLogo, String color) {
     _companyLogo = companyLogo;
     _managerProfilePic = profilePic;
     _managerName = name;
+    _drawerBgColor = color;
     customNotify();
   }
 

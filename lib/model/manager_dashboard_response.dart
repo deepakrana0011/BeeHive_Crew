@@ -39,6 +39,7 @@ class Manager {
     this.v,
     this.countryCode,
     this.phoneNumber,
+    this.customColor
   });
 
   String? id;
@@ -52,6 +53,7 @@ class Manager {
   int? v;
   String? countryCode;
   int? phoneNumber;
+  String? customColor;
 
   factory Manager.fromJson(Map<String, dynamic> json) => Manager(
         id: json["_id"],
@@ -65,6 +67,7 @@ class Manager {
         v: json["__v"],
         countryCode: json["countryCode"],
         phoneNumber: json["phoneNumber"],
+        customColor: json["customColor"] ?? "",
       );
 }
 

@@ -3,14 +3,14 @@ import 'package:beehive/constants/api_constants.dart';
 import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
-import 'package:beehive/model/get_profile_response_manager.dart';
+import 'package:beehive/model/get_crew_profile_response.dart';
 import 'package:beehive/widget/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class ShowCertificateManagerPage extends StatelessWidget {
-  ShowCertificateManagerPage({Key? key, required this.certificationData}) : super(key: key);
+class ShowCertificateCrewPage extends StatelessWidget {
+  ShowCertificateCrewPage({Key? key, required this.certificationData}) : super(key: key);
   Cert certificationData;
 
   @override

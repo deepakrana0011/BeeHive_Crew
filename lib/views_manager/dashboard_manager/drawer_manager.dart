@@ -42,11 +42,17 @@ class _DrawerManagerState extends State<DrawerManager> {
                         alignment: Alignment.centerRight,
                         height: DimensionConstants.d300.h,
                         width: DimensionConstants.d314.w,
-                        decoration: const BoxDecoration(
+                        decoration: widget.provider!.drawerBgColor != "" ?
+                        BoxDecoration(
+                            color: Color(int.parse(widget.provider!.drawerBgColor.toString()))
+                        )
+                            : const BoxDecoration(
                             gradient: LinearGradient(colors: [
                           ColorConstants.blueGradient1Color,
                           ColorConstants.blueGradient2Color
-                        ])),
+                          ]
+                         )
+                  ),
                         child: Stack(
                           children: [
                             Padding(

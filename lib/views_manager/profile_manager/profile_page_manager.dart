@@ -5,6 +5,7 @@ import 'package:beehive/constants/image_constants.dart';
 import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
+import 'package:beehive/helper/dialog_helper.dart';
 import 'package:beehive/provider/profile_page_manager_provider.dart';
 import 'package:beehive/view/base_view.dart';
 import 'package:beehive/views_manager/profile_manager/edit_profile_page_manager.dart';
@@ -44,27 +45,31 @@ class ProfilePageManager extends StatelessWidget {
                    });
                   }
                  ),
-                  provider.profileResponse!.data!.company == null ? Container() :
+                  (provider.profileResponse!.data!.company == null || provider.profileResponse!.data!.company == "") ? Container() :
                   SizedBox(height: DimensionConstants.d38.h,),
-                  provider.profileResponse!.data!.company == null ? Container() :
+                  (provider.profileResponse!.data!.company == null || provider.profileResponse!.data!.company == "") ? Container() :
                   profileDetailsWidget(context, ImageConstants.companyIcon, provider.profileResponse!.data!.company!, false),
-                  provider.profileResponse!.data!.phoneNumber == null? Container() :
+                  (provider.profileResponse!.data!.phoneNumber == null || provider.profileResponse!.data!.phoneNumber == "")? Container() :
                   SizedBox(height: DimensionConstants.d38.h,),
-                  provider.profileResponse!.data!.phoneNumber == null? Container() :
+                  (provider.profileResponse!.data!.phoneNumber == null || provider.profileResponse!.data!.phoneNumber == "")? Container() :
                   profileDetailsWidget(context, ImageConstants.callerIcon, provider.profileResponse!.data!.phoneNumber.toString(), false),
-                  provider.profileResponse!.data!.email == null? Container() :
+                  (provider.profileResponse!.data!.email == null || provider.profileResponse!.data!.email == "")? Container() :
                   SizedBox(height: DimensionConstants.d38.h,),
-                  provider.profileResponse!.data!.email == null? Container() :
+                  (provider.profileResponse!.data!.email == null || provider.profileResponse!.data!.email == "")? Container() :
                   profileDetailsWidget(context, ImageConstants.mailerIcon, provider.profileResponse!.data!.email!, false),
-                  provider.profileResponse!.data!.address == null? Container() :
+                  (provider.profileResponse!.data!.address == null || provider.profileResponse!.data!.address == "")? Container() :
                   SizedBox(height: DimensionConstants.d38.h,),
-                  provider.profileResponse!.data!.address == null? Container() :
+                  (provider.profileResponse!.data!.address == null || provider.profileResponse!.data!.address == "")? Container() :
                   profileDetailsWidget(context, ImageConstants.locationIcon, provider.profileResponse!.data!.address!, false),
                   SizedBox(height: DimensionConstants.d38.h,),
                   GestureDetector(
                       onTap: () {
                         Navigator.pushNamed(
-                            context, RouteConstants.changePasswordPageManager);
+                            context, RouteConstants.changePasswordPageManager).then((value) {
+                              if(value = true){
+                                DialogHelper.showMessage(context, "password_changed_successfully".tr());
+                              }
+                        });
                       },
                       child: profileDetailsWidget(context, ImageConstants.lockIcon,
                           "change_password".tr(), true)),

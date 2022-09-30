@@ -215,16 +215,16 @@ class ResetPasswordScreenManager extends StatelessWidget {
         }
         provider.updateLoadingStatus(true);
       },
-      validator: (value) {
-        if (value!.trim().isEmpty) {
-          return "password_required".tr();
-        } else if (!Validations.validateStructure(value)) {
-          return "invalid_password_format".tr();
-        }
-        {
-          return null;
-        }
-      },
+      // validator: (value) {
+      //   if (value!.trim().isEmpty) {
+      //     return "password_required".tr();
+      //   } else if (!Validations.validateStructure(value)) {
+      //     return "invalid_password_format".tr();
+      //   }
+      //   {
+      //     return null;
+      //   }
+      // },
     );
   }
 }

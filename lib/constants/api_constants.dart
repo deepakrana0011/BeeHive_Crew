@@ -1,3 +1,6 @@
+
+// client live url = 35.183.39.183:8081
+// local live url = 3.235.151.126:8081
 class ApiConstantsManager {
   static const String BASEURL = "http://3.235.151.126:8081/Manager/";
   static const String SIGNUP = "managerregister";
@@ -77,4 +80,6 @@ class ApiConstantsCrew {
   static const String getAllCheckoutCrewProjects = "crewProjectsWithHours";
 
   static const String crewProjectSchedule = "crewProjectSchedule";
+  static const String crewCertificates = "crewCertificates";
+  static const String crewNewPassword = "crewNewPassword";
 }

@@ -28,42 +28,44 @@ class ChangePasswordPageManager extends StatelessWidget {
       Navigator.pop(context);}),
       body: BaseView<ChangePasswordManagerProvider>(
         builder: (context, provider, _){
-          return provider.state == ViewState.busy ? const CustomCircularBar() : Column(
-            children:<Widget> [
-              SizedBox(height: DimensionConstants.d24.h,),
-              textFiledName(context, "old_password", "*********", oldPasswordController),
-              SizedBox(height: DimensionConstants.d16.h,),
-              textFiledName(context, "new_password", "*********", newPasswordController),
-              SizedBox(height: DimensionConstants.d16.h,),
-              textFiledName(context, "re_enter_new_password", "*********", renewPasswordController),
-              SizedBox(height: DimensionConstants.d335.h,),
-              Padding(
-                padding:  EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
-                child: CommonWidgets.commonButton(
-                    context, "change_password".tr(),
-                    color1: ColorConstants.primaryGradient2Color,
-                    color2: ColorConstants.primaryGradient1Color,
-                    fontSize: DimensionConstants.d14.sp, onBtnTap: () {
-                  if(oldPasswordController.text.trim().isEmpty || newPasswordController.text.trim().isEmpty
-                      || renewPasswordController.text.trim().isEmpty){
-                    DialogHelper.showMessage(context, "all_fields_required".tr());
-                  } else if (!Validations.validateStructure(oldPasswordController.text.trim())
-                      || !Validations.validateStructure(newPasswordController.text.trim()) ||
-                      !Validations.validateStructure(renewPasswordController.text.trim())) {
-                    DialogHelper.showMessage(context, "invalid_password_format".tr());
-                  } else if(newPasswordController.text.trim() != renewPasswordController.text.trim()){
-                    DialogHelper.showMessage(context, "new_password_not_matched".tr());
-                  } else{
-                    provider.changePassword(context, oldPasswordController.text, newPasswordController.text).then((value){
-                    });
+          return provider.state == ViewState.busy ? const CustomCircularBar() : SingleChildScrollView(
+            child: Column(
+              children:<Widget> [
+                SizedBox(height: DimensionConstants.d24.h,),
+                textFiledName(context, "old_password", "*********", oldPasswordController),
+                SizedBox(height: DimensionConstants.d16.h,),
+                textFiledName(context, "new_password", "*********", newPasswordController),
+                SizedBox(height: DimensionConstants.d16.h,),
+                textFiledName(context, "re_enter_new_password", "*********", renewPasswordController),
+                SizedBox(height: DimensionConstants.d335.h,),
+                Padding(
+                  padding:  EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
+                  child: CommonWidgets.commonButton(
+                      context, "change_password".tr(),
+                      color1: ColorConstants.primaryGradient2Color,
+                      color2: ColorConstants.primaryGradient1Color,
+                      fontSize: DimensionConstants.d14.sp, onBtnTap: () {
+                    if(oldPasswordController.text.trim().isEmpty || newPasswordController.text.trim().isEmpty
+                        || renewPasswordController.text.trim().isEmpty){
+                      DialogHelper.showMessage(context, "all_fields_required".tr());
+                    } else if (!Validations.validateStructure(oldPasswordController.text.trim())
+                        || !Validations.validateStructure(newPasswordController.text.trim()) ||
+                        !Validations.validateStructure(renewPasswordController.text.trim())) {
+                      DialogHelper.showMessage(context, "invalid_password_format".tr());
+                    } else if(newPasswordController.text.trim() != renewPasswordController.text.trim()){
+                      DialogHelper.showMessage(context, "new_password_not_matched".tr());
+                    } else{
+                      provider.changePassword(context, oldPasswordController.text, newPasswordController.text).then((value){
+                      });
 
-                  }
-                },
-                    shadowRequired: true
+                    }
+                  },
+                      shadowRequired: true
+                  ),
                 ),
-              ),
 
-            ],
+              ],
+            ),
           );
         },
       ),

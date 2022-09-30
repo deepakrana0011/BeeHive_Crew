@@ -1,3 +1,4 @@
+import 'package:beehive/constants/api_constants.dart';
 import 'package:beehive/constants/color_constants.dart';
 import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/constants/image_constants.dart';
@@ -256,10 +257,39 @@ Widget drawer(BuildContext context,BottomBarProvider provider) {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Padding(
-                                padding: EdgeInsets.only(top: DimensionConstants.d56.h),
-                                child: ImageView(path: ImageConstants.drawerProfile),
+                                padding: EdgeInsets.only(top: DimensionConstants.d56.h, left: DimensionConstants.d43.w),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(
+                                      DimensionConstants.d55.r),
+                                  child:  (provider.crrewProfilePic == null || provider.crrewProfilePic == "") ? Container(
+                                    color: ColorConstants.primaryColor,
+                                    height: DimensionConstants.d110.h,
+                                    width: DimensionConstants.d110.w,
+                                    child: const ImageView(
+                                      path: ImageConstants.appLogo,
+                                    ),
+                                  ) : Container(
+                                    color: Colors.white,
+                                    height: DimensionConstants.d110.h,
+                                    width: DimensionConstants.d110.w,
+                                    child: Padding(
+                                      padding:
+                                      const EdgeInsets.all(5.0),
+                                      child: ImageView(
+                                        path:ApiConstantsCrew.BASE_URL_IMAGE +
+                                           provider.crrewProfilePic,
+                                        height:
+                                        DimensionConstants.d110.h,
+                                        width:
+                                        DimensionConstants.d110.w,
+                                        circleCrop: true,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                ),
                               ),
-                              // SizedBox(height: DimensionConstants.d19.h),
+                               SizedBox(height: DimensionConstants.d19.h),
                               Padding(
                                 padding:
                                     EdgeInsets.only(left: DimensionConstants.d42.w),
@@ -270,9 +300,9 @@ Widget drawer(BuildContext context,BottomBarProvider provider) {
                                         DimensionConstants.d20.sp, TextAlign.center,
                                         color: ColorConstants.colorWhite),
                                     // SizedBox(height: DimensionConstants.d3.h),
-                                    Text(provider.crewName??"").boldText(context,
+                                    Text(provider.crewName).boldText(context,
                                         DimensionConstants.d30.sp, TextAlign.center,
-                                        color: ColorConstants.colorWhite),
+                                        color: ColorConstants.colorWhite, maxLines: 2, overflow: TextOverflow.ellipsis),
                                   ],
                                 ),
                               )

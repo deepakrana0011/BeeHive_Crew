@@ -82,7 +82,8 @@ class DashBoardPageManagerProvider extends BaseProvider {
         managerProvider!.updateDrawerData(
             model.manager?.name ?? '',
             model.manager?.profileImage ?? '',
-            model.manager?.companyLogo ?? '');
+            model.manager?.companyLogo ?? '',
+            model.manager?.customColor ?? "");
         getAllProjectTotalHours();
         if (controller!.index != 0) {
           groupDataByDate();

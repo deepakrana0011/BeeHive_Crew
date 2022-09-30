@@ -10,6 +10,7 @@ import 'package:beehive/provider/bottom_bar_Manager_provider.dart';
 import 'package:beehive/provider/bottom_bar_provider.dart';
 import 'package:beehive/provider/certification_page_provider.dart';
 import 'package:beehive/provider/certification_page_provider_manager.dart';
+import 'package:beehive/provider/change_password_crew_provider.dart';
 import 'package:beehive/provider/change_password_manager_provider.dart';
 import 'package:beehive/provider/continue_with_phone_manager_provider.dart';
 import 'package:beehive/provider/continue_with_phone_provider.dart';
@@ -101,6 +102,7 @@ void setUpLocator() {
   locator.registerFactory(() => ProfilePageProvider());
   locator.registerFactory(() => ProjectsCrewProvider());
   locator.registerFactory<ChangePasswordManagerProvider>(() => ChangePasswordManagerProvider());
+  locator.registerFactory<ChangePasswordCrewProvider>(() => ChangePasswordCrewProvider());
   locator.registerLazySingleton(() => Api());
   locator.registerLazySingleton(() => CreateProjectRequest());
   locator.registerLazySingleton<Dio>(() {

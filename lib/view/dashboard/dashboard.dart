@@ -587,7 +587,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                       DimensionConstants.d33.h,
                       DimensionConstants.d20.w,
                       DimensionConstants.d24.h),
-                  height: DimensionConstants.d276.h,
+                  height: DimensionConstants.d280.h,
                   width: DimensionConstants.d343.w,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -1407,7 +1407,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                       1))
                   .regularText(
                   context, DimensionConstants.d13.sp, TextAlign.center),
-              SizedBox(width: DimensionConstants.d11.w),
+              SizedBox(width: DimensionConstants.d10.w),
               customStepper(checkInProjectDetail),
               SizedBox(width: DimensionConstants.d10.w),
               Text(DateFunctions.dateTO12Hour(
@@ -1421,13 +1421,13 @@ class _DashBoardPageState extends State<DashBoardPage>
                       1))
                   .regularText(
                   context, DimensionConstants.d13.sp, TextAlign.center),
-              SizedBox(width: DimensionConstants.d12.w),
+              SizedBox(width: DimensionConstants.d10.w),
               Text("${DateFunctions.calculateTotalHourTime(
                   checkInProjectDetail.checkInTime!,
                   checkInProjectDetail.checkOutTime!)} h")
                   .boldText(
                   context, DimensionConstants.d13.sp, TextAlign.center),
-              SizedBox(width: DimensionConstants.d8.w),
+              SizedBox(width: DimensionConstants.d7.w),
               ImageView(
                   path: ImageConstants.forwardArrowIcon,
                   color: (Theme

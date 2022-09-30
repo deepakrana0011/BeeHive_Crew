@@ -1034,13 +1034,11 @@ class Api {
               "speciality": speciality,
               "company": company,
               "name": name,
-              "phone": phone,
+              "phoneNumber": phone,
               "email": email
             };
       var response = await dio.put(
-          ApiConstantsCrew.BASEURL +
-              ApiConstantsCrew.UPDATE_CREW_PROFILE +
-              SharedPreference.prefs!.getString(SharedPreference.USER_ID)!,
+          ApiConstantsCrew.BASEURL + ApiConstantsCrew.UPDATE_CREW_PROFILE + SharedPreference.prefs!.getString(SharedPreference.USER_ID)!,
           data: FormData.fromMap(map));
       return UpdateCrewProfileResponse.fromJson(
           json.decode(response.toString()));
