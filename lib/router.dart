@@ -1,4 +1,5 @@
 import 'package:beehive/constants/route_constants.dart';
+import 'package:beehive/model/crew_on_this_project_response.dart';
 import 'package:beehive/model/get_crew_profile_response.dart';
 import 'package:beehive/model/get_profile_response_manager.dart' as manager_cert;
 import 'package:beehive/model/manager_dashboard_response.dart';
@@ -288,8 +289,9 @@ class OnGenerateRouter {
                 ),
             settings: settings);
       case RouteConstants.crewPageProfileManager:
+        final arg = args as CrewProfilePageManager;
         return MaterialPageRoute(
-            builder: (_) => const CrewProfilePageManager(), settings: settings);
+            builder: (_) =>  CrewProfilePageManager(projectData: arg.projectData, crewData: arg.crewData), settings: settings);
       case RouteConstants.timeSheetScreenManager:
         final args = settings.arguments as TimeSheetsScreenManager;
         return MaterialPageRoute(

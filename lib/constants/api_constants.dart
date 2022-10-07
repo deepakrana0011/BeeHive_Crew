@@ -2,7 +2,7 @@
 // client live url = 35.183.39.183:8081
 // local live url = 3.235.151.126:8081
 class ApiConstantsManager {
-  static const String BASEURL = "http://3.235.151.126:8081/Manager/";
+  static const String BASEURL = "http://35.183.39.183:8081/Manager/";
   static const String SIGNUP = "managerregister";
   static const String emailExist = "emailExist";
 
@@ -43,11 +43,12 @@ class ApiConstantsManager {
   static const String crewOnThisProject = "crewOnThisProject/";
   static const String managerCertificates = "managerCertificates";
   static const String managerNewPassword = "managerNewPassword";
+  static const String removingCrew = "managerRemovingCrew/";
 }
 
 class ApiConstantsCrew {
-  static const String BASEURL = "http://3.235.151.126:8081/Crew/";
-  static const String BASE_URL_IMAGE = "http://3.235.151.126:8081/";
+  static const String BASEURL = "http://35.183.39.183:8081/Crew/";
+  static const String BASE_URL_IMAGE = "http://35.183.39.183:8081/";
   static const String emailExist = "emailExist";
   static const String SIGNUP = "crewsignup";
 

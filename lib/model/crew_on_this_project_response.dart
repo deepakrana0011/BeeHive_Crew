@@ -1,3 +1,5 @@
+import 'package:beehive/model/get_profile_response_manager.dart';
+
 class CrewOnThisProjectResponse {
   bool? success;
   Manager? manager;
@@ -100,24 +102,16 @@ class Crews {
   int? status;
   String? createdAt;
   int? iV;
-  String? projectRate;
   String? countryCode;
   int? phoneNumber;
-  String? profileImage;
+  List<Cert> certificates = [];
+  List<PvtNotes> pvtNotes = [];
+  String? projectRate;
+  String? address;
+  String? company;
   String? position;
-
-  Crews(
-      {this.sId,
-        this.email,
-        this.name,
-        this.password,
-        this.status,
-        this.createdAt,
-        this.iV,
-        this.projectRate,
-        this.countryCode,
-        this.phoneNumber,
-      this.profileImage});
+  String? speciality;
+  String? profileImage;
 
   Crews.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
@@ -127,15 +121,59 @@ class Crews {
     status = json['status'];
     createdAt = json['createdAt'];
     iV = json['__v'];
-    projectRate = json['projectRate'];
     countryCode = json['countryCode'];
     phoneNumber = json['phoneNumber'];
-    if(json.containsKey("profileImage")){
-      profileImage = json['profileImage'];
+    if (json['certificates'] != null) {
+      certificates = <Cert>[];
+      json['certificates'].forEach((v) {
+        certificates.add(Cert.fromJson(v));
+      });
     }
-    if(json.containsKey("position")){
-      position = json['position'];
+    if (json['pvtNotes'] != null) {
+      pvtNotes = <PvtNotes>[];
+      json['pvtNotes'].forEach((v) {
+        pvtNotes.add(PvtNotes.fromJson(v));
+      });
     }
+    projectRate = json['projectRate'];
+    address = json['address'];
+    company = json['company'];
+    position = json['position'];
+    speciality = json['speciality'];
+    profileImage = json['profileImage'];
+  }
+}
+
+
+class PvtNotes {
+  String? sId;
+  String? managerId;
+  String? crewId;
+  String? title;
+  String? note;
+  int? status;
+  String? createdAt;
+  int? iV;
+
+  PvtNotes(
+      {this.sId,
+        this.managerId,
+        this.crewId,
+        this.title,
+        this.note,
+        this.status,
+        this.createdAt,
+        this.iV});
+
+  PvtNotes.fromJson(Map<String, dynamic> json) {
+    sId = json['_id'];
+    managerId = json['managerId'];
+    crewId = json['crewId'];
+    title = json['title'];
+    note = json['note'];
+    status = json['status'];
+    createdAt = json['createdAt'];
+    iV = json['__v'];
   }
 }
 

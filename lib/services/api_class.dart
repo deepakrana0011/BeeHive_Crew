@@ -1392,4 +1392,24 @@ class Api {
     }
   }
 
+  Future<bool> removingCrewOnThisProject(
+      BuildContext context, String crewId, String projectId) async {
+    try {
+      // dio.options.headers["authorization"] =
+      //     SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var map = {"crewId" : crewId};
+
+      await dio.delete(ApiConstantsManager.BASEURL + ApiConstantsManager.removingCrew + projectId, data: map);
+      return true;
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+
 }

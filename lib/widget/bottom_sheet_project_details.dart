@@ -6,6 +6,7 @@ import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/date_function.dart';
 import 'package:beehive/model/crew_on_this_project_response.dart';
+import 'package:beehive/views_manager/projects_manager/crew_profile_page_manager.dart';
 import 'package:beehive/views_manager/projects_manager/timesheets_screen_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -104,17 +105,17 @@ Widget crewOnThisProjectListView(BuildContext context,bool timeSheetOrSchedule, 
       shrinkWrap: true,
       itemCount: projectData.crews!.length,
         itemBuilder: (context, index){
-      return userProfile(context, timeSheetOrSchedule, projectData.crews![index]);
+      return userProfile(context, timeSheetOrSchedule, projectData.crews![index], projectData);
     }),
   );
 }
 
-Widget userProfile(BuildContext context, bool timeSheetOrSchedule, Crews crewData){
+Widget userProfile(BuildContext context, bool timeSheetOrSchedule, Crews crewData, ProjectData projectData){
   return GestureDetector(
     onTap: (){
       if(timeSheetOrSchedule == true){
         Navigator.of(context).pop();
-        Navigator.pushNamed(context, RouteConstants.crewPageProfileManager,);
+        Navigator.pushNamed(context, RouteConstants.crewPageProfileManager, arguments: CrewProfilePageManager(projectData: projectData, crewData: crewData));
       }else{
         Navigator.of(context).pop();
         Navigator.pushNamed(context, RouteConstants.timeSheetScreenManager,arguments: TimeSheetsScreenManager(removeInterruption: false));
@@ -143,13 +144,16 @@ Widget userProfile(BuildContext context, bool timeSheetOrSchedule, Crews crewDat
                     shape: BoxShape.circle
                   ),
                 )
-                : SizedBox(
-                height: DimensionConstants.d50.h,
-                width: DimensionConstants.d50.w,
-                child: ImageView(path: (ApiConstantsCrew.BASE_URL_IMAGE + crewData.profileImage.toString()),
-                fit: BoxFit.cover,
-                ),
+                : ClipRRect(
+              borderRadius: BorderRadius.circular(DimensionConstants.d50.r),
+                  child: SizedBox(
+                  height: DimensionConstants.d50.h,
+                  width: DimensionConstants.d50.w,
+                  child: ImageView(path: (ApiConstantsCrew.BASE_URL_IMAGE + crewData.profileImage.toString()),
+                  fit: BoxFit.contain,
+                  ),
               ),
+                ),
               SizedBox(width: DimensionConstants.d16.w,),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,

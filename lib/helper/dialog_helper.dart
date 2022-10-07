@@ -869,9 +869,7 @@ class DialogHelper {
                             context, "cancel".tr(),
                             color1: ColorConstants.deepBlue,
                             color2: ColorConstants.deepBlue,
-                            fontSize: DimensionConstants.d16.sp, onBtnTap: () {
-                          Navigator.of(context).pop();
-                        }, shadowRequired: false),
+                            fontSize: DimensionConstants.d16.sp, onBtnTap: cancel, shadowRequired: false),
                       ),
                       Expanded(child: Container()),
                       SizedBox(
@@ -881,9 +879,7 @@ class DialogHelper {
                             context, "remove".tr(),
                             color1: ColorConstants.redColorEB5757,
                             color2: ColorConstants.redColorEB5757,
-                            fontSize: DimensionConstants.d16.sp, onBtnTap: () {
-                          Navigator.of(context).pop();
-                        }, shadowRequired: false),
+                            fontSize: DimensionConstants.d16.sp, onBtnTap: delete, shadowRequired: false),
                       ),
                     ],
                   ),
