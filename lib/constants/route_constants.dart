@@ -55,4 +55,5 @@ class RouteConstants{
   static const String showNotePageCrew = "showNotePageCrew";
   static const String showCertificationManagerPage = "showCertificationManagerPage";
   static const String showCertificationCrewPage = "showCertificationCrewPage";
+  static const String showPrivateNoteManager = "showPrivateNoteManager";
  }

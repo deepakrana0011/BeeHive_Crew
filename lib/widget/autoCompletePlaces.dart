@@ -8,8 +8,8 @@ import 'package:flutter_google_places/flutter_google_places.dart';
 import '../constants/color_constants.dart';
 
 class CustomSearchScaffold extends PlacesAutocompleteWidget {
-  CustomSearchScaffold()
-      : super(
+  CustomSearchScaffold({Key? key, required this.currentCountryCode})
+      : super(key: key,
             apiKey: googleApiKey,
             language: "en",
             offset: 0,
@@ -17,7 +17,9 @@ class CustomSearchScaffold extends PlacesAutocompleteWidget {
             types: [],
             strictbounds: false,
             region: "",
-            components: []);
+            components: [Component(Component.country, currentCountryCode)]);
+
+  final String currentCountryCode;
 
   @override
   _CustomSearchScaffoldState createState() => _CustomSearchScaffoldState();

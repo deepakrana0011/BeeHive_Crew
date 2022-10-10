@@ -150,10 +150,12 @@ class DashBoardPageManagerProvider extends BaseProvider {
   String getOneProjectTotalHours(List<CheckInProjectDetailManager>? checkins) {
     var totalMinutes = 0;
     for (var element in checkins!) {
-      var startTime = DateFunctions.getDateTimeFromString(element.checkInTime!);
-      var endTime = DateFunctions.getDateTimeFromString(element.checkOutTime!);
-      var minutes = endTime.difference(startTime).inMinutes;
-      totalMinutes = totalMinutes + minutes;
+      if(element.checkOutTime != " "){
+        var startTime = DateFunctions.getDateTimeFromString(element.checkInTime!);
+        var endTime = DateFunctions.getDateTimeFromString(element.checkOutTime!);
+        var minutes = endTime.difference(startTime).inMinutes;
+        totalMinutes = totalMinutes + minutes;
+      }
     }
     var totalHours = DateFunctions.minutesToHourString(totalMinutes);
     return totalHours;
@@ -163,12 +165,14 @@ class DashBoardPageManagerProvider extends BaseProvider {
     var totalMinutes = 0;
     for (var element in managerResponse!.projectData!) {
       for (var element in element.checkins!) {
-        var startTime =
-            DateFunctions.getDateTimeFromString(element.checkInTime!);
-        var endTime =
-            DateFunctions.getDateTimeFromString(element.checkOutTime!);
-        var minutes = endTime.difference(startTime).inMinutes;
-        totalMinutes = totalMinutes + minutes;
+        if(element.checkOutTime != " "){
+          var startTime =
+          DateFunctions.getDateTimeFromString(element.checkInTime!);
+          var endTime =
+          DateFunctions.getDateTimeFromString(element.checkOutTime!);
+          var minutes = endTime.difference(startTime).inMinutes;
+          totalMinutes = totalMinutes + minutes;
+        }
       }
     }
     var totalHours = DateFunctions.minutesToHourString(totalMinutes);

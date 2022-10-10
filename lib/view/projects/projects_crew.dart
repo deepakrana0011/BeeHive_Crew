@@ -318,7 +318,7 @@ Widget projectList(BuildContext context, ProjectsCrewProvider provider) {
         ? ColorConstants.colorBlack
         : ColorConstants.colorWhite,
     child: ListView.builder(
-        physics: NeverScrollableScrollPhysics(),
+     //   physics: NeverScrollableScrollPhysics(),
         itemCount: provider.allCheckoutProjectCrewResponse!.projectData!.length,
         itemBuilder: (BuildContext context, int index) {
           return projectDetailWidget(context,
@@ -606,6 +606,8 @@ Widget checkByWeekSubstring(BuildContext context, ProjectsCrewProvider provider,
 }
 
 Widget projectNameSubStringContainer(BuildContext context, ProjectsCrewProvider provider, int weekDaysIndex){
+  // var value=DateFunctions.minutesToHourString(
+  //     projectDetail.totalHours!);
   return  ListView.builder(
       scrollDirection: Axis.vertical,
       itemCount: provider.projectNameList[weekDaysIndex].projectName.length,
@@ -613,7 +615,7 @@ Widget projectNameSubStringContainer(BuildContext context, ProjectsCrewProvider 
         return GestureDetector(
           onTap: () {
             Navigator.pushNamed(context, RouteConstants.projectDetailsPage,
-                arguments: ProjectDetailsPage(archivedOrProject: false,projectId: provider.projectNameList[weekDaysIndex].projectName[index].sId,
+                arguments: ProjectDetailsPage(archivedOrProject: false,projectId: provider.projectNameList[weekDaysIndex].projectName[index].sId
                   ));
           },
           child: Padding(

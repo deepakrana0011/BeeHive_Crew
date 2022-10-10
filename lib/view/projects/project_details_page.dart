@@ -381,7 +381,9 @@ Widget mapAndHoursDetails(
                       ? ColorConstants.colorWhite
                       : ColorConstants.colorBlack),
               Expanded(child: Container()),
-              Text(totalHoursToDate).semiBoldText(
+              Text(totalHoursToDate != "" ? totalHoursToDate :
+             (provider.projectDetailCrewResponse == null ? "" : (provider.projectDetailCrewResponse?.projectData?.checkins?.isEmpty == true? "" :"${DateFunctions.calculateTotalHourTime( provider.projectDetailCrewResponse!.projectData!.checkins![0].checkInTime!,
+                  provider.projectDetailCrewResponse!.projectData!.checkins![0].checkOutTime!)} h"))).semiBoldText(
                   context, DimensionConstants.d14.sp, TextAlign.left,
                   color: Theme.of(context).brightness == Brightness.dark
                       ? ColorConstants.colorWhite

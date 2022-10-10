@@ -58,7 +58,7 @@ class ProjectData {
   String? roundTimesheets;
   String? sameRate;
   List<ProjectRate>? projectRate;
-  List<CheckInProjectDetailManager>? checkins;
+  List<CheckInProjectDetailManager>? checkins = [];
   Manager? manager;
   List<CrewMemberDetail>? crews;
   List<Note>? notes;

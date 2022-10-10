@@ -194,12 +194,10 @@ class DashboardProvider extends BaseProvider {
     setState(ViewState.busy);
     try {
       print("selected checkout time ${selectedCheckOutTime}");
-      var checkoutTime =
-          DateFunctions.tweleveTo24Hour(selectedCheckOutTime!.toUpperCase());
+      var checkoutTime = DateFunctions.tweleveTo24Hour(selectedCheckOutTime!.toUpperCase());
       var value = crewResponse!.userCheckin!.checkInTime!.substring(0, 10);
       var checkInTimeFinal = value + " " + checkoutTime;
-      var model = await api.checkOutApiCrew(
-          context, crewResponse!.userCheckin!.id!, checkInTimeFinal);
+      var model = await api.checkOutApiCrew(context, crewResponse!.userCheckin!.id!, checkInTimeFinal);
       if (model.success == true) {
         setState(ViewState.idle);
         getDashBoardData(context, bottomBarProvider);
@@ -272,8 +270,8 @@ class DashboardProvider extends BaseProvider {
             context, "Checkout Time should be greater than check in time");
       } else {
         initialTime = pickedTime;
-        selectedCheckOutTime =
-            DateFunctions.twentyFourHourTO12Hour(initialTime.format(context));
+        selectedCheckOutTime = initialTime.format(context);
+         //   DateFunctions.twentyFourHourTO12Hour(initialTime.format(context));
       }
     }
   }

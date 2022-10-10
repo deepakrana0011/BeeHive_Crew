@@ -21,9 +21,10 @@ import '../../widget/image_view.dart';
 class AddNotePageManager extends StatelessWidget {
   bool isPrivate;
   String projectId;
+  String? crewId;
 
   AddNotePageManager(
-      {Key? key, required this.isPrivate, required this.projectId})
+      {Key? key, required this.isPrivate, required this.projectId, this.crewId})
       : super(key: key);
 
   @override
@@ -141,7 +142,8 @@ class AddNotePageManager extends StatelessWidget {
                             DialogHelper.showMessage(
                                 context, "Please enter the note");
                           } else {
-                            provider.addNoteManager(context, projectId);
+                           isPrivate == true ? provider.addingPrivateNote(context, crewId!, provider.titleController.text, provider.noteController.text)
+                               :  provider.addNoteManager(context, projectId);
                           }
                         }, shadowRequired: true)),
                     SizedBox(

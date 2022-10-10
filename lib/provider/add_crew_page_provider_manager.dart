@@ -6,6 +6,7 @@ import 'package:beehive/model/add_crew_response_manager.dart';
 import 'package:beehive/model/create_project_request.dart';
 import 'package:beehive/model/manager_dashboard_response.dart';
 import 'package:beehive/provider/base_provider.dart';
+import 'package:beehive/views_manager/projects_manager/project_setting_page_manager.dart';
 import 'package:beehive/views_manager/projects_manager/set_rates_page_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -88,8 +89,10 @@ class AddCrewPageManagerProvider extends BaseProvider {
       Navigator.pushNamed(context, RouteConstants.setRatesManager,
           arguments: SetRatesPageManager(isUpdating: isUpdating,projectId: projectId,));
     } else {
-      DialogHelper.showMessage(
-          context, "Please choose at least one crew member");
+      // DialogHelper.showMessage(
+      //     context, "Please choose at least one crew member");
+      Navigator.pushNamed(context, RouteConstants.projectSettingsPageManager, arguments:
+          ProjectSettingsPageManager(fromProjectOrCreateProject: true));
     }
   }
 }

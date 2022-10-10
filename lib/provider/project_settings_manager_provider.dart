@@ -215,16 +215,16 @@ class ProjectSettingsManagerProvider extends BaseProvider {
 
   Future<void> handleButtonClick(BuildContext context) async {
     var value = weekDays.indexWhere((element) => element.selected);
-    if (value == -1) {
-      DialogHelper.showMessage(context, "Please choose the work day");
-    } else if (projectStartTime == null || projectEndTime == null) {
-      DialogHelper.showMessage(context, "Please choose the work hour");
-    } else if (selectedAfterHourRate == null) {
-      DialogHelper.showMessage(context, "Please choose after hour rate");
-    } else if (selectedRoundSheetIndex == -1) {
-      DialogHelper.showMessage(
-          context, "Please choose round timesheet to nearest");
-    } else {
+    // if (value == -1) {
+    //   DialogHelper.showMessage(context, "Please choose the work day");
+    // } else if (projectStartTime == null || projectEndTime == null) {
+    //   DialogHelper.showMessage(context, "Please choose the work hour");
+    // } else if (selectedAfterHourRate == null) {
+    //   DialogHelper.showMessage(context, "Please choose after hour rate");
+    // } else if (selectedRoundSheetIndex == -1) {
+    //   DialogHelper.showMessage(
+    //       context, "Please choose round timesheet to nearest");
+    // } else {
       setState(ViewState.busy);
       var list = weekDays.where((element) => element.selected);
       createProjectRequest.workDays = list.map((e) => e.day!).toList();
@@ -240,7 +240,7 @@ class ProjectSettingsManagerProvider extends BaseProvider {
       }
       createProjectRequest.breakList = breakList;
       createProjectRequest.roundTimesheets =
-          roundTimeSheet[selectedRoundSheetIndex];
+          selectedRoundSheetIndex == -1 ?  "" : roundTimeSheet[selectedRoundSheetIndex];
       try {
         var model = await api.createProject(context, createProjectRequest);
         if (model.success!) {
@@ -264,6 +264,6 @@ class ProjectSettingsManagerProvider extends BaseProvider {
         setState(ViewState.idle);
         DialogHelper.showMessage(context, "internet_connection".tr());
       }
-    }
+   // }
   }
 }

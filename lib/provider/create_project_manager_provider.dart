@@ -34,8 +34,9 @@ class CreateProjectManagerProvider extends BaseProvider {
   double longitude = 0;
   var value;
   String pickUpLocation = "";
-  double locationRadius = 0;
+  double locationRadius = 25;
   bool isCurrentAddress = true;
+  String currentCountryIsoCode = "";
 
   Future getLngLt(context) async {
     setState(ViewState.busy);
@@ -86,6 +87,7 @@ class CreateProjectManagerProvider extends BaseProvider {
         " " +
         placeMark.first.thoroughfare.toString() +
         placeMark.first.subLocality.toString();
+    currentCountryIsoCode = placeMark.first.isoCountryCode.toString();
     notifyListeners();
   }
 

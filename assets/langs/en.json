@@ -258,5 +258,6 @@
   "all_fields_required" : "All fields Required",
   "new_password_not_matched" : "New password and Re-new password not matched.",
   "password_changed_successfully" : "Password changed successfully.",
-  "name_required_" : "Name is required"
+  "name_required_" : "Name is required",
+  "private_note" : "Private Note"
 }

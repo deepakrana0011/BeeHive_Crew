@@ -87,7 +87,7 @@ Widget activeProjectWidget(
           SizedBox(
             height: DimensionConstants.d16.h,
           ),
-          Text("Hey  ${provider.managerResponse!.manager?.name!},\nwhat’s buzzing?")
+          Text("Hey  ${provider.managerResponse?.manager?.name ?? ""},\nwhat’s buzzing?")
               .boldText(context, DimensionConstants.d18.sp, TextAlign.left,
                   color: ColorConstants.colorWhite),
           SizedBox(

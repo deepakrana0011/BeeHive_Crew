@@ -3,8 +3,10 @@ import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
 import 'package:beehive/model/crew_on_this_project_response.dart';
+import 'package:beehive/provider/add_note_page_manager_provider.dart';
 import 'package:beehive/provider/crew_profile_page_provider_manager.dart';
 import 'package:beehive/view/base_view.dart';
+import 'package:beehive/views_manager/projects_manager/show_private_note_manager.dart';
 import 'package:beehive/widget/custom_circular_bar.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -77,7 +79,15 @@ class CrewProfilePageManager extends StatelessWidget {
                     SizedBox(
                       height: DimensionConstants.d32.h,
                     ),
-                    addPrivateNote(context),
+                    addPrivateNote(context, provider),
+                   crewData.pvtNotes.isEmpty ? Container() : Column(
+                      children: [
+                        SizedBox(
+                          height: DimensionConstants.d25.h,
+                        ),
+                        notesList(context, crewData.pvtNotes,),
+                      ],
+                    ),
                     SizedBox(
                       height: DimensionConstants.d53.h,
                     ),
@@ -421,7 +431,7 @@ class CrewProfilePageManager extends StatelessWidget {
     );
   }
 
-  Widget addPrivateNote(BuildContext context) {
+  Widget addPrivateNote(BuildContext context, CrewProfilePageProviderManager pageProviderManager) {
     return Row(
       children: <Widget>[
         Column(
@@ -442,7 +452,12 @@ class CrewProfilePageManager extends StatelessWidget {
             Navigator.pushNamed(
                 context, RouteConstants.addNotePageManager,
                 arguments: AddNotePageManager(
-                  isPrivate: true, projectId: '123213',));
+                  isPrivate: true, projectId: '', crewId: crewData.sId.toString())).then((dynamic value) {
+                    PvtNoteData pvtNoteData = PvtNoteData();
+                    pvtNoteData = value;
+                    crewData.pvtNotes.add(PvtNotes(title: pvtNoteData.title, note: pvtNoteData.note));
+                    pageProviderManager.updateLoadingStatus(true);
+            });
           },
           child: Container(
             height: DimensionConstants.d40.h,
@@ -475,4 +490,70 @@ class CrewProfilePageManager extends StatelessWidget {
       ],
     );
   }
+
+  Widget notesList(BuildContext context, List<PvtNotes> notes) {
+    return SizedBox(
+      height: DimensionConstants.d150.h,
+      child: Card(
+        elevation: 2,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(DimensionConstants.d8.r)),
+        child: ListView.builder(
+          itemCount: notes.length,
+          shrinkWrap: true,
+        //  physics: const NeverScrollableScrollPhysics(),
+          itemBuilder: (BuildContext context, int index) {
+            return GestureDetector(
+              behavior: HitTestBehavior.translucent,
+              onTap: (){
+                Navigator.pushNamed(context, RouteConstants.showPrivateNoteManager,
+                    arguments: ShowPrivateNoteManager(title: notes[index].title.toString(), note: notes[index].note.toString()));
+              },
+              child: Column(
+                children: <Widget>[
+                  SizedBox(
+                    height: DimensionConstants.d25.h,
+                  ),
+                  Padding(
+                    padding:
+                    EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
+                    child: Row(
+                      children: <Widget>[
+                        Expanded(
+                            child: Text(notes[index].title ?? "").regularText(
+                                context, DimensionConstants.d14.sp, TextAlign.left,
+                                color: Theme.of(context).brightness == Brightness.dark
+                                    ? ColorConstants.colorWhite
+                                    : ColorConstants.colorBlack,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis)),
+                        ImageView(
+                          path: ImageConstants.arrowIcon,
+                          height: DimensionConstants.d10.h,
+                          width: DimensionConstants.d8.w,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? ColorConstants.colorWhite
+                              : ColorConstants.colorBlack,
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    height: DimensionConstants.d20.h,
+                  ),
+                  Container(
+                    height: DimensionConstants.d1.h,
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? ColorConstants.colorWhite
+                        : ColorConstants.grayF1F1F1,
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
 }

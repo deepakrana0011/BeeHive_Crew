@@ -63,6 +63,32 @@ class AddNotePageManagerProvider extends BaseProvider{
   }
 
 
+  Future<bool> addingPrivateNote(BuildContext context, String crewId, String title, String note) async {
+    setState(ViewState.busy);
+    try {
+      var model = await api.addingPrivateNote(context, crewId, title, note);
+      if(model.success == true){
+        Navigator.of(context).pop(PvtNoteData(title: model.data?.title, note: model.data?.note));
+      }
+      setState(ViewState.idle);
+      return true;
+    } on FetchDataException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, e.toString());
+      return false;
+    } on SocketException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, "internet_connection".tr());
+      return false;
+    }
+  }
 
 
+}
+
+class PvtNoteData{
+  String? title;
+  String? note;
+
+  PvtNoteData({this.title, this.note});
 }

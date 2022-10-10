@@ -2,6 +2,7 @@ import 'package:beehive/constants/color_constants.dart';
 import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
+import 'package:beehive/model/project_detail_crew_response.dart';
 import 'package:beehive/provider/project_settings_provider.dart';
 import 'package:beehive/view/base_view.dart';
 import 'package:beehive/widget/custom_switcher.dart';
@@ -15,7 +16,8 @@ import '../../helper/dialog_helper.dart';
 import '../../widget/image_view.dart';
 
 class ProjectSettingsPage extends StatelessWidget {
-  const ProjectSettingsPage({Key? key}) : super(key: key);
+  const ProjectSettingsPage({Key? key, required this.projectData}) : super(key: key);
+  final ProjectData projectData;
 
   @override
   Widget build(BuildContext context) {

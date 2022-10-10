@@ -55,6 +55,7 @@ import 'package:beehive/views_manager/projects_manager/project_details_manager.d
 import 'package:beehive/views_manager/projects_manager/project_setting_page_manager.dart';
 import 'package:beehive/views_manager/projects_manager/set_rates_page_manager.dart';
 import 'package:beehive/views_manager/projects_manager/show_note_page_manager.dart';
+import 'package:beehive/views_manager/projects_manager/show_private_note_manager.dart';
 import 'package:beehive/views_manager/projects_manager/timesheets_screen_manager.dart';
 import 'package:beehive/views_manager/billing_information/payment_page_manager.dart';
 import 'package:beehive/views_manager/timesheet_manager/timesheet_from_crew.dart';
@@ -88,8 +89,9 @@ class OnGenerateRouter {
         return MaterialPageRoute(
             builder: (_) => const AddNotePage(), settings: settings);
       case RouteConstants.projectSettingsPage:
+        final args = settings.arguments as ProjectSettingsPage;
         return MaterialPageRoute(
-            builder: (_) => const ProjectSettingsPage(), settings: settings);
+            builder: (_) => ProjectSettingsPage(projectData: args.projectData), settings: settings);
       case RouteConstants.crewProfilePage:
         return MaterialPageRoute(
             builder: (_) => const CrewProfilePage(), settings: settings);
@@ -278,6 +280,7 @@ class OnGenerateRouter {
             builder: (_) => AddNotePageManager(
                   isPrivate: args.isPrivate,
                   projectId: args.projectId,
+              crewId: args.crewId,
                 ),
             settings: settings);
       case RouteConstants.archivedProjectDetailsManager:
@@ -326,7 +329,7 @@ class OnGenerateRouter {
 
       case RouteConstants.autoComplete:
         return MaterialPageRoute(
-            builder: (_) => CustomSearchScaffold(), settings: settings);
+            builder: (_) => CustomSearchScaffold(currentCountryCode: args as String,), settings: settings);
 
       case RouteConstants.resetPasswordScreenManager:
         final token = settings.arguments as String;
@@ -351,6 +354,11 @@ class OnGenerateRouter {
       case RouteConstants.showCertificationCrewPage:
         return MaterialPageRoute(
             builder: (_) => ShowCertificateCrewPage(certificationData: args as Cert), settings: settings);
+
+      case RouteConstants.showPrivateNoteManager:
+        final args = settings.arguments as ShowPrivateNoteManager;
+        return MaterialPageRoute(
+            builder: (_) => ShowPrivateNoteManager(title: args.title, note: args.note), settings: settings);
 
       default:
         return _onPageNotFound();

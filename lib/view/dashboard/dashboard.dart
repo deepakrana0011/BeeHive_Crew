@@ -664,9 +664,9 @@ class _DashBoardPageState extends State<DashBoardPage>
         context: context,
         builder: (BuildContext context) {
           return StatefulBuilder(builder: (buildContext, setState) {
-            provider.selectedCheckOutTime =
-                DateFunctions.twentyFourHourTO12Hour(
-                    provider.initialTime.format(context));
+            provider.selectedCheckOutTime = provider.initialTime.format(context);
+                // DateFunctions.twentyFourHourTO12Hour(
+                //     provider.initialTime.format(context));
             return AlertDialog(
                 contentPadding: EdgeInsets.zero,
                 insetPadding: EdgeInsets.fromLTRB(DimensionConstants.d16.w, 0.0,

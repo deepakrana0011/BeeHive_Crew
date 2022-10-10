@@ -21,6 +21,7 @@ import 'package:beehive/model/get_crew_profile_response.dart';
 import 'package:beehive/model/get_otp_fro_password.dart';
 import 'package:beehive/model/login_response_manager.dart';
 import 'package:beehive/model/phone_otp_response_manager.dart';
+import 'package:beehive/model/private_note_response_manager.dart';
 import 'package:beehive/model/project_detail_crew_response.dart';
 import 'package:beehive/model/project_detail_manager_response.dart';
 import 'package:beehive/model/project_schduele_manager_crew.dart';
@@ -579,8 +580,7 @@ class Api {
       var response = await dio.post(
           ApiConstantsManager.BASEURL + ApiConstantsManager.DASHBOARD_API,
           data: map);
-      return ManagerDashboardResponse.fromJson(
-          json.decode(response.toString()));
+      return ManagerDashboardResponse.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());
@@ -1085,9 +1085,7 @@ class Api {
       };
       dio.options.headers["authorization"] =
           SharedPreference.prefs!.getString(SharedPreference.TOKEN);
-      var response = await dio.post(
-          ApiConstantsCrew.BASEURL + ApiConstantsCrew.CHECK_IN_CREW,
-          data: map);
+      var response = await dio.post(ApiConstantsCrew.BASEURL + ApiConstantsCrew.CHECK_IN_CREW, data: map);
       return CheckInResponseCrew.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
@@ -1292,15 +1290,13 @@ class Api {
     String endDate,
   ) async {
     try {
-      dio.options.headers["authorization"] =
-          SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      dio.options.headers["authorization"] = SharedPreference.prefs!.getString(SharedPreference.TOKEN);
 
       var map = {"firstDate": startDate, "secondDate": endDate};
       var response = await dio.post("${ApiConstantsCrew.BASEURL}${ApiConstantsCrew.crewProjectDetail}/$projectId", data: map);
       var responseString = response.toString();
       print("response string ${responseString}");
-      return ProjectDetailCrewResponse.fromJson(
-          json.decode(response.toString()));
+      return ProjectDetailCrewResponse.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());
@@ -1401,6 +1397,27 @@ class Api {
 
       await dio.delete(ApiConstantsManager.BASEURL + ApiConstantsManager.removingCrew + projectId, data: map);
       return true;
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+
+
+  Future<PrivateNoteResponseManager> addingPrivateNote(
+      BuildContext context, String crewId, String title, String note) async {
+    try {
+      dio.options.headers["authorization"] =
+          SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var map = {"crewId" : crewId, "title" : title, "note" : note};
+
+      var response = await dio.post(ApiConstantsManager.BASEURL + ApiConstantsManager.addingPrivateNote, data: map);
+      return PrivateNoteResponseManager.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());
