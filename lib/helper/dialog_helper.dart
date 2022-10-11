@@ -274,9 +274,9 @@ class DialogHelper {
     );
   }
 
-  static callDialogBox(BuildContext context,
-      {required VoidCallback photoFromGallery,
-      required VoidCallback photoFromCamera}) {
+  static callDialogBox(BuildContext context, String phoneNo,
+      {required VoidCallback callManager,
+      required VoidCallback messageManager, required VoidCallback addToContactManager}) {
     return Dialog(
       insetPadding: EdgeInsets.only(
           left: DimensionConstants.d10.w,
@@ -286,7 +286,7 @@ class DialogHelper {
         borderRadius: BorderRadius.circular(DimensionConstants.d10.r),
       ),
       child: Container(
-        height: DimensionConstants.d256.h,
+     //   height: DimensionConstants.d256.h,
         decoration: BoxDecoration(
             color: Theme.of(context).brightness == Brightness.dark
                 ? ColorConstants.colorWhite90
@@ -295,7 +295,7 @@ class DialogHelper {
         child: Column(
           children: <Widget>[
             Container(
-              height: DimensionConstants.d185.h,
+            //  height: DimensionConstants.d185.h,
               decoration: BoxDecoration(
                   color: Theme.of(context).brightness == Brightness.dark
                       ? ColorConstants.colorBlack
@@ -309,7 +309,7 @@ class DialogHelper {
               child: Column(
                 children: <Widget>[
                   GestureDetector(
-                    onTap: photoFromGallery,
+                    onTap: callManager,
                     child: Container(
                       width: double.maxFinite,
                       color: Colors.transparent,
@@ -318,7 +318,7 @@ class DialogHelper {
                           padding: EdgeInsets.only(
                               top: DimensionConstants.d25.h,
                               bottom: DimensionConstants.d15.h),
-                          child: Text("Call 416 555 1234").regularText(
+                          child: Text("Call $phoneNo").regularText(
                             context,
                             DimensionConstants.d18.sp,
                             TextAlign.center,
@@ -338,7 +338,7 @@ class DialogHelper {
                         : ColorConstants.grayD2D2D7,
                   ),
                   GestureDetector(
-                    onTap: photoFromGallery,
+                    onTap: messageManager,
                     child: Container(
                       width: double.maxFinite,
                       color: Colors.transparent,
@@ -367,7 +367,7 @@ class DialogHelper {
                         : ColorConstants.grayD2D2D7,
                   ),
                   GestureDetector(
-                    onTap: photoFromCamera,
+                    onTap: addToContactManager,
                     child: Container(
                       width: double.maxFinite,
                       color: Colors.transparent,
@@ -389,39 +389,44 @@ class DialogHelper {
                       ),
                     ),
                   ),
+                  SizedBox(height: DimensionConstants.d10.h)
                 ],
               ),
             ),
-            Expanded(child: Container()),
-            GestureDetector(
-              onTap: () {
-                Navigator.of(context).pop();
-              },
-              child: Container(
-                width: double.maxFinite,
-                height: DimensionConstants.d60.h,
-                decoration: BoxDecoration(
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? ColorConstants.colorBlack
-                        : ColorConstants.colorWhite,
-                    borderRadius:
-                        BorderRadius.circular(DimensionConstants.d10.r),
-                    border: Border.all(
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? ColorConstants.colorWhite
-                            : Colors.transparent,
-                        width: DimensionConstants.d1.w)),
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    top: DimensionConstants.d20.h,
-                  ),
-                  child: Text("cancel".tr()).boldText(
-                    context,
-                    DimensionConstants.d18.sp,
-                    TextAlign.center,
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? ColorConstants.colorWhite
-                        : ColorConstants.blue007AFF,
+            SizedBox(height: DimensionConstants.d10.h),
+           // Expanded(child: Container()),
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+                child: Container(
+                  alignment: Alignment.topCenter,
+                  //width: double.maxFinite,
+          //      height: DimensionConstants.d60.h,
+                  decoration: BoxDecoration(
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? ColorConstants.colorBlack
+                          : ColorConstants.colorWhite,
+                      borderRadius:
+                          BorderRadius.circular(DimensionConstants.d10.r),
+                      border: Border.all(
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? ColorConstants.colorWhite
+                              : Colors.transparent,
+                          width: DimensionConstants.d1.w)),
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      top: DimensionConstants.d20.h,
+                    ),
+                    child: Text("cancel".tr()).boldText(
+                      context,
+                      DimensionConstants.d18.sp,
+                      TextAlign.center,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? ColorConstants.colorWhite
+                          : ColorConstants.blue007AFF,
+                    ),
                   ),
                 ),
               ),
@@ -1014,4 +1019,78 @@ class DialogHelper {
       ),
     );
   }
+
+  static leaveProjectDialog(BuildContext context,
+      {required VoidCallback cancel, required VoidCallback leave}) {
+    return Dialog(
+      insetPadding: EdgeInsets.zero,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
+      ),
+      child: Container(
+        height: DimensionConstants.d220.h,
+        width: DimensionConstants.d343.w,
+        decoration: BoxDecoration(
+            color: ColorConstants.colorWhite,
+            borderRadius: BorderRadius.circular(DimensionConstants.d8.r)),
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(
+                  top: DimensionConstants.d24.h,
+                  left: DimensionConstants.d285.w),
+              child: GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pop();
+                },
+                child: const ImageView(
+                  path: ImageConstants.closeIconDialog,
+                ),
+              ),
+            ),
+            Text("leave_project".tr()).boldText(
+                context, DimensionConstants.d18.sp, TextAlign.center,
+                color: ColorConstants.colorBlack),
+            SizedBox(
+              height: DimensionConstants.d23.h,
+            ),
+            Text("are_you_sure_to_leave_project".tr()).regularText(
+                context, DimensionConstants.d14.sp, TextAlign.center,
+                color: ColorConstants.colorBlack),
+            SizedBox(
+              height: DimensionConstants.d35.h,
+            ),
+            Padding(
+              padding: EdgeInsets.symmetric(
+                  horizontal: DimensionConstants.d24.w),
+              child: Row(
+                children: <Widget>[
+                  SizedBox(
+                    height: DimensionConstants.d50.h,
+                    width: DimensionConstants.d141.w,
+                    child: CommonWidgets.commonButton(
+                        context, "cancel".tr(),
+                        color1: ColorConstants.deepBlue,
+                        color2: ColorConstants.deepBlue,
+                        fontSize: DimensionConstants.d16.sp, onBtnTap: cancel, shadowRequired: false),
+                  ),
+                  Expanded(child: Container()),
+                  SizedBox(
+                    height: DimensionConstants.d50.h,
+                    width: DimensionConstants.d141.w,
+                    child: CommonWidgets.commonButton(
+                        context, "leave".tr(),
+                        color1: ColorConstants.redColorEB5757,
+                        color2: ColorConstants.redColorEB5757,
+                        fontSize: DimensionConstants.d16.sp, onBtnTap: leave, shadowRequired: false),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
 }

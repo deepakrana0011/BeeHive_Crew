@@ -259,5 +259,9 @@
   "new_password_not_matched" : "New password and Re-new password not matched.",
   "password_changed_successfully" : "Password changed successfully.",
   "name_required_" : "Name is required",
-  "private_note" : "Private Note"
+  "private_note" : "Private Note",
+  "after_hour_rate" : "After hours rates are ",
+  "your_regular_rate" : " your regular rate.",
+  "are_you_sure_to_leave_project" : "Are you sure you want to leave project?" ,
+  "leave" : "Leave"
 }

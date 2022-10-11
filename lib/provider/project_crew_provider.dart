@@ -122,6 +122,7 @@ class ProjectsCrewProvider extends BaseProvider {
         }
 
         /// for project name
+        projectNames = [];
         List<String> idss = ids.toSet().toList();
         for(var element in projectNameList){
           for(var projectElement in element.projectName){

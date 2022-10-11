@@ -1429,4 +1429,23 @@ class Api {
     }
   }
 
+
+  Future<bool> crewLeavingProject(
+      BuildContext context, String projectId) async {
+    try {
+      dio.options.headers["authorization"] =
+          SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+
+      await dio.delete(ApiConstantsCrew.BASEURL + ApiConstantsManager.crewLeavingProject + projectId);
+      return true;
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
 }

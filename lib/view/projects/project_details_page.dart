@@ -9,6 +9,7 @@ import 'package:beehive/model/manager_dashboard_response.dart';
 import 'package:beehive/model/project_working_hour_detail.dart';
 import 'package:beehive/provider/project_details_provider.dart';
 import 'package:beehive/view/base_view.dart';
+import 'package:beehive/view/projects/project_settings_page.dart';
 import 'package:beehive/widget/custom_circular_bar.dart';
 import 'package:beehive/widget/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -59,7 +60,11 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage>
                   actionIcon: ImageConstants.settingsIcon,
                   actionButtonRequired: true, onTapAction: () {
                 Navigator.pushNamed(
-                    context, RouteConstants.projectSettingsPage);
+                    context, RouteConstants.projectSettingsPage, arguments: ProjectSettingsPage(projectData: provider.projectDetailCrewResponse!.projectData!)).then((value) {
+                      if(value == true){
+                        Navigator.of(context).pop(true);
+                      }
+                });
               }, popFunction: () {
                 CommonWidgets.hideKeyboard(context);
                 Navigator.pop(context);

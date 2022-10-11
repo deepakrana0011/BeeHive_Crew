@@ -99,6 +99,7 @@ class Manager {
     this.password,
     this.countryCode,
     this.phoneNumber,
+    this.profileImage
   });
 
   String? id;
@@ -107,6 +108,7 @@ class Manager {
   String? password;
   String? countryCode;
   int? phoneNumber;
+  String? profileImage;
 
   factory Manager.fromJson(Map<String, dynamic> json) => Manager(
         id: json["_id"],
@@ -115,6 +117,7 @@ class Manager {
         password: json["password"],
         countryCode: json["countryCode"],
         phoneNumber: json["phoneNumber"],
+        profileImage: json["profileImage"]
       );
 }
 

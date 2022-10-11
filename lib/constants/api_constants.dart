@@ -45,6 +45,7 @@ class ApiConstantsManager {
   static const String managerNewPassword = "managerNewPassword";
   static const String removingCrew = "managerRemovingCrew/";
   static const String addingPrivateNote = "addingPrivateNote";
+  static const String crewLeavingProject = "crewLeavingProject/";
 }
 
 class ApiConstantsCrew {

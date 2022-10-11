@@ -616,7 +616,11 @@ Widget projectNameSubStringContainer(BuildContext context, ProjectsCrewProvider 
           onTap: () {
             Navigator.pushNamed(context, RouteConstants.projectDetailsPage,
                 arguments: ProjectDetailsPage(archivedOrProject: false,projectId: provider.projectNameList[weekDaysIndex].projectName[index].sId
-                  ));
+                  )).then((value) {
+                    if(value == true){
+                      provider.getProjectSchedulesManager(context);
+                    }
+            });
           },
           child: Padding(
               padding: EdgeInsets.only(
