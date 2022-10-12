@@ -1,5 +1,5 @@
-import 'package:beehive/model/crew_dashboard_response.dart';
-import 'package:beehive/model/manager_dashboard_response.dart';
+import 'package:beehive/model/crew_on_this_project_response.dart';
+import 'package:beehive/model/manager_dashboard_response.dart' as dashboard;
 
 class ProjectDetailResponseManager {
   ProjectDetailResponseManager({
@@ -9,48 +9,48 @@ class ProjectDetailResponseManager {
   });
 
   bool? success;
-  Manager? manager;
+  dashboard.Manager? manager;
   ProjectData? projectData;
 
   factory ProjectDetailResponseManager.fromJson(Map<String, dynamic> json) =>
       ProjectDetailResponseManager(
         success: json["success"],
-        manager: Manager.fromJson(json["manager"]),
+        manager: dashboard.Manager.fromJson(json["manager"]),
         projectData: json["projectData"] != null
             ? ProjectData.fromJson(json["projectData"])
             : null,
       );
 }
 
-class Manager {
-  Manager({
-    this.id,
-    this.email,
-    this.name,
-    this.password,
-    this.status,
-    this.createdAt,
-    this.v,
-  });
-
-  String? id;
-  String? email;
-  String? name;
-  String? password;
-  int? status;
-  DateTime? createdAt;
-  int? v;
-
-  factory Manager.fromJson(Map<String, dynamic> json) => Manager(
-        id: json["_id"],
-        email: json["email"],
-        name: json["name"],
-        password: json["password"],
-        status: json["status"],
-        createdAt: DateTime.parse(json["createdAt"]),
-        v: json["__v"],
-      );
-}
+// class Manager {
+//   Manager({
+//     this.id,
+//     this.email,
+//     this.name,
+//     this.password,
+//     this.status,
+//     this.createdAt,
+//     this.v,
+//   });
+//
+//   String? id;
+//   String? email;
+//   String? name;
+//   String? password;
+//   int? status;
+//   DateTime? createdAt;
+//   int? v;
+//
+//   factory Manager.fromJson(Map<String, dynamic> json) => Manager(
+//         id: json["_id"],
+//         email: json["email"],
+//         name: json["name"],
+//         password: json["password"],
+//         status: json["status"],
+//         createdAt: DateTime.parse(json["createdAt"]),
+//         v: json["__v"],
+//       );
+// }
 
 class ProjectData {
   ProjectData({
@@ -74,9 +74,9 @@ class ProjectData {
   String? address;
   double? latitude;
   double? longitude;
-  List<CheckInProjectDetailManager>? checkins;
+  List<dashboard.CheckInProjectDetailManager>? checkins;
   int? totalHours;
-  List<CrewMemberDetail>? crews;
+  List<Crews>? crews;
   List<Note>? notes;
 
   factory ProjectData.fromJson(Map<String, dynamic> json) => ProjectData(
@@ -88,9 +88,9 @@ class ProjectData {
         longitude: json["longitude"],
         roundTimesheets: json["roundTimesheets"],
         status: json["status"],
-        checkins: json["checkins"]!=null?List<CheckInProjectDetailManager>.from(json["checkins"].map((x) => CheckInProjectDetailManager.fromJson(x))):[],
+        checkins: json["checkins"]!=null?List<dashboard.CheckInProjectDetailManager>.from(json["checkins"].map((x) => dashboard.CheckInProjectDetailManager.fromJson(x))):[],
         totalHours: json["totalHours"],
-        crews: json["crews"]!=null?List<CrewMemberDetail>.from(json["crews"].map((x) => CrewMemberDetail.fromJson(x))):[],
+        crews: json["crews"]!=null?List<Crews>.from(json["crews"].map((x) => Crews.fromJson(x))):[],
         notes: json["notes"]!=null?List<Note>.from(json["notes"].map((x) => Note.fromJson(x))):[],
       );
 }

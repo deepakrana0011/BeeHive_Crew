@@ -16,7 +16,7 @@ class CrewProfilePageProviderManager extends BaseProvider{
     try {
       var model = await api.removingCrewOnThisProject(context, crewId, projectId);
        if(model == true){
-         Navigator.of(context).pop();
+         Navigator.of(context).pop(true);
        }
       setState(ViewState.idle);
       return true;

@@ -1,3 +1,4 @@
+import 'package:beehive/constants/api_constants.dart';
 import 'package:beehive/constants/color_constants.dart';
 import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/constants/image_constants.dart';
@@ -1307,121 +1308,141 @@ Widget crewWidget(BuildContext context, bool archivedOrNot,
         provider.projectDetailCrewResponse!.projectData!.crews![index - 1].name;
   }
 
-  return Card(
-    elevation: 1,
-    shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(DimensionConstants.d8.r)),
-    child: Container(
-      height: DimensionConstants.d76.h,
-      decoration: BoxDecoration(
-          color: ColorConstants.colorWhite,
+  return GestureDetector(
+    onTap: index == 0 ? (){} : (){
+      Navigator.pushNamed(context, RouteConstants.crewProfilePage, arguments: provider.projectDetailCrewResponse!.projectData!.crews![index - 1]);
+    },
+    child: Card(
+      elevation: 1,
+      shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(DimensionConstants.d8.r)),
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
-        child: Row(
-          children: <Widget>[
-            ImageView(
-              path: ImageConstants.managerImage,
-              height: DimensionConstants.d50.h,
-              width: DimensionConstants.d50.w,
-              fit: BoxFit.cover,
-              circleCrop: true,
-            ),
-            SizedBox(
-              width: DimensionConstants.d13.w,
-            ),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  SizedBox(
-                    height: DimensionConstants.d12.h,
-                  ),
-                  Text(name).boldText(
-                    context,
-                    DimensionConstants.d16.sp,
-                    TextAlign.left,
-                    color: Theme.of(context).brightness == Brightness.dark
-                        ? ColorConstants.colorWhite
-                        : ColorConstants.deepBlue,
-                  ),
-                  SizedBox(
-                    height: DimensionConstants.d5.h,
-                  ),
-                  index == 0
-                      ? Container(
-                          height: DimensionConstants.d21.h,
-                          width: DimensionConstants.d120.w,
-                          decoration: BoxDecoration(
-                            border:
-                                Theme.of(context).brightness == Brightness.dark
-                                    ? Border.all(
-                                        color: Theme.of(context).brightness ==
-                                                Brightness.dark
-                                            ? ColorConstants.colorWhite
-                                            : ColorConstants.deepBlue,
-                                        width: DimensionConstants.d1.w)
-                                    : null,
-                            color: ColorConstants.deepBlue,
-                            borderRadius:
-                                BorderRadius.circular(DimensionConstants.d8.r),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: DimensionConstants.d10.w),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget>[
-                                const ImageView(
-                                  path: ImageConstants.crewIcon,
-                                ),
-                                SizedBox(
-                                  width: DimensionConstants.d4.w,
-                                ),
-                                Text("crew_manager".tr()).semiBoldText(context,
-                                    DimensionConstants.d10.sp, TextAlign.left,
-                                    color: ColorConstants.colorWhite),
-                              ],
-                            ),
-                          ),
-                        )
-                      : Row(
-                          children: <Widget>[
-                            Text("carpenter".tr()).regularText(
-                              context,
-                              DimensionConstants.d14.sp,
-                              TextAlign.left,
-                              color: Theme.of(context).brightness ==
-                                      Brightness.dark
-                                  ? ColorConstants.colorWhite
-                                  : ColorConstants.deepBlue,
-                            ),
-                            archivedOrNot != true
-                                ? const Text("   \$20.00/hr").regularText(
-                                    context,
-                                    DimensionConstants.d14.sp,
-                                    TextAlign.left,
-                                    color: ColorConstants.deepBlue,
-                                  )
-                                : Text("invite_pending".tr()).regularText(
-                                    context,
-                                    DimensionConstants.d14.sp,
-                                    TextAlign.left,
-                                    color: ColorConstants.redColorEB5757),
-                          ],
-                        )
-                ],
+      child: Container(
+        height: DimensionConstants.d76.h,
+        decoration: BoxDecoration(
+            color: ColorConstants.colorWhite,
+            borderRadius: BorderRadius.circular(DimensionConstants.d8.r)),
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
+          child: Row(
+            children: <Widget>[
+             index == 0 ? ImageView(
+               path: provider.projectDetailCrewResponse!.projectData!.manager!.profileImage == null ? ImageConstants.emptyImageIcon
+                   : "${ApiConstantsCrew.BASE_URL_IMAGE}${provider.projectDetailCrewResponse!.projectData!.manager!.profileImage}",
+               height: DimensionConstants.d50.h,
+               width: DimensionConstants.d50.w,
+               fit: BoxFit.cover,
+               circleCrop: true,
+             ) :  ImageView(
+                path: provider.projectDetailCrewResponse!.projectData!.crews![index-1].profileImage == null ? ImageConstants.emptyImageIcon
+                    : "${ApiConstantsCrew.BASE_URL_IMAGE}${provider.projectDetailCrewResponse!.projectData!.crews![index-1].profileImage}",
+                height: DimensionConstants.d50.h,
+                width: DimensionConstants.d50.w,
+                fit: BoxFit.cover,
+                circleCrop: true,
               ),
-            ),
-            ImageView(
-              path: ImageConstants.arrowIcon,
-              height: DimensionConstants.d10.h,
-              width: DimensionConstants.d8.w,
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? ColorConstants.colorWhite
-                  : ColorConstants.colorBlack,
-            ),
-          ],
+              SizedBox(
+                width: DimensionConstants.d13.w,
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    SizedBox(
+                      height: DimensionConstants.d12.h,
+                    ),
+                    Text(name).boldText(
+                      context,
+                      DimensionConstants.d16.sp,
+                      TextAlign.left,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? ColorConstants.colorWhite
+                          : ColorConstants.deepBlue,
+                    ),
+                    SizedBox(
+                      height: DimensionConstants.d5.h,
+                    ),
+                    index == 0
+                        ? Container(
+                            height: DimensionConstants.d21.h,
+                            width: DimensionConstants.d120.w,
+                            decoration: BoxDecoration(
+                              border:
+                                  Theme.of(context).brightness == Brightness.dark
+                                      ? Border.all(
+                                          color: Theme.of(context).brightness ==
+                                                  Brightness.dark
+                                              ? ColorConstants.colorWhite
+                                              : ColorConstants.deepBlue,
+                                          width: DimensionConstants.d1.w)
+                                      : null,
+                              color: ColorConstants.deepBlue,
+                              borderRadius:
+                                  BorderRadius.circular(DimensionConstants.d8.r),
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: DimensionConstants.d10.w),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: <Widget>[
+                                  const ImageView(
+                                    path: ImageConstants.crewIcon,
+                                  ),
+                                  SizedBox(
+                                    width: DimensionConstants.d4.w,
+                                  ),
+                                  Text("crew_manager".tr()).semiBoldText(context,
+                                      DimensionConstants.d10.sp, TextAlign.left,
+                                      color: ColorConstants.colorWhite),
+                                ],
+                              ),
+                            ),
+                          )
+                        : Row(
+                            children: <Widget>[
+                              SizedBox(
+                                width: DimensionConstants.d100.w,
+                                child: Text(provider.projectDetailCrewResponse!.projectData!.crews![index-1].position ?? "").regularText(
+                                  context,
+                                  DimensionConstants.d14.sp,
+                                  TextAlign.left,
+                                  color: Theme.of(context).brightness ==
+                                      Brightness.dark
+                                      ? ColorConstants.colorWhite
+                                      : ColorConstants.deepBlue,
+                                  maxLines: 1, overflow: TextOverflow.ellipsis
+                                ),
+                              ),
+                              archivedOrNot != true
+                                  ? SizedBox(
+                                  width: DimensionConstants.d75.w,
+                                child: Text("\$${provider.projectDetailCrewResponse!.projectData!.projectRate![index-1].price.toString()}/hr").regularText(
+                                  context,
+                                  DimensionConstants.d14.sp,
+                                  TextAlign.left,
+                                  color: ColorConstants.deepBlue, maxLines: 1, overflow: TextOverflow.ellipsis
+                                )
+                              )
+                                  : Text("invite_pending".tr()).regularText(
+                                      context,
+                                      DimensionConstants.d14.sp,
+                                      TextAlign.left,
+                                      color: ColorConstants.redColorEB5757),
+                            ],
+                          )
+                  ],
+                ),
+              ),
+              ImageView(
+                path: ImageConstants.arrowIcon,
+                height: DimensionConstants.d10.h,
+                width: DimensionConstants.d8.w,
+                color: Theme.of(context).brightness == Brightness.dark
+                    ? ColorConstants.colorWhite
+                    : ColorConstants.colorBlack,
+              ),
+            ],
+          ),
         ),
       ),
     ),

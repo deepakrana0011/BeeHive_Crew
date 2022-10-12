@@ -115,7 +115,7 @@ Widget userProfile(BuildContext context, bool timeSheetOrSchedule, Crews crewDat
     onTap: (){
       if(timeSheetOrSchedule == true){
         Navigator.of(context).pop();
-        Navigator.pushNamed(context, RouteConstants.crewPageProfileManager, arguments: CrewProfilePageManager(projectData: projectData, crewData: crewData));
+        Navigator.pushNamed(context, RouteConstants.crewPageProfileManager, arguments: CrewProfilePageManager(projectName: projectData.projectName ?? "", crewData: crewData, projectId: projectData.sId ?? "",));
       }else{
         Navigator.of(context).pop();
         Navigator.pushNamed(context, RouteConstants.timeSheetScreenManager,arguments: TimeSheetsScreenManager(removeInterruption: false));

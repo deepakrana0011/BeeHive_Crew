@@ -4,6 +4,7 @@ import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/locator.dart';
 import 'package:beehive/model/add_crew_response_manager.dart';
 import 'package:beehive/model/create_project_request.dart';
+import 'package:beehive/model/crew_on_this_project_response.dart';
 import 'package:beehive/model/manager_dashboard_response.dart';
 import 'package:beehive/provider/base_provider.dart';
 import 'package:beehive/views_manager/projects_manager/project_setting_page_manager.dart';
@@ -19,7 +20,7 @@ import '../services/fetch_data_expection.dart';
 class AddCrewPageManagerProvider extends BaseProvider {
   CreateProjectRequest createProjectRequest = locator<CreateProjectRequest>();
 
-  List<CrewMemberDetail>? alreadyMemberList;
+  List<Crews>? alreadyMemberList;
   String? projectId;
 
   void onShare(BuildContext context) async {
@@ -75,9 +76,9 @@ class AddCrewPageManagerProvider extends BaseProvider {
   }
 
   void removeAlreadySelectedCrewMember(
-      List<CrewMemberDetail> alreadyMemberList) {
+      List<Crews> alreadyMemberList) {
     for (int i = 0; i < alreadyMemberList.length; i++) {
-      crewList.removeWhere((element) => element.id == alreadyMemberList[i].id);
+      crewList.removeWhere((element) => element.id == alreadyMemberList[i].sId);
     }
   }
 

@@ -1,3 +1,4 @@
+import 'package:beehive/model/get_crew_profile_response.dart';
 import 'package:beehive/model/manager_dashboard_response.dart';
 
 import 'crew_dashboard_response.dart';
@@ -60,7 +61,7 @@ class ProjectData {
   List<ProjectRate>? projectRate;
   List<CheckInProjectDetailManager>? checkins = [];
   Manager? manager;
-  List<CrewMemberDetail>? crews;
+  List<Data>? crews;
   List<Note>? notes;
 
   factory ProjectData.fromJson(Map<String, dynamic> json) => ProjectData(
@@ -85,8 +86,8 @@ class ProjectData {
         checkins: json["checkins"]!=null?List<CheckInProjectDetailManager>.from(json["checkins"]
             .map((x) => CheckInProjectDetailManager.fromJson(x))):[],
         manager: Manager.fromJson(json["manager"]),
-        crews: List<CrewMemberDetail>.from(
-            json["crews"].map((x) => CrewMemberDetail.fromJson(x))),
+        crews: List<Data>.from(
+            json["crews"].map((x) => Data.fromJson(x))),
         notes: List<Note>.from(json["notes"].map((x) => Note.fromJson(x))),
       );
 }
@@ -120,6 +121,8 @@ class Manager {
         profileImage: json["profileImage"]
       );
 }
+
+
 
 class Note {
   Note({this.id, this.assignProjectId, this.title, this.note, this.image});

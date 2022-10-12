@@ -219,9 +219,9 @@ class ProjectSettingsPage extends StatelessWidget {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(DimensionConstants.d50.r),
                         child: Container(
-                          color: ColorConstants.primaryColor,
+                        //  color: ColorConstants.primaryColor,
                           child: ImageView(
-                            path: projectData.manager!.profileImage != null ? "${ApiConstantsCrew.BASE_URL_IMAGE}${projectData.manager!.profileImage}" : "",
+                            path: projectData.manager!.profileImage != null ? "${ApiConstantsCrew.BASE_URL_IMAGE}${projectData.manager!.profileImage}" : ImageConstants.emptyImageIcon,
                             height: DimensionConstants.d50.h,
                             width: DimensionConstants.d50.w,
                           ),

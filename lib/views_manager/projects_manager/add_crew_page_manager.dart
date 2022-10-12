@@ -7,6 +7,7 @@ import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
 import 'package:beehive/helper/dialog_helper.dart';
+import 'package:beehive/model/crew_on_this_project_response.dart';
 import 'package:beehive/model/manager_dashboard_response.dart';
 import 'package:beehive/provider/add_crew_page_provider_manager.dart';
 import 'package:beehive/view/base_view.dart';
@@ -21,7 +22,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../helper/decoration.dart';
 
 class AddCrewPageManager extends StatelessWidget {
-  List<CrewMemberDetail>? crewList;
+  List<Crews>? crewList;
   String? projectId;
 
   AddCrewPageManager({Key? key,this.crewList,this.projectId}) : super(key: key);

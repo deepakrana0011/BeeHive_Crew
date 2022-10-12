@@ -94,7 +94,7 @@ class OnGenerateRouter {
             builder: (_) => ProjectSettingsPage(projectData: args.projectData), settings: settings);
       case RouteConstants.crewProfilePage:
         return MaterialPageRoute(
-            builder: (_) => const CrewProfilePage(), settings: settings);
+            builder: (_) => CrewProfilePage(profileData: args as Data,), settings: settings);
       case RouteConstants.editProfilePage:
         return MaterialPageRoute(
             builder: (_) => const EditProfilePage(), settings: settings);
@@ -246,11 +246,11 @@ class OnGenerateRouter {
         return MaterialPageRoute(
             builder: (_) => CreateProjectManager(), settings: settings);
       case RouteConstants.addCrewPageManager:
-        List<CrewMemberDetail>? list;
+        List<Crews>? list;
         var projectId="";
         if (settings.arguments != null) {
           var args = settings.arguments as AddCrewPageManager;
-          list = args.crewList!.cast<CrewMemberDetail>();
+          list = args.crewList!.cast<Crews>();
           projectId = args.projectId!;
         }
         return MaterialPageRoute(
@@ -294,7 +294,7 @@ class OnGenerateRouter {
       case RouteConstants.crewPageProfileManager:
         final arg = args as CrewProfilePageManager;
         return MaterialPageRoute(
-            builder: (_) =>  CrewProfilePageManager(projectData: arg.projectData, crewData: arg.crewData), settings: settings);
+            builder: (_) =>  CrewProfilePageManager(projectName: args.projectName, crewData: arg.crewData, projectId: args.projectId,), settings: settings);
       case RouteConstants.timeSheetScreenManager:
         final args = settings.arguments as TimeSheetsScreenManager;
         return MaterialPageRoute(

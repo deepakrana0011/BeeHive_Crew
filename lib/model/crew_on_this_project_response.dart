@@ -135,7 +135,7 @@ class Crews {
         pvtNotes.add(PvtNotes.fromJson(v));
       });
     }
-    projectRate = json['projectRate'];
+    projectRate = json["sameRate"] ?? json["projectRate"] ?? null;
     address = json['address'];
     company = json['company'];
     position = json['position'];

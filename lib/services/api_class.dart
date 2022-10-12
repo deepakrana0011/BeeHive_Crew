@@ -1248,8 +1248,7 @@ class Api {
           data: map);
       var value=response.toString();
       print("response string $value");
-      return ProjectDetailResponseManager.fromJson(
-          json.decode(response.toString()));
+      return ProjectDetailResponseManager.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());

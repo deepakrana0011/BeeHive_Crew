@@ -22,10 +22,11 @@ import '../../widget/image_view.dart';
 import 'add_note_page_manager.dart';
 
 class CrewProfilePageManager extends StatelessWidget {
-  CrewProfilePageManager({Key? key, required this.projectData, required this.crewData})
+  CrewProfilePageManager({Key? key, required this.projectName, required this.projectId, required this.crewData})
       : super(key: key);
 
-  final ProjectData projectData;
+  final String projectName;
+  final String projectId;
   final Crews crewData;
 
   final GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey<ScaffoldState>();
@@ -120,14 +121,14 @@ class CrewProfilePageManager extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              (crewData.profileImage == null || crewData.profileImage == "") ?  Container(
-                height: DimensionConstants.d93.h,
-                width: DimensionConstants.d93.w,
-                decoration: const BoxDecoration(
-                    color: ColorConstants.primaryColor,
-                    shape: BoxShape.circle
-                ),
-              ) : ClipRRect(
+              (crewData.profileImage == null || crewData.profileImage == "") ? ClipRRect(
+            borderRadius: BorderRadius.circular(DimensionConstants.d50.r),
+            child: SizedBox(
+              height: DimensionConstants.d93.h,
+              width: DimensionConstants.d93.w,
+              child: ImageView(path: ImageConstants.emptyImageIcon),
+            ),
+          ) : ClipRRect(
                 borderRadius: BorderRadius.circular(DimensionConstants.d50.r),
                 child: SizedBox(
                   height: DimensionConstants.d93.h,
@@ -228,7 +229,7 @@ class CrewProfilePageManager extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d8.w),
       child: Column(
         children: <Widget>[
-          crewData.company == null ?  Container() :  SizedBox(
+          (crewData.company == null || crewData.company == "") ?  Container() :  SizedBox(
             width: double.infinity,
             child: Row(
               children: <Widget>[
@@ -251,7 +252,7 @@ class CrewProfilePageManager extends StatelessWidget {
               ],
             ),
           ),
-          crewData.company == null ?  Container() :  SizedBox(
+          (crewData.company == null || crewData.company == "") == null ?  Container() :  SizedBox(
             height: DimensionConstants.d30.h,
           ),
           crewData.phoneNumber == null ?  Container() :   SizedBox(
@@ -339,7 +340,7 @@ class CrewProfilePageManager extends StatelessWidget {
             borderRadius: BorderRadius.circular(DimensionConstants.d20.r),
           ),
           child: Center(
-            child: Text(projectData.projectName.toString().substring(0, 2).toUpperCase()).boldText(
+            child: Text(projectName.toString().substring(0, 2).toUpperCase()).boldText(
                 context, DimensionConstants.d16.sp, TextAlign.center,
                 color: ColorConstants.colorWhite),
           ),
@@ -347,7 +348,7 @@ class CrewProfilePageManager extends StatelessWidget {
         SizedBox(
           width: DimensionConstants.d10.w,
         ),
-        Expanded(child: Text(projectData.projectName ?? "").boldText(
+        Expanded(child: Text(projectName ?? "").boldText(
             context, DimensionConstants.d16.sp, TextAlign.left,
             color: ColorConstants.colorBlack, maxLines: 2, overflow: TextOverflow.ellipsis)),
         GestureDetector(
@@ -360,7 +361,7 @@ class CrewProfilePageManager extends StatelessWidget {
                       cancel: () {Navigator.of(context).pop();},
                       delete: () {
                         Navigator.of(context).pop();
-                        provider.removingCrewOnThisProject(_scaffoldkey.currentContext!, crewData.sId.toString(), projectData.sId.toString());
+                        provider.removingCrewOnThisProject(_scaffoldkey.currentContext!, crewData.sId.toString(), projectId);
                       },
                     ));
           },

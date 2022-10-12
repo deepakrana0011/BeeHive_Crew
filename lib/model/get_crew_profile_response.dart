@@ -31,6 +31,7 @@ class Data {
   String? profileImage;
   String? speciality;
   String? name;
+
   Data.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     email = json['email'];
