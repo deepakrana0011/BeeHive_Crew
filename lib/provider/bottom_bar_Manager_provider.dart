@@ -1,6 +1,13 @@
+import 'dart:io';
+
+import 'package:beehive/enum/enum.dart';
+import 'package:beehive/helper/dialog_helper.dart';
+import 'package:beehive/model/all_archive_projects_response.dart';
 import 'package:beehive/provider/base_provider.dart';
+import 'package:beehive/services/fetch_data_expection.dart';
 import 'package:beehive/views_manager/dashboard_manager/archived_projects_screen_manager.dart';
 import 'package:beehive/views_manager/projects_manager/archived_project_details_manager.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -112,4 +119,26 @@ class BottomBarManagerProvider extends BaseProvider {
     ImageConstants.searchIcon,
     ImageConstants.notificationIconBell
   ];
+
+  /// all archive projects!!!!!!!!
+  ///
+
+  AllArchiveProjectsResponse? allArchiveProjectsResponse;
+
+  Future<void> allArchiveProjects(BuildContext context) async {
+    setState(ViewState.busy);
+    try{
+      var model = await api.allArchiveProjects(context);
+      if(model.success == true){
+        allArchiveProjectsResponse = model;
+      }
+      setState(ViewState.idle);
+    } on FetchDataException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, e.toString());
+    } on SocketException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, "internet_connection".tr());
+    }
+  }
 }

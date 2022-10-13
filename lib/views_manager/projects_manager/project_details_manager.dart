@@ -74,7 +74,9 @@ class _ProjectDetailsPageManagerState extends State<ProjectDetailsPageManager>
             Navigator.pushNamed(
                 context, RouteConstants.projectSettingsPageManager,
                 arguments: ProjectSettingsPageManager(
-                    fromProjectOrCreateProject: false));
+                    fromProjectOrCreateProject: false, projectData: provider.projectDetailResponse!.projectData)).then((value) {
+                provider.getProjectDetail(context);
+            });
           }, popFunction: () {
             bottomBarProvider?.onItemTapped(0);
             bottomBarProvider!.notifyListeners();

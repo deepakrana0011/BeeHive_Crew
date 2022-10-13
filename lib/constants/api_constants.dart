@@ -45,7 +45,10 @@ class ApiConstantsManager {
   static const String managerNewPassword = "managerNewPassword";
   static const String removingCrew = "managerRemovingCrew/";
   static const String addingPrivateNote = "addingPrivateNote";
-  static const String crewLeavingProject = "crewLeavingProject/";
+  static const String updateProjectManager = "updateProjectSetting/";
+  static const String archiveProject = "archiveProject/";
+  static const String deleteProject = "deleteProject/";
+  static const String allArchiveProjects = "allArchiveProjects";
 }
 
 class ApiConstantsCrew {
@@ -85,4 +88,5 @@ class ApiConstantsCrew {
   static const String crewProjectSchedule = "crewProjectSchedule";
   static const String crewCertificates = "crewCertificates";
   static const String crewNewPassword = "crewNewPassword";
+  static const String crewLeavingProject = "crewLeavingProject/";
 }

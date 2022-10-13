@@ -6,6 +6,8 @@ import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
 import 'package:beehive/helper/date_function.dart';
 import 'package:beehive/model/breakTimeModel.dart';
+import 'package:beehive/model/project_detail_manager_response.dart';
+import 'package:beehive/model/update_project_request.dart' as update_project;
 import 'package:beehive/provider/project_details_manager_provider.dart';
 import 'package:beehive/provider/project_settings_manager_provider.dart';
 import 'package:beehive/provider/project_settings_provider.dart';
@@ -13,7 +15,6 @@ import 'package:beehive/view/base_view.dart';
 import 'package:beehive/views_manager/projects_manager/project_details_manager.dart';
 import 'package:beehive/widget/custom_switcher.dart';
 import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -25,21 +26,46 @@ import '../bottom_bar_manager/bottom_navigation_bar_manager.dart';
 
 class ProjectSettingsPageManager extends StatelessWidget {
   bool fromProjectOrCreateProject;
+  ProjectData? projectData;
 
   ProjectSettingsPageManager(
-      {Key? key, required this.fromProjectOrCreateProject})
+      {Key? key, required this.fromProjectOrCreateProject, this.projectData})
       : super(key: key);
 
+  final GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
     return BaseView<ProjectSettingsManagerProvider>(
       onModelReady: (provider) {
         provider.addModelToList();
-        provider.addBreakToList(BreakTimeModel(
-            breakIntervalTime: "15 Mins", breakStartTime: "Any Time"));
+        if(fromProjectOrCreateProject == false){
+          provider.selectedAfterHourRate = projectData!.afterHoursRate ?? "1.5X";
+          // for breaks
+          if(projectData!.breaks != null){
+            for (var element in projectData!.breaks!) {
+              provider.addBreakToList(BreakTimeModel(
+                  breakIntervalTime: element.interval, breakStartTime: element.startTime));
+            }
+          } else{
+            provider.addBreakToList(BreakTimeModel(
+                breakIntervalTime: "15 Mins", breakStartTime: "Any Time"));
+          }
+          // for round time sheets
+          if(projectData!.roundTimesheets != null){
+            for(int i = 0 ; i < provider.roundTimeSheet.length ; i++){
+              if(provider.roundTimeSheet[i] == projectData!.roundTimesheets){
+                provider.selectedRoundSheetIndex = i;
+              }
+            }
+          }
+        } else{
+          provider.addBreakToList(BreakTimeModel(
+              breakIntervalTime: "15 Mins", breakStartTime: "Any Time"));
+        }
       },
       builder: (context, provider, _) {
         return Scaffold(
+          key: _scaffoldkey,
           appBar: CommonWidgets.appBarWithTitleAndAction(context,
               title: "project_settings", popFunction: () {
                 CommonWidgets.hideKeyboard(context);
@@ -103,14 +129,30 @@ class ProjectSettingsPageManager extends StatelessWidget {
                           color2: ColorConstants.primaryGradient1Color,
                           fontSize: DimensionConstants.d16.sp,
                           shadowRequired: true,
-                          onBtnTap: () {
+                          onBtnTap: fromProjectOrCreateProject == true ? () {
                             provider.handleButtonClick(context);
+                          } : (){
+                            update_project.UpdateProjectRequest request = update_project.UpdateProjectRequest();
+                            request.hoursTo = provider.projectEndTime ?? projectData!.hoursTo;
+                            request.hoursFrom = provider.projectStartTime?? projectData!.hoursFrom;
+                            request.afterHoursRate = provider.selectedAfterHourRate;
+                            List<update_project.Break> breaksList = [];
+                            for (var element in provider.breakWidgetList) {
+                              update_project.Break value = update_project.Break();
+                              value.startTime = element.breakStartTime;
+                              value.interval = element.breakIntervalTime;
+                              breaksList.add(value);
+                            }
+                            request.breaks = breaksList;
+                            request.roundTimesheets =  provider.selectedRoundSheetIndex == -1
+                                ?  "" : provider.roundTimeSheet[provider.selectedRoundSheetIndex];
+                            provider.updateProjectByManager(context, projectData!.projectDataId.toString(), request);
                           }),
                       SizedBox(
                         height: DimensionConstants.d40.h,
                       ),
                       fromProjectOrCreateProject != true
-                          ? buttonsWidget(context)
+                          ? buttonsWidget(context, provider)
                           : Container(),
                       SizedBox(
                         height: fromProjectOrCreateProject != true
@@ -658,11 +700,11 @@ class ProjectSettingsPageManager extends StatelessWidget {
 
   Widget roundTimeSheetList(BuildContext context,
       ProjectSettingsManagerProvider provider) {
-    return Container(
+    return SizedBox(
       height: DimensionConstants.d105.h,
       width: DimensionConstants.d400.w,
       child: GridView.builder(
-          physics: NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
               maxCrossAxisExtent: 130,
               childAspectRatio: 10 / 3,
@@ -786,14 +828,14 @@ class ProjectSettingsPageManager extends StatelessWidget {
             // hoursContainer(context, DimensionConstants.d45.h,
             //     DimensionConstants.d142.w, "6:00 PM"),
             hoursDropDownTo(context, DimensionConstants.d45.h,
-                DimensionConstants.d142.w, "5:00 PM", provider),
+                DimensionConstants.d142.w, projectData!.hoursTo ?? "None", provider),
             Expanded(child: Container()),
             Text("to").regularText(
                 context, DimensionConstants.d14.sp, TextAlign.left,
                 color: ColorConstants.darkGray4F4F4F),
             Expanded(child: Container()),
             hoursDropDownFrom(context, DimensionConstants.d45.h,
-                DimensionConstants.d142.w, "9:00 AM", provider),
+                DimensionConstants.d142.w, projectData!.hoursFrom ?? "None", provider),
             // hoursContainer(context, DimensionConstants.d45.h,
             //     DimensionConstants.d142.w, "7:00 AM"),
           ],
@@ -802,7 +844,7 @@ class ProjectSettingsPageManager extends StatelessWidget {
     );
   }
 
-  Widget buttonsWidget(BuildContext context) {
+  Widget buttonsWidget(BuildContext context, ProjectSettingsManagerProvider provider) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d40.w),
       child: Row(
@@ -814,8 +856,13 @@ class ProjectSettingsPageManager extends StatelessWidget {
                   builder: (BuildContext context) =>
                       DialogHelper.archiveDialogBox(
                         context,
-                        cancel: () {},
-                        delete: () {},
+                        cancel: () {
+                          Navigator.of(context).pop();
+                        },
+                        archive: () {
+                          Navigator.of(context).pop();
+                          provider.archiveProjectManager(_scaffoldkey.currentContext!, projectData!.projectDataId.toString());
+                        },
                       ));
             },
             child: Text("archive_project".tr()).boldText(
@@ -830,8 +877,13 @@ class ProjectSettingsPageManager extends StatelessWidget {
                   builder: (BuildContext context) =>
                       DialogHelper.deleteDialogBoxManager(
                         context,
-                        cancel: () {},
-                        delete: () {},
+                        cancel: () {
+                          Navigator.of(context).pop();
+                        },
+                        delete: () {
+                          Navigator.of(context).pop();
+                          provider.deleteProjectManager(_scaffoldkey.currentContext!, projectData!.projectDataId.toString());
+                        },
                       ));
             },
             child: Text("delete_project".tr()).boldText(

@@ -57,6 +57,9 @@ class ProjectData {
     this.projectDataId,
     this.projectName,
     this.roundTimesheets,
+    this.hoursFrom, this.hoursTo,
+    this.afterHoursRate,
+    this.breaks,
     this.status,
     this.checkins,
     this.totalHours,
@@ -70,6 +73,10 @@ class ProjectData {
   String? projectDataId;
   String? projectName;
   String? roundTimesheets;
+  String? hoursFrom;
+  String? hoursTo;
+  String? afterHoursRate;
+  List<Break>? breaks;
   int? status;
   String? address;
   double? latitude;
@@ -87,6 +94,10 @@ class ProjectData {
         latitude: json["latitude"],
         longitude: json["longitude"],
         roundTimesheets: json["roundTimesheets"],
+        hoursFrom: json['hoursFrom'],
+        hoursTo: json['hoursTo'],
+        afterHoursRate: json['afterHoursRate'],
+        breaks: json["break"]!=null?List<Break>.from(json["break"].map((x) => Break.fromJson(x))):[],
         status: json["status"],
         checkins: json["checkins"]!=null?List<dashboard.CheckInProjectDetailManager>.from(json["checkins"].map((x) => dashboard.CheckInProjectDetailManager.fromJson(x))):[],
         totalHours: json["totalHours"],
@@ -162,4 +173,20 @@ class Note {
         createdAt: DateTime.parse(json["createdAt"]),
         v: json["__v"],
       );
+}
+
+
+class Break {
+  String? startTime;
+  String? interval;
+  String? sId;
+
+  Break({this.startTime, this.interval, this.sId});
+
+  Break.fromJson(Map<String, dynamic> json) {
+    startTime = json['startTime'];
+    interval = json['interval'];
+    sId = json['_id'];
+  }
+
 }

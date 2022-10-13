@@ -722,7 +722,7 @@ class DialogHelper {
                             color1: ColorConstants.redColorEB5757,
                             color2: ColorConstants.redColorEB5757,
                             fontSize: DimensionConstants.d16.sp,
-                            onBtnTap: () {},
+                            onBtnTap: delete,
                             shadowRequired: false),
                       ),
                     ],
@@ -737,7 +737,7 @@ class DialogHelper {
   }
 
   static archiveDialogBox(BuildContext context,
-      {required VoidCallback cancel, required VoidCallback delete}) {
+      {required VoidCallback cancel, required VoidCallback archive}) {
     return BaseView<NotificationProvider>(
       onModelReady: (provider) {},
       builder: (context, provider, _) {
@@ -805,7 +805,7 @@ class DialogHelper {
                             color1: ColorConstants.redColorEB5757,
                             color2: ColorConstants.redColorEB5757,
                             fontSize: DimensionConstants.d16.sp,
-                            onBtnTap: () {},
+                            onBtnTap: archive,
                             shadowRequired: false),
                       ),
                     ],

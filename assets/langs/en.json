@@ -263,5 +263,6 @@
   "after_hour_rate" : "After hours rates are ",
   "your_regular_rate" : " your regular rate.",
   "are_you_sure_to_leave_project" : "Are you sure you want to leave project?" ,
-  "leave" : "Leave"
+  "leave" : "Leave",
+  "sorry_no_data_found" : "Sorry, no data found...."
 }

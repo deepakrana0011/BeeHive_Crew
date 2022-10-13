@@ -272,7 +272,7 @@ class OnGenerateRouter {
         final args = settings.arguments as ProjectSettingsPageManager;
         return MaterialPageRoute(
             builder: (_) => ProjectSettingsPageManager(
-                fromProjectOrCreateProject: args.fromProjectOrCreateProject),
+                fromProjectOrCreateProject: args.fromProjectOrCreateProject, projectData: args.projectData,),
             settings: settings);
       case RouteConstants.addNotePageManager:
         final args = settings.arguments as AddNotePageManager;

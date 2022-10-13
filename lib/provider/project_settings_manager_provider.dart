@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:beehive/locator.dart';
 import 'package:beehive/model/breakTimeModel.dart';
 import 'package:beehive/model/project_days_list_model.dart';
+import 'package:beehive/model/update_project_request.dart' as update_project;
 import 'package:beehive/provider/base_provider.dart';
+import 'package:beehive/views_manager/bottom_bar_manager/bottom_navigation_bar_manager.dart';
 import 'package:beehive/views_manager/projects_manager/projects_page_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
@@ -265,5 +267,61 @@ class ProjectSettingsManagerProvider extends BaseProvider {
         DialogHelper.showMessage(context, "internet_connection".tr());
       }
    // }
+  }
+
+  Future<void> updateProjectByManager(BuildContext context, String projectId, update_project.UpdateProjectRequest updateProjectRequest) async {
+    setState(ViewState.busy);
+    try{
+      var model = await api.updateProjectByManager(context, projectId, updateProjectRequest);
+      if(model.success == true){
+        Navigator.of(context).pop();
+      }
+      setState(ViewState.idle);
+    } on FetchDataException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, e.toString());
+    } on SocketException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, "internet_connection".tr());
+    }
+    // }
+  }
+
+  Future<void> archiveProjectManager(BuildContext context, String projectId) async {
+    setState(ViewState.busy);
+    try{
+      var model = await api.archiveProjectManager(context, projectId);
+      if(model.success == true){
+        Navigator.pushNamed(context, RouteConstants.bottomBarManager,
+            arguments: BottomBarManager(
+                fromBottomNav: 1, pageIndex: 1));
+      }
+      setState(ViewState.idle);
+    } on FetchDataException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, e.toString());
+    } on SocketException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, "internet_connection".tr());
+    }
+  }
+
+  Future<void> deleteProjectManager(BuildContext context, String projectId) async {
+      setState(ViewState.busy);
+    try{
+      var model = await api.deleteProjectManager(context, projectId);
+      if(model.success == true){
+        Navigator.pushNamed(context, RouteConstants.bottomBarManager,
+            arguments: BottomBarManager(
+                fromBottomNav: 1, pageIndex: 1));
+      }
+      setState(ViewState.idle);
+    } on FetchDataException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, e.toString());
+    } on SocketException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, "internet_connection".tr());
+    }
   }
 }

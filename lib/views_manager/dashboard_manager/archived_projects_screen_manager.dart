@@ -3,12 +3,14 @@
 import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/constants/image_constants.dart';
 import 'package:beehive/constants/route_constants.dart';
+import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/view/base_view.dart';
 import 'package:beehive/view/projects/project_details_page.dart';
 import 'package:beehive/views_manager/bottom_bar_manager/bottom_navigation_bar_manager.dart';
 import 'package:beehive/views_manager/projects_manager/archived_project_details_manager.dart';
 import 'package:beehive/views_manager/projects_manager/project_details_manager.dart';
+import 'package:beehive/widget/custom_circular_bar.dart';
 import 'package:beehive/widget/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -34,7 +36,9 @@ class _ArchivedProjectsScreenManagerState extends State<ArchivedProjectsScreenMa
   @override
   Widget build(BuildContext context) {
  final dashBoardProvider = Provider.of<BottomBarManagerProvider>(context, listen: false);
-    return BaseView<BottomBarManagerProvider>(onModelReady: (provider){}, builder: (context,provider,_){
+    return BaseView<BottomBarManagerProvider>(onModelReady: (provider){
+      provider.allArchiveProjects(context);
+    }, builder: (context,provider,_){
       return Scaffold(
         appBar: AppBar(
           elevation: 0.0,
@@ -53,28 +57,40 @@ class _ArchivedProjectsScreenManagerState extends State<ArchivedProjectsScreenMa
             SizedBox(width: DimensionConstants.d20.w)
           ],
         ),
-        body: SingleChildScrollView(
+        body: provider.state == ViewState.busy ? const CustomCircularBar() : ( provider.allArchiveProjectsResponse!.projectData.isEmpty ? Center(
+          child:  Text("sorry_no_data_found".tr()).mediumText(context, DimensionConstants.d15.sp, TextAlign.left, color: ColorConstants.colorBlack),
+        ) :  SingleChildScrollView(
           child: Column(
             children: [
               SizedBox(height: DimensionConstants.d5.h),
               const Divider(color: ColorConstants.colorGreyDrawer, height: 0.0, thickness: 1.5),
               SizedBox(height: DimensionConstants.d11.h),
-              archivedProjectCard(context, "Momentum Digital", "200", "3",dashBoardProvider),
-              archivedProjectCard(context, "Momentum Smart House Project", "1200", "5",dashBoardProvider),
-              archivedProjectCard(context, "Momentum Smart House Project", "543", "3",dashBoardProvider),
+              allArchiveProjects(dashBoardProvider, provider),
               SizedBox(height: DimensionConstants.d128.h,),
             ],
           ),
-        ),
+        )),
       );
     });
   }
 
-  Widget archivedProjectCard(BuildContext context, String projectName, String totalHours, String crew, BottomBarManagerProvider provider){
+  Widget allArchiveProjects( BottomBarManagerProvider dashBoardProvider, provider){
+    return ListView.builder(
+      itemCount: provider.allArchiveProjectsResponse!.projectData.length,
+        shrinkWrap: true,
+        padding: EdgeInsets.zero,
+        itemBuilder: (context, index){
+      return archivedProjectCard(context, provider.allArchiveProjectsResponse!.projectData[index].projectName.toString()
+          , provider.allArchiveProjectsResponse!.projectData[index].totalHours.toString(),
+          provider.allArchiveProjectsResponse!.projectData[index].crew.toString(), dashBoardProvider, provider);
+    });
+  }
+
+  Widget archivedProjectCard(BuildContext context, String projectName, String totalHours, String crew, BottomBarManagerProvider dashBoardProvider, provider){
     return GestureDetector(
       onTap: (){
-        provider.onItemTapped(1);
-        provider.updateNavigationValue(2);
+        dashBoardProvider.onItemTapped(1);
+        dashBoardProvider.updateNavigationValue(2);
       },
       child: Container(
         margin: EdgeInsets.only(left: DimensionConstants.d16.w, right: DimensionConstants.d16.w, top: DimensionConstants.d16.h),
