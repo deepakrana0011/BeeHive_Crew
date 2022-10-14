@@ -28,6 +28,7 @@ import 'package:beehive/model/project_detail_manager_response.dart';
 import 'package:beehive/model/project_schduele_manager_crew.dart';
 import 'package:beehive/model/project_settings_break_request_manager.dart';
 import 'package:beehive/model/project_settings_response_manager.dart';
+import 'package:beehive/model/project_timesheet_response.dart';
 import 'package:beehive/model/resend_otp_response.dart';
 import 'package:beehive/model/resend_top_by_phone_crew_response.dart';
 import 'package:beehive/model/reset_password_by_phone_response.dart';
@@ -1465,7 +1466,7 @@ class Api {
     }
   }
 
-  Future<CreateProjectResponse> archiveProjectManager(
+  Future<CreateProjectResponse> archiveProjectByManager(
       BuildContext context, String projectId) async {
     try {
       dio.options.headers["authorization"] =
@@ -1484,7 +1485,7 @@ class Api {
     }
   }
 
-  Future<CreateProjectResponse> deleteProjectManager(
+  Future<CreateProjectResponse> deleteProjectByManager(
       BuildContext context, String projectId) async {
     try {
       var response = await dio.put(ApiConstantsManager.BASEURL + ApiConstantsManager.deleteProject + projectId);
@@ -1508,6 +1509,61 @@ class Api {
 
       var response = await dio.get(ApiConstantsManager.BASEURL + ApiConstantsManager.allArchiveProjects );
       return AllArchiveProjectsResponse.fromJson(json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+
+
+  Future<AllArchiveProjectsResponse> archiveProjectsCrew(
+      BuildContext context) async {
+    try {
+      dio.options.headers["authorization"] =
+          SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+
+      var response = await dio.get(ApiConstantsCrew.BASEURL + ApiConstantsCrew.archiveProjects);
+      return AllArchiveProjectsResponse.fromJson(json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+
+  Future<CreateProjectResponse> unArchiveProjectByManager(
+      BuildContext context, String projectId) async {
+    try {
+      var response = await dio.put(ApiConstantsManager.BASEURL + ApiConstantsManager.unArchiveProject + projectId);
+      return CreateProjectResponse.fromJson(json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+
+  Future<ProjectTimeSheetResponse> projectTimeSheetManager(BuildContext context, String firstDate, String secondDate) async {
+    try {
+      dio.options.headers["authorization"] =
+          SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+
+      var map = {"firstDate": firstDate, "secondDate": secondDate};
+      var response = await dio.post(ApiConstantsManager.BASEURL + ApiConstantsManager.projectTimeSheet, data: map);
+      return ProjectTimeSheetResponse.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());

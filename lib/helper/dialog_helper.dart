@@ -736,8 +736,8 @@ class DialogHelper {
     );
   }
 
-  static archiveDialogBox(BuildContext context,
-      {required VoidCallback cancel, required VoidCallback archive}) {
+  static archiveUnArchiveDialogBox(BuildContext context,
+      {required VoidCallback cancel, required VoidCallback archive, bool unarchive = false}) {
     return BaseView<NotificationProvider>(
       onModelReady: (provider) {},
       builder: (context, provider, _) {
@@ -767,13 +767,15 @@ class DialogHelper {
                     ),
                   ),
                 ),
-                Text("archive_project_mark".tr()).boldText(
+                Text(unarchive == true ? "unarchive_project_mark".tr()
+                    : "archive_project_mark".tr()).boldText(
                     context, DimensionConstants.d18.sp, TextAlign.center,
                     color: ColorConstants.colorBlack),
                 SizedBox(
                   height: DimensionConstants.d23.h,
                 ),
-                Text("are_you_sure_you_want_to_archive_this_project".tr())
+                Text(unarchive == true ? "are_you_sure_you_want_to_unarchive_this_project".tr()
+                    : "are_you_sure_you_want_to_archive_this_project".tr())
                     .regularText(
                         context, DimensionConstants.d14.sp, TextAlign.center,
                         color: ColorConstants.colorBlack),
@@ -801,7 +803,7 @@ class DialogHelper {
                         height: DimensionConstants.d50.h,
                         width: DimensionConstants.d141.w,
                         child: CommonWidgets.commonButton(
-                            context, "Archive".tr(),
+                            context, (unarchive == true ? "unarchive".tr() : "Archive".tr()),
                             color1: ColorConstants.redColorEB5757,
                             color2: ColorConstants.redColorEB5757,
                             fontSize: DimensionConstants.d16.sp,

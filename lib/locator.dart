@@ -5,6 +5,7 @@ import 'package:beehive/provider/add_note_page_manager_provider.dart';
 import 'package:beehive/provider/add_note_page_provider.dart';
 import 'package:beehive/provider/app_settings_provider.dart';
 import 'package:beehive/provider/app_state_provider.dart';
+import 'package:beehive/provider/archive_projects_provider.dart';
 import 'package:beehive/provider/base_provider.dart';
 import 'package:beehive/provider/bottom_bar_Manager_provider.dart';
 import 'package:beehive/provider/bottom_bar_provider.dart';
@@ -69,6 +70,7 @@ void setUpLocator() {
       () => DashBoardPageManagerProvider());
   locator.registerFactory<BottomBarManagerProvider>(
       () => BottomBarManagerProvider());
+  locator.registerFactory<ArchiveProjectsProvider>(() => ArchiveProjectsProvider());
   locator.registerFactory(() => ProjectsManagerProvider());
   locator.registerFactory(() => CustomClass());
   locator.registerFactory(() => ProjectDetailsPageProvider());

@@ -41,6 +41,7 @@ class BottomBarManagerProvider extends BaseProvider {
 
   String? projectId;
   bool createProject=false;
+  bool archiveProject = false;
 
   void updateDrawerData(String name, String profilePic, String companyLogo, String color) {
     _companyLogo = companyLogo;
@@ -50,10 +51,11 @@ class BottomBarManagerProvider extends BaseProvider {
     customNotify();
   }
 
-  updateNavigationValue(int newValue,{String? projectId,bool createProject=false}) {
+  updateNavigationValue(int newValue,{String? projectId,bool createProject=false, bool? archiveProject}) {
     fromBottomNav = newValue;
     this.projectId=projectId;
     this.createProject=createProject;
+    this.archiveProject = archiveProject ?? false;
     notifyListeners();
   }
 
@@ -96,6 +98,7 @@ class BottomBarManagerProvider extends BaseProvider {
         return ProjectDetailsPageManager(
           createProject: createProject,
           projectId: projectId!,
+          archiveProject: archiveProject,
         );
       }
     } else if (index == 2) {

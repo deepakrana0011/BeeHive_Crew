@@ -59,7 +59,7 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage>
               appBar: CommonWidgets.appBarWithTitleAndAction(context,
                   title: "project_details",
                   actionIcon: ImageConstants.settingsIcon,
-                  actionButtonRequired: true, onTapAction: () {
+                  actionButtonRequired: widget.archivedOrProject == true ? false : true, onTapAction: () {
                 Navigator.pushNamed(
                     context, RouteConstants.projectSettingsPage, arguments: ProjectSettingsPage(projectData: provider.projectDetailCrewResponse!.projectData!)).then((value) {
                       if(value == true){

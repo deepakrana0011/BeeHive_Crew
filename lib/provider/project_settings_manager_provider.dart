@@ -287,10 +287,10 @@ class ProjectSettingsManagerProvider extends BaseProvider {
     // }
   }
 
-  Future<void> archiveProjectManager(BuildContext context, String projectId) async {
+  Future<void> archiveProjectByManager(BuildContext context, String projectId) async {
     setState(ViewState.busy);
     try{
-      var model = await api.archiveProjectManager(context, projectId);
+      var model = await api.archiveProjectByManager(context, projectId);
       if(model.success == true){
         Navigator.pushNamed(context, RouteConstants.bottomBarManager,
             arguments: BottomBarManager(
@@ -306,10 +306,10 @@ class ProjectSettingsManagerProvider extends BaseProvider {
     }
   }
 
-  Future<void> deleteProjectManager(BuildContext context, String projectId) async {
+  Future<void> deleteProjectByManager(BuildContext context, String projectId) async {
       setState(ViewState.busy);
     try{
-      var model = await api.deleteProjectManager(context, projectId);
+      var model = await api.deleteProjectByManager(context, projectId);
       if(model.success == true){
         Navigator.pushNamed(context, RouteConstants.bottomBarManager,
             arguments: BottomBarManager(

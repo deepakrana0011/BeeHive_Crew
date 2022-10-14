@@ -82,15 +82,17 @@ class _ArchivedProjectsScreenManagerState extends State<ArchivedProjectsScreenMa
         itemBuilder: (context, index){
       return archivedProjectCard(context, provider.allArchiveProjectsResponse!.projectData[index].projectName.toString()
           , provider.allArchiveProjectsResponse!.projectData[index].totalHours.toString(),
-          provider.allArchiveProjectsResponse!.projectData[index].crew.toString(), dashBoardProvider, provider);
+          provider.allArchiveProjectsResponse!.projectData[index].crew.toString(),
+          provider.allArchiveProjectsResponse!.projectData[index].sId.toString()
+          ,dashBoardProvider, provider);
     });
   }
 
-  Widget archivedProjectCard(BuildContext context, String projectName, String totalHours, String crew, BottomBarManagerProvider dashBoardProvider, provider){
+  Widget archivedProjectCard(BuildContext context, String projectName, String totalHours, String crew, String projectId,BottomBarManagerProvider dashBoardProvider, provider){
     return GestureDetector(
       onTap: (){
         dashBoardProvider.onItemTapped(1);
-        dashBoardProvider.updateNavigationValue(2);
+        dashBoardProvider.updateNavigationValue(5, projectId: projectId, archiveProject: true);
       },
       child: Container(
         margin: EdgeInsets.only(left: DimensionConstants.d16.w, right: DimensionConstants.d16.w, top: DimensionConstants.d16.h),

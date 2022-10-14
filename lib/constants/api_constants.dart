@@ -49,6 +49,9 @@ class ApiConstantsManager {
   static const String archiveProject = "archiveProject/";
   static const String deleteProject = "deleteProject/";
   static const String allArchiveProjects = "allArchiveProjects";
+  static const String unArchiveProject = "unArchiveProject/";
+  static const String projectTimeSheet = "projectTimesheet";
+
 }
 
 class ApiConstantsCrew {
@@ -89,4 +92,6 @@ class ApiConstantsCrew {
   static const String crewCertificates = "crewCertificates";
   static const String crewNewPassword = "crewNewPassword";
   static const String crewLeavingProject = "crewLeavingProject/";
+  static const String archiveProjects = "archiveProjects";
+
 }

@@ -235,7 +235,7 @@ class OnGenerateRouter {
         return MaterialPageRoute(
             builder: (_) => ProjectDetailsPageManager(
                   createProject: args.createProject,
-                  projectId: args.projectId,
+                  projectId: args.projectId, archiveProject: args.archiveProject,
                 ),
             settings: settings);
       case RouteConstants.archivedProjectsScreenManager:

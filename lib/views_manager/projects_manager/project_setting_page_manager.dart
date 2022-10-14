@@ -854,14 +854,14 @@ class ProjectSettingsPageManager extends StatelessWidget {
               showDialog(
                   context: context,
                   builder: (BuildContext context) =>
-                      DialogHelper.archiveDialogBox(
+                      DialogHelper.archiveUnArchiveDialogBox(
                         context,
                         cancel: () {
                           Navigator.of(context).pop();
                         },
                         archive: () {
                           Navigator.of(context).pop();
-                          provider.archiveProjectManager(_scaffoldkey.currentContext!, projectData!.projectDataId.toString());
+                          provider.archiveProjectByManager(_scaffoldkey.currentContext!, projectData!.projectDataId.toString());
                         },
                       ));
             },
@@ -882,7 +882,7 @@ class ProjectSettingsPageManager extends StatelessWidget {
                         },
                         delete: () {
                           Navigator.of(context).pop();
-                          provider.deleteProjectManager(_scaffoldkey.currentContext!, projectData!.projectDataId.toString());
+                          provider.deleteProjectByManager(_scaffoldkey.currentContext!, projectData!.projectDataId.toString());
                         },
                       ));
             },

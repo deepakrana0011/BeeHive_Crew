@@ -264,4 +264,32 @@ class ProjectDetailsManagerProvider extends BaseProvider {
     }
     return projectWorkingHourList;
   }
+
+  Future<void> deleteProjectByManager(BuildContext context, String projectId) async {
+    setState(ViewState.busy);
+    try{
+      await api.deleteProjectByManager(context, projectId);
+      setState(ViewState.idle);
+    } on FetchDataException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, e.toString());
+    } on SocketException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, "internet_connection".tr());
+    }
+  }
+
+  Future<void> unArchiveProjectByManager(BuildContext context, String projectId) async {
+    setState(ViewState.busy);
+    try{
+      await api.unArchiveProjectByManager(context, projectId);
+      setState(ViewState.idle);
+    } on FetchDataException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, e.toString());
+    } on SocketException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, "internet_connection".tr());
+    }
+  }
 }
