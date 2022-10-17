@@ -1202,8 +1202,7 @@ class Api {
       );
       var responseString = response.toString();
       print("responseString ${responseString}");
-      return AllProjectsManagerResponse.fromJson(
-          json.decode(response.toString()));
+      return AllProjectsManagerResponse.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());
@@ -1223,8 +1222,7 @@ class Api {
       var response = await dio.get(
         ApiConstantsCrew.BASEURL + ApiConstantsCrew.getAllCheckoutCrewProjects,
       );
-      return AllCheckoutProjectCrewResponse.fromJson(
-          json.decode(response.toString()));
+      return AllCheckoutProjectCrewResponse.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());
