@@ -97,6 +97,9 @@ class SignUpScreenManager extends StatelessWidget {
                                 provider.state == ViewState.idle
                                     ? CommonWidgets.commonButton(
                                         context, "sign_up_".tr(), onBtnTap: () {
+                                       CommonWidgets.hideKeyboard(context);
+                                       nameFocus = true;
+                                       passwordFocus = true;
                                         if (_formKey.currentState!.validate()) {
                                           CommonWidgets.hideKeyboard(context);
                                           provider.signUp(context, email);
@@ -139,6 +142,9 @@ class SignUpScreenManager extends StatelessWidget {
     });
   }
 
+  bool? nameFocus;
+  bool? passwordFocus;
+
   Widget nameTextField(SignUpManagerProvider provider) {
     return TextFormField(
       cursorColor: ColorConstants.colorWhite70,
@@ -148,13 +154,15 @@ class SignUpScreenManager extends StatelessWidget {
           FontWeight.w400, ColorConstants.colorBlack),
       decoration: ViewDecoration.inputDecorationTextField(
           contPadding: provider.nameContentPadding,
-          fillColor: ColorConstants.colorWhite),
+          fillColor: ColorConstants.colorWhite, showError: nameFocus ?? !nameFocusNode.hasFocus),
       textInputAction: TextInputAction.next,
       keyboardType: TextInputType.text,
       onChanged: (value) {
         if (value.isNotEmpty) {
+          nameFocus = false;
           provider.nameContentPadding = true;
         } else {
+          nameFocus = true;
           provider.nameContentPadding = false;
         }
         provider.updateLoadingStatus(true);
@@ -191,13 +199,15 @@ class SignUpScreenManager extends StatelessWidget {
               provider.updateLoadingStatus(true);
             },
           ),
-          fillColor: ColorConstants.colorWhite),
+          fillColor: ColorConstants.colorWhite, showError: passwordFocus ?? !passwordFocusNode.hasFocus),
       textInputAction: TextInputAction.done,
       keyboardType: TextInputType.text,
       onChanged: (value) {
         if (value.isNotEmpty) {
+          passwordFocus = false;
           provider.passwordContentPadding = true;
         } else {
+          passwordFocus = true;
           provider.passwordContentPadding = false;
         }
         provider.updateLoadingStatus(true);

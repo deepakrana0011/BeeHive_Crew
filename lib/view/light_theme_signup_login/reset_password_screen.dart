@@ -22,6 +22,8 @@ class ResetPasswordScreen extends StatelessWidget {
 
   final newPasswordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
+  final newPasswordFocusNode = FocusNode();
+  final confirmPasswordFocusNode = FocusNode();
 
   final _formKey = GlobalKey<FormState>();
 
@@ -101,6 +103,9 @@ class ResetPasswordScreen extends StatelessWidget {
                                     CommonWidgets.commonButton(
                                         context, "reset_password".tr(),
                                         onBtnTap: () {
+                                          CommonWidgets.hideKeyboard(context);
+                                          newPasswordFocus = true;
+                                          confirmPasswordFocus = true;
                                       if (_formKey.currentState!.validate()) {
                                         CommonWidgets.hideKeyboard(context);
                                         if (newPasswordController.text ==
@@ -132,10 +137,14 @@ class ResetPasswordScreen extends StatelessWidget {
     });
   }
 
+  bool? newPasswordFocus;
+  bool? confirmPasswordFocus;
+
   Widget newPasswordTextField(ResetPasswordProvider provider) {
     return TextFormField(
       cursorColor: ColorConstants.colorWhite70,
       controller: newPasswordController,
+      focusNode: newPasswordFocusNode,
       obscureText: !provider.newPasswordVisible,
       style: ViewDecoration.textFieldStyle(DimensionConstants.d16.sp,
           FontWeight.w400, ColorConstants.colorBlack),
@@ -153,13 +162,15 @@ class ResetPasswordScreen extends StatelessWidget {
               provider.updateLoadingStatus(true);
             },
           ),
-          fillColor: ColorConstants.colorWhite),
+          fillColor: ColorConstants.colorWhite, showError: newPasswordFocus ?? !newPasswordFocusNode.hasFocus),
       textInputAction: TextInputAction.done,
       keyboardType: TextInputType.text,
       onChanged: (value) {
         if (value.isNotEmpty) {
+          newPasswordFocus = false;
           provider.newPasswordContentPadding = true;
         } else {
+          newPasswordFocus = true;
           provider.newPasswordContentPadding = false;
         }
         provider.updateLoadingStatus(true);
@@ -181,6 +192,7 @@ class ResetPasswordScreen extends StatelessWidget {
     return TextFormField(
       cursorColor: ColorConstants.colorWhite70,
       controller: confirmPasswordController,
+      focusNode: confirmPasswordFocusNode,
       obscureText: !provider.confirmPasswordVisible,
       style: ViewDecoration.textFieldStyle(DimensionConstants.d16.sp,
           FontWeight.w400, ColorConstants.colorBlack),
@@ -199,27 +211,29 @@ class ResetPasswordScreen extends StatelessWidget {
               provider.updateLoadingStatus(true);
             },
           ),
-          fillColor: ColorConstants.colorWhite),
+          fillColor: ColorConstants.colorWhite, showError: confirmPasswordFocus ?? !confirmPasswordFocusNode.hasFocus),
       textInputAction: TextInputAction.done,
       keyboardType: TextInputType.text,
       onChanged: (value) {
         if (value.isNotEmpty) {
+          confirmPasswordFocus = false;
           provider.confirmPasswordContentPadding = true;
         } else {
+          confirmPasswordFocus = true;
           provider.confirmPasswordContentPadding = false;
         }
         provider.updateLoadingStatus(true);
       },
-      // validator: (value) {
-      //   if (value!.trim().isEmpty) {
-      //     return "password_required".tr();
-      //   } else if (!Validations.validateStructure(value)) {
-      //     return "invalid_password_format".tr();
-      //   }
-      //   {
-      //     return null;
-      //   }
-      // },
+      validator: (value) {
+        if (value!.trim().isEmpty) {
+          return "password_required".tr();
+        } else if (!Validations.validateStructure(value)) {
+          return "invalid_password_format".tr();
+        }
+        {
+          return null;
+        }
+      },
     );
   }
 }

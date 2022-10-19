@@ -129,6 +129,8 @@ class LoginScreenManager extends StatelessWidget {
                                     SizedBox(height: DimensionConstants.d29.h),
                                     CommonWidgets.commonButton(
                                         context, "login".tr(), onBtnTap: () {
+                                      emailFocus = true;
+                                      passwordFocus = true;
                                       CommonWidgets.hideKeyboard(context);
                                       if (_formKey.currentState!.validate()) {
                                         provider.loginManager(
@@ -176,6 +178,9 @@ class LoginScreenManager extends StatelessWidget {
     });
   }
 
+  bool? emailFocus;
+  bool? passwordFocus;
+
   Widget emailTextField(LoginManagerProvider provider) {
     return TextFormField(
       cursorColor: ColorConstants.colorWhite70,
@@ -185,13 +190,15 @@ class LoginScreenManager extends StatelessWidget {
           FontWeight.w400, ColorConstants.colorBlack),
       decoration: ViewDecoration.inputDecorationTextField(
           contPadding: provider.emailContentPadding,
-          fillColor: ColorConstants.colorWhite),
+          fillColor: ColorConstants.colorWhite, showError: emailFocus ?? !emailFocusNode.hasFocus),
       textInputAction: TextInputAction.next,
       keyboardType: TextInputType.text,
       onChanged: (value) {
         if (value.isNotEmpty) {
+          emailFocus = false;
           provider.emailContentPadding = true;
         } else {
+          emailFocus = true;
           provider.emailContentPadding = false;
         }
         provider.updateLoadingStatus(true);
@@ -230,13 +237,15 @@ class LoginScreenManager extends StatelessWidget {
               provider.updateLoadingStatus(true);
             },
           ),
-          fillColor: ColorConstants.colorWhite),
+          fillColor: ColorConstants.colorWhite, showError: passwordFocus ?? !passwordFocusNode.hasFocus),
       textInputAction: TextInputAction.done,
       keyboardType: TextInputType.text,
       onChanged: (value) {
         if (value.isNotEmpty) {
+          passwordFocus = false;
           provider.passwordContentPadding = true;
         } else {
+          passwordFocus = true;
           provider.passwordContentPadding = false;
         }
         provider.updateLoadingStatus(true);

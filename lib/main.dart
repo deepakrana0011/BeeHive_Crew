@@ -84,6 +84,7 @@ class MyApp extends StatelessWidget {
                             : RouteConstants.bottomNavigationBar)
                         : RouteConstants.selectToContinueScreen)
                     : RouteConstants.beehiveIntro,
+                //initialRoute: RouteConstants.resetPasswordScreen,
               );
             });
       },

@@ -9,7 +9,7 @@ class ViewDecoration {
 
 
 
-  static InputDecoration inputDecorationTextField({bool contPadding = false, Widget? suffixIcon, Color? fillColor, Color? focusColor, Widget? suffix}) {
+  static InputDecoration inputDecorationTextField({bool contPadding = false, Widget? suffixIcon, Color? fillColor, Color? focusColor, Widget? suffix, bool showError = true}) {
     return InputDecoration(
 
       suffixIconConstraints: const BoxConstraints(maxHeight: 15),
@@ -19,11 +19,11 @@ class ViewDecoration {
         isDense: true,
         errorMaxLines: 2,
 
-        errorStyle: TextStyle(
+        errorStyle: showError ? TextStyle(
           fontWeight: FontWeight.w400,
           fontSize: DimensionConstants.d14.sp,
           fontFamily: StringConstants.fontFamily
-        ),
+        ) : const TextStyle(fontSize: 0, height: 0),
 
         fillColor: fillColor,
         focusColor: focusColor,
@@ -39,11 +39,15 @@ class ViewDecoration {
         border: const UnderlineInputBorder(
           borderSide: BorderSide(color: ColorConstants.colorWhite70),
         ),
-        errorBorder: const UnderlineInputBorder(
+        errorBorder: showError ? const UnderlineInputBorder(
           borderSide: BorderSide(color: Colors.red),
-        ),
-        focusedErrorBorder: const UnderlineInputBorder(
+        ) : const UnderlineInputBorder(
+    borderSide: BorderSide(color: ColorConstants.colorWhite70),
+    ),
+        focusedErrorBorder: showError ? const UnderlineInputBorder(
           borderSide: BorderSide(color: Colors.red),
+        ) : const UnderlineInputBorder(
+          borderSide: BorderSide(color: ColorConstants.colorWhite70),
         ),
    );
   }

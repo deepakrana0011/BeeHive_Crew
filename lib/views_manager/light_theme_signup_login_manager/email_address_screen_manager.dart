@@ -41,98 +41,100 @@ class EmailAddressScreenManager extends StatelessWidget {
         backgroundColor: ColorConstants.colorWhite,
         body: Stack(
           children: [
-            Form(
-              key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Stack(
-                    children: [
-                      const ImageView(path: ImageConstants.lightThemeSignUpBg),
-                      Positioned(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Padding(
-                              padding: EdgeInsets.only(
-                                  top: DimensionConstants.d44.h,
-                                  left: DimensionConstants.d24.w),
-                              child: GestureDetector(
-                                behavior: HitTestBehavior.translucent,
-                                onTap: () {
-                                  Navigator.of(context).pop();
-                                },
-                                child: SizedBox(
-                                    width: DimensionConstants.d24.w,
-                                    height: DimensionConstants.d24.h,
-                                    child: const ImageView(
-                                        path: ImageConstants.backIcon,
-                                        fit: BoxFit.cover)),
+            SingleChildScrollView(
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Stack(
+                      children: [
+                        const ImageView(path: ImageConstants.lightThemeSignUpBg),
+                        Positioned(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.only(
+                                    top: DimensionConstants.d44.h,
+                                    left: DimensionConstants.d24.w),
+                                child: GestureDetector(
+                                  behavior: HitTestBehavior.translucent,
+                                  onTap: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                  child: SizedBox(
+                                      width: DimensionConstants.d24.w,
+                                      height: DimensionConstants.d24.h,
+                                      child: const ImageView(
+                                          path: ImageConstants.backIcon,
+                                          fit: BoxFit.cover)),
+                                ),
                               ),
-                            ),
-                            Padding(
-                              padding: EdgeInsets.symmetric(
-                                  horizontal: DimensionConstants.d32.w),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(height: DimensionConstants.d100.h),
-                                  SizedBox(
-                                    width: DimensionConstants.d242.w,
-                                    child: isVerificationProcess!
-                                        ? Text("continue_with_email".tr())
-                                            .boldText(
-                                                context,
-                                                DimensionConstants.d30.sp,
-                                                TextAlign.left,
-                                                color:
-                                                    ColorConstants.colorBlack)
-                                        : Text("whats_your_email_address".tr())
-                                            .boldText(
-                                                context,
-                                                DimensionConstants.d30.sp,
-                                                TextAlign.left,
-                                                color:
-                                                    ColorConstants.colorBlack),
-                                  ),
-                                  SizedBox(height: DimensionConstants.d32.h),
-                                  isVerificationProcess!
-                                      ? Text("enter_email".tr()).boldText(
-                                          context,
-                                          DimensionConstants.d14.sp,
-                                          TextAlign.center,
-                                          color: ColorConstants.colorWhite70)
-                                      : Text("your_email".tr()).boldText(
-                                          context,
-                                          DimensionConstants.d14.sp,
-                                          TextAlign.center,
-                                          color: ColorConstants.colorWhite70),
-                                  emailTextField(provider),
-                                  SizedBox(height: DimensionConstants.d39.h),
-                                  CommonWidgets.commonButton(
-                                      context, "continue".tr(), onBtnTap: () {
-                                    CommonWidgets.hideKeyboard(context);
-                                    if (_formKey.currentState!.validate()) {
-                                      if (isVerificationProcess!) {
-                                        provider.sendOtpEmailManager(
+                              Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: DimensionConstants.d32.w),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(height: DimensionConstants.d100.h),
+                                    SizedBox(
+                                      width: DimensionConstants.d242.w,
+                                      child: isVerificationProcess!
+                                          ? Text("continue_with_email".tr())
+                                              .boldText(
+                                                  context,
+                                                  DimensionConstants.d30.sp,
+                                                  TextAlign.left,
+                                                  color:
+                                                      ColorConstants.colorBlack)
+                                          : Text("whats_your_email_address".tr())
+                                              .boldText(
+                                                  context,
+                                                  DimensionConstants.d30.sp,
+                                                  TextAlign.left,
+                                                  color:
+                                                      ColorConstants.colorBlack),
+                                    ),
+                                    SizedBox(height: DimensionConstants.d32.h),
+                                    isVerificationProcess!
+                                        ? Text("enter_email".tr()).boldText(
                                             context,
-                                            emailController.text.toString(),
-                                            isVerificationProcess!,isResetPassword!);
-                                      } else {
-                                        provider.isEmailExist(
-                                            context, emailController.text);
+                                            DimensionConstants.d14.sp,
+                                            TextAlign.center,
+                                            color: ColorConstants.colorWhite70)
+                                        : Text("your_email".tr()).boldText(
+                                            context,
+                                            DimensionConstants.d14.sp,
+                                            TextAlign.center,
+                                            color: ColorConstants.colorWhite70),
+                                    emailTextField(provider),
+                                    SizedBox(height: DimensionConstants.d39.h),
+                                    CommonWidgets.commonButton(
+                                        context, "continue".tr(), onBtnTap: () {
+                                      CommonWidgets.hideKeyboard(context);
+                                      if (_formKey.currentState!.validate()) {
+                                        if (isVerificationProcess!) {
+                                          provider.sendOtpEmailManager(
+                                              context,
+                                              emailController.text.toString(),
+                                              isVerificationProcess!,isResetPassword!);
+                                        } else {
+                                          provider.isEmailExist(
+                                              context, emailController.text);
+                                        }
                                       }
-                                    }
-                                  }, shadowRequired: true)
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
-                      )
-                    ],
-                  ),
-                ],
+                                    }, shadowRequired: true)
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
             if (provider.state == ViewState.busy) const CustomCircularBar()
@@ -163,7 +165,7 @@ class EmailAddressScreenManager extends StatelessWidget {
               contPadding = false;
               provider.updateLoadingStatus(true);
             },
-          )),
+          ),  showError: !emailFocusNode.hasFocus),
       textInputAction: TextInputAction.next,
       keyboardType: TextInputType.emailAddress,
       onChanged: (value) {

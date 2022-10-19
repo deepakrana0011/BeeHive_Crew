@@ -97,6 +97,9 @@ class SignUpScreen extends StatelessWidget {
                                 provider.state == ViewState.idle
                                     ? CommonWidgets.commonButton(
                                         context, "sign_up_".tr(), onBtnTap: () {
+                                            CommonWidgets.hideKeyboard(context);
+                                            nameFocus = true;
+                                            passwordFocus = true;
                                         if (_formKey.currentState!.validate()) {
                                           CommonWidgets.hideKeyboard(context);
                                           provider.signUpCrew(context, email);
@@ -141,6 +144,9 @@ class SignUpScreen extends StatelessWidget {
     });
   }
 
+  bool? nameFocus;
+  bool? passwordFocus;
+
   Widget nameTextField(SignUpProvider provider) {
     return TextFormField(
       cursorColor: ColorConstants.colorWhite70,
@@ -150,15 +156,18 @@ class SignUpScreen extends StatelessWidget {
           FontWeight.w400, ColorConstants.colorBlack),
       decoration: ViewDecoration.inputDecorationTextField(
           contPadding: provider.nameContentPadding,
-          fillColor: ColorConstants.colorWhite),
+          fillColor: ColorConstants.colorWhite, showError: nameFocus ?? !nameFocusNode.hasFocus),
       textInputAction: TextInputAction.next,
       keyboardType: TextInputType.text,
       onChanged: (value) {
         if (value.isNotEmpty) {
+          nameFocus = false;
           provider.nameContentPadding = true;
         } else {
+          nameFocus = true;
           provider.nameContentPadding = false;
         }
+       // _formKey.currentState!.validate();
         provider.updateLoadingStatus(true);
       },
       validator: (value) {
@@ -193,13 +202,15 @@ class SignUpScreen extends StatelessWidget {
               provider.updateLoadingStatus(true);
             },
           ),
-          fillColor: ColorConstants.colorWhite),
+          fillColor: ColorConstants.colorWhite, showError: passwordFocus ?? !passwordFocusNode.hasFocus),
       textInputAction: TextInputAction.done,
       keyboardType: TextInputType.text,
       onChanged: (value) {
         if (value.isNotEmpty) {
+          passwordFocus = false;
           provider.passwordContentPadding = true;
         } else {
+          passwordFocus = true;
           provider.passwordContentPadding = false;
         }
         provider.updateLoadingStatus(true);

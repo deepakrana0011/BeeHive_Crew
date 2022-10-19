@@ -332,10 +332,10 @@ class OnGenerateRouter {
             builder: (_) => CustomSearchScaffold(currentCountryCode: args as String,), settings: settings);
 
       case RouteConstants.resetPasswordScreenManager:
-        final token = settings.arguments as String;
+       // final token = settings.arguments as String;
         return MaterialPageRoute(
             builder: (_) => ResetPasswordScreenManager(
-                  authToken: token,
+                  authToken: "token",
                 ),
             settings: settings);
 
