@@ -187,8 +187,11 @@ class DashboardProvider extends BaseProvider {
       print("selected checkout time ${selectedCheckOutTime}");
       var checkoutTime = DateFunctions.tweleveTo24Hour(selectedCheckOutTime!.toUpperCase());
       var value = crewResponse!.userCheckin!.checkInTime!.substring(0, 10);
-      var checkInTimeFinal = value + " " + checkoutTime;
-      var model = await api.checkOutApiCrew(context, crewResponse!.userCheckin!.id!, checkInTimeFinal);
+
+      var checkInTimeFinal = value + " " + selectedCheckOutTime!;
+      var checkOutTime = DateFunctions.dateFormatyyyyMMddHHmm(DateTime.parse(checkInTimeFinal));
+
+      var model = await api.checkOutApiCrew(context, crewResponse!.userCheckin!.id!, checkOutTime);
       if (model.success == true) {
         setState(ViewState.idle);
         getDashBoardData(context, bottomBarProvider);

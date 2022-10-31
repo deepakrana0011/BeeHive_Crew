@@ -1,11 +1,13 @@
 
 // client live url = 35.183.39.183:8081
 // local live url = 3.235.151.126:8081
+const String URL = "http://35.183.39.183:8091/";
 class ApiConstantsManager {
-  static const String BASEURL = "http://35.183.39.183:8081/Manager/";
+
+  static const String BASEURL = "${URL}Manager/";
   static const String SIGNUP = "managerregister";
   static const String emailExist = "emailExist";
-  static const String BASEURL_IMAGE = "http://35.183.39.183:8081/";
+  static const String BASEURL_IMAGE = URL;
 
   static const String sendOtpSignupPhoneManager = "sendOtpSignupPhoneManager";
   static const String sendOtpForgotPhoneManager = "sendOtpForgotPhoneManager";
@@ -58,8 +60,8 @@ class ApiConstantsManager {
 }
 
 class ApiConstantsCrew {
-  static const String BASEURL = "http://35.183.39.183:8081/Crew/";
-  static const String BASE_URL_IMAGE = "http://35.183.39.183:8081/";
+  static const String BASEURL = "${URL}Crew/";
+  static const String BASE_URL_IMAGE = URL;
   static const String emailExist = "emailExist";
   static const String SIGNUP = "crewsignup";
 

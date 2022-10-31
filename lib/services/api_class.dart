@@ -134,6 +134,8 @@ class Api {
     String phoneNumber,
   ) async {
     try {
+      dio.options.headers["authorization"] =
+          SharedPreference.prefs!.getString(SharedPreference.TOKEN);
       var map = {
         "countryCode": countryCode,
         "phoneNumber": phoneNumber,
@@ -761,14 +763,37 @@ class Api {
   Future<ResendOtpByPhoneResponseCrew> resendOtpByPhoneApi(
     BuildContext context,
     String phoneNumber,
+      String countryCode
   ) async {
     try {
       var map = {
-        "phoneNumber": phoneNumber,
+        "phoneNumber": int.parse(phoneNumber),
+        "countryCode":countryCode,
       };
-      var response = await dio.post(
-          ApiConstantsManager.BASEURL + ApiConstantsManager.RESEND_OTP_PHONE,
-          data: map);
+      var response = await dio.post(ApiConstantsCrew.BASEURL + ApiConstantsManager.RESEND_OTP_PHONE, data: map);
+      return ResendOtpByPhoneResponseCrew.fromJson(
+          json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+  Future<ResendOtpByPhoneResponseCrew> resendOtpByPhoneApiManager(
+      BuildContext context,
+      String phoneNumber,
+      String countryCode
+      ) async {
+    try {
+      var map = {
+        "phoneNumber": int.parse(phoneNumber),
+        "countryCode":countryCode,
+      };
+      var response = await dio.post(ApiConstantsManager.BASEURL + ApiConstantsManager.RESEND_OTP_PHONE, data: map);
       return ResendOtpByPhoneResponseCrew.fromJson(
           json.decode(response.toString()));
     } on DioError catch (e) {
@@ -837,8 +862,9 @@ class Api {
     String phoneNumber,
   ) async {
     try {
-      // dio.options.headers["authorization"] =
-      //     SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+
+       dio.options.headers["authorization"] =
+           SharedPreference.prefs!.getString(SharedPreference.TOKEN);
       var map = {
         "countryCode": countryCode,
         "phoneNumber": phoneNumber,

@@ -68,13 +68,7 @@ class Profile extends StatelessWidget {
                     height: DimensionConstants.d38.h,
                   ),
                   GestureDetector(
-                      onTap: () {
-                        Navigator.pushNamed(context, RouteConstants.changePasswordPage).then((value) {
-                          if(value = true){
-                            DialogHelper.showMessage(context, "password_changed_successfully".tr());
-                          }
-                        });
-                      },
+                      onTap: () {Navigator.pushNamed(context, RouteConstants.changePasswordPage);},
                       child: profileDetailsWidget(context, ImageConstants.lockIcon,
                           "change_password".tr(), true)),
                   SizedBox(

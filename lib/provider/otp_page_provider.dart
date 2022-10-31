@@ -104,7 +104,10 @@ class OtpPageProvider extends BaseProvider {
   Future resendOtpApiPhone(BuildContext context, String phoneNumber) async {
     setState(ViewState.busy);
     try {
-      var model = await api.resendOtpByPhoneApi(context, phoneNumber);
+      var phoneNumberNew =
+      phoneNumber.substring(phoneNumber.indexOf("-") + 1, phoneNumber.length);
+      var countryCode = phoneNumber.substring(0, phoneNumber.indexOf("-"));
+      var model = await api.resendOtpByPhoneApi(context, phoneNumberNew,countryCode);
       if (model.success == true) {
         setState(ViewState.idle);
         DialogHelper.showMessage(context, model.message!);

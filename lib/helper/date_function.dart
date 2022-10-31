@@ -293,7 +293,7 @@ class DateFunctions {
   }
 
   static String dateFormatyyyyMMddHHmm(DateTime dateTime) {
-    String date = DateFormat("yyyy-MM-dd HH:mm a").format(dateTime);
+    String date = DateFormat("yyyy-MM-dd HH:mm").format(dateTime);
     return date;
   }
 
