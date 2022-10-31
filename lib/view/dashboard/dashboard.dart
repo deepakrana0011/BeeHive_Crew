@@ -567,8 +567,7 @@ class _DashBoardPageState extends State<DashBoardPage>
 
   stillCheckedInAlert(String nameOfUser, String address) {
     var checkInTime = DateFunctions.dateFormatyyyyMMddHHmm(DateTime.now());
-    SharedPreference.prefs!
-        .setString(SharedPreference.popUpShowTime, checkInTime);
+    SharedPreference.prefs!.setString(SharedPreference.popUpShowTime, checkInTime);
     showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -722,10 +721,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                                     path: ImageConstants.clockIcon,
                                     color: ColorConstants.colorBlack),
                                 SizedBox(width: DimensionConstants.d16.w),
-                                Text(provider.selectedCheckOutTime
-                                    ?.toUpperCase() ??
-                                    "")
-                                    .boldText(
+                                Text(provider.selectedCheckOutTime?.toUpperCase() ?? "").boldText(
                                     context,
                                     DimensionConstants.d16.sp,
                                     TextAlign.left,
@@ -804,10 +800,8 @@ class _DashBoardPageState extends State<DashBoardPage>
                   switch (index) {
                     case 0:
                       {
-                        provider.startDate =
-                            DateFunctions.getCurrentDateMonthYear();
-                        provider.endDate =
-                            DateFunctions.getCurrentDateMonthYear();
+                        provider.startDate = DateFunctions.getCurrentDateMonthYear();
+                        provider.endDate = DateFunctions.getCurrentDateMonthYear();
                         provider.selectedStartDate = null;
                         provider.selectedEndDate = null;
                         getDashBoardData(context);
@@ -1003,7 +997,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                         ImageConstants.clockIcon,
                         provider.crewResponse!.allCheckin!.isEmpty
                             ? "0 Hours"
-                            : "${provider.totalHours} ${"hours".tr()}")
+                            : "${provider.totalHours!.replaceAll("-", " ")} ${"hours".tr()}")
                   ],
                 ),
               ),
@@ -1011,9 +1005,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                 itemCount: provider.crewResponse!.allCheckin!.length,
                 shrinkWrap: true,
                 itemBuilder: (BuildContext context, int index) {
-                  return projectDetailTile(context,
-                      checkInProjectDetail:
-                      provider.crewResponse!.allCheckin![index]);
+                  return projectDetailTile(context, checkInProjectDetail: provider.crewResponse!.allCheckin![index]);
                 },
                 separatorBuilder: (BuildContext context, int index) {
                   return const Divider(
@@ -1123,7 +1115,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                                   ImageConstants.clockIcon,
                                   provider.crewResponse!.allCheckin!.isEmpty
                                       ? "0 Hours"
-                                      : "${provider.totalHours} ${"hours"
+                                      : "${provider.totalHours!.replaceAll("-", " ")} ${"hours"
                                       .tr()}")
                             ],
                           ),
@@ -1215,7 +1207,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                                           context,
                                           DimensionConstants.d14.sp,
                                           TextAlign.center),
-                                      Text("${provider.totalHours} Hrs").semiBoldText(
+                                      Text("${provider.totalHours!.replaceAll("-", " ")} Hrs").semiBoldText(
                                           context,
                                           DimensionConstants.d14.sp,
                                           TextAlign.center)
@@ -1227,11 +1219,11 @@ class _DashBoardPageState extends State<DashBoardPage>
                                     mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                     children: [
-                                      Text("x \$${provider.averageRatePerHour}/hr").semiBoldText(
+                                      Text("x \$${provider.averageRatePerHour!}/hr").semiBoldText(
                                           context,
                                           DimensionConstants.d14.sp,
                                           TextAlign.center),
-                                      Text("\$${provider.totalEarnings}").semiBoldText(
+                                      Text("\$${provider.totalEarnings!.replaceAll("-", " ")}").semiBoldText(
                                           context,
                                           DimensionConstants.d14.sp,
                                           TextAlign.center)
@@ -1326,8 +1318,7 @@ class _DashBoardPageState extends State<DashBoardPage>
 
   Widget customStepper(CheckInProjectDetailCrew checkInProjectDetail) {
     List<Widget> widgetlist = [];
-    List<ProjectWorkingHourDetail> projectDetailLIst =
-    provider.getTimeForStepper(checkInProjectDetail);
+    List<ProjectWorkingHourDetail> projectDetailLIst = provider.getTimeForStepper(checkInProjectDetail);
     for (int i = 0; i < projectDetailLIst.length; i++) {
       if (projectDetailLIst[i].type == 1) {
         widgetlist.add(Flexible(
@@ -1424,7 +1415,7 @@ class _DashBoardPageState extends State<DashBoardPage>
               SizedBox(width: DimensionConstants.d10.w),
               Text("${DateFunctions.calculateTotalHourTime(
                   checkInProjectDetail.checkInTime!,
-                  checkInProjectDetail.checkOutTime!)} h")
+                  checkInProjectDetail.checkOutTime!).replaceAll("-", " ")} h")
                   .boldText(
                   context, DimensionConstants.d13.sp, TextAlign.center),
               SizedBox(width: DimensionConstants.d7.w),

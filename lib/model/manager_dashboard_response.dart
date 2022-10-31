@@ -41,7 +41,6 @@ class Manager {
     this.phoneNumber,
     this.customColor
   });
-
   String? id;
   String? email;
   String? name;
@@ -54,7 +53,6 @@ class Manager {
   String? countryCode;
   int? phoneNumber;
   String? customColor;
-
   factory Manager.fromJson(Map<String, dynamic> json) => Manager(
         id: json["_id"],
         email: json["email"],
@@ -70,7 +68,6 @@ class Manager {
         customColor: json["customColor"] ?? "",
       );
 }
-
 class ProjectDetail {
   ProjectDetail({
     this.id,
@@ -82,7 +79,6 @@ class ProjectDetail {
     this.status,
     this.checkins,
   });
-
   String? id;
   DateTime? date;
   String? projectDatumId;
@@ -91,7 +87,6 @@ class ProjectDetail {
   String? roundTimesheets;
   int? status;
   List<CheckInProjectDetailManager>? checkins;
-
   factory ProjectDetail.fromJson(Map<String, dynamic> json) => ProjectDetail(
         id: json["_id"],
         date: DateTime.parse(json["date"]),
@@ -104,7 +99,6 @@ class ProjectDetail {
             .map((x) => CheckInProjectDetailManager.fromJson(x))),
       );
 }
-
 class CheckInProjectDetailManager {
   CheckInProjectDetailManager({
     this.id,
@@ -116,7 +110,6 @@ class CheckInProjectDetailManager {
     this.checkOutTime,
     this.crew
   });
-
   String? id;
   String? crewId;
   CrewMemberDetail? crew;
@@ -125,7 +118,6 @@ class CheckInProjectDetailManager {
   List<Break>? checkinBreak;
   List<Interruption>? interuption;
   String? checkOutTime;
-
   factory CheckInProjectDetailManager.fromJson(Map<String, dynamic> json) =>
       CheckInProjectDetailManager(
         id: json["_id"],

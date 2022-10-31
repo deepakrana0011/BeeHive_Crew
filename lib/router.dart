@@ -58,6 +58,7 @@ import 'package:beehive/views_manager/projects_manager/show_note_page_manager.da
 import 'package:beehive/views_manager/projects_manager/show_private_note_manager.dart';
 import 'package:beehive/views_manager/projects_manager/timesheets_screen_manager.dart';
 import 'package:beehive/views_manager/billing_information/payment_page_manager.dart';
+import 'package:beehive/views_manager/projects_manager/timesheets_screen_project_details.dart';
 import 'package:beehive/views_manager/timesheet_manager/timesheet_from_crew.dart';
 import 'package:beehive/widget/autoCompletePlaces.dart';
 import 'package:beehive/views_manager/profile_manager/show_cerfication_manager_page.dart';
@@ -303,8 +304,9 @@ class OnGenerateRouter {
                 ),
             settings: settings);
       case RouteConstants.timeSheetsFromCrew:
+        final args = settings.arguments as TimeSheetFromCrew;
         return MaterialPageRoute(
-            builder: (_) => const TimeSheetFromCrew(), settings: settings);
+            builder: (_) =>  TimeSheetFromCrew(id: args.id, totalHours: args.totalHours,), settings: settings);
       case RouteConstants.billingInformationPageManager:
         final args = settings.arguments as BillingInformationPageManager;
         return MaterialPageRoute(
@@ -359,6 +361,10 @@ class OnGenerateRouter {
         final args = settings.arguments as ShowPrivateNoteManager;
         return MaterialPageRoute(
             builder: (_) => ShowPrivateNoteManager(title: args.title, note: args.note), settings: settings);
+      case RouteConstants.timeSheetScreenProjectDetails:
+        final args = settings.arguments as TimeSheetsScreenProjectDetails;
+        return MaterialPageRoute(
+            builder: (_) => TimeSheetsScreenProjectDetails(removeInterruption: args.removeInterruption, projectData: args.projectData, index: args.index,), settings: settings);
 
       default:
         return _onPageNotFound();

@@ -13,7 +13,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../constants/image_constants.dart';
 import 'image_view.dart';
 
-bottomSheetProjectDetails(BuildContext context, {required VoidCallback onTap, required bool timeSheetOrSchedule, ProjectData? projectData, Color? projectColor
+bottomSheetProjectDetails(BuildContext context, {required VoidCallback onTap, required bool timeSheetOrSchedule,  ProjectData? projectData,  Color? projectColor, List<Crews>? crews,
 }) {
   showModalBottomSheet(
       isScrollControlled: true,

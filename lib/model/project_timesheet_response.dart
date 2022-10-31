@@ -144,6 +144,7 @@ class Checkins {
   List<Interuption>? interuption;
   String? checkOutTime;
   String? date;
+  List<Break>? breaks;
   List<Crew>? crew;
 
   Checkins(
@@ -154,7 +155,7 @@ class Checkins {
         this.interuption,
         this.checkOutTime,
         this.date,
-        this.crew});
+        this.crew,this.breaks});
 
   Checkins.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
@@ -164,11 +165,17 @@ class Checkins {
     if (json['interuption'] != null) {
       interuption = <Interuption>[];
       json['interuption'].forEach((v) {
-        interuption!.add(new Interuption.fromJson(v));
+        interuption!.add( Interuption.fromJson(v));
       });
     }
     checkOutTime = json['checkOutTime'];
     date = json['date'];
+    if (json['break'] != null) {
+      breaks = <Break>[];
+      json['break'].forEach((v) {
+        breaks!.add( Break.fromJson(v));
+      });
+    }
     if (json['crew'] != null) {
       crew = <Crew>[];
       json['crew'].forEach((v) {
@@ -199,6 +206,8 @@ class Interuption {
   String? startTime;
   String? endTime;
   String? sId;
+  bool? selfMadeInterruption = false;
+  int? type; //
 
   Interuption({this.startTime, this.endTime, this.sId});
 
@@ -231,6 +240,7 @@ class Crew {
   String? company;
   String? position;
   String? speciality;
+  String? profileImage;
 
   Crew(
       {this.sId,
@@ -245,7 +255,7 @@ class Crew {
         this.address,
         this.company,
         this.position,
-        this.speciality});
+        this.speciality,this.profileImage});
 
   Crew.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
@@ -261,6 +271,7 @@ class Crew {
     company = json['company'];
     position = json['position'];
     speciality = json['speciality'];
+    profileImage = json['profileImage'];
   }
 
   Map<String, dynamic> toJson() {
@@ -280,4 +291,22 @@ class Crew {
     data['speciality'] = this.speciality;
     return data;
   }
+}
+
+class Break {
+  Break({
+    this.startTime,
+    this.interval,
+    this.id,
+  });
+
+  String? startTime;
+  String? interval;
+  String? id;
+
+  factory Break.fromJson(Map<String, dynamic> json) => Break(
+    startTime: json["startTime"],
+    interval: json["interval"],
+    id: json["_id"],
+  );
 }

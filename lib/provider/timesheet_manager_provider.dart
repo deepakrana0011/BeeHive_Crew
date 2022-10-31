@@ -9,10 +9,13 @@ import 'package:beehive/services/fetch_data_expection.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
+import '../model/get_all_crew_on_project_response.dart';
+
 class TimeSheetManagerProvider extends BaseProvider{
 
   List<ProjectData> projectDataResponse = [];
   List<String> projectsTotalHours = [];
+  GetAllCrewOnProject? getAllCrewResponse;
   int totalActiveProjects = 0;
   String? totalHoursAllActiveProjects;
 
@@ -39,7 +42,24 @@ class TimeSheetManagerProvider extends BaseProvider{
     isLoading = value;
     customNotify();
   }
+  dateConvertorWeekly(String date){
+    var getDate = DateTime.parse(date);
+    return  DateFormat("EEE MMM, dd").format(getDate);
+  }
 
+  String getOneProjectTotalHours(List<Checkins>? checkins) {
+    var totalMinutes = 0;
+    for (var element in checkins!) {
+      if(element.checkOutTime != " "){
+        var startTime = DateFunctions.getDateTimeFromString(element.checkInTime!);
+        var endTime = DateFunctions.getDateTimeFromString(element.checkOutTime!);
+        var minutes = startTime.difference(endTime).inMinutes;
+        totalMinutes = totalMinutes + minutes;
+      }
+    }
+    var totalHours = DateFunctions.minutesToHourString(totalMinutes);
+    return totalHours;
+  }
   var totalMinutes = 0;
   Future<void> projectTimeSheetManager(BuildContext context, {showFullLoader = false}) async {
    showFullLoader ? setState(ViewState.busy) : updateLoading(true);
@@ -81,12 +101,10 @@ class TimeSheetManagerProvider extends BaseProvider{
     for (var element in projectDataResponse) {
       for (var element in element.checkins) {
         if(element.checkOutTime != " "){
-          var startTime =
-          DateFunctions.getDateTimeFromString(element.checkInTime!);
-          var endTime =
-          DateFunctions.getDateTimeFromString(element.checkOutTime!);
-          var minutes = endTime.difference(startTime).inMinutes;
-          totalMinutes = totalMinutes + minutes;
+          var startTime = DateFunctions.getDateTimeFromString(element.checkInTime!);
+          var endTime = DateFunctions.getDateTimeFromString(element.checkOutTime!);
+          var minutes = startTime.difference(endTime).inMinutes;
+          totalMinutes = totalMinutes + minutes.abs();
         }
       }
     }
@@ -128,4 +146,54 @@ class TimeSheetManagerProvider extends BaseProvider{
     weekEndDate = DateFunctions.getMonthDay(selectedEndDate!);
     customNotify();
   }
+
+  String getTotalHoursOnProjects(List<Datum>? getData) {
+    var totalMinutes = 0;
+    for (var element in getData!) {
+      if(element.totalHours != null){
+        totalMinutes = totalMinutes + element.totalHours!;
+      }
+    }
+    var totalHours = DateFunctions.minutesToHourString(totalMinutes);
+    return totalHours;
+  }
+
+
+
+  Future<void> getAllCrewOnProject(context) async {
+    setState(ViewState.busy);
+    try{
+      var model = await api.getAllCrewOnProjects(context);
+      if(model.success == true){
+        getAllCrewResponse = model;
+      }
+      setState(ViewState.idle);
+    } on FetchDataException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, e.toString());
+    } on SocketException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, "internet_connection".tr());
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

@@ -73,6 +73,7 @@ class _BottomBarManagerState extends State<BottomBarManager> {
               key: provider.scaffoldKey,
               drawer: DrawerManager(
                 provider: provider,
+
               ) /*drawer(
                 context,
                 provider,
@@ -287,11 +288,7 @@ class _BottomBarManagerState extends State<BottomBarManager> {
   }
 }
 
-Widget drawer(
-  BuildContext context,
-  BottomBarManagerProvider provider,
-) {
-  print("drawer get open");
+Widget drawer(BuildContext context, BottomBarManagerProvider provider,) {
   return Stack(
     children: [
       SizedBox(
@@ -307,11 +304,12 @@ Widget drawer(
                       alignment: Alignment.centerRight,
                       height: DimensionConstants.d300.h,
                       width: DimensionConstants.d314.w,
-                      decoration: const BoxDecoration(
-                          gradient: LinearGradient(colors: [
+                      decoration:  BoxDecoration(
+                        color: Color(int.parse(provider.drawerBgColor)),
+                         /* gradient: LinearGradient(colors: [
                         ColorConstants.blueGradient1Color,
                         ColorConstants.blueGradient2Color
-                      ])),
+                      ])*/),
                       child: Stack(
                         children: [
                           Padding(
@@ -334,14 +332,7 @@ Widget drawer(
                                   borderRadius: BorderRadius.circular(
                                       DimensionConstants.d55.r),
                                   child: ImageView(
-                                    path: SharedPreference.prefs!.getString(
-                                                SharedPreference
-                                                    .USER_PROFILE) ==
-                                            null
-                                        ? ImageConstants.drawerProfile
-                                        : ApiConstantsCrew.BASE_URL_IMAGE +
-                                            SharedPreference.prefs!.getString(
-                                                SharedPreference.USER_PROFILE)!,
+                                    path: ApiConstantsManager.BASEURL_IMAGE+ provider.managerProfilePic, /*SharedPreference.prefs!.getString(SharedPreference.USER_PROFILE) == null? ImageConstants.drawerProfile : ApiConstantsCrew.BASE_URL_IMAGE + SharedPreference.prefs!.getString(SharedPreference.USER_PROFILE)!,*/
                                     height: DimensionConstants.d110.h,
                                     width: DimensionConstants.d110.w,
                                     fit: BoxFit.cover,
@@ -355,13 +346,7 @@ Widget drawer(
                                     borderRadius: BorderRadius.circular(
                                         DimensionConstants.d27.r),
                                     child: ImageView(
-                                      path: SharedPreference.prefs!.getString(
-                                                  SharedPreference.USER_LOGO) ==
-                                              null
-                                          ? ImageConstants.brandIocn
-                                          : ApiConstantsCrew.BASE_URL_IMAGE +
-                                              SharedPreference.prefs!.getString(
-                                                  SharedPreference.USER_LOGO)!,
+                                      path:ApiConstantsManager.BASEURL_IMAGE+ provider.companyLogo, /*SharedPreference.prefs!.getString(SharedPreference.USER_LOGO) == null? ImageConstants.brandIocn : ApiConstantsCrew.BASE_URL_IMAGE + SharedPreference.prefs!.getString(SharedPreference.USER_LOGO)!*/
                                       height: DimensionConstants.d55.h,
                                       width: DimensionConstants.d55.w,
                                       fit: BoxFit.cover,

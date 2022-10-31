@@ -69,7 +69,8 @@ class _EditProfilePageManagerState extends State<EditProfilePageManager> {
                               },
                             ),
                           );
-                          provider.updateImageChanged();
+                          provider.updateCompanyLogoChanged();
+
                         },
                         provider.profileImage,
                         "change_photo",
@@ -93,7 +94,8 @@ class _EditProfilePageManagerState extends State<EditProfilePageManager> {
                                       provider.addProfilePic(context, 2, 2);
                                     },
                                   ));
-                          provider.updateCompanyLogoChanged();
+                          provider.updateImageChanged();
+
                         },
                          provider.companyIcon,
                         "change_logo",

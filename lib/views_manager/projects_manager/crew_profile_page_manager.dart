@@ -27,7 +27,7 @@ class CrewProfilePageManager extends StatelessWidget {
 
   final String projectName;
   final String projectId;
-  final Crews crewData;
+  final dynamic crewData;
 
   final GlobalKey<ScaffoldState> _scaffoldkey = GlobalKey<ScaffoldState>();
 

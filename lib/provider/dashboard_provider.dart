@@ -117,10 +117,7 @@ class DashboardProvider extends BaseProvider {
       var endTime = DateFunctions.getDateTimeFromString(element.checkOutTime!);
       var minutes = endTime.difference(startTime).inMinutes;
       totalMinutes = totalMinutes + minutes;
-
-      totalPrice = totalPrice +
-          double.parse(
-              element.assignProjectId!.projectRate![0].price.toString());
+      totalPrice = totalPrice + double.parse(element.assignProjectId!.projectRate![0].price.toString());
     }
     totalHours = DateFunctions.minutesToHourString(totalMinutes);
     double averagePricePerHour = totalPrice / crewResponse!.allCheckin!.length;
@@ -161,16 +158,13 @@ class DashboardProvider extends BaseProvider {
     }
   }
 
-  Future checkInApi(
-    context,
-    BottomBarProvider bottomBarProvider,
+  Future checkInApi(context, BottomBarProvider bottomBarProvider,
   ) async {
     setState(ViewState.busy);
     try {
       var checkInTime = DateFunctions.dateFormatyyyyMMddHHmm(DateTime.now());
       var model = await api.checkInApi(context, assignProjectId, checkInTime);
-      SharedPreference.prefs!
-          .setString(SharedPreference.popUpShowTime, checkInTime);
+      SharedPreference.prefs!.setString(SharedPreference.popUpShowTime, checkInTime);
       assignProjectId = "";
       if (model.success == true) {
         getDashBoardData(context, bottomBarProvider);
@@ -187,10 +181,7 @@ class DashboardProvider extends BaseProvider {
     }
   }
 
-  Future checkOutApi(
-    context,
-    BottomBarProvider bottomBarProvider,
-  ) async {
+  Future checkOutApi(context, BottomBarProvider bottomBarProvider,) async {
     setState(ViewState.busy);
     try {
       print("selected checkout time ${selectedCheckOutTime}");
@@ -367,26 +358,12 @@ class DashboardProvider extends BaseProvider {
     List<ProjectWorkingHourDetail> projectWorkingHourList = [];
     for (int i = 0; i < detail.allCheckinBreak!.length; i++) {
       if (detail.allCheckinBreak![i].startTime != "Any Time") {
-        var breakStartTimeString = detail.checkInTime!.substring(0, 10) +
-            " " +
-            detail.allCheckinBreak![i].startTime!
-                .replaceAll("PM", "")
-                .replaceAll("AM", "");
-        var breakEndTimeString = detail.checkInTime!.substring(0, 10) +
-            " " +
-            DateFunctions.stringToDateAddMintues(
-                detail.allCheckinBreak![i].startTime!,
-                int.parse(
-                    detail.allCheckinBreak![i].interval!.substring(0, 2)));
-
-        var breakStartTimeDate =
-            DateFunctions.getDateTimeFromString(breakStartTimeString);
-        var checkInDate =
-            DateFunctions.getDateTimeFromString(detail.checkInTime!);
-        var checkOutDate =
-            DateFunctions.getDateTimeFromString(detail.checkOutTime!);
-        if (breakStartTimeDate.isAfter(checkInDate) &&
-            breakStartTimeDate.isBefore(checkOutDate)) {
+        var breakStartTimeString = detail.checkInTime!.substring(0, 10) + " " + detail.allCheckinBreak![i].startTime!.replaceAll("PM", "").replaceAll("AM", "");
+        var breakEndTimeString = detail.checkInTime!.substring(0, 10) + " " + DateFunctions.stringToDateAddMintues(detail.allCheckinBreak![i].startTime!, int.parse(detail.allCheckinBreak![i].interval!.substring(0, 2)));
+        var breakStartTimeDate = DateFunctions.getDateTimeFromString(breakStartTimeString);
+        var checkInDate = DateFunctions.getDateTimeFromString(detail.checkInTime!);
+        var checkOutDate = DateFunctions.getDateTimeFromString(detail.checkOutTime!);
+        if (breakStartTimeDate.isAfter(checkInDate) && breakStartTimeDate.isBefore(checkOutDate)) {
           var interruption = Interruption();
           interruption.startTime = breakStartTimeString;
           interruption.endTime = breakEndTimeString;

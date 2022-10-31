@@ -54,14 +54,16 @@ class _DashBoardPageManagerState extends State<DashBoardPageManager>
     }, builder: (context, provider, _) {
       return provider.state == ViewState.idle
           ? Scaffold(
-              body: Column(
+              body:provider.managerResponse == null?  Center(child: Text("no_data_found".tr()).boldText(
+                  context, DimensionConstants.d16.sp, TextAlign.left,
+                  color: ColorConstants.colorBlack),): Column(
               children: <Widget>[
                 activeProjectWidget(context, provider),
                 tabBarView(
                     provider.controller!, context, provider, managerProvider!)
               ],
             ))
-          : const Center(
+          :  const Center(
               child: CircularProgressIndicator(
               color: ColorConstants.primaryGradient2Color,
             ));
@@ -177,10 +179,8 @@ Widget tabBarView(
                 switch (index) {
                   case 0:
                     {
-                      provider.startDate =
-                          DateFunctions.getCurrentDateMonthYear();
-                      provider.endDate =
-                          DateFunctions.getCurrentDateMonthYear();
+                      provider.startDate = DateFunctions.getCurrentDateMonthYear();
+                      provider.endDate = DateFunctions.getCurrentDateMonthYear();
                       provider.selectedStartDate = null;
                       provider.selectedEndDate = null;
                       provider.dashBoardApi(context, managerProvider);
@@ -257,13 +257,11 @@ Widget tabBarView(
                           : noDataFound(context),
                       /*provider.responseManager!.projectData!.isNotEmpty
                           ? */
-                      weeklyTabBarContainerManager(
-                          context, provider, managerProvider, controller),
+                      weeklyTabBarContainerManager(context, provider, managerProvider, controller),
                       // : noDataFound(context),
                       /*provider.responseManager!.projectData!.isNotEmpty
                           ?*/
-                      weeklyTabBarContainerManager(
-                          context, provider, managerProvider, controller),
+                      weeklyTabBarContainerManager(context, provider, managerProvider, controller),
                       //: noDataFound(context),
                     ],
                   ),
@@ -368,13 +366,11 @@ Widget weeklyTabBarContainerManager(
                           .boldText(context, DimensionConstants.d16.sp,
                               TextAlign.center,
                               color: ColorConstants.colorWhite),
-                      provider.endDate !=
-                              DateFormat("yyyy-MM-dd").format(DateTime.now())
+                      provider.endDate != DateFormat("yyyy-MM-dd").format(DateTime.now())
                           ? GestureDetector(
                               child: backNextBtn(ImageConstants.nextIconIos),
                               onTap: () {
-                                provider.nextWeekDays(
-                                    controller.index == 1 ? 7 : 14);
+                                provider.nextWeekDays(controller.index == 1 ? 7 : 14);
                                 provider.dashBoardApi(context, barProvider);
                               },
                             )
@@ -432,8 +428,7 @@ Widget weeklyTabBarContainerManager(
                           itemBuilder: (context, index) {
                             return Column(
                               children: [
-                                weeklyTabBarDateContainer(context,
-                                    provider.weeklyData[index].date ?? ""),
+                                weeklyTabBarDateContainer(context, provider.weeklyData[index].date ?? ""),
                                 ListView.separated(
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
@@ -529,13 +524,12 @@ Widget projectDetailTile(
               color:
                   Colors.primaries[Random().nextInt(Colors.primaries.length)],
             ),
-            child:
-                Text(Validations.getInitials(string: projectName, limitTo: 2))
+            child: Text(Validations.getInitials(string: projectName, limitTo: 2))
                     .boldText(
                         context, DimensionConstants.d16.sp, TextAlign.center,
                         color: ColorConstants.colorWhite),
           ),
-          SizedBox(width: DimensionConstants.d14.w),
+         // SizedBox(width: DimensionConstants.d14.w),
           Container(
             width: DimensionConstants.d120.w,
             child: Text(projectName ?? "")

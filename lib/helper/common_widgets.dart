@@ -402,7 +402,7 @@ class CommonWidgets {
               color: ColorConstants.colorGrayE8,
             ),
             SizedBox(
-              width: DimensionConstants.d47.w,
+              width: DimensionConstants.d43.w,
             ),
             Padding(
               padding: EdgeInsets.symmetric(vertical: DimensionConstants.d13.h),

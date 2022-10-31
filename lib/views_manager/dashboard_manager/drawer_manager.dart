@@ -44,7 +44,7 @@ class _DrawerManagerState extends State<DrawerManager> {
                         width: DimensionConstants.d314.w,
                         decoration: widget.provider!.drawerBgColor != "" ?
                         BoxDecoration(
-                            color: Color(int.parse(widget.provider!.drawerBgColor.toString()))
+                            color: Color(int.parse(widget.provider!.drawerBgColor.toString())),/*Color(int.parse(SharedPreference.prefs!.getString(SharedPreference.COLORFORDRAWER)!))*/
                         )
                             : const BoxDecoration(
                             gradient: LinearGradient(colors: [
@@ -88,13 +88,7 @@ class _DrawerManagerState extends State<DrawerManager> {
                                               padding:
                                                   const EdgeInsets.all(5.0),
                                               child: ImageView(
-                                                path: widget.provider!
-                                                        .managerProfilePic.isEmpty
-                                                    ? ""
-                                                    : ApiConstantsCrew
-                                                            .BASE_URL_IMAGE +
-                                                        widget.provider!
-                                                            .managerProfilePic,
+                                                path: widget.provider!.managerProfilePic.isEmpty ? "" : ApiConstantsCrew.BASE_URL_IMAGE + widget.provider!.managerProfilePic,/*SharedPreference.prefs!.getString(SharedPreference.USER_PROFILE) != null ?ApiConstantsManager.BASEURL_IMAGE+SharedPreference.prefs!.getString(SharedPreference.USER_PROFILE)!: "" ,*/
                                                 height:
                                                     DimensionConstants.d110.h,
                                                 width:
@@ -115,10 +109,7 @@ class _DrawerManagerState extends State<DrawerManager> {
                                                         DimensionConstants
                                                             .d27.r),
                                                 child: ImageView(
-                                                  path: ApiConstantsCrew
-                                                          .BASE_URL_IMAGE +
-                                                      widget.provider!
-                                                          .companyLogo,
+                                                  path: ApiConstantsCrew.BASE_URL_IMAGE + widget.provider!.companyLogo,/*SharedPreference.prefs!.getString(SharedPreference.USER_LOGO) != null? ApiConstantsManager.BASEURL_IMAGE+SharedPreference.prefs!.getString(SharedPreference.USER_LOGO)!:"" ,*/
                                                   height:
                                                       DimensionConstants.d55.h,
                                                   width:
@@ -137,7 +128,7 @@ class _DrawerManagerState extends State<DrawerManager> {
                                       DimensionConstants.d20.sp,
                                       TextAlign.center,
                                       color: ColorConstants.colorWhite),
-                                  Text(widget.provider!.managerName).boldText(
+                                  Text(widget.provider!.managerName/*SharedPreference.prefs!.getString(SharedPreference.USER_NAME)!*/).boldText(
                                       context,
                                       DimensionConstants.d30.sp,
                                       TextAlign.start,

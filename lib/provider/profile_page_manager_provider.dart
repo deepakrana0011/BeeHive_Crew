@@ -113,26 +113,32 @@ class ProfilePageManagerProvider extends BaseProvider {
 
   ///Get profile manager api
   GetManagerProfileResponse? profileResponse;
-  Future getManagerProfile(BuildContext context,) async {
+  Future<GetManagerProfileResponse?> getManagerProfile(BuildContext context,) async {
     setState(ViewState.busy);
     try {
       var model = await api.getManagerProfile(context);
       if (model.success == true) {
         profileResponse = model;
-        SharedPreference.prefs!.setString(SharedPreference.USER_LOGO, model.data!.companyLogo == null? "" : model.data!.companyLogo!);
+       /* SharedPreference.prefs!.setString(SharedPreference.USER_LOGO, model.data!.companyLogo == null? "" : model.data!.companyLogo!);
         SharedPreference.prefs!.setString(SharedPreference.USER_NAME, model.data!.name == null? "" :model.data!.name! );
         SharedPreference.prefs!.setString(SharedPreference.USER_PROFILE, model.data!.profileImage== null? "" :model.data!.profileImage!);
+        SharedPreference.prefs!.setString(SharedPreference.COLORFORDRAWER , model.data!.profileImage== null? "" :model.data!.customColor!);*/
         setState(ViewState.idle);
+        return model;
+
       } else {
         setState(ViewState.idle);
+        return model;
       }
     } on FetchDataException catch (e) {
       setState(ViewState.idle);
       DialogHelper.showMessage(context, e.toString());
+
     } on SocketException catch (e) {
       setState(ViewState.idle);
       DialogHelper.showMessage(context, "internet_connection".tr());
     }
+    return null;
   }
 
   /// update manager profile

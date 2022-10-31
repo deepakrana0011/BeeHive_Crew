@@ -5,6 +5,7 @@ class ApiConstantsManager {
   static const String BASEURL = "http://35.183.39.183:8081/Manager/";
   static const String SIGNUP = "managerregister";
   static const String emailExist = "emailExist";
+  static const String BASEURL_IMAGE = "http://35.183.39.183:8081/";
 
   static const String sendOtpSignupPhoneManager = "sendOtpSignupPhoneManager";
   static const String sendOtpForgotPhoneManager = "sendOtpForgotPhoneManager";
@@ -51,6 +52,8 @@ class ApiConstantsManager {
   static const String allArchiveProjects = "allArchiveProjects";
   static const String unArchiveProject = "unArchiveProject/";
   static const String projectTimeSheet = "projectTimesheet";
+  static const String getAllCrewOnProjects = "allCrewOnProjects";
+  static const String getCrewDataOnTimeSheet = "crewCheckInCheckOuts/";
 
 }
 

@@ -45,6 +45,7 @@ import 'package:beehive/provider/sign_in_provider.dart';
 import 'package:beehive/provider/sign_up_manager_provider.dart';
 import 'package:beehive/provider/sign_up_provider.dart';
 import 'package:beehive/provider/time_sheet_provider_crew.dart';
+import 'package:beehive/provider/time_sheet_screen_project_details_provider_manager.dart';
 import 'package:beehive/provider/timesheet_from_crew_provider.dart';
 import 'package:beehive/provider/timesheet_manager_provider.dart';
 import 'package:beehive/services/api_class.dart';
@@ -66,10 +67,8 @@ void setUpLocator() {
   locator.registerFactory<DrawerManagerProvider>(() => DrawerManagerProvider());
   locator.registerFactory<LoginProvider>(() => LoginProvider());
   locator.registerFactory<ResetPasswordProvider>(() => ResetPasswordProvider());
-  locator.registerFactory<DashBoardPageManagerProvider>(
-      () => DashBoardPageManagerProvider());
-  locator.registerFactory<BottomBarManagerProvider>(
-      () => BottomBarManagerProvider());
+  locator.registerFactory<DashBoardPageManagerProvider>(() => DashBoardPageManagerProvider());
+  locator.registerFactory<BottomBarManagerProvider>(() => BottomBarManagerProvider());
   locator.registerFactory<ArchiveProjectsProvider>(() => ArchiveProjectsProvider());
   locator.registerFactory(() => ProjectsManagerProvider());
   locator.registerFactory(() => CustomClass());
@@ -107,6 +106,7 @@ void setUpLocator() {
   locator.registerFactory<ChangePasswordCrewProvider>(() => ChangePasswordCrewProvider());
   locator.registerLazySingleton(() => Api());
   locator.registerLazySingleton(() => CreateProjectRequest());
+  locator.registerFactory(() => TimeSheetScreenProjectDetailsProvider());
   locator.registerLazySingleton<Dio>(() {
     Dio dio = Dio();
     dio.interceptors.add(LogInterceptor(

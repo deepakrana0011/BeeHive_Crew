@@ -154,7 +154,7 @@ class DashBoardPageManagerProvider extends BaseProvider {
         var startTime = DateFunctions.getDateTimeFromString(element.checkInTime!);
         var endTime = DateFunctions.getDateTimeFromString(element.checkOutTime!);
         var minutes = endTime.difference(startTime).inMinutes;
-        totalMinutes = totalMinutes + minutes;
+        totalMinutes = totalMinutes + minutes.abs();
       }
     }
     var totalHours = DateFunctions.minutesToHourString(totalMinutes);
@@ -171,7 +171,7 @@ class DashBoardPageManagerProvider extends BaseProvider {
           var endTime =
           DateFunctions.getDateTimeFromString(element.checkOutTime!);
           var minutes = endTime.difference(startTime).inMinutes;
-          totalMinutes = totalMinutes + minutes;
+          totalMinutes = totalMinutes + minutes.abs();
         }
       }
     }

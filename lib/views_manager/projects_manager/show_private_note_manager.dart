@@ -76,17 +76,13 @@ class ShowPrivateNoteManager extends StatelessWidget {
         children: <Widget>[
           Text("note".tr()).boldText(
               context, DimensionConstants.d16.sp, TextAlign.left,
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? ColorConstants.colorWhite
-                  : ColorConstants.colorBlack),
+              color: Theme.of(context).brightness == Brightness.dark ? ColorConstants.colorWhite : ColorConstants.colorBlack),
           SizedBox(
             height: DimensionConstants.d10.h,
           ),
           Text(note).regularText(
               context, DimensionConstants.d16.sp, TextAlign.left,
-              color: Theme.of(context).brightness == Brightness.dark
-                  ? ColorConstants.colorWhite
-                  : ColorConstants.colorBlack),
+              color: Theme.of(context).brightness == Brightness.dark ? ColorConstants.colorWhite : ColorConstants.colorBlack),
         ],
       ),
     );

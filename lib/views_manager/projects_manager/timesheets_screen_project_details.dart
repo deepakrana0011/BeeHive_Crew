@@ -1,129 +1,145 @@
+import 'package:beehive/constants/api_constants.dart';
 import 'package:beehive/constants/color_constants.dart';
 import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/constants/image_constants.dart';
 import 'package:beehive/extension/all_extensions.dart';
+import 'package:beehive/provider/time_sheet_screen_project_details_provider_manager.dart';
+import 'package:beehive/view/base_view.dart';
 import 'package:beehive/widget/bottom_sheet_cupertino_time_picker.dart';
 import 'package:beehive/widget/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../constants/route_constants.dart';
+import '../../helper/date_function.dart';
+import '../../model/manager_dashboard_response.dart';
+import '../../model/project_timesheet_response.dart';
+import '../../model/project_working_hour_detail.dart';
 
-class TimeSheetsScreenManager extends StatelessWidget {
+class TimeSheetsScreenProjectDetails extends StatelessWidget {
   bool removeInterruption;
-  TimeSheetsScreenManager({Key? key, required this.removeInterruption})
+  ProjectData projectData;
+  int index;
+  TimeSheetsScreenProjectDetails({Key? key, required this.removeInterruption, required this.projectData,required this.index})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0.0,
-        centerTitle: true,
-        title: Text("time_sheets".tr())
-            .semiBoldText(context, DimensionConstants.d22.sp, TextAlign.center),
-        leading: GestureDetector(
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-            child: Icon(
-              Icons.keyboard_backspace,
-              color: Theme.of(context).iconTheme.color,
-              size: 28,
-            )),
-      ),
-      body: Column(
-        children: [
-          SizedBox(height: DimensionConstants.d5.h),
-          const Divider(
-              color: ColorConstants.colorGreyDrawer,
-              height: 0.0,
-              thickness: 1.5),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d36.w),
-            child: Row(
-              children: [
-                crewProfileContainer(context, "Benjamin Poole",
-                    path: ImageConstants.timeSheetsProfile),
-                SizedBox(width: DimensionConstants.d14.w),
-                Container(
-                  width: DimensionConstants.d1.w,
-                  height: DimensionConstants.d72.h,
-                  color: ColorConstants.colorGrayE8,
-                ),
-                SizedBox(width: DimensionConstants.d24.w),
-                crewProfileContainer(context, "Momentum Digital",
-                    shortName: "MD", color: ColorConstants.colorGreen),
-              ],
-            ),
-          ),
-          const Divider(
-              color: ColorConstants.colorGreyDrawer,
-              height: 0.0,
-              thickness: 1.5),
-          SizedBox(height: DimensionConstants.d24.h),
-          Text("Tue, Apr 13 2021").boldText(context, DimensionConstants.d18.sp, TextAlign.center),
-          SizedBox(height: DimensionConstants.d16.h),
-          hoursContainer(context),
-          SizedBox(height: DimensionConstants.d26.h),
-          checkInCHeckOutStepper(context),
-          SizedBox(height: DimensionConstants.d26.h),
-          GestureDetector(
-            onTap: () {
-              if (removeInterruption == false) {
-                Navigator.pushNamed(
-                    context, RouteConstants.timeSheetScreenManager,
-                    arguments:
-                        TimeSheetsScreenManager(removeInterruption: true));
-              }else{
+    return BaseView<TimeSheetScreenProjectDetailsProvider>(onModelReady: (provider){},
+      builder: (context,provider,_){
+      return  Scaffold(
+        appBar: AppBar(
+          elevation: 0.0,
+          centerTitle: true,
+          title: Text("time_sheets".tr())
+              .semiBoldText(context, DimensionConstants.d22.sp, TextAlign.center),
+          leading: GestureDetector(
+              onTap: () {
                 Navigator.of(context).pop();
-              }
-            },
-            child: Container(
-              height: DimensionConstants.d50.h,
-              width: DimensionConstants.d320.w,
-              decoration: BoxDecoration(
-                border: removeInterruption == true
-                    ? Border.all(
-                        color: ColorConstants.gray828282,
-                        width: DimensionConstants.d1.w)
-                    : null,
-                color: removeInterruption == false
-                    ? ColorConstants.redColorEB5757
-                    : ColorConstants.colorWhite,
-                borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
-              ),
-              child: Padding(
-                padding: EdgeInsets.only(left: DimensionConstants.d65.w),
-                child: Row(
-                  children: <Widget>[
-                    removeInterruption == false
-                        ? ImageView(
-                            path: ImageConstants.ignoreIcon,
-                            color: ColorConstants.colorWhite,
-                            height: DimensionConstants.d23.h,
-                            width: DimensionConstants.d24.w,
-                          )
-                        : Container(),
-                    SizedBox(
-                      width: DimensionConstants.d10.w,
-                    ),
-                    Text(removeInterruption == false
-                            ? "ignore_all_interruptions".tr()
-                            : "revert_all_iterruptions".tr())
-                        .boldText(context, DimensionConstants.d16.sp,
-                            TextAlign.center,
-                            color: removeInterruption == false
-                                ? ColorConstants.colorWhite
-                                : ColorConstants.redColorEB5757),
-                  ],
-                ),
+              },
+              child: Icon(
+                Icons.keyboard_backspace,
+                color: Theme.of(context).iconTheme.color,
+                size: 28,
+              )),
+        ),
+        body: Column(
+          children: [
+            SizedBox(height: DimensionConstants.d5.h),
+            const Divider(
+                color: ColorConstants.colorGreyDrawer,
+                height: 0.0,
+                thickness: 1.5),
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d36.w),
+              child: Row(
+                children: [
+                  crewProfileContainer(context, projectData.checkins[index].crew![0].name! ?? " ",
+                      path:  ApiConstantsManager.BASEURL_IMAGE+projectData.checkins[index].crew![0].profileImage!),
+                  SizedBox(width: DimensionConstants.d14.w),
+                  Container(
+                    width: DimensionConstants.d1.w,
+                    height: DimensionConstants.d72.h,
+                    color: ColorConstants.colorGrayE8,
+                  ),
+                  SizedBox(width: DimensionConstants.d24.w),
+                  crewProfileContainer(context, projectData.projectName! ?? " ",
+                      shortName: projectData.projectName
+                          .toString()
+                          .substring(0, 2), color: ColorConstants.colorGreen),
+                ],
               ),
             ),
-          )
-        ],
-      ),
+            const Divider(
+                color: ColorConstants.colorGreyDrawer,
+                height: 0.0,
+                thickness: 1.5),
+            SizedBox(height: DimensionConstants.d24.h),
+            Text(DateFunctions.dateTimeWithWeek(DateTime.parse(projectData.date.toString()).toLocal())).boldText(context, DimensionConstants.d18.sp, TextAlign.center),
+            SizedBox(height: DimensionConstants.d16.h),
+            hoursContainer(context),
+            SizedBox(height: DimensionConstants.d26.h),
+            checkInCHeckOutStepper(context,provider),
+            SizedBox(height: DimensionConstants.d26.h),
+            GestureDetector(
+              onTap: () {
+                if (removeInterruption == false) {
+                }else{
+                  Navigator.of(context).pop();
+                }
+              },
+              child: Container(
+                height: DimensionConstants.d50.h,
+                width: DimensionConstants.d320.w,
+                decoration: BoxDecoration(
+                  border: removeInterruption == true
+                      ? Border.all(
+                      color: ColorConstants.gray828282,
+                      width: DimensionConstants.d1.w)
+                      : null,
+                  color: removeInterruption == false
+                      ? ColorConstants.redColorEB5757
+                      : ColorConstants.colorWhite,
+                  borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
+                ),
+                child: Padding(
+                  padding: EdgeInsets.only(left: DimensionConstants.d65.w),
+                  child: Row(
+                    children: <Widget>[
+                      removeInterruption == false
+                          ? ImageView(
+                        path: ImageConstants.ignoreIcon,
+                        color: ColorConstants.colorWhite,
+                        height: DimensionConstants.d23.h,
+                        width: DimensionConstants.d24.w,
+                      )
+                          : Container(),
+                      SizedBox(
+                        width: DimensionConstants.d10.w,
+                      ),
+                      Text(removeInterruption == false
+                          ? "ignore_all_interruptions".tr()
+                          : "revert_all_iterruptions".tr())
+                          .boldText(context, DimensionConstants.d16.sp,
+                          TextAlign.center,
+                          color: removeInterruption == false
+                              ? ColorConstants.colorWhite
+                              : ColorConstants.redColorEB5757),
+                    ],
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+      );
+
+
+      },
+
     );
+
+
   }
 
   Widget crewProfileContainer(BuildContext context, String name,
@@ -134,7 +150,10 @@ class TimeSheetsScreenManager extends StatelessWidget {
             ? SizedBox(
                 height: DimensionConstants.d40.h,
                 width: DimensionConstants.d40.w,
-                child: ImageView(path: path),
+                child: ClipRRect(
+                    borderRadius: BorderRadius.circular(DimensionConstants.d20.r),
+
+                    child: ImageView(path: path,fit: BoxFit.cover,radius: DimensionConstants.d20.r,)),
               )
             : Container(
                 alignment: Alignment.center,
@@ -153,14 +172,14 @@ class TimeSheetsScreenManager extends StatelessWidget {
         SizedBox(
           width: DimensionConstants.d75.w,
           child: Text(name).semiBoldText(
-              context, DimensionConstants.d14.sp, TextAlign.center,
+              context, DimensionConstants.d14.sp, TextAlign.left,
               maxLines: 2, overflow: TextOverflow.ellipsis),
         ),
       ],
     );
   }
 
-  Widget hoursContainer(BuildContext context) {
+  Widget hoursContainer(BuildContext context,) {
     return Container(
       alignment: Alignment.center,
       width: DimensionConstants.d120.w,
@@ -171,17 +190,18 @@ class TimeSheetsScreenManager extends StatelessWidget {
           Radius.circular(DimensionConstants.d100.r),
         ),
       ),
-      child: Text("8:57 Hrs").boldText(
+      child: Text("${DateFunctions.minutesToHourString(projectData.checkins[index].hoursDiff!)}" " Hrs" ).boldText(
           context, DimensionConstants.d16.sp, TextAlign.center,
           color: ColorConstants.colorBlack),
     );
   }
 
-  Widget checkInCHeckOutStepper(BuildContext context) {
+  Widget checkInCHeckOutStepper(BuildContext context, TimeSheetScreenProjectDetailsProvider provider, ) {
     return Column(
       children: [
-        checkInButton(context, "check_in".tr(), "8:08a", CrossAxisAlignment.center),
-        stepperLine(DimensionConstants.d35.h, ColorConstants.colorGreen),
+        checkInButton(context, "check_in".tr(),DateFunctions.dateTO12Hour(projectData.checkins[index].checkInTime!).substring(0, DateFunctions.dateTO12Hour(projectData.checkins[index].checkInTime!).length - 1), CrossAxisAlignment.center),
+        customStepper(provider, projectData.checkins[index]),
+        /*stepperLine(DimensionConstants.d35.h, ColorConstants.colorGreen),
         // SizedBox(height: DimensionConstants.d2.h),
         removeInterruption == false
             ? stepperLineWithRowTextButton(
@@ -191,7 +211,7 @@ class TimeSheetsScreenManager extends StatelessWidget {
                 "10:15a - 10:30a",
                 ColorConstants.colorLightRed,
                 ColorConstants.colorGray2)
-            : Container(),
+            : Container(),*/
         // SizedBox(height: DimensionConstants.d2.h),
         // stepperLine(DimensionConstants.d80.h, ColorConstants.colorGreen),
         // SizedBox(height: DimensionConstants.d4.h),
@@ -203,11 +223,11 @@ class TimeSheetsScreenManager extends StatelessWidget {
         //     ColorConstants.colorGray,
         //     ColorConstants.colorGray2),
         // SizedBox(height: DimensionConstants.d4.h),
-        stepperLine(
+        /*stepperLine(
             removeInterruption == false
                 ? DimensionConstants.d240.h
                 : DimensionConstants.d280.h,
-            ColorConstants.colorGreen),
+            ColorConstants.colorGreen),*/
         // stepperLineWithRowText(
         //     context,
         //     DimensionConstants.d6.h,
@@ -216,8 +236,7 @@ class TimeSheetsScreenManager extends StatelessWidget {
         //     ColorConstants.colorLightRed,
         //     ColorConstants.colorGray2),
         // stepperLine(DimensionConstants.d60.h, ColorConstants.colorGreen),
-        checkOutButton(
-            context, "check_out".tr(), "05:00p", CrossAxisAlignment.center),
+        checkOutButton(context, "check_out".tr(), DateFunctions.dateTO12Hour(projectData.checkins[index].checkOutTime!).substring(0, DateFunctions.dateTO12Hour(projectData.checkins[index].checkInTime!).length - 1), CrossAxisAlignment.center),
       ],
     );
   }
@@ -482,4 +501,49 @@ class TimeSheetsScreenManager extends StatelessWidget {
       ],
     );
   }
+
+  Widget customStepper(TimeSheetScreenProjectDetailsProvider provider,
+      Checkins checkinsDetails) {
+    List<Widget> widgetlist = [];
+    List<ProjectWorkingHourDetail> projectDetailLIst = provider.getTimeForStepper(checkinsDetails);
+    for (int i = 0; i < projectDetailLIst.length; i++) {
+      if (projectDetailLIst[i].type == 1) {
+        widgetlist.add(Flexible(
+          flex: projectDetailLIst[i].timeInterval!,
+          child: Container(
+           // height: DimensionConstants.d4.h,
+            color: ColorConstants.colorGreen,
+          ),
+        ));
+      } else if (projectDetailLIst[i].type == 2) {
+        widgetlist.add(Flexible(
+          flex: projectDetailLIst[i].timeInterval!,
+          child: Container(
+           // height: DimensionConstants.d50.h,
+            color: ColorConstants.colorGray,
+          ),
+        ));
+      } else {
+        widgetlist.add(Flexible(
+          flex: projectDetailLIst[i].timeInterval!,
+          child: Container(
+           // height: DimensionConstants.d15.h,
+            color: ColorConstants.colorLightRed,
+          ),
+        ));
+      }
+    }
+    return Container(
+        width: DimensionConstants.d8.w,
+        height: DimensionConstants.d330.h,
+        child: Center(
+            child: Flex(
+              direction: Axis.vertical,
+              children: widgetlist,
+            )));
+  }
+
+
+
+
 }

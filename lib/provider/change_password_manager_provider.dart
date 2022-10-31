@@ -9,6 +9,18 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 class ChangePasswordManagerProvider extends BaseProvider{
+  bool oldPassWordField = false;
+  bool newPasswordFiled = false;
+  bool confirmPasswordFiled = false;
+  bool oldPasswordContentPadding = false;
+  bool newPasswordContentPadding = false;
+  bool confirmPasswordContentPadding = false;
+  bool oldPasswordVisible = false;
+  bool newPasswordVisible = false;
+  bool confirmPasswordVisible = false;
+  final oldPassWordFocusNode = FocusNode();
+  final newPasswordFocusNode = FocusNode();
+  final confirmPasswordFocusNode = FocusNode();
 
   Future<bool> changePassword(BuildContext context, String oldPassword, String newPassword) async {
     setState(ViewState.busy);

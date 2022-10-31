@@ -89,8 +89,7 @@ class SetRatesPageManageProvider extends BaseProvider {
 
   Future<void> updateCrewList(BuildContext context) async {
     var updateCrewRequest = UpdateCrewMemberRequest();
-    var list =
-        createProjectRequest.selectedCrewMember!.map((e) => e.id!).toList();
+    var list = createProjectRequest.selectedCrewMember!.map((e) => e.id!).toList();
     updateCrewRequest.crewId = list;
     if (isSameRate) {
       updateCrewRequest.sameRate = singleRateController.text;
@@ -114,8 +113,7 @@ class SetRatesPageManageProvider extends BaseProvider {
     }
     setState(ViewState.busy);
     try {
-      var model =
-          await api.updateCrewList(context, projectId!, updateCrewRequest);
+      var model = await api.updateCrewList(context, projectId!, updateCrewRequest);
       Navigator.popUntil(context, (route) {
         if (route.settings.name == "bottomBarManager") {
           return true;

@@ -11,20 +11,17 @@ class ViewDecoration {
 
   static InputDecoration inputDecorationTextField({bool contPadding = false, Widget? suffixIcon, Color? fillColor, Color? focusColor, Widget? suffix, bool showError = true}) {
     return InputDecoration(
-
       suffixIconConstraints: const BoxConstraints(maxHeight: 15),
         suffixIcon: suffixIcon,
         suffix: suffix,
         filled: true,
         isDense: true,
         errorMaxLines: 2,
-
         errorStyle: showError ? TextStyle(
           fontWeight: FontWeight.w400,
           fontSize: DimensionConstants.d14.sp,
           fontFamily: StringConstants.fontFamily
         ) : const TextStyle(fontSize: 0, height: 0),
-
         fillColor: fillColor,
         focusColor: focusColor,
         contentPadding: contPadding ?

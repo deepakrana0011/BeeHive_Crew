@@ -293,7 +293,7 @@ class DateFunctions {
   }
 
   static String dateFormatyyyyMMddHHmm(DateTime dateTime) {
-    String date = DateFormat("yyyy-MM-dd HH:mm").format(dateTime);
+    String date = DateFormat("yyyy-MM-dd HH:mm a").format(dateTime);
     return date;
   }
 
@@ -324,8 +324,8 @@ class DateFunctions {
   }
 
   static String tweleveTo24Hour(String? selectedCheckOutTime) {
-    DateTime date = DateFormat("hh:mm a").parse(selectedCheckOutTime!);
-    String _24HourFormat = DateFormat("HH:mm").format(date);
+    DateTime date = DateFormat("hh:mm").parse(selectedCheckOutTime!);
+    String _24HourFormat = DateFormat.jm().format(date);
     print("tweleve hour format string is ${_24HourFormat}");
     return _24HourFormat;
   }
@@ -350,5 +350,8 @@ class DateFunctions {
 
     return "${weekList[weekDay]}, ${monthsList[mon-1]} $day $year";
   }
+
+
+
 
 }

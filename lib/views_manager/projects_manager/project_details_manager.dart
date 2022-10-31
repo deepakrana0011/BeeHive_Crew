@@ -127,8 +127,7 @@ class _ProjectDetailsPageManagerState extends State<ProjectDetailsPageManager>
                         SizedBox(
                           height: DimensionConstants.d10.h,
                         ),
-                        tabBarView(
-                            context, provider.tabController!, provider, false),
+                        tabBarView(context, provider.tabController!, provider, false),
                         SizedBox(
                           height: DimensionConstants.d24.h,
                         ),
@@ -751,14 +750,7 @@ class _ProjectDetailsPageManagerState extends State<ProjectDetailsPageManager>
                 SizedBox(
                   width: DimensionConstants.d13.w,
                 ),
-                Text(DateFunctions.dateTO12Hour(checkInDetail.checkInTime!)
-                    .substring(
-                    0,
-                    DateFunctions
-                        .dateTO12Hour(checkInDetail.checkInTime!)
-                        .length -
-                        1))
-                    .regularText(
+                Text(DateFunctions.dateTO12Hour(checkInDetail.checkInTime!).substring(0, DateFunctions.dateTO12Hour(checkInDetail.checkInTime!).length - 1)).regularText(
                     context, DimensionConstants.d13.sp, TextAlign.left,
                     color: ColorConstants.colorBlack),
                 SizedBox(width: DimensionConstants.d11.w),
@@ -917,13 +909,9 @@ class _ProjectDetailsPageManagerState extends State<ProjectDetailsPageManager>
     if (index == 0) {
       name = bottomBarProvider.managerName ?? "";
     } else {
-      name =
-          provider.projectDetailResponse!.projectData!.crews![index - 1].name;
-      hourlyRate = double.parse(
-          provider.projectDetailResponse!.projectData!.crews![index - 1]
-              .projectRate!).toStringAsFixed(2);
+      name = provider.projectDetailResponse!.projectData!.crews![index - 1].name;
+      hourlyRate = double.parse(provider.projectDetailResponse!.projectData!.crews![index - 1].projectRate!).toStringAsFixed(2) ;
     }
-
     return GestureDetector(
       onTap: (index == 0 || widget.archiveProject == true) ? () {} : () {
         Navigator.pushNamed(context, RouteConstants.crewPageProfileManager,
@@ -1449,8 +1437,7 @@ class _ProjectDetailsPageManagerState extends State<ProjectDetailsPageManager>
   Widget customStepper(ProjectDetailsManagerProvider provider,
       CheckInProjectDetailManager checkInProjectDetail) {
     List<Widget> widgetlist = [];
-    List<ProjectWorkingHourDetail> projectDetailLIst =
-    provider.getTimeForStepper(checkInProjectDetail);
+    List<ProjectWorkingHourDetail> projectDetailLIst = provider.getTimeForStepper(checkInProjectDetail);
     for (int i = 0; i < projectDetailLIst.length; i++) {
       if (projectDetailLIst[i].type == 1) {
         widgetlist.add(Flexible(

@@ -64,7 +64,9 @@ class _ProjectsPageManagerState extends State<ProjectsPageManager>
         // provider.previousWeekDays(7);
       },
       builder: (context, provider, _) {
-        return Scaffold(
+        return /*provider.allProjectsManagerResponse == null?  Center(child: Text("no_data_found".tr()).boldText(
+            context, DimensionConstants.d16.sp, TextAlign.left,
+            color: ColorConstants.colorBlack),):*/ Scaffold(
           key: _scaffoldkey,
           backgroundColor: Theme
               .of(context)
@@ -103,9 +105,7 @@ class _ProjectsPageManagerState extends State<ProjectsPageManager>
                         fontSize: DimensionConstants.d16.sp,
                         shadowRequired: true,
                         onBtnTap: () {
-                          Navigator.pushNamed(context,
-                              RouteConstants.createProjectManager)
-                              .then((value) {
+                          Navigator.pushNamed(context, RouteConstants.createProjectManager).then((value) {
                             if (ProjectsPageManager.isProjectCreated!) {
                               bottomBarProvider?.updateNavigationValue(
                                   5,
@@ -819,7 +819,7 @@ class _ProjectsPageManagerState extends State<ProjectsPageManager>
                             _scaffoldkey.currentContext!,
                             onTap: () {},
                             timeSheetOrSchedule: true,
-                            projectData: provider.projectData,
+                            projectData: provider.projectData!,
                             projectColor: provider.projectNameList[weekDaysIndex]
                                 .projectName[index].color
                           );

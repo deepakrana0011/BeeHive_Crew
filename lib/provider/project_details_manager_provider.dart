@@ -166,8 +166,7 @@ class ProjectDetailsManagerProvider extends BaseProvider {
     }
   }
 
-  List<ProjectWorkingHourDetail> getTimeForStepper(
-      CheckInProjectDetailManager detail) {
+  List<ProjectWorkingHourDetail> getTimeForStepper(CheckInProjectDetailManager detail) {
     List<Interruption> timeString = [];
     List<ProjectWorkingHourDetail> projectWorkingHourList = [];
     for (int i = 0; i < detail.checkinBreak!.length; i++) {
@@ -183,12 +182,9 @@ class ProjectDetailsManagerProvider extends BaseProvider {
                 detail.checkinBreak![i].startTime!,
                 int.parse(detail.checkinBreak![i].interval!.substring(0, 2)));
 
-        var breakStartTimeDate =
-            DateFunctions.getDateTimeFromString(breakStartTimeString);
-        var checkInDate =
-            DateFunctions.getDateTimeFromString(detail.checkInTime!);
-        var checkOutDate =
-            DateFunctions.getDateTimeFromString(detail.checkOutTime!);
+        var breakStartTimeDate = DateFunctions.getDateTimeFromString(breakStartTimeString);
+        var checkInDate = DateFunctions.getDateTimeFromString(detail.checkInTime!);
+        var checkOutDate = DateFunctions.getDateTimeFromString(detail.checkOutTime!);
         if (breakStartTimeDate.isAfter(checkInDate) &&
             breakStartTimeDate.isBefore(checkOutDate)) {
           var interruption = Interruption();
@@ -209,12 +205,10 @@ class ProjectDetailsManagerProvider extends BaseProvider {
       return aValue.compareTo(bValue);
     });
     if (timeString.isNotEmpty) {
-      var checkInDate =
-          DateFunctions.getDateTimeFromString(detail.checkInTime!);
+      var checkInDate = DateFunctions.getDateTimeFromString(detail.checkInTime!);
       var checkInDateString = detail.checkInTime!;
       for (var value in timeString) {
-        var breakStartTime =
-            DateFunctions.getDateTimeFromString(value.startTime!);
+        var breakStartTime = DateFunctions.getDateTimeFromString(value.startTime!);
         var breakEndTime = DateFunctions.getDateTimeFromString(value.endTime!);
         var workingMinutesDifference =
             breakStartTime.difference(checkInDate).inMinutes;
@@ -243,11 +237,9 @@ class ProjectDetailsManagerProvider extends BaseProvider {
         checkInDateString = value.endTime!;
       }
 
-      var checkOutDate =
-          DateFunctions.getDateTimeFromString(detail.checkOutTime!);
+      var checkOutDate = DateFunctions.getDateTimeFromString(detail.checkOutTime!);
       var checkOutDateString = detail.checkOutTime!;
-      var workingMinutesDifference =
-          checkInDate.difference(checkOutDate).inMinutes;
+      var workingMinutesDifference = checkInDate.difference(checkOutDate).inMinutes;
       projectWorkingHourList.add(ProjectWorkingHourDetail(
           startTime: checkInDateString,
           endTime: checkOutDateString,

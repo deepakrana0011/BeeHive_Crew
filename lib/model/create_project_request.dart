@@ -63,7 +63,7 @@ class CreateProjectRequest {
         "latitude": latitude,
         "longitude": longitude,
         "locationRadius": locationRadius,
-        "crewId": List<dynamic>.from(crewId!.map((x) => x)),
+        "crewId":crewId != null? List<dynamic>.from(crewId!.map((x) => x)):[],
         "workDays": List<dynamic>.from(workDays!.map((x) => x)),
         "hoursFrom": hoursFrom,
         "hoursTo": hoursTo,

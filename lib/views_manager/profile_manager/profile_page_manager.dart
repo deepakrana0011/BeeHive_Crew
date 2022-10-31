@@ -6,6 +6,7 @@ import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/dialog_helper.dart';
+import 'package:beehive/provider/bottom_bar_Manager_provider.dart';
 import 'package:beehive/provider/profile_page_manager_provider.dart';
 import 'package:beehive/view/base_view.dart';
 import 'package:beehive/views_manager/profile_manager/edit_profile_page_manager.dart';
@@ -13,6 +14,7 @@ import 'package:beehive/widget/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import '../../helper/common_widgets.dart';
 
 class ProfilePageManager extends StatelessWidget {
@@ -20,9 +22,12 @@ class ProfilePageManager extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final bottomBarProvider = Provider.of<BottomBarManagerProvider>(context,listen: false);
     return BaseView<ProfilePageManagerProvider>(
         onModelReady: (provider){
-          provider.getManagerProfile(context);
+          provider.getManagerProfile(context).then((value) {
+            bottomBarProvider.updateDrawerData(value!.data!.name!, value.data!.profileImage!, value.data!.companyLogo!, value.data!.customColor!);
+          });
         },
         builder: (context,provider,_){
           return Scaffold(
@@ -41,7 +46,9 @@ class ProfilePageManager extends StatelessWidget {
                 children: <Widget>[
                   profileWidget(context, provider, onTapOnEditButton: () {
                     Navigator.push(context, MaterialPageRoute(builder: (context) => EditProfilePageManager())).then((value) {
-                     provider.getManagerProfile(context);
+                     provider.getManagerProfile(context).then((value) {
+                       bottomBarProvider.updateDrawerData(value!.data!.name!, value.data!.profileImage!, value.data!.companyLogo!, value.data!.customColor!);
+                     });
                    });
                   }
                  ),
@@ -64,12 +71,7 @@ class ProfilePageManager extends StatelessWidget {
                   SizedBox(height: DimensionConstants.d38.h,),
                   GestureDetector(
                       onTap: () {
-                        Navigator.pushNamed(
-                            context, RouteConstants.changePasswordPageManager).then((value) {
-                              if(value = true){
-                                DialogHelper.showMessage(context, "password_changed_successfully".tr());
-                              }
-                        });
+                        Navigator.pushNamed(context, RouteConstants.changePasswordPageManager);
                       },
                       child: profileDetailsWidget(context, ImageConstants.lockIcon,
                           "change_password".tr(), true)),

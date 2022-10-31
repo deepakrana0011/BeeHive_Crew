@@ -241,8 +241,7 @@ class ProjectSettingsManagerProvider extends BaseProvider {
         breakList.add(value);
       }
       createProjectRequest.breakList = breakList;
-      createProjectRequest.roundTimesheets =
-          selectedRoundSheetIndex == -1 ?  "" : roundTimeSheet[selectedRoundSheetIndex];
+      createProjectRequest.roundTimesheets = selectedRoundSheetIndex == -1 ?  "" : roundTimeSheet[selectedRoundSheetIndex];
       try {
         var model = await api.createProject(context, createProjectRequest);
         if (model.success!) {
