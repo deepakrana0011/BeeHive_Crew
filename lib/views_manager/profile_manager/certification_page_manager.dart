@@ -111,7 +111,7 @@ class CertificationPageManager extends StatelessWidget {
                             onTap: () {
                               provider.removePhoto();
                             },
-                            child: provider.profileImage != " " ? ImageView(
+                            child: provider.profileImage != " " ? const ImageView(
                               path: ImageConstants.crossIcon,) : Container()))
                   ],
                 ),

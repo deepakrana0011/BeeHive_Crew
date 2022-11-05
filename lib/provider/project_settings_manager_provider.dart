@@ -240,11 +240,13 @@ class ProjectSettingsManagerProvider extends BaseProvider {
         value.interval = element.breakIntervalTime;
         breakList.add(value);
       }
+      createProjectRequest.sameRate = '';
       createProjectRequest.breakList = breakList;
       createProjectRequest.roundTimesheets = selectedRoundSheetIndex == -1 ?  "" : roundTimeSheet[selectedRoundSheetIndex];
       try {
         var model = await api.createProject(context, createProjectRequest);
         if (model.success!) {
+          createProjectRequest.clearCreateProjectRequest();
           ProjectsPageManager.isProjectCreated = true;
           ProjectsPageManager.projectId = model.data!.id!;
           Navigator.popUntil(context, (route) {

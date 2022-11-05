@@ -61,8 +61,7 @@ class SetRatesPageManageProvider extends BaseProvider {
         }
       }
     } else {
-      var index =
-          myController!.indexWhere((element) => element.text.trim().isEmpty);
+      var index = myController!.indexWhere((element) => element.text.trim().isEmpty);
       if (index == -1) {
         List<ProjectRate> projectList = [];
         for (int i = 0; i < myController!.length; i++) {
@@ -71,6 +70,7 @@ class SetRatesPageManageProvider extends BaseProvider {
           value.price = myController![i].text;
           projectList.add(value);
         }
+        createProjectRequest.sameRate ='';
         createProjectRequest.projectRate = projectList;
         if (isUpdating) {
           updateCrewList(context);
@@ -110,6 +110,7 @@ class SetRatesPageManageProvider extends BaseProvider {
         projectList.add(value);
       }
       updateCrewRequest.projectRate = projectList;
+      updateCrewRequest.sameRate='';
     }
     setState(ViewState.busy);
     try {

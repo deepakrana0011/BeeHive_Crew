@@ -70,8 +70,8 @@ class OtpPageProviderManager extends BaseProvider {
       setState(ViewState.idle);
       if (model.success == true) {
         var token = SharedPreference.prefs!.getString(SharedPreference.TOKEN);
-        Navigator.pushNamed(context, RouteConstants.resetPasswordScreenManager,
-            arguments: token);
+        print(token);
+        Navigator.pushNamed(context, RouteConstants.resetPasswordScreenManager, arguments: token);
       } else {
         DialogHelper.showMessage(context, model.message!);
       }

@@ -99,7 +99,7 @@ class TimeSheetFromCrewProvider extends BaseProvider{
    List<Interuption> timeString = [];
    List<ProjectWorkingHourDetail> projectWorkingHourList = [];
    for (int i = 0; i < detail.checkinBreak!.length; i++) {
-     if (detail.checkinBreak![i].startTime != "Any Time") {
+     if (detail.checkinBreak![i].startTime?.toLowerCase() != "Any Time".toLowerCase()) {
        var breakStartTimeString = detail.checkInTime!.substring(0, 10) + " " + detail.checkinBreak![i].startTime!.replaceAll("PM", "").replaceAll("AM", "");
        var breakEndTimeString = detail.checkInTime!.substring(0, 10) + " " + DateFunctions.stringToDateAddMintues(detail.checkinBreak![i].startTime!, int.parse(detail.checkinBreak![i].interval!.substring(0, 2)));
        var breakStartTimeDate = DateFunctions.getDateTimeFromString(breakStartTimeString);

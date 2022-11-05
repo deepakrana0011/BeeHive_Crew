@@ -657,9 +657,8 @@ class _ProjectDetailsPageManagerState extends State<ProjectDetailsPageManager>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(provider.projectDetailResponse?.projectData?.totalHours
-                    ?.toStringAsFixed(0) ??
-                    "0")
+                Text(DateFunctions.minutesToHourString(provider.projectDetailResponse?.projectData?.totalHours??0)
+                    )
                     .boldText(
                     context, DimensionConstants.d24.sp, TextAlign.start,
                     color: Theme
@@ -756,12 +755,16 @@ class _ProjectDetailsPageManagerState extends State<ProjectDetailsPageManager>
                 SizedBox(width: DimensionConstants.d11.w),
                 customStepper(provider, checkInDetail),
                 SizedBox(width: DimensionConstants.d10.w),
-                Text(DateFunctions.dateTO12Hour(checkInDetail.checkOutTime!)
+                Text(DateFunctions.dateTO12Hour( (checkInDetail.checkOutTime == null || checkInDetail.checkOutTime!.trim().isEmpty)
+                    ? DateFunctions.dateFormatyyyyMMddHHmm(DateTime.now())
+                    : checkInDetail.checkOutTime!)
                     .substring(
                     0,
                     DateFunctions
                         .dateTO12Hour(
-                        checkInDetail.checkOutTime!)
+                        (checkInDetail.checkOutTime == null || checkInDetail.checkOutTime!.trim().isEmpty)
+                            ? DateFunctions.dateFormatyyyyMMddHHmm(DateTime.now())
+                            : checkInDetail.checkOutTime!)
                         .length -
                         1))
                     .regularText(
@@ -772,7 +775,9 @@ class _ProjectDetailsPageManagerState extends State<ProjectDetailsPageManager>
                 ),
                 Text("${DateFunctions.calculateTotalHourTime(
                     checkInDetail.checkInTime!,
-                    checkInDetail.checkOutTime!)} h")
+                    (checkInDetail.checkOutTime == null || checkInDetail.checkOutTime!.trim().isEmpty)
+                        ? DateFunctions.dateFormatyyyyMMddHHmm(DateTime.now())
+                        : checkInDetail.checkOutTime!)} h")
                     .boldText(
                     context, DimensionConstants.d13.sp, TextAlign.left,
                     color: ColorConstants.colorBlack),
@@ -1194,7 +1199,7 @@ class _ProjectDetailsPageManagerState extends State<ProjectDetailsPageManager>
                                   context,
                                   provider,
                                   provider.weeklyData[index]
-                                      .checkInDataList![innerIndex]!);
+                                      .checkInDataList![innerIndex]);
                             },
                             separatorBuilder: (context, index) {
                               return const Divider(

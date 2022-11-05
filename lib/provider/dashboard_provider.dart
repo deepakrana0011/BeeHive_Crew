@@ -4,6 +4,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:beehive/constants/color_constants.dart';
+import 'package:beehive/extension/time_of_day_extenstion.dart';
 import 'package:beehive/helper/date_function.dart';
 import 'package:beehive/helper/shared_prefs.dart';
 import 'package:beehive/model/allProjectCrewResponse.dart';
@@ -184,14 +185,16 @@ class DashboardProvider extends BaseProvider {
   Future checkOutApi(context, BottomBarProvider bottomBarProvider,) async {
     setState(ViewState.busy);
     try {
-      print("selected checkout time ${selectedCheckOutTime}");
-      var checkoutTime = DateFunctions.tweleveTo24Hour(selectedCheckOutTime!.toUpperCase());
+      /*var checkoutTime = DateFunctions.tweleveTo24Hour(selectedCheckOutTime!.toUpperCase());
       var value = crewResponse!.userCheckin!.checkInTime!.substring(0, 10);
-
       var checkInTimeFinal = value + " " + selectedCheckOutTime!;
-      var checkOutTime = DateFunctions.dateFormatyyyyMMddHHmm(DateTime.parse(checkInTimeFinal));
+      var checkOutTime = DateFunctions.dateFormatyyyyMMddHHmm(DateTime.parse(checkInTimeFinal));*/
 
-      var model = await api.checkOutApiCrew(context, crewResponse!.userCheckin!.id!, checkOutTime);
+      //var checkoutTime = DateFunctions.tweleveTo24Hour(selectedCheckOutTime!.toUpperCase());
+      var value = crewResponse!.userCheckin!.checkInTime!.substring(0, 10);
+      var checkInTimeFinal = value + " " + selectedCheckOutTime!;
+
+      var model = await api.checkOutApiCrew(context, crewResponse!.userCheckin!.id!, checkInTimeFinal);
       if (model.success == true) {
         setState(ViewState.idle);
         getDashBoardData(context, bottomBarProvider);
@@ -264,8 +267,8 @@ class DashboardProvider extends BaseProvider {
             context, "Checkout Time should be greater than check in time");
       } else {
         initialTime = pickedTime;
-        selectedCheckOutTime = initialTime.format(context);
-         //   DateFunctions.twentyFourHourTO12Hour(initialTime.format(context));
+        selectedCheckOutTime = initialTime.to24hours();
+         //DateFunctions.twentyFourHourTO12Hour(initialTime.format(context));
       }
     }
   }
@@ -360,7 +363,7 @@ class DashboardProvider extends BaseProvider {
     List<Interruption> timeString = [];
     List<ProjectWorkingHourDetail> projectWorkingHourList = [];
     for (int i = 0; i < detail.allCheckinBreak!.length; i++) {
-      if (detail.allCheckinBreak![i].startTime != "Any Time") {
+      if (detail.allCheckinBreak![i].startTime?.toLowerCase() != "Any Time".toLowerCase()) {
         var breakStartTimeString = detail.checkInTime!.substring(0, 10) + " " + detail.allCheckinBreak![i].startTime!.replaceAll("PM", "").replaceAll("AM", "");
         var breakEndTimeString = detail.checkInTime!.substring(0, 10) + " " + DateFunctions.stringToDateAddMintues(detail.allCheckinBreak![i].startTime!, int.parse(detail.allCheckinBreak![i].interval!.substring(0, 2)));
         var breakStartTimeDate = DateFunctions.getDateTimeFromString(breakStartTimeString);

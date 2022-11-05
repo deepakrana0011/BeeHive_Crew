@@ -59,12 +59,17 @@ class _ProjectDetailsPageState extends State<ProjectDetailsPage>
               appBar: CommonWidgets.appBarWithTitleAndAction(context,
                   title: "project_details",
                   actionIcon: ImageConstants.settingsIcon,
-                  actionButtonRequired: widget.archivedOrProject == true ? false : true, onTapAction: () {
-                Navigator.pushNamed(
-                    context, RouteConstants.projectSettingsPage, arguments: ProjectSettingsPage(projectData: provider.projectDetailCrewResponse!.projectData!)).then((value) {
-                      if(value == true){
-                        Navigator.of(context).pop(true);
-                      }
+                  actionButtonRequired: widget.archivedOrProject == true
+                      ? false
+                      : true, onTapAction: () {
+                Navigator.pushNamed(context, RouteConstants.projectSettingsPage,
+                        arguments: ProjectSettingsPage(
+                            projectData: provider
+                                .projectDetailCrewResponse!.projectData!))
+                    .then((value) {
+                  if (value == true) {
+                    Navigator.of(context).pop(true);
+                  }
                 });
               }, popFunction: () {
                 CommonWidgets.hideKeyboard(context);
@@ -387,13 +392,20 @@ Widget mapAndHoursDetails(
                       ? ColorConstants.colorWhite
                       : ColorConstants.colorBlack),
               Expanded(child: Container()),
-              Text(totalHoursToDate != "" ? totalHoursToDate :
-             (provider.projectDetailCrewResponse == null ? "" : (provider.projectDetailCrewResponse?.projectData?.checkins?.isEmpty == true? "" :"${DateFunctions.calculateTotalHourTime( provider.projectDetailCrewResponse!.projectData!.checkins![0].checkInTime!,
-                  provider.projectDetailCrewResponse!.projectData!.checkins![0].checkOutTime!)} h"))).semiBoldText(
-                  context, DimensionConstants.d14.sp, TextAlign.left,
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? ColorConstants.colorWhite
-                      : ColorConstants.colorBlack),
+              Text(provider.getToTalHours()/*totalHoursToDate != ""
+                      ? totalHoursToDate
+                      : (provider.projectDetailCrewResponse == null
+                          ? ""
+                          : (provider.projectDetailCrewResponse?.projectData
+                                      ?.checkins?.isEmpty ==
+                                  true
+                              ? ""
+                              : "${DateFunctions.calculateTotalHourTime(provider.projectDetailCrewResponse!.projectData!.checkins![0].checkInTime!, provider.projectDetailCrewResponse!.projectData!.checkins![0].checkOutTime!)} h"))*/)
+                  .semiBoldText(
+                      context, DimensionConstants.d14.sp, TextAlign.left,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? ColorConstants.colorWhite
+                          : ColorConstants.colorBlack),
             ],
           ),
         ),
@@ -509,8 +521,8 @@ Widget todayTab(BuildContext context, ProjectDetailsPageProvider provider) {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
         if (provider.projectDetailCrewResponse != null &&
-            provider.projectDetailCrewResponse!.projectData!.checkins!.length >
-                0)
+            provider
+                .projectDetailCrewResponse!.projectData!.checkins!.isNotEmpty)
           crewDetail(context, provider,
               provider.projectDetailCrewResponse!.projectData!.checkins![0],
               isToday: true)
@@ -532,7 +544,7 @@ Widget crewDetail(BuildContext context, ProjectDetailsPageProvider provider,
       child: Card(
         margin: EdgeInsets.zero,
         elevation: 1,
-        child: Container(
+        child: SizedBox(
           height: DimensionConstants.d61.h,
           child: Padding(
             padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
@@ -561,7 +573,8 @@ Widget crewDetail(BuildContext context, ProjectDetailsPageProvider provider,
                 Text(DateFunctions.dateTO12Hour(checkInDetail.checkInTime!)
                         .substring(
                             0,
-                            DateFunctions.dateTO12Hour(checkInDetail.checkInTime!)
+                            DateFunctions.dateTO12Hour(
+                                        checkInDetail.checkInTime!)
                                     .length -
                                 1))
                     .regularText(
@@ -579,11 +592,23 @@ Widget crewDetail(BuildContext context, ProjectDetailsPageProvider provider,
                 SizedBox(
                   width: DimensionConstants.d9.w,
                 ),
-                Text(DateFunctions.dateTO12Hour(checkInDetail.checkOutTime!)
+                Text(DateFunctions.dateTO12Hour(
+                            (checkInDetail.checkOutTime == null ||
+                                    checkInDetail.checkOutTime!.trim().isEmpty)
+                                ? DateFunctions.dateFormatyyyyMMddHHmm(
+                                    DateTime.now())
+                                : checkInDetail.checkOutTime!)
                         .substring(
                             0,
-                            DateFunctions.dateTO12Hour(
-                                        checkInDetail.checkOutTime!)
+                            DateFunctions.dateTO12Hour((checkInDetail
+                                                    .checkOutTime ==
+                                                null ||
+                                            checkInDetail.checkOutTime!
+                                                .trim()
+                                                .isEmpty)
+                                        ? DateFunctions.dateFormatyyyyMMddHHmm(
+                                            DateTime.now())
+                                        : checkInDetail.checkOutTime!)
                                     .length -
                                 1))
                     .regularText(
@@ -597,7 +622,7 @@ Widget crewDetail(BuildContext context, ProjectDetailsPageProvider provider,
                 SizedBox(
                   width: DimensionConstants.d14.w,
                 ),
-                Text("${DateFunctions.calculateTotalHourTime(checkInDetail.checkInTime!, checkInDetail.checkOutTime!)} h")
+                Text("${DateFunctions.calculateTotalHourTime(checkInDetail.checkInTime!, (checkInDetail.checkOutTime == null || checkInDetail.checkOutTime!.trim().isEmpty) ? DateFunctions.dateFormatyyyyMMddHHmm(DateTime.now()) : checkInDetail.checkOutTime!)} h")
                     .boldText(
                   context,
                   DimensionConstants.d13.sp,
@@ -1234,8 +1259,9 @@ Widget notesList(BuildContext context, List<Note> notes) {
       itemBuilder: (BuildContext context, int index) {
         return GestureDetector(
           behavior: HitTestBehavior.translucent,
-          onTap: (){
-            Navigator.pushNamed(context, RouteConstants.showNotePageCrew, arguments: notes[index]);
+          onTap: () {
+            Navigator.pushNamed(context, RouteConstants.showNotePageCrew,
+                arguments: notes[index]);
           },
           child: Column(
             children: <Widget>[
@@ -1250,9 +1276,10 @@ Widget notesList(BuildContext context, List<Note> notes) {
                     Expanded(
                         child: Text(notes[index].title ?? "").regularText(
                             context, DimensionConstants.d14.sp, TextAlign.left,
-                            color: Theme.of(context).brightness == Brightness.dark
-                                ? ColorConstants.colorWhite
-                                : ColorConstants.colorBlack,
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? ColorConstants.colorWhite
+                                    : ColorConstants.colorBlack,
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis)),
                     ImageView(
@@ -1309,9 +1336,13 @@ Widget crewWidget(BuildContext context, bool archivedOrNot,
   }
 
   return GestureDetector(
-    onTap: index == 0 ? (){} : (){
-      Navigator.pushNamed(context, RouteConstants.crewProfilePage, arguments: provider.projectDetailCrewResponse!.projectData!.crews![index - 1]);
-    },
+    onTap: index == 0
+        ? () {}
+        : () {
+            Navigator.pushNamed(context, RouteConstants.crewProfilePage,
+                arguments: provider
+                    .projectDetailCrewResponse!.projectData!.crews![index - 1]);
+          },
     child: Card(
       elevation: 1,
       shape: RoundedRectangleBorder(
@@ -1325,21 +1356,29 @@ Widget crewWidget(BuildContext context, bool archivedOrNot,
           padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
           child: Row(
             children: <Widget>[
-             index == 0 ? ImageView(
-               path: provider.projectDetailCrewResponse!.projectData!.manager!.profileImage == null ? ImageConstants.emptyImageIcon
-                   : "${ApiConstantsCrew.BASE_URL_IMAGE}${provider.projectDetailCrewResponse!.projectData!.manager!.profileImage}",
-               height: DimensionConstants.d50.h,
-               width: DimensionConstants.d50.w,
-               fit: BoxFit.cover,
-               circleCrop: true,
-             ) :  ImageView(
-                path: provider.projectDetailCrewResponse!.projectData!.crews![index-1].profileImage == null ? ImageConstants.emptyImageIcon
-                    : "${ApiConstantsCrew.BASE_URL_IMAGE}${provider.projectDetailCrewResponse!.projectData!.crews![index-1].profileImage}",
-                height: DimensionConstants.d50.h,
-                width: DimensionConstants.d50.w,
-                fit: BoxFit.cover,
-                circleCrop: true,
-              ),
+              index == 0
+                  ? ImageView(
+                      path: provider.projectDetailCrewResponse!.projectData!
+                                  .manager!.profileImage ==
+                              null
+                          ? ImageConstants.emptyImageIcon
+                          : "${ApiConstantsCrew.BASE_URL_IMAGE}${provider.projectDetailCrewResponse!.projectData!.manager!.profileImage}",
+                      height: DimensionConstants.d50.h,
+                      width: DimensionConstants.d50.w,
+                      fit: BoxFit.cover,
+                      circleCrop: true,
+                    )
+                  : ImageView(
+                      path: provider.projectDetailCrewResponse!.projectData!
+                                  .crews![index - 1].profileImage ==
+                              null
+                          ? ImageConstants.emptyImageIcon
+                          : "${ApiConstantsCrew.BASE_URL_IMAGE}${provider.projectDetailCrewResponse!.projectData!.crews![index - 1].profileImage}",
+                      height: DimensionConstants.d50.h,
+                      width: DimensionConstants.d50.w,
+                      fit: BoxFit.cover,
+                      circleCrop: true,
+                    ),
               SizedBox(
                 width: DimensionConstants.d13.w,
               ),
@@ -1366,18 +1405,18 @@ Widget crewWidget(BuildContext context, bool archivedOrNot,
                             height: DimensionConstants.d21.h,
                             width: DimensionConstants.d120.w,
                             decoration: BoxDecoration(
-                              border:
-                                  Theme.of(context).brightness == Brightness.dark
-                                      ? Border.all(
-                                          color: Theme.of(context).brightness ==
-                                                  Brightness.dark
-                                              ? ColorConstants.colorWhite
-                                              : ColorConstants.deepBlue,
-                                          width: DimensionConstants.d1.w)
-                                      : null,
+                              border: Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? Border.all(
+                                      color: Theme.of(context).brightness ==
+                                              Brightness.dark
+                                          ? ColorConstants.colorWhite
+                                          : ColorConstants.deepBlue,
+                                      width: DimensionConstants.d1.w)
+                                  : null,
                               color: ColorConstants.deepBlue,
-                              borderRadius:
-                                  BorderRadius.circular(DimensionConstants.d8.r),
+                              borderRadius: BorderRadius.circular(
+                                  DimensionConstants.d8.r),
                             ),
                             child: Padding(
                               padding: EdgeInsets.symmetric(
@@ -1391,8 +1430,10 @@ Widget crewWidget(BuildContext context, bool archivedOrNot,
                                   SizedBox(
                                     width: DimensionConstants.d4.w,
                                   ),
-                                  Text("crew_manager".tr()).semiBoldText(context,
-                                      DimensionConstants.d10.sp, TextAlign.left,
+                                  Text("crew_manager".tr()).semiBoldText(
+                                      context,
+                                      DimensionConstants.d10.sp,
+                                      TextAlign.left,
                                       color: ColorConstants.colorWhite),
                                 ],
                               ),
@@ -1402,27 +1443,35 @@ Widget crewWidget(BuildContext context, bool archivedOrNot,
                             children: <Widget>[
                               SizedBox(
                                 width: DimensionConstants.d100.w,
-                                child: Text(provider.projectDetailCrewResponse!.projectData!.crews![index-1].position ?? "").regularText(
-                                  context,
-                                  DimensionConstants.d14.sp,
-                                  TextAlign.left,
-                                  color: Theme.of(context).brightness ==
-                                      Brightness.dark
-                                      ? ColorConstants.colorWhite
-                                      : ColorConstants.deepBlue,
-                                  maxLines: 1, overflow: TextOverflow.ellipsis
-                                ),
+                                child: Text(provider
+                                            .projectDetailCrewResponse!
+                                            .projectData!
+                                            .crews![index - 1]
+                                            .position ??
+                                        "")
+                                    .regularText(
+                                        context,
+                                        DimensionConstants.d14.sp,
+                                        TextAlign.left,
+                                        color: Theme.of(context).brightness ==
+                                                Brightness.dark
+                                            ? ColorConstants.colorWhite
+                                            : ColorConstants.deepBlue,
+                                        maxLines: 1,
+                                        overflow: TextOverflow.ellipsis),
                               ),
                               archivedOrNot != true
                                   ? SizedBox(
-                                  width: DimensionConstants.d75.w,
-                                child: Text("\$${provider.projectDetailCrewResponse!.projectData!.projectRate![index-1].price.toString()}/hr").regularText(
-                                  context,
-                                  DimensionConstants.d14.sp,
-                                  TextAlign.left,
-                                  color: ColorConstants.deepBlue, maxLines: 1, overflow: TextOverflow.ellipsis
-                                )
-                              )
+                                      width: DimensionConstants.d75.w,
+                                      child: Text(
+                                              "\$${provider.projectDetailCrewResponse!.projectData!.projectRate![index - 1].price.toString()}/hr")
+                                          .regularText(
+                                              context,
+                                              DimensionConstants.d14.sp,
+                                              TextAlign.left,
+                                              color: ColorConstants.deepBlue,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis))
                                   : Text("invite_pending".tr()).regularText(
                                       context,
                                       DimensionConstants.d14.sp,

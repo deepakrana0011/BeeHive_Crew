@@ -21,14 +21,14 @@ class ProfilePageManagerProvider extends BaseProvider {
   String companyIcon = "";
   bool isImageChanged = false;
   bool isCompanyLogo = false;
-  updateImageChanged(){
+  /*updateImageChanged(){
     isImageChanged = !isImageChanged;
     notifyListeners();
   }
   updateCompanyLogoChanged(){
     isCompanyLogo = !isCompanyLogo;
     notifyListeners();
-  }
+  }*/
 
   final nameController = TextEditingController();
   final titleController = TextEditingController();
@@ -103,10 +103,12 @@ class ProfilePageManagerProvider extends BaseProvider {
     if (profileOrCompanyIcon == 1) {
       profileImage = "";
       profileImage = image.path.toString();
+      isImageChanged = !isImageChanged;
       notifyListeners();
     } else {
       companyIcon = "";
       companyIcon = image.path.toString();
+      isCompanyLogo = !isCompanyLogo;
       notifyListeners();
     }
   }

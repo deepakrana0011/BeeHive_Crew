@@ -33,6 +33,9 @@ class ProjectDetailsPageProvider extends BaseProvider {
   String? weekFirstDate;
   String? weekEndDate;
 
+
+
+
   final CameraPosition kLake = const CameraPosition(
       bearing: 192.8334901395799,
       target: LatLng(30.7333, 76.7794),
@@ -46,7 +49,8 @@ class ProjectDetailsPageProvider extends BaseProvider {
   Future getProjectDetail(BuildContext context) async {
     setState(ViewState.busy);
     try {
-      projectDetailCrewResponse = await api.getProjectDetailCrew(context, projectId!, startDate!, endDate!);
+      projectDetailCrewResponse = await api.getProjectDetailCrew(
+          context, projectId!, startDate!, endDate!);
       createMarker();
       setState(ViewState.idle);
     } on FetchDataException catch (e) {
@@ -117,24 +121,20 @@ class ProjectDetailsPageProvider extends BaseProvider {
     List<Interruption> timeString = [];
     List<ProjectWorkingHourDetail> projectWorkingHourList = [];
     for (int i = 0; i < detail.checkinBreak!.length; i++) {
-      if (detail.checkinBreak![i].interval != "Any") {
-        var breakStartTimeString = detail.checkInTime!.substring(0, 10) +
-            " " +
-            detail.checkinBreak![i].startTime!
-                .replaceAll("PM", "")
-                .replaceAll("AM", "");
-        var breakEndTimeString = detail.checkInTime!.substring(0, 10) +
-            " " +
-            DateFunctions.stringToDateAddMintues(
-                detail.checkinBreak![i].startTime!,
-                int.parse(detail.checkinBreak![i].interval!.substring(0, 2)));
+      if (detail.checkinBreak![i].startTime?.toLowerCase() !=
+          "Any Time".toLowerCase()) {
+        var breakStartTimeString =
+            "${detail.checkInTime!.substring(0, 10)} ${detail.checkinBreak![i].startTime!.replaceAll("PM", "").replaceAll("AM", "")}";
+        var breakEndTimeString =
+            "${detail.checkInTime!.substring(0, 10)} ${DateFunctions.stringToDateAddMintues(detail.checkinBreak![i].startTime!, int.parse(detail.checkinBreak![i].interval!.substring(0, 2)))}";
 
         var breakStartTimeDate =
-        DateFunctions.getDateTimeFromString(breakStartTimeString);
+            DateFunctions.getDateTimeFromString(breakStartTimeString);
         var checkInDate =
-        DateFunctions.getDateTimeFromString(detail.checkInTime!);
-        var checkOutDate =
-        DateFunctions.getDateTimeFromString(detail.checkOutTime!);
+            DateFunctions.getDateTimeFromString(detail.checkInTime!);
+        var checkOutDate = DateFunctions.getDateTimeFromString(
+            detail.checkOutTime ??
+                DateFunctions.dateFormatyyyyMMddHHmm(DateTime.now()));
         if (breakStartTimeDate.isAfter(checkInDate) &&
             breakStartTimeDate.isBefore(checkOutDate)) {
           var interruption = Interruption();
@@ -156,11 +156,11 @@ class ProjectDetailsPageProvider extends BaseProvider {
     });
     if (timeString.isNotEmpty) {
       var checkInDate =
-      DateFunctions.getDateTimeFromString(detail.checkInTime!);
+          DateFunctions.getDateTimeFromString(detail.checkInTime!);
       var checkInDateString = detail.checkInTime!;
       for (var value in timeString) {
         var breakStartTime =
-        DateFunctions.getDateTimeFromString(value.startTime!);
+            DateFunctions.getDateTimeFromString(value.startTime!);
         var breakEndTime = DateFunctions.getDateTimeFromString(value.endTime!);
         var workingMinutesDifference =
             breakStartTime.difference(checkInDate).inMinutes;
@@ -189,8 +189,11 @@ class ProjectDetailsPageProvider extends BaseProvider {
         checkInDateString = value.endTime!;
       }
 
-      var checkOutDate =
-      DateFunctions.getDateTimeFromString(detail.checkOutTime!);
+      var checkOutDate = DateFunctions.getDateTimeFromString(
+          (detail.checkOutTime == null || detail.checkOutTime!.trim().isEmpty)
+              ? DateFunctions.dateFormatyyyyMMddHHmm(DateTime.now())
+              : detail.checkOutTime!);
+
       var checkOutDateString = detail.checkOutTime!;
       var workingMinutesDifference =
           checkInDate.difference(checkOutDate).inMinutes;
@@ -201,7 +204,8 @@ class ProjectDetailsPageProvider extends BaseProvider {
           type: 1));
     } else {
       var checkInString = detail.checkInTime!;
-      var checkOutString = detail.checkOutTime!;
+      var checkOutString = detail.checkOutTime ??
+          DateFunctions.dateFormatyyyyMMddHHmm(DateTime.now());
       projectWorkingHourList.add(ProjectWorkingHourDetail(
           startTime: checkInString,
           endTime: checkOutString,
@@ -211,23 +215,31 @@ class ProjectDetailsPageProvider extends BaseProvider {
     return projectWorkingHourList;
   }
 
-  static String calculateTotalHourTime(String checkInTime,String checkoutTime) {
+  static String calculateTotalHourTime(
+      String checkInTime, String checkoutTime) {
     var checkIntDateTime = DateFunctions.getDateTimeFromString(checkInTime);
     var checkOutTime = DateFunctions.getDateTimeFromString(checkoutTime);
-    var timeInMinutes =checkOutTime.difference(checkIntDateTime).inMinutes;
+    var timeInMinutes = checkOutTime.difference(checkIntDateTime).inMinutes;
     var totalSpendTime = DateFunctions.minutesToHourString(timeInMinutes);
     return totalSpendTime;
   }
 
   String getToTalHours() {
     var totalMinutes = 0;
-    for (var element in projectDetailCrewResponse!.projectData!.checkins!) {
-      var startTime = DateFunctions.getDateTimeFromString(element.checkInTime!);
-      var endTime = DateFunctions.getDateTimeFromString(element.checkOutTime!);
-      var minutes = endTime.difference(startTime).inMinutes;
-      totalMinutes = totalMinutes + minutes;
+    if(projectDetailCrewResponse!=null){
+      for (var element in projectDetailCrewResponse!.projectData!.checkins!) {
+        var startTime = DateFunctions.getDateTimeFromString(element.checkInTime!);
+        var endTime = DateFunctions.getDateTimeFromString(
+            (element.checkOutTime == null || element.checkOutTime!.trim().isEmpty)
+                ? DateFunctions.dateFormatyyyyMMddHHmm(DateTime.now())
+                : element.checkOutTime!);
+        var minutes = endTime.difference(startTime).inMinutes;
+        totalMinutes = totalMinutes + minutes;
+      }
     }
+
     var totalHours = DateFunctions.minutesToHourString(totalMinutes);
     return totalHours;
   }
+
 }

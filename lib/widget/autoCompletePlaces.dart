@@ -16,7 +16,6 @@ class CustomSearchScaffold extends PlacesAutocompleteWidget {
             radius: 0,
             types: [],
             strictbounds: false,
-            region: "",
             components: [Component(Component.country, currentCountryCode)]);
 
   final String currentCountryCode;

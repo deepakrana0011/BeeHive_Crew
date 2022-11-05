@@ -328,8 +328,7 @@ Widget projectList(BuildContext context, ProjectsCrewProvider provider) {
 }
 
 Widget projectDetailWidget(BuildContext context, ProjectDetail projectDetail) {
-  var value=DateFunctions.minutesToHourString(
-      projectDetail.totalHours!);
+  var value=DateFunctions.minutesToHourString(projectDetail.totalHours!);
   return Padding(
     padding: EdgeInsets.symmetric(vertical: DimensionConstants.d5.h),
     child: GestureDetector(

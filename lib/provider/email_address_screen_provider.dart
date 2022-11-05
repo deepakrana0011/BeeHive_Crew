@@ -38,9 +38,9 @@ class EmailAddressScreenProvider extends BaseProvider{
     setState(ViewState.busy);
     try {
       var model = await api.sendOtpEmailCrew(context, email);
-      SharedPreference.prefs!.setString(SharedPreference.TOKEN, model!.token!);
       setState(ViewState.idle);
       if (model.success == true) {
+        SharedPreference.prefs!.setString(SharedPreference.TOKEN, model.token!);
         Navigator.pushNamed(context, RouteConstants.otpVerificationPage,
             arguments: {
               "value": email,

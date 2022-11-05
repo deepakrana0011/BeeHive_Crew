@@ -263,8 +263,10 @@ class _DrawerManagerState extends State<DrawerManager> {
                         onTap: () {
                           Navigator.pop(context);
                           SharedPreference.clearSharedPrefs();
-                          Navigator.pushNamed(
-                              context, RouteConstants.selectToContinueScreen);
+                          Navigator.of(context).pushNamedAndRemoveUntil(
+                              RouteConstants.selectToContinueScreen, (Route<dynamic> route) => false);
+                         /* Navigator.pushNamed(
+                              context, RouteConstants.selectToContinueScreen);*/
                         },
                         child: drawerHeadingsRow(
                             context, ImageConstants.logoutIcon, "logout".tr()),

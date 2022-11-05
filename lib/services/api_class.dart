@@ -220,7 +220,7 @@ class Api {
   ) async {
     try {
       var map = {
-        "forgotOTP": otp,
+        "verifyCode": otp,
         "phoneNumber": phoneNumber,
         "countryCode": countryCode
       };
@@ -390,6 +390,7 @@ class Api {
     try {
       var map = {"password": password};
       dio.options.headers["authorization"] = token;
+      print(token);
       var response = await dio.put(
           ApiConstantsManager.BASEURL +
               ApiConstantsManager.resetPasswordManager,
@@ -585,6 +586,7 @@ class Api {
     try {
       dio.options.headers["authorization"] =
           SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      print("TOKEN ${ SharedPreference.prefs!.getString(SharedPreference.TOKEN)}");
       var response = await dio.post(
           ApiConstantsManager.BASEURL + ApiConstantsManager.DASHBOARD_API,
           data: map);
@@ -923,7 +925,7 @@ class Api {
       /*dio.options.headers["authorization"] =
           SharedPreference.prefs!.getString(SharedPreference.TOKEN);*/
       var map = {
-        "forgotOTP": otp,
+        "verifyCode": otp,
         "phoneNumber": phoneNumber,
         "countryCode": countryCode
       };
@@ -1173,6 +1175,7 @@ class Api {
     var requestToServer = request.toJson();
     try {
       dio.options.headers["authorization"] = SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      print(SharedPreference.prefs!.getString(SharedPreference.TOKEN));
       var response = await dio.post(ApiConstantsManager.BASEURL + "newproject", data: requestToServer);
       return CreateProjectResponse.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
@@ -1260,6 +1263,7 @@ class Api {
       dio.options.headers["authorization"] =
           SharedPreference.prefs!.getString(SharedPreference.TOKEN);
 
+      print( SharedPreference.prefs!.getString(SharedPreference.TOKEN));
       var map = {"firstDate": startDate, "secondDate": endDate};
       var response = await dio.post("${ApiConstantsManager.BASEURL}${ApiConstantsManager.singleProjectDetail}/$projectId", data: map);
       var value=response.toString();

@@ -36,8 +36,7 @@ class CreateProjectManagerProvider extends BaseProvider {
   String pickUpLocation = "";
   double locationRadius = 25;
   bool isCurrentAddress = true;
-  String currentCountryIsoCode = "";
-
+  String? currentCountryIsoCode ;
   Future getLngLt(context) async {
     setState(ViewState.busy);
     value = await Geolocator.getCurrentPosition();
@@ -83,13 +82,11 @@ class CreateProjectManagerProvider extends BaseProvider {
 
   Future<void> getPickUpAddress(double lat, double long) async {
     List<Placemark> placeMark = await placemarkFromCoordinates(lat, long);
-    pickUpLocation = placeMark.first.street.toString() +
-        " " +
-        placeMark.first.thoroughfare.toString() +
-        placeMark.first.subLocality.toString();
+    pickUpLocation = "${placeMark.first.street} ${placeMark.first.thoroughfare}${placeMark.first.subLocality}";
     currentCountryIsoCode = placeMark.first.isoCountryCode.toString();
     notifyListeners();
   }
+
 
   ///Update MapType of google Map
   updateMapStyle(int index) {

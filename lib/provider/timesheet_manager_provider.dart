@@ -52,7 +52,7 @@ class TimeSheetManagerProvider extends BaseProvider{
     for (var element in checkins!) {
       if(element.checkOutTime != " "){
         var startTime = DateFunctions.getDateTimeFromString(element.checkInTime!);
-        var endTime = DateFunctions.getDateTimeFromString(element.checkOutTime!);
+        var endTime = element.checkOutTime==null?DateTime.now():DateFunctions.getDateTimeFromString(element.checkOutTime!);
         var minutes = startTime.difference(endTime).inMinutes;
         totalMinutes = totalMinutes + minutes;
       }
@@ -102,7 +102,7 @@ class TimeSheetManagerProvider extends BaseProvider{
       for (var element in element.checkins) {
         if(element.checkOutTime != " "){
           var startTime = DateFunctions.getDateTimeFromString(element.checkInTime!);
-          var endTime = DateFunctions.getDateTimeFromString(element.checkOutTime!);
+          var endTime = element.checkOutTime==null?DateTime.now():DateFunctions.getDateTimeFromString(element.checkOutTime!);
           var minutes = startTime.difference(endTime).inMinutes;
           totalMinutes = totalMinutes + minutes.abs();
         }

@@ -297,6 +297,7 @@ class DateFunctions {
     return date;
   }
 
+
   static String stringToDateAddMintues(String dateString,int minutes) {
     print("number of mintues added ${minutes}");
     print("dateString ${dateString}");
@@ -306,7 +307,7 @@ class DateFunctions {
   }
 
   static DateTime getDateTimeFromString(String date) {
-    DateTime dateTime = new DateFormat("yyyy-MM-dd HH:mm").parse(date);
+    DateTime dateTime = DateFormat("yyyy-MM-dd HH:mm").parse(date);
     return dateTime;
   }
 

@@ -142,11 +142,12 @@ class LoginScreenManager extends StatelessWidget {
                                     SizedBox(height: DimensionConstants.d16.h),
                                     GestureDetector(
                                       onTap: () {
-                                        Navigator.pushNamed(
+                                       /* Navigator.pushNamed(
                                             context,
                                             RouteConstants
                                                 .emailAddressScreenManager,
-                                            arguments: {"email":emailController.text.toString(),"isVerificationProcess":true,"isResetPassword":false});
+                                            arguments: {"email":emailController.text.toString(),"isVerificationProcess":true,"isResetPassword":false});*/
+                                        Navigator.pop(context);
                                       },
                                       child: Align(
                                         alignment: Alignment.center,

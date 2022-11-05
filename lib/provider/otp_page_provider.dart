@@ -56,7 +56,7 @@ class OtpPageProvider extends BaseProvider {
       var model = await api.verifyOtpSignupPhoneCrew(context, phoneNumberNew, otp,countryCode);
       setState(ViewState.idle);
       if (model.success == true) {
-        SharedPreference.prefs!.setString(SharedPreference.TOKEN, model!.token!);
+        SharedPreference.prefs!.setString(SharedPreference.TOKEN, model.token!);
         SharedPreference.prefs!.setBool(SharedPreference.isLogin, true);
         SharedPreference.prefs!.setInt(SharedPreference.loginType, 1);
         Navigator.pushNamedAndRemoveUntil(

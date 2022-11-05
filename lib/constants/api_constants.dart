@@ -11,10 +11,10 @@ class ApiConstantsManager {
 
   static const String sendOtpSignupPhoneManager = "sendOtpSignupPhoneManager";
   static const String sendOtpForgotPhoneManager = "sendOtpForgotPhoneManager";
-  static const String verifyOtpSignupPhoneManager =
-      "verifyOtpSignupPhoneManager";
-  static const String verifyOtpForgotPhoneManager =
-      "verifyOtpForgotPhoneManager";
+
+  static const String verifyOtpSignupPhoneManager = "verifyOtpSignupPhoneManager";
+  static const String verifyOtpForgotPhoneManager = "verifyOtpForgotPhoneManager";
+
   static const String verifyOtpEmailManager = "verifyOtpEmailManager";
   static const String sendOtpForgotEmailManager = "sendOtpForgotEmailManager";
   static const String allProjectsManager = "allProjects";

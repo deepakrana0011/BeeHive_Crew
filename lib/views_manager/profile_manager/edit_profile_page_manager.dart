@@ -69,7 +69,7 @@ class _EditProfilePageManagerState extends State<EditProfilePageManager> {
                               },
                             ),
                           );
-                          provider.updateCompanyLogoChanged();
+                        //  provider.updateCompanyLogoChanged();
 
                         },
                         provider.profileImage,
@@ -94,7 +94,7 @@ class _EditProfilePageManagerState extends State<EditProfilePageManager> {
                                       provider.addProfilePic(context, 2, 2);
                                     },
                                   ));
-                          provider.updateImageChanged();
+                         // provider.updateImageChanged();
 
                         },
                          provider.companyIcon,

@@ -170,7 +170,7 @@ class ProjectDetailsManagerProvider extends BaseProvider {
     List<Interruption> timeString = [];
     List<ProjectWorkingHourDetail> projectWorkingHourList = [];
     for (int i = 0; i < detail.checkinBreak!.length; i++) {
-      if (detail.checkinBreak![i].interval != "Any") {
+      if (detail.checkinBreak![i].startTime?.toLowerCase() != "Any Time".toLowerCase()) {
         var breakStartTimeString = detail.checkInTime!.substring(0, 10) +
             " " +
             detail.checkinBreak![i].startTime!
@@ -237,7 +237,9 @@ class ProjectDetailsManagerProvider extends BaseProvider {
         checkInDateString = value.endTime!;
       }
 
-      var checkOutDate = DateFunctions.getDateTimeFromString(detail.checkOutTime!);
+      var checkOutDate = DateFunctions.getDateTimeFromString( (detail.checkOutTime == null || detail.checkOutTime!.trim().isEmpty)
+          ? DateFunctions.dateFormatyyyyMMddHHmm(DateTime.now())
+          : detail.checkOutTime!);
       var checkOutDateString = detail.checkOutTime!;
       var workingMinutesDifference = checkInDate.difference(checkOutDate).inMinutes;
       projectWorkingHourList.add(ProjectWorkingHourDetail(

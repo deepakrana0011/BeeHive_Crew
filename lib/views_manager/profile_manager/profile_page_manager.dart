@@ -26,7 +26,7 @@ class ProfilePageManager extends StatelessWidget {
     return BaseView<ProfilePageManagerProvider>(
         onModelReady: (provider){
           provider.getManagerProfile(context).then((value) {
-            bottomBarProvider.updateDrawerData(value!.data!.name!, value.data!.profileImage!, value.data!.companyLogo!, value.data!.customColor!);
+            bottomBarProvider.updateDrawerData(value!.data!.name!, value.data?.profileImage, value.data?.companyLogo, value.data!.customColor!);
           });
         },
         builder: (context,provider,_){
@@ -45,7 +45,7 @@ class ProfilePageManager extends StatelessWidget {
              (Column(
                 children: <Widget>[
                   profileWidget(context, provider, onTapOnEditButton: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => EditProfilePageManager())).then((value) {
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => const EditProfilePageManager())).then((value) {
                      provider.getManagerProfile(context).then((value) {
                        bottomBarProvider.updateDrawerData(value!.data!.name!, value.data!.profileImage!, value.data!.companyLogo!, value.data!.customColor!);
                      });

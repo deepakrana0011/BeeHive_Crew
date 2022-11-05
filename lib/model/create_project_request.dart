@@ -63,7 +63,8 @@ class CreateProjectRequest {
         "latitude": latitude,
         "longitude": longitude,
         "locationRadius": locationRadius,
-        "crewId":crewId != null? List<dynamic>.from(crewId!.map((x) => x)):[],
+        "crewId":
+            crewId != null ? List<dynamic>.from(crewId!.map((x) => x)) : [],
         "workDays": List<dynamic>.from(workDays!.map((x) => x)),
         "hoursFrom": hoursFrom,
         "hoursTo": hoursTo,
@@ -71,8 +72,28 @@ class CreateProjectRequest {
         "break": List<dynamic>.from(breakList!.map((x) => x.toJson())),
         "roundTimesheets": roundTimesheets,
         "sameRate": sameRate,
-        "projectRate": projectRate!=null?List<dynamic>.from(projectRate!.map((x) => x.toJson())):[],
+        "projectRate": projectRate != null
+            ? List<dynamic>.from(projectRate!.map((x) => x.toJson()))
+            : [],
       };
+
+  clearCreateProjectRequest() {
+    projectName = '';
+    address = '';
+    latitude = '';
+    longitude = '';
+    locationRadius = '';
+    crewId = [];
+    selectedCrewMember = [];
+    workDays = [];
+    hoursFrom = '';
+    hoursTo = '';
+    afterHoursRate = '';
+    breakList = [];
+    roundTimesheets = '';
+    sameRate = '';
+    projectRate = [];
+  }
 }
 
 class Break {

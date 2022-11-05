@@ -30,6 +30,7 @@ class CreateProjectManager extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BaseView<CreateProjectManagerProvider>(onModelReady: (provider) {
+      provider.createProjectRequest.clearCreateProjectRequest();
       provider.determinePosition().then((value) =>
       {
         provider.getLngLt(context),
@@ -205,7 +206,7 @@ class CreateProjectManager extends StatelessWidget {
           ),
           GestureDetector(
             onTap: () {
-              Navigator.pushNamed(context, RouteConstants.autoComplete, arguments: provider.currentCountryIsoCode)
+              Navigator.pushNamed(context, RouteConstants.autoComplete, arguments: provider.currentCountryIsoCode??'US')
                   .then((value) {
                 if (value != null) {
                   Map<String, String> detail = value as Map<String, String>;
@@ -217,8 +218,8 @@ class CreateProjectManager extends StatelessWidget {
                   provider.pickUpLocation = selectedAddress ?? "";
                   provider.updateCurrentAddressValue(false);
 
-                  controller!.text =
-                  selectedAddress != null ? selectedAddress : "";
+                  controller.text =
+                  selectedAddress ?? "";
                 }
               });
             },
