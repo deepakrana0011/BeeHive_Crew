@@ -84,12 +84,36 @@ class ProjectsManagerProvider extends BaseProvider {
   }
 
   void getTotalHours() {
-    int value = 0;
-    allProjectsManagerResponse!.projectData!.forEach((element) {
-      value = value + element.totalHours!;
-    });
-    totalHours = DateFunctions.minutesToHourString(value);
+
+    int totalMinutes = 0;
+    for (var element in allProjectsManagerResponse!.projectData!) {
+      element.checkins?.forEach((checkIn) {
+        var startTime =
+        DateFunctions.getDateTimeFromString(checkIn.checkInTime!);
+        var endTime = DateFunctions.getDateTimeFromString(
+            (checkIn.checkOutTime==null || checkIn.checkOutTime!.trim().isEmpty) ?
+                DateFunctions.dateFormatyyyyMMddHHmm(DateTime.now()):checkIn.checkOutTime!);
+        var minutes = endTime.difference(startTime).inMinutes;
+        totalMinutes = totalMinutes + minutes;
+      });
+    }
+    totalHours = DateFunctions.minutesToHourString(totalMinutes);
   }
+
+  String getTotalHoursPerProject(ProjectDatum? projectDetail) {
+    int totalMinutes = 0;
+    projectDetail?.checkins?.forEach((checkIn) {
+      var startTime =
+      DateFunctions.getDateTimeFromString(checkIn.checkInTime!);
+      var endTime = DateFunctions.getDateTimeFromString(
+          (checkIn.checkOutTime==null || checkIn.checkOutTime!.trim().isEmpty)?
+              DateFunctions.dateFormatyyyyMMddHHmm(DateTime.now()):checkIn.checkOutTime!);
+      var minutes = endTime.difference(startTime).inMinutes;
+      totalMinutes = totalMinutes + minutes;
+    });
+    return DateFunctions.minutesToHourString(totalMinutes);
+  }
+
 
   List<String> projectNames = [];
   List<String> ids = [];

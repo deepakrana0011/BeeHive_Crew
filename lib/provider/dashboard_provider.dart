@@ -388,9 +388,9 @@ class DashboardProvider extends BaseProvider {
       return aValue.compareTo(bValue);
     });
 
-    print("data sorted ${timeString}");
 
-    if (timeString.length > 0) {
+
+    if (timeString.isNotEmpty) {
       var checkInDate =
           DateFunctions.getDateTimeFromString(detail.checkInTime!);
       var checkInDateString = detail.checkInTime!;

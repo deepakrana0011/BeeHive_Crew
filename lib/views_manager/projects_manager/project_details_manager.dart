@@ -509,9 +509,7 @@ class _ProjectDetailsPageManagerState extends State<ProjectDetailsPageManager>
                         ? ColorConstants.colorWhite
                         : ColorConstants.colorBlack),
                 Expanded(child: Container()),
-                Text(DateFunctions.minutesToHourString(
-                    provider.projectDetailResponse?.projectData?.totalHours ??
-                        0))
+                Text(provider.totalHoursToDate)
                     .semiBoldText(
                     context, DimensionConstants.d14.sp, TextAlign.left,
                     color: Theme
@@ -657,8 +655,7 @@ class _ProjectDetailsPageManagerState extends State<ProjectDetailsPageManager>
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(DateFunctions.minutesToHourString(provider.projectDetailResponse?.projectData?.totalHours??0)
-                    )
+                Text(provider.totalHoursToDate)
                     .boldText(
                     context, DimensionConstants.d24.sp, TextAlign.start,
                     color: Theme
@@ -1174,9 +1171,7 @@ class _ProjectDetailsPageManagerState extends State<ProjectDetailsPageManager>
                         color: ColorConstants.colorLightGrey,
                       ),
                       projectsHoursRow(context, ImageConstants.clockIcon,
-                          "${DateFunctions.minutesToHourString(
-                              provider.projectDetailResponse?.projectData
-                                  ?.totalHours ?? 0)} ${"hours".tr()}")
+                          "${provider.totalHoursToDate} ${"hours".tr()}")
                     ],
                   ),
                 ),

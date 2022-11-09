@@ -122,9 +122,8 @@ class TimeSheetFromCrewProvider extends BaseProvider{
      return aValue.compareTo(bValue);
    });
 
-   print("data sorted ${timeString}");
 
-   if (timeString.length > 0) {
+   if (timeString.isNotEmpty) {
      var checkInDate =
      DateFunctions.getDateTimeFromString(detail.checkInTime!);
      var checkInDateString = detail.checkInTime!;
@@ -159,7 +158,7 @@ class TimeSheetFromCrewProvider extends BaseProvider{
        checkInDateString = value.endTime!;
      }
 
-     var checkOutDate =
+     var checkOutDate = (detail.checkOutTime==null|| detail.checkOutTime!.trim().isEmpty)?DateTime.now():
      DateFunctions.getDateTimeFromString(detail.checkOutTime!);
      var checkOutDateString = detail.checkOutTime!;
      var workingMinutesDifference =

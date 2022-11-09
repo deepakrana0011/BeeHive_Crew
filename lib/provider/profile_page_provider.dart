@@ -14,7 +14,7 @@ class ProfilePageProvider extends BaseProvider{
 
   GetCrewProfileResponse? getObj;
 
-  Future getCrewProfile(BuildContext context,) async {
+  Future<GetCrewProfileResponse?> getCrewProfile(BuildContext context,) async {
     setState(ViewState.busy);
     try {
       var model = await api.getCrewProfile(context);
@@ -23,6 +23,7 @@ class ProfilePageProvider extends BaseProvider{
         SharedPreference.prefs!.setString(SharedPreference.USER_NAME, model.data!.name!);
         getObj = model;
         setState(ViewState.idle);
+        return model;
       } else {
         setState(ViewState.idle);
       }
@@ -33,6 +34,7 @@ class ProfilePageProvider extends BaseProvider{
       setState(ViewState.idle);
       DialogHelper.showMessage(context, "internet_connection".tr());
     }
+    return null;
   }
 
 

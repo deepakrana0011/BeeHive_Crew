@@ -1393,6 +1393,8 @@ Widget crewWidget(BuildContext context, bool archivedOrNot,
                       context,
                       DimensionConstants.d16.sp,
                       TextAlign.left,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                       color: Theme.of(context).brightness == Brightness.dark
                           ? ColorConstants.colorWhite
                           : ColorConstants.deepBlue,

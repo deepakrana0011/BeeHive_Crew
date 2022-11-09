@@ -198,22 +198,26 @@ class _DashBoardPageState extends State<DashBoardPage>
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              GestureDetector(
-                  onTap: () {
-                    // provider.updateNoProject();
-                  },
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("Hey " "${provider.crewResponse?.crew?.name ?? ""},")
-                          .boldText(context, DimensionConstants.d18.sp,
-                              TextAlign.left,
-                              color: ColorConstants.colorWhite),
-                      Text("buzzing".tr()).boldText(
-                          context, DimensionConstants.d18.sp, TextAlign.left,
-                          color: ColorConstants.colorWhite),
-                    ],
-                  )),
+              Expanded(
+                child: GestureDetector(
+                    onTap: () {
+                      // provider.updateNoProject();
+                    },
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("Hey " "${provider.crewResponse?.crew?.name ?? ""},")
+                            .boldText(context, DimensionConstants.d18.sp,
+                                TextAlign.left,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                color: ColorConstants.colorWhite),
+                        Text("buzzing".tr()).boldText(
+                            context, DimensionConstants.d18.sp, TextAlign.left,
+                            color: ColorConstants.colorWhite),
+                      ],
+                    )),
+              ),
               if (checkInButton)
                 checkInCheckOutBtn(
                   "check_in".tr(),

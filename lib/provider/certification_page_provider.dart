@@ -9,8 +9,15 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
 class CertificationPageProvider extends BaseProvider {
-  String profileImage = " ";
-  Future addProfilePic(BuildContext context, int modes) async {
+  String certificateImage = " ";
+
+  removePhoto(){
+    certificateImage = " ";
+    notifyListeners();
+
+  }
+
+  Future selectCertificate(BuildContext context, int modes) async {
     final picker = ImagePicker();
     if (modes == 1) {
       XFile? pickedImage = await picker.pickImage(source: ImageSource.camera);
@@ -25,7 +32,7 @@ class CertificationPageProvider extends BaseProvider {
     }
   }
   addImage(XFile image) {
-    profileImage = image.path.toString();
+    certificateImage = image.path.toString();
     notifyListeners();
   }
 

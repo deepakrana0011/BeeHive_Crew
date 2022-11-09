@@ -24,8 +24,17 @@ class EditProfileProvider extends BaseProvider {
   final emailController = TextEditingController();
   final addressController = TextEditingController();
   bool imageChanged = false;
+  bool _updateLoader = false;
+
+  bool get updateLoader => _updateLoader;
+
+  set updateLoader(bool value) {
+    _updateLoader = value;
+    notifyListeners();
+  }
 
   String profileImage = " ";
+
   Future addProfilePic(BuildContext context, int modes) async {
     Navigator.pop(context);
     final picker = ImagePicker();
@@ -53,15 +62,24 @@ class EditProfileProvider extends BaseProvider {
   }
 
   setAllController() {
-    profileImage = (getObj!.data!.profileImage == null ? " " :
-    (ApiConstantsCrew.BASE_URL_IMAGE + getObj!.data!.profileImage.toString()));
+    profileImage = (getObj!.data!.profileImage == null
+        ? " "
+        : (ApiConstantsCrew.BASE_URL_IMAGE +
+            getObj!.data!.profileImage.toString()));
     nameController.text = getObj!.data!.name == null ? "" : getObj!.data!.name!;
-    titleController.text = getObj!.data!.position == null ? "" : getObj!.data!.position!;
-    specialityController.text = getObj!.data!.speciality == null ? "" : getObj!.data!.speciality!;
-    companyNameController.text = getObj!.data!.company == null ? "" : getObj!.data!.company!;
-    phoneNumberController.text = getObj!.data!.phoneNumber == null ? "" : getObj!.data!.phoneNumber.toString();
-    emailController.text = getObj!.data!.email == null ? "" : getObj!.data!.email!;
-    addressController.text = getObj!.data!.address == null ? "" : getObj!.data!.address!;
+    titleController.text =
+        getObj!.data!.position == null ? "" : getObj!.data!.position!;
+    specialityController.text =
+        getObj!.data!.speciality == null ? "" : getObj!.data!.speciality!;
+    companyNameController.text =
+        getObj!.data!.company == null ? "" : getObj!.data!.company!;
+    phoneNumberController.text = getObj!.data!.phoneNumber == null
+        ? ""
+        : getObj!.data!.phoneNumber.toString();
+    emailController.text =
+        getObj!.data!.email == null ? "" : getObj!.data!.email!;
+    addressController.text =
+        getObj!.data!.address == null ? "" : getObj!.data!.address!;
     notifyListeners();
   }
 
@@ -72,8 +90,10 @@ class EditProfileProvider extends BaseProvider {
     try {
       var model = await api.getCrewProfile(context);
       if (model.success == true) {
-        SharedPreference.prefs!.setString(SharedPreference.USER_PROFILE, model.data!.profileImage ?? "");
-        SharedPreference.prefs!.setString(SharedPreference.USER_NAME, model.data!.name ?? "");
+        SharedPreference.prefs!.setString(
+            SharedPreference.USER_PROFILE, model.data!.profileImage ?? "");
+        SharedPreference.prefs!
+            .setString(SharedPreference.USER_NAME, model.data!.name ?? "");
         getObj = model;
         setState(ViewState.idle);
       } else {
@@ -91,7 +111,7 @@ class EditProfileProvider extends BaseProvider {
   Future updateCrewProfile(
     BuildContext context,
   ) async {
-    setState(ViewState.busy);
+    updateLoader = true;
     try {
       var model = await api.updateCrewProfile(
         context,
@@ -105,19 +125,18 @@ class EditProfileProvider extends BaseProvider {
         company: companyNameController.text,
         imageChanged: imageChanged,
       );
+      updateLoader = false;
       if (model.success == true) {
-        setState(ViewState.idle);
-        Navigator.pop(context,);
+        Navigator.pop(context);
         DialogHelper.showMessage(context, model.message!);
       } else {
-        setState(ViewState.idle);
         DialogHelper.showMessage(context, model.message!);
       }
     } on FetchDataException catch (e) {
-      setState(ViewState.idle);
+      updateLoader = false;
       DialogHelper.showMessage(context, e.toString());
     } on SocketException catch (e) {
-      setState(ViewState.idle);
+      updateLoader = false;
       DialogHelper.showMessage(context, "internet_connection".tr());
     }
   }

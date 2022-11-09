@@ -234,25 +234,28 @@ Widget crewWidget(
                 SizedBox(
                   width: DimensionConstants.d16.w,
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Text(provider.crewList[index].name.toString()).boldText(
-                        context, DimensionConstants.d14.sp, TextAlign.center,
-                        color: ColorConstants.deepBlue),
-                    if (provider.crewList[index].position!.isNotEmpty)
-                      Text(provider.crewList[index].position!).regularText(
-                          context, DimensionConstants.d14.sp, TextAlign.center,
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Text(provider.crewList[index].name.toString()).boldText(
+                          context, DimensionConstants.d14.sp, TextAlign.start,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           color: ColorConstants.deepBlue),
-                    if (provider.crewList[index].address!.isNotEmpty)
-                      Text(provider.crewList[index].address.toString())
-                          .regularText(context, DimensionConstants.d14.sp,
-                              TextAlign.center,
-                              color: ColorConstants.deepBlue),
-                  ],
+                      if (provider.crewList[index].position!.isNotEmpty)
+                        Text(provider.crewList[index].position!).regularText(
+                            context, DimensionConstants.d14.sp, TextAlign.center,
+                            color: ColorConstants.deepBlue),
+                      if (provider.crewList[index].address!.isNotEmpty)
+                        Text(provider.crewList[index].address.toString())
+                            .regularText(context, DimensionConstants.d14.sp,
+                                TextAlign.center,
+                                color: ColorConstants.deepBlue),
+                    ],
+                  ),
                 ),
-                Expanded(child: Container()),
                 GestureDetector(
                     onTap: () {
                       provider.updateValue(index);

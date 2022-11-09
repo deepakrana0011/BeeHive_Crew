@@ -2,6 +2,7 @@ class ProjectTimeSheetResponse {
   bool? success;
   Manager? manager;
   int? activeProject;
+  int? totalHours;
   int? crewmembers;
   List<ProjectData> projectData = [];
 
@@ -16,6 +17,7 @@ class ProjectTimeSheetResponse {
     manager =
     json['manager'] != null ? new Manager.fromJson(json['manager']) : null;
     activeProject = json['activeProject'];
+    totalHours = json['totalHours'];
     crewmembers = json['crewmembers'];
     if (json['projectData'] != null) {
       projectData = <ProjectData>[];

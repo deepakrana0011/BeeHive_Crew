@@ -12,14 +12,17 @@ import 'package:beehive/widget/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 import '../../helper/common_widgets.dart';
+import '../../provider/bottom_bar_provider.dart';
 
 class Profile extends StatelessWidget {
   const Profile({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final bottomBarProvider = Provider.of<BottomBarProvider>(context, listen: false);
     return BaseView<ProfilePageProvider>(
         onModelReady: (provider){
           provider.getCrewProfile(context);
@@ -41,7 +44,12 @@ class Profile extends StatelessWidget {
                 children: <Widget>[
                   profileWidget(context, () {
                     Navigator.pushNamed(context, RouteConstants.editProfilePage).then((value) {
-                      provider.getCrewProfile(context);
+
+                      provider.getCrewProfile(context).then((value) {
+                        bottomBarProvider.updateDrawerData(
+                            value!.data!.name!,
+                            value.data!.profileImage!);
+                      });
                     });
                   },provider),
                   (provider.getObj!.data!.company == null || provider.getObj!.data!.company == "") ? Container() : SizedBox(
@@ -111,113 +119,120 @@ class Profile extends StatelessWidget {
 }
 
 Widget profileWidget(BuildContext context, VoidCallback onTapOnEditButton, ProfilePageProvider provider) {
-  return Stack(
-    children: <Widget>[
-      Container(
-        height: DimensionConstants.d350.h,
-        decoration: BoxDecoration(
-            color: ColorConstants.deepBlue,
-            borderRadius: BorderRadius.only(
-                bottomLeft: Radius.circular(DimensionConstants.d40.r),
-                bottomRight: Radius.circular(DimensionConstants.d40.r))),
-      ),
-      Padding(
-        padding: EdgeInsets.only(left: DimensionConstants.d67.w),
-        child: ImageView(
-          path: ImageConstants.profileBackground,
-          height: DimensionConstants.d273.h,
+
+
+  return Container(
+    height: DimensionConstants.d350.h,
+    width: MediaQuery.of(context).size.width,
+    decoration: BoxDecoration(
+        color: ColorConstants.deepBlue,
+        borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(DimensionConstants.d40.r),
+            bottomRight: Radius.circular(DimensionConstants.d40.r))),
+    child: Stack(
+      children: <Widget>[
+
+        Padding(
+          padding: EdgeInsets.only(left: DimensionConstants.d67.w),
+          child: ImageView(
+            path: ImageConstants.profileBackground,
+            height: DimensionConstants.d273.h,
+          ),
         ),
-      ),
-      Padding(
-        padding: EdgeInsets.only(
-            left: DimensionConstants.d260.w, top: DimensionConstants.d16.h),
-        child: GestureDetector(
-          onTap: onTapOnEditButton,
-          child: Container(
-            height: DimensionConstants.d40.h,
-            width: DimensionConstants.d89.w,
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
-                border: Theme.of(context).brightness == Brightness.dark
-                    ? Border.all(
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? ColorConstants.colorWhite
-                            : ColorConstants.colorWhite,
-                        width: DimensionConstants.d1.w)
-                    : Border.all(
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? ColorConstants.colorWhite
-                            : ColorConstants.colorWhite,
-                        width: DimensionConstants.d1.w)),
-            child: Padding(
-              padding:
-                  EdgeInsets.symmetric(horizontal: DimensionConstants.d12.w),
-              child: Row(
-                children: <Widget>[
-                  const ImageView(
-                    path: ImageConstants.penIcon,
-                  ),
-                  SizedBox(
-                    width: DimensionConstants.d4.w,
-                  ),
-                  Text("edit".tr()).boldText(
-                      context, DimensionConstants.d16.sp, TextAlign.left,
-                      color: ColorConstants.colorWhite),
-                ],
+        Padding(
+          padding: EdgeInsets.only(
+              left: DimensionConstants.d260.w, top: DimensionConstants.d16.h),
+          child: GestureDetector(
+            onTap: onTapOnEditButton,
+            child: Container(
+              height: DimensionConstants.d40.h,
+              width: DimensionConstants.d89.w,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
+                  border: Theme.of(context).brightness == Brightness.dark
+                      ? Border.all(
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? ColorConstants.colorWhite
+                          : ColorConstants.colorWhite,
+                      width: DimensionConstants.d1.w)
+                      : Border.all(
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? ColorConstants.colorWhite
+                          : ColorConstants.colorWhite,
+                      width: DimensionConstants.d1.w)),
+              child: Padding(
+                padding:
+                EdgeInsets.symmetric(horizontal: DimensionConstants.d12.w),
+                child: Row(
+                  children: <Widget>[
+                    const ImageView(
+                      path: ImageConstants.penIcon,
+                    ),
+                    SizedBox(
+                      width: DimensionConstants.d4.w,
+                    ),
+                    Text("edit".tr()).boldText(
+                        context, DimensionConstants.d16.sp, TextAlign.left,
+                        color: ColorConstants.colorWhite),
+                  ],
+                ),
               ),
             ),
           ),
         ),
-      ),
-      Positioned(
-          left: DimensionConstants.d110.w,
-          top: DimensionConstants.d58.h,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                height: DimensionConstants.d150.h,
-                width: DimensionConstants.d150.w,
-                decoration: BoxDecoration(
-                  color: ColorConstants.colorWhite,
-                  borderRadius: BorderRadius.circular(DimensionConstants.d75.r)
+        Positioned(
+            left: DimensionConstants.d18.w,
+            right: DimensionConstants.d18.w,
+            top: DimensionConstants.d58.h,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  height: DimensionConstants.d150.h,
+                  width: DimensionConstants.d150.w,
+                  decoration: BoxDecoration(
+                      color: ColorConstants.colorWhite,
+                      borderRadius: BorderRadius.circular(DimensionConstants.d75.r)
+                  ),
+                  child: Padding(
+                    padding:  const EdgeInsets.all(DimensionConstants.d5),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(DimensionConstants.d75.r),
+                      child: provider.getObj!.data!.profileImage == null ?
+                      Container(
+                        height: DimensionConstants.d150.h,
+                        width: DimensionConstants.d150.w,
+                        color: ColorConstants.primaryColor,) : ImageView(
+                        path: ApiConstantsCrew.BASE_URL_IMAGE+provider.getObj!.data!.profileImage!,
+                        height: DimensionConstants.d150.h,
+                        width: DimensionConstants.d150.w,
+                        fit: BoxFit.cover,
+                      ),
+                    ),),),
+                SizedBox(
+                  height: DimensionConstants.d20.h,
                 ),
-                child: Padding(
-                  padding:  const EdgeInsets.all(DimensionConstants.d5),
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(DimensionConstants.d75.r),
-                    child: provider.getObj!.data!.profileImage == null ?
-                    Container(
-                      height: DimensionConstants.d150.h,
-                      width: DimensionConstants.d150.w,
-                      color: ColorConstants.primaryColor,) : ImageView(
-                      path: ApiConstantsCrew.BASE_URL_IMAGE+provider.getObj!.data!.profileImage!,
-                      height: DimensionConstants.d150.h,
-                      width: DimensionConstants.d150.w,
-                      fit: BoxFit.cover,
-                    ),
-              ),),),
-              SizedBox(
-                height: DimensionConstants.d20.h,
-              ),
-               Text(provider.getObj!.data!.name == null ? "" : provider.getObj!.data!.name!).boldText(
-                  context, DimensionConstants.d30.sp, TextAlign.center,
-                  color: ColorConstants.colorWhite),
-              SizedBox(
-                height: DimensionConstants.d8.h,
-              ),
-              Text(provider.getObj!.data!.position == null ? "" :provider.getObj!.data!.position!).semiBoldText(
-                  context, DimensionConstants.d20.sp, TextAlign.center,
-                  color: ColorConstants.colorWhite),
-              SizedBox(
-                height: DimensionConstants.d4.h,
-              ),
-              Text(provider.getObj!.data!.speciality == null ?"" : provider.getObj!.data!.speciality!).regularText(
-                  context, DimensionConstants.d14.sp, TextAlign.center,
-                  color: ColorConstants.colorWhite),
-            ],
-          ))
-    ],
+                Text(provider.getObj!.data!.name == null ? "" : provider.getObj!.data!.name!).boldText(
+                    context, DimensionConstants.d30.sp, TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    color: ColorConstants.colorWhite),
+                SizedBox(
+                  height: DimensionConstants.d8.h,
+                ),
+                Text(provider.getObj!.data!.position == null ? "" :provider.getObj!.data!.position!).semiBoldText(
+                    context, DimensionConstants.d20.sp, TextAlign.center,
+                    color: ColorConstants.colorWhite),
+                SizedBox(
+                  height: DimensionConstants.d4.h,
+                ),
+                Text(provider.getObj!.data!.speciality == null ?"" : provider.getObj!.data!.speciality!).regularText(
+                    context, DimensionConstants.d14.sp, TextAlign.center,
+                    color: ColorConstants.colorWhite),
+              ],
+            ))
+      ],
+    ),
   );
 }
 
@@ -329,7 +344,7 @@ Widget scaleNotesWidget(BuildContext context, ProfilePageProvider provider) {
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(DimensionConstants.d8.r)),
       child: Container(
-        height: DimensionConstants.d186.h,
+       /* height: DimensionConstants.d186.h,*/
         decoration: BoxDecoration(
           border: Theme.of(context).brightness == Brightness.dark
               ? Border.all(
@@ -344,8 +359,9 @@ Widget scaleNotesWidget(BuildContext context, ProfilePageProvider provider) {
           borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
         ),
         child: ListView.builder(
+          shrinkWrap: true,
           itemCount: provider.getObj!.cert.length,
-         // physics: NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
           itemBuilder: (BuildContext context, int index) {
             return GestureDetector(
               behavior: HitTestBehavior.translucent,

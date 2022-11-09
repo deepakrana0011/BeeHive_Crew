@@ -1,12 +1,8 @@
 import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/provider/base_provider.dart';
-import 'package:beehive/widget/image_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../view/dashboard/dashboard.dart';
-import '../view/profile/profile.dart';
-import '../view/projects/projects_crew.dart';
 
 class BottomBarProvider extends BaseProvider{
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -18,7 +14,7 @@ class BottomBarProvider extends BaseProvider{
 
   String get crewName => _crewName ?? "";
 
-  String get crrewProfilePic => _crewProfilePic ?? "";
+  String get crewProfilePic => _crewProfilePic ?? "";
 
   String get companyLogo => _companyLogo ?? "";
 

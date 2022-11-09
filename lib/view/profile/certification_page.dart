@@ -41,100 +41,145 @@ class CertificationPage extends StatelessWidget {
                 Navigator.pop(context);
               }),
           body: SingleChildScrollView(
-            child: provider.state == ViewState.busy ? const CustomCircularBar() : Column(
-              children: <Widget>[
-                SizedBox(
-                  height: DimensionConstants.d26.h,
-                ),
-                textFiledName(
-                    context, "certification_name", "certification_name"),
-                SizedBox(
-                  height: DimensionConstants.d16.h,
-                ),
-                Padding(
-                  padding:
-                  EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: <Widget>[
-                      takePictureBox(
-                          context, ImageConstants.galleryIcon, "upload", () {
-                        provider.addProfilePic(context, 2);
-                      }),
-                      takePictureBox(
-                          context, ImageConstants.cameraIcon,
-                          "take_picture", () {
-                        provider.addProfilePic(context, 1);
-                      }),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: DimensionConstants.d16.h,
-                ),
-                Container(
-                  height: DimensionConstants.d310.h,
-                  width: DimensionConstants.d343.w,
-                  decoration: BoxDecoration(
-                    color: Theme
-                        .of(context)
-                        .brightness == Brightness.dark
-                        ? ColorConstants.colorBlack
-                        : ColorConstants.grayF2F2F2,
-                    border: Theme
-                        .of(context)
-                        .brightness == Brightness.dark
-                        ? Border.all(
+            child:  Stack(
+              children: [
+                Column(
+                  children: <Widget>[
+                    SizedBox(
+                      height: DimensionConstants.d26.h,
+                    ),
+                    textFiledName(
+                        context, "certification_name", "certification_name"),
+                    SizedBox(
+                      height: DimensionConstants.d16.h,
+                    ),
+                    Padding(
+                      padding:
+                      EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          takePictureBox(context, ImageConstants.galleryIcon, "upload", () {
+                            provider.selectCertificate(context, 2);
+                          }),
+                          takePictureBox(
+                              context, ImageConstants.cameraIcon,
+                              "take_picture", () {
+                            provider.selectCertificate(context, 1);
+                          }),
+                        ],
+                      ),
+                    ),
+                    SizedBox(
+                      height: DimensionConstants.d16.h,
+                    ),
+                    /*Container(
+                      height: DimensionConstants.d310.h,
+                      width: DimensionConstants.d343.w,
+                      decoration: BoxDecoration(
                         color: Theme
                             .of(context)
                             .brightness == Brightness.dark
-                            ? ColorConstants.colorWhite
-                            : Colors.transparent)
-                        : null,
-                    borderRadius: BorderRadius.circular(
-                        DimensionConstants.d8.r),
-                  ),
-                  child: provider.profileImage != " "
-                      ? ClipRRect(
-                      borderRadius: BorderRadius.circular(
-                          DimensionConstants.d8.r),
-                      child: ImageView(
-                        path: provider.profileImage, fit: BoxFit.fill,))
-                      : Container(),
-                ),
-                SizedBox(
-                  height: DimensionConstants.d22.h,
-                ),
-                Padding(
-                  padding:
-                  EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
-                  child: CommonWidgets.commonButton(context, "save".tr(),
-                      color1: ColorConstants.primaryGradient2Color,
-                      color2: ColorConstants.primaryGradient1Color,
-                      fontSize: DimensionConstants.d14.sp,
-                      onBtnTap: () {
-                        if (certificationNameController.text
-                            .trim()
-                            .isEmpty) {
-                          DialogHelper.showMessage(
-                              context, "certification_name_required".tr());
-                        } else if (provider.profileImage == " ") {
-                          DialogHelper.showMessage(
-                              context, "add_certification_image".tr());
-                        } else {
-                          provider.addCertificate(
-                              context, provider.profileImage,
-                              certificationNameController.text.trim())
-                              .then((value) {
-                            if (value == true) {
-                              Navigator.of(context).pop();
+                            ? ColorConstants.colorBlack
+                            : ColorConstants.grayF2F2F2,
+                        border: Theme
+                            .of(context)
+                            .brightness == Brightness.dark
+                            ? Border.all(
+                            color: Theme
+                                .of(context)
+                                .brightness == Brightness.dark
+                                ? ColorConstants.colorWhite
+                                : Colors.transparent)
+                            : null,
+                        borderRadius: BorderRadius.circular(
+                            DimensionConstants.d8.r),
+                      ),
+                      child: provider.profileImage != " "
+                          ? ClipRRect(
+                          borderRadius: BorderRadius.circular(
+                              DimensionConstants.d8.r),
+                          child: ImageView(
+                            path: provider.profileImage, fit: BoxFit.fill,))
+                          : Container(),
+                    ),*/
+                    Stack(
+                      children: [
+                        Container(
+                          height: DimensionConstants.d310.h,
+                          width: DimensionConstants.d343.w,
+                          decoration: BoxDecoration(
+                            color: Theme
+                                .of(context)
+                                .brightness == Brightness.dark
+                                ? ColorConstants.colorBlack
+                                : ColorConstants.grayF2F2F2,
+                            border: Theme
+                                .of(context)
+                                .brightness == Brightness.dark
+                                ? Border.all(
+                                color: Theme
+                                    .of(context)
+                                    .brightness == Brightness.dark
+                                    ? ColorConstants.colorWhite
+                                    : Colors.transparent)
+                                : null,
+                            borderRadius: BorderRadius.circular(
+                                DimensionConstants.d8.r),
+                          ),
+                          child: provider.certificateImage != " " ? ClipRRect(
+                              borderRadius: BorderRadius.circular(DimensionConstants
+                                  .d8.r),
+                              child: ImageView(path: provider.certificateImage,
+                                fit: BoxFit.cover,)) : Container(),
+                        ),
+                        Positioned(
+                            left: DimensionConstants.d280.w,
+                            child: GestureDetector(
+                                onTap: () {
+                                  provider.removePhoto();
+                                },
+                                child: provider.certificateImage != " " ? const ImageView(
+                                  path: ImageConstants.crossIcon,) : Container()))
+                      ],
+                    ),
+                    SizedBox(
+                      height: DimensionConstants.d22.h,
+                    ),
+                    Padding(
+                      padding:
+                      EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
+                      child: CommonWidgets.commonButton(context, "save".tr(),
+                          color1: ColorConstants.primaryGradient2Color,
+                          color2: ColorConstants.primaryGradient1Color,
+                          fontSize: DimensionConstants.d14.sp,
+                          onBtnTap: () {
+                            CommonWidgets.hideKeyboard(context);
+                            if (certificationNameController.text
+                                .trim()
+                                .isEmpty) {
+                              DialogHelper.showMessage(
+                                  context, "certification_name_required".tr());
+                            } else if (provider.certificateImage == " ") {
+                              DialogHelper.showMessage(
+                                  context, "add_certification_image".tr());
+                            } else {
+                              provider.addCertificate(
+                                  context, provider.certificateImage,
+                                  certificationNameController.text.trim())
+                                  .then((value) {
+                                if (value == true) {
+                                  Navigator.of(context).pop();
+                                }
+                              });
                             }
-                          });
-                        }
-                      },
-                      shadowRequired: true
-                  ),
+                          },
+                          shadowRequired: true
+                      ),
+                    ),
+                  ],
                 ),
+                provider.state == ViewState.busy ? const CustomCircularBar() :const SizedBox()
               ],
             ),
           ),
@@ -182,6 +227,7 @@ class CertificationPage extends StatelessWidget {
             ),
             child: TextFormField(
               controller: certificationNameController,
+              textCapitalization: TextCapitalization.words,
               cursorColor: Theme
                   .of(context)
                   .brightness == Brightness.dark

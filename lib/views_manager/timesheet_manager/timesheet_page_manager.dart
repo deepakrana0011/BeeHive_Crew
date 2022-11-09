@@ -196,7 +196,7 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager> with Ticker
         CommonWidgets.totalProjectsTotalHoursRowTimeSheetManager(
             context,
             provider.totalActiveProjects.toString(),
-            provider.totalHoursAllActiveProjects ?? "00:00"),
+            DateFunctions.minutesToHourString(provider.totalHoursAllActiveProjects??0)),
         tabBarViewWidget(context, controller, provider)
       ],
     );
@@ -774,7 +774,7 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager> with Ticker
                             color: ColorConstants.colorWhite),
               ),
               SizedBox(width: DimensionConstants.d14.w),
-              Container(
+              SizedBox(
                 width: DimensionConstants.d120.w,
                 child: Text(projectName ?? "").boldText(
                     context, DimensionConstants.d13.sp, TextAlign.start),
@@ -1105,31 +1105,35 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager> with Ticker
                         SizedBox(
                           width: DimensionConstants.d16.w,
                         ),
-                        Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            Text(provider.getAllCrewResponse!.data![index].id!.name ?? "").boldText(context,
-                                DimensionConstants.d16.sp, TextAlign.left,
-                                color: ColorConstants.deepBlue),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,crossAxisAlignment: CrossAxisAlignment.center,
-                              children: <Widget> [
-                                Text(provider.getAllCrewResponse!.data![index].id!.speciality ?? "").regularText(context, DimensionConstants.d14.sp, TextAlign.left,color: ColorConstants.deepBlue),
-                                SizedBox(width: DimensionConstants.d6.w,),
-                                Container(height: DimensionConstants.d3.h,width: DimensionConstants.d3.w,
-                                  decoration: BoxDecoration(
-                                    color: ColorConstants.deepBlue,
-                                    borderRadius: BorderRadius.circular(DimensionConstants.d5.r),
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(provider.getAllCrewResponse!.data![index].id!.name ?? "").boldText(context,
+                                  DimensionConstants.d16.sp, TextAlign.left,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  color: ColorConstants.deepBlue),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: <Widget> [
+                                  Text(provider.getAllCrewResponse!.data![index].id!.speciality ?? "").regularText(context, DimensionConstants.d14.sp, TextAlign.left,color: ColorConstants.deepBlue),
+                                  SizedBox(width: DimensionConstants.d6.w,),
+                                  Container(height: DimensionConstants.d3.h,width: DimensionConstants.d3.w,
+                                    decoration: BoxDecoration(
+                                      color: ColorConstants.deepBlue,
+                                      borderRadius: BorderRadius.circular(DimensionConstants.d5.r),
+                                    ),
                                   ),
-                                ),
-                                SizedBox(width: DimensionConstants.d6.w,),
-                                Text("${DateFunctions.minutesToHourString(provider.getAllCrewResponse!.data![index].totalHours!)}" " Hours" ?? "").regularText(context, DimensionConstants.d14.sp, TextAlign.left,color: ColorConstants.deepBlue),
-                              ],
-                            )
-                          ],
+                                  SizedBox(width: DimensionConstants.d6.w,),
+                                  Text("${DateFunctions.minutesToHourString(provider.getAllCrewResponse!.data![index].totalHours!)}" " Hours" ?? "").regularText(context, DimensionConstants.d14.sp, TextAlign.left,color: ColorConstants.deepBlue),
+                                ],
+                              )
+                            ],
+                          ),
                         ),
-                        Expanded(child: Container()),
+
                         ImageView(
                           path: ImageConstants.arrowIcon,
                           width: DimensionConstants.d10.w,

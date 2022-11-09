@@ -180,7 +180,10 @@ class _ProjectsPageManagerState extends State<ProjectsPageManager>
                   : Container(),
             ],
           )
-              : const CustomCircularBar(),
+              : const Center(
+              child: CircularProgressIndicator(
+                color: ColorConstants.primaryGradient2Color,
+              )),
         );
       },
     );
@@ -555,12 +558,7 @@ class _ProjectsPageManagerState extends State<ProjectsPageManager>
                                       left: DimensionConstants.d40.w),
                                   child: Column(
                                     children: <Widget>[
-                                      Text(DateFunctions.minutesToHourString(
-                                          provider
-                                              .allProjectsManagerResponse
-                                              ?.projectData![index]
-                                              .totalHours ??
-                                              0))
+                                      Text(provider.getTotalHoursPerProject(provider.allProjectsManagerResponse?.projectData![index]))
                                           .semiBoldText(
                                           context,
                                           DimensionConstants.d20.sp,

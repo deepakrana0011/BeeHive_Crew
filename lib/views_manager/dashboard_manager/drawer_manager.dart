@@ -133,6 +133,7 @@ class _DrawerManagerState extends State<DrawerManager> {
                                       DimensionConstants.d30.sp,
                                       TextAlign.start,
                                       color: ColorConstants.colorWhite,
+                                      overflow: TextOverflow.ellipsis,
                                       maxLines: 2),
                                   SizedBox(
                                     height: DimensionConstants.d8.h,

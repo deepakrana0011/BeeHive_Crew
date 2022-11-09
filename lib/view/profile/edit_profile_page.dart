@@ -23,105 +23,130 @@ class EditProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BaseView<EditProfileProvider>(
       onModelReady: (provider) async {
-       await provider.getCrewProfile(context);
-          provider.setAllController();
+        await provider.getCrewProfile(context);
+        provider.setAllController();
       },
       builder: (context, provider, _) {
         return Scaffold(
           appBar: CommonWidgets.appBarWithTitleAndAction(context,
-              title: "edit_profile", actionButtonRequired: false,popFunction: () { CommonWidgets.hideKeyboard(context);
-              Navigator.pop(context);}),
-          body: SingleChildScrollView(
-            child:provider.state == ViewState.idle? Column(
-              children: <Widget>[
-                SizedBox(
-                  height: DimensionConstants.d17.h,
-                ),
-                profilePic(context, () {
-                  showDialog(
-                      context: context,
-                      builder: (BuildContext context) =>
-                          DialogHelper.getPhotoDialog(
-                            context,
-                            photoFromCamera: () {
-                              provider.upDateImageChanged();
-                              provider.addProfilePic(context, 1);
-                            },
-                            photoFromGallery: () {
-                              provider.upDateImageChanged();
-                              provider.addProfilePic(context, 2);
-                            },
-                          ));
-                }, provider),
-                SizedBox(
-                  height: DimensionConstants.d24.h,
-                ),
-                textFiledName(context, "name", "John Smith",provider.nameController),
-                SizedBox(
-                  height: DimensionConstants.d16.h,
-                ),
-                textFiledName(context, "title", "Carpenter",provider.titleController),
-                SizedBox(
-                  height: DimensionConstants.d16.h,
-                ),
-                textFiledName(context, "specialty", "Framing & Finishing",provider.specialityController),
-                SizedBox(
-                  height: DimensionConstants.d24.h,
-                ),
-                Container(
-                  height: DimensionConstants.d1.h,
-                  color: Theme.of(context).brightness == Brightness.dark
-                      ? ColorConstants.colorWhite
-                      : ColorConstants.grayE0E0E0,
-                ),
-                SizedBox(
-                  height: DimensionConstants.d24.h,
-                ),
-                textFiledName(context, "company", "xyz Company",provider.companyNameController),
-                SizedBox(
-                  height: DimensionConstants.d16.h,
-                ),
-                textFiledName(context, "phone", "123-555-2514",provider.phoneNumberController, phoneNo: true),
-                SizedBox(
-                  height: DimensionConstants.d16.h,
-                ),
-                textFiledName(context, "email", "johnsmith@gmail.com",provider.emailController, readOnly: true),
-                SizedBox(
-                  height: DimensionConstants.d16.h,
-                ),
-                textFiledName(
-                    context, "address", "88 Bloor St E. Toronto, ON, M4W3G9",provider.addressController),
-                SizedBox(
-                  height: DimensionConstants.d38.h,
-                ),
-                Padding(
-                  padding: EdgeInsets.symmetric(
-                      horizontal: DimensionConstants.d16.w),
-                  child: CommonWidgets.commonButton(context, "save".tr(),
-                      color1: ColorConstants.primaryGradient2Color,
-                      color2: ColorConstants.primaryGradient1Color,
-                      fontSize: DimensionConstants.d14.sp, onBtnTap: () {
-                        if(provider.nameController.text.trim().isEmpty){
-                          DialogHelper.showMessage(context, "name_required".tr());
-                        } else  if(provider.phoneNumberController.text.trim().isEmpty){
-                          DialogHelper.showMessage(context, "phone_required".tr());
-                        } else{
-                          provider.updateCrewProfile(context);
-                        }
-
-                  },
-                    shadowRequired: true
+              title: "edit_profile",
+              actionButtonRequired: false, popFunction: () {
+            CommonWidgets.hideKeyboard(context);
+            Navigator.pop(context);
+          }),
+          body: provider.state == ViewState.busy
+              ? const Center(
+                  child: CircularProgressIndicator(
+                    color: ColorConstants.primaryGradient2Color,
                   ),
-                ),
-                SizedBox(
-                  height: DimensionConstants.d50.h,
-                ),
-              ],
-            ):Padding(
-              padding:  EdgeInsets.only(top: DimensionConstants.d300.h),
-              child: const Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,),),
-            )
-          ),
+                )
+              : SingleChildScrollView(
+                  child: Column(
+                  children: <Widget>[
+                    SizedBox(
+                      height: DimensionConstants.d17.h,
+                    ),
+                    profilePic(context, () {
+                      showDialog(
+                          context: context,
+                          builder: (BuildContext context) =>
+                              DialogHelper.getPhotoDialog(
+                                context,
+                                photoFromCamera: () {
+                                  provider.upDateImageChanged();
+                                  provider.addProfilePic(context, 1);
+                                },
+                                photoFromGallery: () {
+                                  provider.upDateImageChanged();
+                                  provider.addProfilePic(context, 2);
+                                },
+                              ));
+                    }, provider),
+                    SizedBox(
+                      height: DimensionConstants.d24.h,
+                    ),
+                    textFiledName(
+                        context, "name", "John Smith", provider.nameController),
+                    SizedBox(
+                      height: DimensionConstants.d16.h,
+                    ),
+                    textFiledName(context, "title", "Carpenter",
+                        provider.titleController),
+                    SizedBox(
+                      height: DimensionConstants.d16.h,
+                    ),
+                    textFiledName(context, "specialty", "Framing & Finishing",
+                        provider.specialityController),
+                    SizedBox(
+                      height: DimensionConstants.d24.h,
+                    ),
+                    Container(
+                      height: DimensionConstants.d1.h,
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? ColorConstants.colorWhite
+                          : ColorConstants.grayE0E0E0,
+                    ),
+                    SizedBox(
+                      height: DimensionConstants.d24.h,
+                    ),
+                    textFiledName(context, "company", "xyz Company",
+                        provider.companyNameController),
+                    SizedBox(
+                      height: DimensionConstants.d16.h,
+                    ),
+                    textFiledName(context, "phone", "123-555-2514",
+                        provider.phoneNumberController,
+                        phoneNo: true),
+                    SizedBox(
+                      height: DimensionConstants.d16.h,
+                    ),
+                    textFiledName(context, "email", "johnsmith@gmail.com",
+                        provider.emailController,
+                        readOnly: true),
+                    SizedBox(
+                      height: DimensionConstants.d16.h,
+                    ),
+                    textFiledName(
+                        context,
+                        "address",
+                        "88 Bloor St E. Toronto, ON, M4W3G9",
+                        provider.addressController),
+                    SizedBox(
+                      height: DimensionConstants.d38.h,
+                    ),
+                    provider.updateLoader
+                        ? const Center(
+                            child: CircularProgressIndicator(
+                              color: ColorConstants.primaryGradient2Color,
+                            ),
+                          )
+                        : Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: DimensionConstants.d16.w),
+                            child: CommonWidgets.commonButton(
+                                context, "save".tr(),
+                                color1: ColorConstants.primaryGradient2Color,
+                                color2: ColorConstants.primaryGradient1Color,
+                                fontSize: DimensionConstants.d14.sp,
+                                onBtnTap: () {
+                              if (provider.nameController.text.trim().isEmpty) {
+                                DialogHelper.showMessage(
+                                    context, "name_required".tr());
+                              } else if (provider.phoneNumberController.text
+                                  .trim()
+                                  .isEmpty) {
+                                DialogHelper.showMessage(
+                                    context, "phone_required".tr());
+                              } else {
+                                provider.updateCrewProfile(context);
+                              }
+                            }, shadowRequired: true),
+                          ),
+                    SizedBox(
+                      height: DimensionConstants.d50.h,
+                    ),
+                  ],
+                )),
         );
       },
     );
@@ -159,7 +184,9 @@ Widget profilePic(BuildContext context, VoidCallback changePhotoTap,
   );
 }
 
-Widget textFiledName(BuildContext context, String title, String hintName, TextEditingController controller, {bool readOnly = false, bool phoneNo = false}) {
+Widget textFiledName(BuildContext context, String title, String hintName,
+    TextEditingController controller,
+    {bool readOnly = false, bool phoneNo = false}) {
   return Padding(
     padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
     child: Column(
@@ -181,16 +208,16 @@ Widget textFiledName(BuildContext context, String title, String hintName, TextEd
                 : ColorConstants.colorBlack,
             border: Theme.of(context).brightness == Brightness.dark
                 ? Border.all(
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? ColorConstants.colorWhite
-                    : Colors.transparent)
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? ColorConstants.colorWhite
+                        : Colors.transparent)
                 : null,
             borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
           ),
           child: TextFormField(
-            inputFormatters: phoneNo ? <TextInputFormatter>[
-              FilteringTextInputFormatter.digitsOnly
-            ] : [],
+            inputFormatters: phoneNo
+                ? <TextInputFormatter>[FilteringTextInputFormatter.digitsOnly]
+                : [],
             readOnly: readOnly,
             controller: controller,
             cursorColor: Theme.of(context).brightness == Brightness.dark
@@ -208,7 +235,8 @@ Widget textFiledName(BuildContext context, String title, String hintName, TextEd
               hintTextColor: Theme.of(context).brightness == Brightness.dark
                   ? ColorConstants.colorWhite
                   : ColorConstants.colorBlack,
-              hintTextSize: DimensionConstants.d16.sp, fieldName: '',
+              hintTextSize: DimensionConstants.d16.sp,
+              fieldName: '',
             ),
           ),
         )

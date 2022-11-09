@@ -21,14 +21,16 @@ import '../../widget/custom_switcher.dart';
 class SetRatesPageManager extends StatelessWidget {
   bool? isUpdating;
   String? projectId;
-  SetRatesPageManager({Key? key,this.isUpdating,this.projectId}) : super(key: key);
+
+  SetRatesPageManager({Key? key, this.isUpdating, this.projectId})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BaseView<SetRatesPageManageProvider>(
       onModelReady: (provider) async {
-        provider.projectId=projectId;
-        provider.isUpdating=isUpdating;
+        provider.projectId = projectId;
+        provider.isUpdating = isUpdating;
         provider.myController = List.generate(
             provider.createProjectRequest.selectedCrewMember!.length,
             (i) => TextEditingController());
@@ -88,61 +90,61 @@ class SetRatesPageManager extends StatelessWidget {
                       height: DimensionConstants.d20.h,
                     ),
                     Expanded(
-                      child: perCrewRates(context, provider.isSameRate, provider,
-                          provider.myController!),
+                      child: perCrewRates(context, provider.isSameRate,
+                          provider, provider.myController!),
                     ),
-
-                    Column(children: [
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: DimensionConstants.d16.w),
-                        child: Container(
-                          height: DimensionConstants.d50.h,
-                          decoration: BoxDecoration(
-                            color: ColorConstants.redColorEB5757
-                                .withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(
-                                DimensionConstants.d8.r),
-                          ),
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: DimensionConstants.d16.w),
-                            child: Row(
-                              children: <Widget>[
-                                const ImageView(
-                                  path: ImageConstants.warningIcon,
-                                ),
-                                SizedBox(
-                                  width: DimensionConstants.d16.w,
-                                ),
-                                Text("warning_text".tr()).regularText(context,
-                                    DimensionConstants.d13.sp, TextAlign.left,
-                                    color: ColorConstants.colorBlack),
-                              ],
+                    Column(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: DimensionConstants.d16.w),
+                          child: Container(
+                            height: DimensionConstants.d50.h,
+                            decoration: BoxDecoration(
+                              color: ColorConstants.redColorEB5757
+                                  .withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(
+                                  DimensionConstants.d8.r),
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: DimensionConstants.d16.w),
+                              child: Row(
+                                children: <Widget>[
+                                  const ImageView(
+                                    path: ImageConstants.warningIcon,
+                                  ),
+                                  SizedBox(
+                                    width: DimensionConstants.d16.w,
+                                  ),
+                                  Text("warning_text".tr()).regularText(context,
+                                      DimensionConstants.d13.sp, TextAlign.left,
+                                      color: ColorConstants.colorBlack),
+                                ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      SizedBox(
-                        height: DimensionConstants.d25.h,
-                      ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: DimensionConstants.d16.w),
-                        child: CommonWidgets.commonButton(
-                            context, "next".tr(),
-                            color1: ColorConstants.primaryGradient2Color,
-                            color2: ColorConstants.primaryGradient1Color,
-                            fontSize: DimensionConstants.d14.sp,
-                            onBtnTap: () {
-                              provider.navigateToNextPage(context,isUpdating!);
-                            }, shadowRequired: true),
-                      ),
-                    ],),
+                        SizedBox(
+                          height: DimensionConstants.d25.h,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: DimensionConstants.d16.w),
+                          child: CommonWidgets.commonButton(
+                              context, "next".tr(),
+                              color1: ColorConstants.primaryGradient2Color,
+                              color2: ColorConstants.primaryGradient1Color,
+                              fontSize: DimensionConstants.d14.sp,
+                              onBtnTap: () {
+                            provider.navigateToNextPage(context, isUpdating!);
+                          }, shadowRequired: true),
+                        ),
+                      ],
+                    ),
                     SizedBox(
                       height: DimensionConstants.d20.h,
                     ),
-
                   ],
                 )
               : const CustomCircularBar(),
@@ -296,40 +298,44 @@ Widget perCrewRates(
     List<TextEditingController> myController) {
   return Padding(
     padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
-    child: Container(
+    child: SizedBox(
       width: DimensionConstants.d400.w,
       child: ListView.builder(
-        shrinkWrap: true,
+          shrinkWrap: true,
           itemCount: provider.createProjectRequest.selectedCrewMember!.length,
           itemBuilder: (BuildContext context, int index) {
             return Padding(
               padding: EdgeInsets.symmetric(vertical: DimensionConstants.d5.h),
               child: Row(
                 children: <Widget>[
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Text(provider.createProjectRequest
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text(
+                          provider.createProjectRequest
                                   .selectedCrewMember![index].name ??
-                              "")
-                          .boldText(context, DimensionConstants.d16.sp,
-                              TextAlign.left,
-                              color: isSameRate == false
-                                  ? ColorConstants.colorBlack
-                                  : ColorConstants.gray828282),
-                      if (provider.createProjectRequest
-                          .selectedCrewMember![index].position!.isNotEmpty)
-                        Text(provider.createProjectRequest
-                                .selectedCrewMember![index].position!)
-                            .regularText(context, DimensionConstants.d16.sp,
-                                TextAlign.left,
-                                color: isSameRate == false
-                                    ? ColorConstants.colorBlack
-                                    : ColorConstants.gray828282),
-                    ],
+                              "",
+                        ).boldText(
+                            context, DimensionConstants.d16.sp, TextAlign.left,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            color: isSameRate == false
+                                ? ColorConstants.colorBlack
+                                : ColorConstants.gray828282),
+                        if (provider.createProjectRequest
+                            .selectedCrewMember![index].position!.isNotEmpty)
+                          Text(provider.createProjectRequest
+                                  .selectedCrewMember![index].position!)
+                              .regularText(context, DimensionConstants.d16.sp,
+                                  TextAlign.left,
+                                  color: isSameRate == false
+                                      ? ColorConstants.colorBlack
+                                      : ColorConstants.gray828282),
+                      ],
+                    ),
                   ),
-                  Expanded(child: Container()),
                   Container(
                     height: DimensionConstants.d42.h,
                     width: DimensionConstants.d138.w,

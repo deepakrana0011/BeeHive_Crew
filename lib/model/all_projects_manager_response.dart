@@ -57,18 +57,24 @@ class Checkin {
   Checkin({
     this.id,
     this.crewId,
+    this.checkInTime,
+    this.checkOutTime,
     this.assignProjectId,
     this.hoursDiff,
   });
 
   String? id;
   String? crewId;
+  String? checkInTime;
+  String? checkOutTime;
   String? assignProjectId;
   int? hoursDiff;
 
   factory Checkin.fromJson(Map<String, dynamic> json) => Checkin(
         id: json["_id"] ?? "",
         crewId: json["crewId"] ?? "",
+        checkInTime: json["checkInTime"],
+        checkOutTime: json["checkOutTime"],
         assignProjectId: json["assignProjectId"] ?? "",
         hoursDiff: json["hoursDiff"] ?? '0',
       );

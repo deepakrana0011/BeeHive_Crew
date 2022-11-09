@@ -12,9 +12,9 @@ class ChangePasswordManagerProvider extends BaseProvider{
   bool oldPassWordField = false;
   bool newPasswordFiled = false;
   bool confirmPasswordFiled = false;
-  bool oldPasswordContentPadding = false;
-  bool newPasswordContentPadding = false;
-  bool confirmPasswordContentPadding = false;
+  bool oldPasswordContentPadding = true;
+  bool newPasswordContentPadding = true;
+  bool confirmPasswordContentPadding = true;
   bool oldPasswordVisible = false;
   bool newPasswordVisible = false;
   bool confirmPasswordVisible = false;

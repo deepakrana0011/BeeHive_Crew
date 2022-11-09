@@ -47,19 +47,23 @@ class ImageView extends StatelessWidget {
         height: height,
         width: width,
         imageUrl: path!,
-        placeholder: (context, url) => Container(
+        placeholder: (context, url) => /*Container(
           width: width,
           height: height,
           color:ColorConstants.primaryColor
-          /* child: Image.asset(
+          *//* child: Image.asset(
             ImageConstants.bg_splash,
             width: width,
             height: height,
             fit: fit,
             color: color,
-          )*/,
+          )*//*,
+        )*/const Center(
+          child: CircularProgressIndicator(
+            color: ColorConstants.primaryGradient2Color,
+          ),
         ),
-        errorWidget: (context, url, error) => Icon(Icons.error),
+        errorWidget: (context, url, error) => const Icon(Icons.error),
       );
 
     } else if (path?.startsWith('assets/images/') ?? false) {

@@ -43,7 +43,7 @@ class BottomBarManagerProvider extends BaseProvider {
   bool createProject=false;
   bool archiveProject = false;
 
-  void updateDrawerData(String name, String? profilePic, String? companyLogo, String color) {
+  void updateDrawerData(String name, String? profilePic, String? companyLogo, String? color) {
     _companyLogo = companyLogo;
     _managerProfilePic = profilePic;
     _managerName = name;

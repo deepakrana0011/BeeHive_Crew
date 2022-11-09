@@ -20,8 +20,16 @@ import '../services/fetch_data_expection.dart';
 class CreateProjectManagerProvider extends BaseProvider {
   final projectNameController = TextEditingController();
   CreateProjectRequest createProjectRequest = locator<CreateProjectRequest>();
-  Completer<GoogleMapController> controller = Completer();
-  BitmapDescriptor? pinLocationIconUser;
+  final Completer<GoogleMapController> _controller = Completer();
+  late final GoogleMapController? mapController;
+  bool _showMap = false;
+
+  bool get showMap => _showMap;
+
+  set showMap(bool value) {
+    _showMap = value;
+    notifyListeners();
+  } //BitmapDescriptor? pinLocationIconUser;
 
   final CameraPosition kLake = const CameraPosition(
       bearing: 192.8334901395799,
@@ -30,20 +38,21 @@ class CreateProjectManagerProvider extends BaseProvider {
       zoom: 10);
   int initialIndex = 0;
   MapType mapType = MapType.terrain;
-  double latitude = 0;
-  double longitude = 0;
+  double latitude = 0.0;
+  double longitude = 0.0;
   var value;
   String pickUpLocation = "";
   double locationRadius = 25;
   bool isCurrentAddress = true;
-  String? currentCountryIsoCode ;
+  String? currentCountryIsoCode;
+  CameraPosition? position;
+
   Future getLngLt(context) async {
-    setState(ViewState.busy);
     value = await Geolocator.getCurrentPosition();
     latitude = value.latitude;
     longitude = value.longitude;
     getPickUpAddress(latitude, longitude);
-    setState(ViewState.idle);
+    showMap=true;
   }
 
   void updateCurrentAddressValue(bool value) {
@@ -51,17 +60,20 @@ class CreateProjectManagerProvider extends BaseProvider {
     customNotify();
   }
 
-  void setCustomMapPinUser() async {
+/*  void setCustomMapPinUser() async {
     pinLocationIconUser = await BitmapDescriptor.fromAssetImage(
         const ImageConfiguration(), ImageConstants.locationMark);
     notifyListeners();
-  }
+  }*/
 
   List<Marker> markers = [];
 
   onMapCreated(GoogleMapController controller) {
-    setState(ViewState.busy);
-    markers.add(Marker(
+    if (!_controller.isCompleted) {
+      _controller.complete(controller);
+      mapController = controller;
+    }
+    /* markers.add(Marker(
       draggable: true,
       markerId: const MarkerId("ID1"),
       position: LatLng(latitude, longitude),
@@ -74,19 +86,16 @@ class CreateProjectManagerProvider extends BaseProvider {
       },
       flat: true,
       anchor: const Offset(0.5, 0.5),
-    ));
-    setState(ViewState.idle);
+    ));*/
   }
-
-  CameraPosition? position;
 
   Future<void> getPickUpAddress(double lat, double long) async {
     List<Placemark> placeMark = await placemarkFromCoordinates(lat, long);
-    pickUpLocation = "${placeMark.first.street} ${placeMark.first.thoroughfare}${placeMark.first.subLocality}";
+    pickUpLocation =
+        "${placeMark.first.street} ${placeMark.first.thoroughfare}${placeMark.first.subLocality}";
     currentCountryIsoCode = placeMark.first.isoCountryCode.toString();
     notifyListeners();
   }
-
 
   ///Update MapType of google Map
   updateMapStyle(int index) {
@@ -142,5 +151,15 @@ class CreateProjectManagerProvider extends BaseProvider {
       createProjectRequest.locationRadius = locationRadius.toString();
       Navigator.pushNamed(context, RouteConstants.addCrewPageManager);
     }
+  }
+
+  Future<void> moveToSelectedAddress() async {
+    mapController?.animateCamera(CameraUpdate.newCameraPosition(
+      CameraPosition(
+        bearing: 0,
+        zoom: 10,
+        target: LatLng(latitude, longitude),
+      ),
+    ));
   }
 }

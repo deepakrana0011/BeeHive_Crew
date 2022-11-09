@@ -1,17 +1,12 @@
 import 'dart:io';
-
 import 'package:beehive/constants/api_constants.dart';
 import 'package:beehive/constants/color_constants.dart';
-import 'package:beehive/helper/shared_prefs.dart';
 import 'package:beehive/model/get_profile_response_manager.dart';
 import 'package:beehive/provider/base_provider.dart';
-import 'package:beehive/views_manager/profile_manager/edit_profile_page_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-
-import '../constants/route_constants.dart';
 import '../enum/enum.dart';
 import '../helper/dialog_helper.dart';
 import '../services/fetch_data_expection.dart';
@@ -21,6 +16,15 @@ class ProfilePageManagerProvider extends BaseProvider {
   String companyIcon = "";
   bool isImageChanged = false;
   bool isCompanyLogo = false;
+  bool _updateLoader = false;
+
+  bool get updateLoader => _updateLoader;
+
+  set updateLoader(bool value) {
+    _updateLoader = value;
+    notifyListeners();
+  }
+
   /*updateImageChanged(){
     isImageChanged = !isImageChanged;
     notifyListeners();
@@ -37,12 +41,12 @@ class ProfilePageManagerProvider extends BaseProvider {
   final emailController = TextEditingController();
   final addressController = TextEditingController();
   Color pickerColor = const Color(0xff443a49);
-  double hColor =0;
+  double hColor = 0;
   double sColor = 0;
   double vColor = 0;
 
-
   HSVColor currentColor = HSVColor.fromColor(ColorConstants.blueGradient1Color);
+
   updateColor(HSVColor color) {
     currentColor = color;
     hColor = color.hue;
@@ -51,8 +55,8 @@ class ProfilePageManagerProvider extends BaseProvider {
     notifyListeners();
   }
 
-
   bool status = false;
+
   void updateSwitcherStatus(bool value) {
     status = value;
     notifyListeners();
@@ -60,24 +64,31 @@ class ProfilePageManagerProvider extends BaseProvider {
 
   Color? colorOfApp;
 
-
   setEditProfilePageController() {
-    profileImage = profileResponse!.data!.profileImage == null ? "" :
-    ApiConstantsCrew.BASE_URL_IMAGE + profileResponse!.data!.profileImage!;
-    companyIcon = profileResponse!.data!.companyLogo == null ? "" :
-        ApiConstantsCrew.BASE_URL_IMAGE + profileResponse!.data!.companyLogo!;
-    nameController.text = profileResponse!.data!.name == null ? "" :
-    profileResponse!.data!.name!;
-    titleController.text = profileResponse!.data!.title == null ? "" :
-    profileResponse!.data!.title!;
-    companyController.text = profileResponse!.data!.company == null ? "" :
-    profileResponse!.data!.company!;
-    phoneController.text = profileResponse!.data!.phoneNumber == null ? "" :
-        profileResponse!.data!.phoneNumber!.toString();
-    emailController.text = profileResponse!.data!.email == null ? "" :
-    profileResponse!.data!.email!;
-    addressController.text = profileResponse!.data!.address == null ? "" :
-    profileResponse!.data!.address!;
+    profileImage = profileResponse!.data!.profileImage == null
+        ? ""
+        : ApiConstantsCrew.BASE_URL_IMAGE +
+            profileResponse!.data!.profileImage!;
+    companyIcon = profileResponse!.data!.companyLogo == null
+        ? ""
+        : ApiConstantsCrew.BASE_URL_IMAGE + profileResponse!.data!.companyLogo!;
+    nameController.text =
+        profileResponse!.data!.name == null ? "" : profileResponse!.data!.name!;
+    titleController.text = profileResponse!.data!.title == null
+        ? ""
+        : profileResponse!.data!.title!;
+    companyController.text = profileResponse!.data!.company == null
+        ? ""
+        : profileResponse!.data!.company!;
+    phoneController.text = profileResponse!.data!.phoneNumber == null
+        ? ""
+        : profileResponse!.data!.phoneNumber!.toString();
+    emailController.text = profileResponse!.data!.email == null
+        ? ""
+        : profileResponse!.data!.email!;
+    addressController.text = profileResponse!.data!.address == null
+        ? ""
+        : profileResponse!.data!.address!;
     notifyListeners();
   }
 
@@ -115,19 +126,21 @@ class ProfilePageManagerProvider extends BaseProvider {
 
   ///Get profile manager api
   GetManagerProfileResponse? profileResponse;
-  Future<GetManagerProfileResponse?> getManagerProfile(BuildContext context,) async {
+
+  Future<GetManagerProfileResponse?> getManagerProfile(
+    BuildContext context,
+  ) async {
     setState(ViewState.busy);
     try {
       var model = await api.getManagerProfile(context);
       if (model.success == true) {
         profileResponse = model;
-       /* SharedPreference.prefs!.setString(SharedPreference.USER_LOGO, model.data!.companyLogo == null? "" : model.data!.companyLogo!);
+        /* SharedPreference.prefs!.setString(SharedPreference.USER_LOGO, model.data!.companyLogo == null? "" : model.data!.companyLogo!);
         SharedPreference.prefs!.setString(SharedPreference.USER_NAME, model.data!.name == null? "" :model.data!.name! );
         SharedPreference.prefs!.setString(SharedPreference.USER_PROFILE, model.data!.profileImage== null? "" :model.data!.profileImage!);
         SharedPreference.prefs!.setString(SharedPreference.COLORFORDRAWER , model.data!.profileImage== null? "" :model.data!.customColor!);*/
         setState(ViewState.idle);
         return model;
-
       } else {
         setState(ViewState.idle);
         return model;
@@ -135,7 +148,6 @@ class ProfilePageManagerProvider extends BaseProvider {
     } on FetchDataException catch (e) {
       setState(ViewState.idle);
       DialogHelper.showMessage(context, e.toString());
-
     } on SocketException catch (e) {
       setState(ViewState.idle);
       DialogHelper.showMessage(context, "internet_connection".tr());
@@ -147,7 +159,7 @@ class ProfilePageManagerProvider extends BaseProvider {
   Future updateProfileManager(
     BuildContext context,
   ) async {
-    setState(ViewState.busy);
+    updateLoader = true;
     try {
       var model = await api.updateManagerProfile(context,
           email: emailController.text,
@@ -158,21 +170,19 @@ class ProfilePageManagerProvider extends BaseProvider {
           company: companyController.text,
           imageChanged: isImageChanged,
           name: nameController.text,
-          profile: profileImage, color: currentColor.toColor().toString().substring(6, 16), companyChanged: isCompanyLogo);
+          profile: profileImage,
+          color: currentColor.toColor().toString().substring(6, 16),
+          companyChanged: isCompanyLogo);
+      updateLoader = false;
       if (model.success == true) {
-        setState(ViewState.idle);
-          Navigator.pop(context);
-      } else {
-        setState(ViewState.idle);
+        Navigator.pop(context);
       }
     } on FetchDataException catch (e) {
-      setState(ViewState.idle);
+      updateLoader=false;
       DialogHelper.showMessage(context, e.toString());
     } on SocketException catch (e) {
-      setState(ViewState.idle);
+      updateLoader=false;
       DialogHelper.showMessage(context, "internet_connection".tr());
     }
   }
-
 }
-

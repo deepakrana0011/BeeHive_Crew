@@ -70,7 +70,8 @@ class ProjectsCrewProvider extends BaseProvider {
   ) async {
     setState(ViewState.busy);
     try {
-      allCheckoutProjectCrewResponse = await api.getAllCheckoutOutCrewProjects(context);
+      allCheckoutProjectCrewResponse =
+          await api.getAllCheckoutOutCrewProjects(context);
       getTotalHours();
       setState(ViewState.idle);
     } on FetchDataException catch (e) {
@@ -83,37 +84,64 @@ class ProjectsCrewProvider extends BaseProvider {
   }
 
   void getTotalHours() {
-    int value = 0;
-    allCheckoutProjectCrewResponse!.projectData!.forEach((element) {
-      value = value + element.totalHours!;
+    int totalMinutes = 0;
+    for (var element in allCheckoutProjectCrewResponse!.projectData!) {
+      element.checkins?.forEach((checkIn) {
+        var startTime =
+            DateFunctions.getDateTimeFromString(checkIn.checkInTime!);
+        var endTime = DateFunctions.getDateTimeFromString(
+            (checkIn.checkOutTime == null ||
+                    checkIn.checkOutTime!.trim().isEmpty)
+                ? DateFunctions.dateFormatyyyyMMddHHmm(DateTime.now())
+                : checkIn.checkOutTime!);
+        var minutes = endTime.difference(startTime).inMinutes;
+        totalMinutes = totalMinutes + minutes;
+      });
+    }
+    totalHours = DateFunctions.minutesToHourString(totalMinutes);
+  }
+
+  String? getTotalHoursPerProject(ProjectDetail projectDetail) {
+    int totalMinutes = 0;
+    projectDetail.checkins?.forEach((checkIn) {
+      var startTime = DateFunctions.getDateTimeFromString(checkIn.checkInTime!);
+      var endTime = DateFunctions.getDateTimeFromString(
+          (checkIn.checkOutTime == null || checkIn.checkOutTime!.trim().isEmpty)
+              ? DateFunctions.dateFormatyyyyMMddHHmm(DateTime.now())
+              : checkIn.checkOutTime!);
+      var minutes = endTime.difference(startTime).inMinutes;
+      totalMinutes = totalMinutes + minutes;
     });
-    totalHours =DateFunctions.minutesToHourString(value);
+    return DateFunctions.minutesToHourString(totalMinutes);
   }
 
   List<String> projectNames = [];
   List<String> ids = [];
   List<Color> projectColors = [];
 
-  Future getProjectSchedulesManager(BuildContext context,) async {
+  Future getProjectSchedulesManager(
+    BuildContext context,
+  ) async {
     setState(ViewState.busy);
     try {
       projectScheduleCrew = await api.getProjectSchedulesManagerCrew(context,
           (ApiConstantsCrew.BASEURL + ApiConstantsCrew.crewProjectSchedule));
-      if(projectScheduleCrew != null){
+      if (projectScheduleCrew != null) {
         projectNameList = projectScheduleCrew!.data;
 
-        for(var element in projectNameList){
-          for(int i = 0 ; i < element.projectName.length ; i++){
+        for (var element in projectNameList) {
+          for (int i = 0; i < element.projectName.length; i++) {
             ids.add(element.projectName[i].sId.toString());
           }
         }
 
         /// for colors
-        for(int i = 0 ; i < ids.toSet().toList().length ; i++) {
-          projectColors.add(Colors.primaries[Random().nextInt(Colors.primaries.length)]);
-          for(var element in projectNameList) {
+        for (int i = 0; i < ids.toSet().toList().length; i++) {
+          projectColors
+              .add(Colors.primaries[Random().nextInt(Colors.primaries.length)]);
+          for (var element in projectNameList) {
             element.projectName.any((ele) {
-              if(ele.sId == ids.toSet().toList()[i]){
+              if (ele.sId == ids.toSet().toList()[i]) {
                 ele.color = projectColors[i];
               }
               return false;
@@ -124,17 +152,18 @@ class ProjectsCrewProvider extends BaseProvider {
         /// for project name
         projectNames = [];
         List<String> idss = ids.toSet().toList();
-        for(var element in projectNameList){
-          for(var projectElement in element.projectName){
-            for(var idElement in idss){
-              if(idElement == projectElement.sId){
+        for (var element in projectNameList) {
+          for (var projectElement in element.projectName) {
+            for (var idElement in idss) {
+              if (idElement == projectElement.sId) {
                 projectNames.add(projectElement.projectName.toString());
                 idss.remove(idElement);
                 break;
               }
             }
-          }}
-      } else{
+          }
+        }
+      } else {
         projectNameList = [];
       }
       print(projectNames);
@@ -170,20 +199,21 @@ class ProjectsCrewProvider extends BaseProvider {
     weekEndDate = DateFunctions.getMonthDay(selectedEndDate!);
     dates = [];
     days = [];
-    if(selectedStartDate!.month < selectedEndDate!.month){
+    if (selectedStartDate!.month < selectedEndDate!.month) {
       // Find the last day of the month.
-      var lastDayDateTime = (selectedStartDate!.month < 12) ?
-      DateTime(selectedStartDate!.year, selectedStartDate!.month + 1, 0) : DateTime(selectedStartDate!.year + 1, 1, 0);
+      var lastDayDateTime = (selectedStartDate!.month < 12)
+          ? DateTime(selectedStartDate!.year, selectedStartDate!.month + 1, 0)
+          : DateTime(selectedStartDate!.year + 1, 1, 0);
 
-      for(int i = selectedStartDate!.day ; i <= lastDayDateTime.day; i++){
+      for (int i = selectedStartDate!.day; i <= lastDayDateTime.day; i++) {
         dates.add(i);
       }
 
-      for(int i = 1 ; i <= selectedEndDate!.day; i++){
+      for (int i = 1; i <= selectedEndDate!.day; i++) {
         dates.add(i);
       }
-    } else{
-      for(int i = selectedStartDate!.day ; i <= selectedEndDate!.day; i++){
+    } else {
+      for (int i = selectedStartDate!.day; i <= selectedEndDate!.day; i++) {
         dates.add(i);
       }
     }
@@ -205,20 +235,21 @@ class ProjectsCrewProvider extends BaseProvider {
     weekEndDate = DateFunctions.getMonthDay(selectedEndDate!);
     dates = [];
     days = [];
-    if(selectedStartDate!.month < selectedEndDate!.month){
+    if (selectedStartDate!.month < selectedEndDate!.month) {
       // Find the last day of the month.
-      var lastDayDateTime = (selectedStartDate!.month < 12) ?
-      DateTime(selectedStartDate!.year, selectedStartDate!.month + 1, 0) : DateTime(selectedStartDate!.year + 1, 1, 0);
+      var lastDayDateTime = (selectedStartDate!.month < 12)
+          ? DateTime(selectedStartDate!.year, selectedStartDate!.month + 1, 0)
+          : DateTime(selectedStartDate!.year + 1, 1, 0);
 
-      for(int i = selectedStartDate!.day ; i <= lastDayDateTime.day; i++){
+      for (int i = selectedStartDate!.day; i <= lastDayDateTime.day; i++) {
         dates.add(i);
       }
 
-      for(int i = 1 ; i <= selectedEndDate!.day; i++){
+      for (int i = 1; i <= selectedEndDate!.day; i++) {
         dates.add(i);
       }
-    } else{
-      for(int i = selectedStartDate!.day ; i <= selectedEndDate!.day; i++){
+    } else {
+      for (int i = selectedStartDate!.day; i <= selectedEndDate!.day; i++) {
         dates.add(i);
       }
     }
@@ -227,7 +258,7 @@ class ProjectsCrewProvider extends BaseProvider {
     customNotify();
   }
 
-  void weekTabBar(){
+  void weekTabBar() {
     weekFirstDate = DateFunctions.getMonthDay(selectedStartDate!);
     weekEndDate = DateFunctions.getMonthDay(selectedEndDate!);
 
@@ -236,7 +267,7 @@ class ProjectsCrewProvider extends BaseProvider {
 
     dates = [];
     days = [];
-    for(int i = selectedStartDate!.day ; i <= selectedEndDate!.day; i++){
+    for (int i = selectedStartDate!.day; i <= selectedEndDate!.day; i++) {
       dates.add(i);
     }
     days = gettingWeekDays(selectedStartDate!.weekday);
@@ -244,8 +275,8 @@ class ProjectsCrewProvider extends BaseProvider {
     customNotify();
   }
 
-  List<String> gettingWeekDays(int startWeeKDay){
-    switch(startWeeKDay){
+  List<String> gettingWeekDays(int startWeeKDay) {
+    switch (startWeeKDay) {
       case 1:
         daysUpperCase = ["M", "TU", "W", "TH", "F", "SA", "SU"];
         return ["Tu", "W", "Th", "F", "Sa", "Su", "M"];
@@ -253,7 +284,7 @@ class ProjectsCrewProvider extends BaseProvider {
         daysUpperCase = ["TU", "W", "TH", "F", "SA", "SU", "M"];
         return ["Tu", "W", "Th", "F", "Sa", "Su", "M"];
       case 3:
-        daysUpperCase = [ "W", "TH", "F", "SA", "SU", "M", "TU"];
+        daysUpperCase = ["W", "TH", "F", "SA", "SU", "M", "TU"];
         return ["W", "Th", "F", "Sa", "Su", "M", "Tu"];
       case 4:
         daysUpperCase = ["TH", "F", "SA", "SU", "M", "TU", "W"];

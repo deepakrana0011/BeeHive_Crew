@@ -23,19 +23,25 @@ import '../../constants/color_constants.dart';
 import '../../constants/dimension_constants.dart';
 import '../../helper/decoration.dart';
 
-class CreateProjectManager extends StatelessWidget {
-  CreateProjectManager({Key? key}) : super(key: key);
+class CreateProjectManager extends StatefulWidget {
+  const CreateProjectManager({Key? key}) : super(key: key);
+
+  @override
+  CreateProjectManagerState createState() => CreateProjectManagerState();
+}
+
+class CreateProjectManagerState extends State<CreateProjectManager> {
   TextEditingController addressController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    return BaseView<CreateProjectManagerProvider>(onModelReady: (provider) {
+    return BaseView<CreateProjectManagerProvider>(
+        onModelReady: (provider) async {
       provider.createProjectRequest.clearCreateProjectRequest();
-      provider.determinePosition().then((value) =>
-      {
-        provider.getLngLt(context),
-        provider.setCustomMapPinUser(),
-      });
+      await provider.determinePosition().then((value) async => {
+            await provider.getLngLt(context),
+            //provider.setCustomMapPinUser(),
+          });
     }, builder: (context, provider, _) {
       Set<Circle> mCircle = {
         Circle(
@@ -50,67 +56,76 @@ class CreateProjectManager extends StatelessWidget {
       return Scaffold(
         appBar: CommonWidgets.appBarWithTitleAndAction(context,
             title: "create_a_project", popFunction: () {
-              CommonWidgets.hideKeyboard(context);
-              Navigator.pop(context);
-            }),
-        body: Stack(
-          children: [
-            SingleChildScrollView(
-              child: Column(
-                children: <Widget>[
-                  SizedBox(
-                    height: DimensionConstants.d16.h,
-                  ),
-                  titleWidget(context, provider),
-                  SizedBox(
-                    height: DimensionConstants.d20.h,
-                  ),
-                  projectLocation(context, provider, addressController),
-                  if(provider.isCurrentAddress)Column(children: [
-                    SizedBox(
-                      height: DimensionConstants.d16.h,
+          CommonWidgets.hideKeyboard(context);
+          Navigator.pop(context);
+        }),
+        body: provider.state == ViewState.busy
+            ? const Center(
+                child: CircularProgressIndicator(
+                  color: ColorConstants.blueGradient2Color,
+                ),
+              )
+            : Stack(
+                children: [
+                  SingleChildScrollView(
+                    child: Column(
+                      children: <Widget>[
+                        SizedBox(
+                          height: DimensionConstants.d16.h,
+                        ),
+                        titleWidget(context, provider),
+                        SizedBox(
+                          height: DimensionConstants.d20.h,
+                        ),
+                        projectLocation(context, provider, addressController),
+                        if (provider.isCurrentAddress)
+                          Column(
+                            children: [
+                              SizedBox(
+                                height: DimensionConstants.d16.h,
+                              ),
+                              locationFiled(context, provider),
+                            ],
+                          ),
+                        SizedBox(
+                          height: DimensionConstants.d16.h,
+                        ),
+                        googleMapWidget(provider, mCircle),
+                        SizedBox(
+                          height: DimensionConstants.d16.h,
+                        ),
+                        locationRadiusWidget(context, provider),
+                        SizedBox(
+                          height: DimensionConstants.d30.h,
+                        ),
+                        Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: DimensionConstants.d16.w),
+                            child: CommonWidgets.commonButton(
+                                context, "next".tr(),
+                                color1: ColorConstants.primaryGradient2Color,
+                                color2: ColorConstants.primaryGradient1Color,
+                                fontSize: DimensionConstants.d16.sp,
+                                onBtnTap: () {
+                              CommonWidgets.hideKeyboard(context);
+                              provider.navigateToNextPage(context);
+                            }, shadowRequired: true)),
+                        SizedBox(
+                          height: DimensionConstants.d50.h,
+                        ),
+                      ],
                     ),
-                    locationFiled(context, provider),
-                  ],),
-                  SizedBox(
-                    height: DimensionConstants.d16.h,
                   ),
-                  googleMapWidget(provider, mCircle),
-                  SizedBox(
-                    height: DimensionConstants.d16.h,
-                  ),
-                  locationRadiusWidget(context, provider),
-                  SizedBox(
-                    height: DimensionConstants.d30.h,
-                  ),
-                  Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: DimensionConstants.d16.w),
-                      child: CommonWidgets.commonButton(context, "next".tr(),
-                          color1: ColorConstants.primaryGradient2Color,
-                          color2: ColorConstants.primaryGradient1Color,
-                          fontSize: DimensionConstants.d16.sp,
-                          onBtnTap: () {
-                            CommonWidgets.hideKeyboard(context);
-                            provider.navigateToNextPage(context);
-                          },
-                          shadowRequired: true)),
-                  SizedBox(
-                    height: DimensionConstants.d50.h,
-                  ),
+                  if (provider.state == ViewState.busy)
+                    const CustomCircularBar()
                 ],
               ),
-            ),
-            if (provider.state == ViewState.busy) const CustomCircularBar()
-          ],
-        ),
       );
     });
   }
 
-
-  Widget titleWidget(BuildContext context,
-      CreateProjectManagerProvider provider) {
+  Widget titleWidget(
+      BuildContext context, CreateProjectManagerProvider provider) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
       child: Column(
@@ -118,9 +133,7 @@ class CreateProjectManager extends StatelessWidget {
         children: <Widget>[
           Text("project_name".tr()).boldText(
               context, DimensionConstants.d16.sp, TextAlign.left,
-              color: Theme
-                  .of(context)
-                  .brightness == Brightness.dark
+              color: Theme.of(context).brightness == Brightness.dark
                   ? ColorConstants.colorWhite
                   : ColorConstants.colorBlack),
           SizedBox(
@@ -129,20 +142,14 @@ class CreateProjectManager extends StatelessWidget {
           Container(
             height: DimensionConstants.d45.h,
             decoration: BoxDecoration(
-              color: Theme
-                  .of(context)
-                  .brightness == Brightness.dark
+              color: Theme.of(context).brightness == Brightness.dark
                   ? ColorConstants.littleDarkGray
                   : ColorConstants.colorBlack,
-              border: Theme
-                  .of(context)
-                  .brightness == Brightness.dark
+              border: Theme.of(context).brightness == Brightness.dark
                   ? Border.all(
-                  color: Theme
-                      .of(context)
-                      .brightness == Brightness.dark
-                      ? ColorConstants.colorWhite
-                      : Colors.transparent)
+                      color: Theme.of(context).brightness == Brightness.dark
+                          ? ColorConstants.colorWhite
+                          : Colors.transparent)
                   : null,
               borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
             ),
@@ -153,19 +160,13 @@ class CreateProjectManager extends StatelessWidget {
               decoration: ViewDecoration.inputDecorationBox(
                 fieldName: "project_name".tr(),
                 radius: DimensionConstants.d8.r,
-                fillColor: Theme
-                    .of(context)
-                    .brightness == Brightness.dark
+                fillColor: Theme.of(context).brightness == Brightness.dark
                     ? ColorConstants.colorWhite
                     : ColorConstants.littleDarkGray,
-                color: Theme
-                    .of(context)
-                    .brightness == Brightness.dark
+                color: Theme.of(context).brightness == Brightness.dark
                     ? ColorConstants.colorBlack
                     : ColorConstants.littleDarkGray,
-                hintTextColor: Theme
-                    .of(context)
-                    .brightness == Brightness.dark
+                hintTextColor: Theme.of(context).brightness == Brightness.dark
                     ? ColorConstants.colorWhite
                     : ColorConstants.darkGray4F4F4F,
                 hintTextSize: DimensionConstants.d16.sp,
@@ -186,9 +187,7 @@ class CreateProjectManager extends StatelessWidget {
         children: <Widget>[
           Text("project_location".tr()).boldText(
               context, DimensionConstants.d16.sp, TextAlign.left,
-              color: Theme
-                  .of(context)
-                  .brightness == Brightness.dark
+              color: Theme.of(context).brightness == Brightness.dark
                   ? ColorConstants.colorWhite
                   : ColorConstants.colorBlack),
           SizedBox(
@@ -196,9 +195,7 @@ class CreateProjectManager extends StatelessWidget {
           ),
           Text("type_an_address_or_drag_pin_on_map".tr()).regularText(
               context, DimensionConstants.d14.sp, TextAlign.left,
-              color: Theme
-                  .of(context)
-                  .brightness == Brightness.dark
+              color: Theme.of(context).brightness == Brightness.dark
                   ? ColorConstants.colorWhite
                   : ColorConstants.colorBlack),
           SizedBox(
@@ -206,8 +203,9 @@ class CreateProjectManager extends StatelessWidget {
           ),
           GestureDetector(
             onTap: () {
-              Navigator.pushNamed(context, RouteConstants.autoComplete, arguments: provider.currentCountryIsoCode??'US')
-                  .then((value) {
+              Navigator.pushNamed(context, RouteConstants.autoComplete,
+                      arguments: provider.currentCountryIsoCode ?? 'US')
+                  .then((value) async {
                 if (value != null) {
                   Map<String, String> detail = value as Map<String, String>;
                   final lat = value["latitude"];
@@ -216,30 +214,23 @@ class CreateProjectManager extends StatelessWidget {
                   provider.latitude = double.parse(lat ?? "0.0");
                   provider.longitude = double.parse(lng ?? "0.0");
                   provider.pickUpLocation = selectedAddress ?? "";
+                  provider.moveToSelectedAddress();
                   provider.updateCurrentAddressValue(false);
-
-                  controller.text =
-                  selectedAddress ?? "";
+                  controller.text = selectedAddress ?? "";
                 }
               });
             },
             child: Container(
               height: DimensionConstants.d45.h,
               decoration: BoxDecoration(
-                color: Theme
-                    .of(context)
-                    .brightness == Brightness.dark
+                color: Theme.of(context).brightness == Brightness.dark
                     ? ColorConstants.littleDarkGray
                     : ColorConstants.colorBlack,
-                border: Theme
-                    .of(context)
-                    .brightness == Brightness.dark
+                border: Theme.of(context).brightness == Brightness.dark
                     ? Border.all(
-                    color: Theme
-                        .of(context)
-                        .brightness == Brightness.dark
-                        ? ColorConstants.colorWhite
-                        : Colors.transparent)
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? ColorConstants.colorWhite
+                            : Colors.transparent)
                     : null,
                 borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
               ),
@@ -250,19 +241,13 @@ class CreateProjectManager extends StatelessWidget {
                 decoration: ViewDecoration.inputDecorationBox(
                   fieldName: "enter_address".tr(),
                   radius: DimensionConstants.d8.r,
-                  fillColor: Theme
-                      .of(context)
-                      .brightness == Brightness.dark
+                  fillColor: Theme.of(context).brightness == Brightness.dark
                       ? ColorConstants.colorWhite
                       : ColorConstants.littleDarkGray,
-                  color: Theme
-                      .of(context)
-                      .brightness == Brightness.dark
+                  color: Theme.of(context).brightness == Brightness.dark
                       ? ColorConstants.colorBlack
                       : ColorConstants.littleDarkGray,
-                  hintTextColor: Theme
-                      .of(context)
-                      .brightness == Brightness.dark
+                  hintTextColor: Theme.of(context).brightness == Brightness.dark
                       ? ColorConstants.colorWhite
                       : ColorConstants.darkGray4F4F4F,
                   hintTextSize: DimensionConstants.d16.sp,
@@ -275,8 +260,8 @@ class CreateProjectManager extends StatelessWidget {
     );
   }
 
-  Widget locationFiled(BuildContext context,
-      CreateProjectManagerProvider provider) {
+  Widget locationFiled(
+      BuildContext context, CreateProjectManagerProvider provider) {
     return GestureDetector(
       onTap: () {
         addressController.text = provider.pickUpLocation;
@@ -331,81 +316,103 @@ class CreateProjectManager extends StatelessWidget {
     );
   }
 
-  Widget googleMapWidget(CreateProjectManagerProvider provider,
-      Set<Circle> circle) {
+  Widget googleMapWidget(
+      CreateProjectManagerProvider provider, Set<Circle> circle) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
       child: Container(
         height: DimensionConstants.d329.h,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(DimensionConstants.d8.r)),
-        child: Stack(
-          children: <Widget>[
-            ClipRRect(
-                borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
-                child: provider.state == ViewState.idle
-                    ? GoogleMap(
-                    mapType: provider.mapType,
-                    myLocationButtonEnabled: false,
-                    compassEnabled: false,
-                    zoomControlsEnabled: false,
-                    scrollGesturesEnabled: true,
-                    initialCameraPosition: CameraPosition(
-                      target: LatLng(provider.latitude, provider.longitude),
-                      zoom: 11.0,
+        child: !provider.showMap
+            ? const Center(
+                child: CircularProgressIndicator(
+                  color: ColorConstants.primaryGradient2Color,
+                ),
+              )
+            : Stack(
+                children: <Widget>[
+                  ClipRRect(
+                      borderRadius:
+                          BorderRadius.circular(DimensionConstants.d8.r),
+                      child: Stack(
+                        children: [
+                          GoogleMap(
+                              mapType: provider.mapType,
+                              myLocationButtonEnabled: false,
+                              compassEnabled: false,
+                              zoomControlsEnabled: false,
+                              scrollGesturesEnabled: true,
+                              initialCameraPosition: CameraPosition(
+                                target: LatLng(
+                                    provider.latitude, provider.longitude),
+                                zoom: 11.0,
+                              ),
+                              onMapCreated: provider.onMapCreated,
+                              onCameraMove: (CameraPosition cameraPosition) {
+                                provider.position = cameraPosition;
+                              },
+                              onCameraIdle: () {
+                                if (provider.position != null) {
+                                  provider.getPickUpAddress(
+                                      provider.position!.target.latitude,
+                                      provider.position!.target.longitude);
+                                }
+                              },
+                              circles: circle,
+                              gestureRecognizers: {
+                                Factory<OneSequenceGestureRecognizer>(
+                                  () => EagerGestureRecognizer(),
+                                ),
+                              },
+                              // onCameraIdle: () => provider.cameraIdle(provider.position),
+                              markers: Set<Marker>.of(provider.markers)),
+                          Center(
+                            child: ImageView(
+                              path: ImageConstants.icMarker,
+                              height: 40.w,
+                              width: 40.w,
+                            ),
+                          )
+                        ],
+                      )),
+                  Positioned(
+                    top: DimensionConstants.d8.h,
+                    left: DimensionConstants.d85.w,
+                    child: ToggleSwitch(
+                      activeBorders: [
+                        Border.all(
+                            color: ColorConstants.colorBlack,
+                            width: DimensionConstants.d2.w)
+                      ],
+                      minWidth: DimensionConstants.d91.w,
+                      minHeight: DimensionConstants.d41.h,
+                      fontSize: DimensionConstants.d14.sp,
+                      initialLabelIndex: provider.initialIndex,
+                      radiusStyle: true,
+                      cornerRadius: DimensionConstants.d8.r,
+                      activeBgColor: [ColorConstants.colorWhite],
+                      activeFgColor: ColorConstants.deepBlue,
+                      inactiveBgColor: ColorConstants.deepBlue,
+                      inactiveFgColor: ColorConstants.colorWhite,
+                      totalSwitches: 2,
+                      labels: const [
+                        'Default',
+                        'Satelite',
+                      ],
+                      onToggle: (index) {
+                        provider.updateMapStyle(index!);
+                      },
                     ),
-                    onMapCreated: provider.onMapCreated,
-                    onCameraMove: (CameraPosition cameraPosition) {
-                      provider.position = cameraPosition;
-                    },
-                    circles: circle,
-                    gestureRecognizers: {
-                      Factory<OneSequenceGestureRecognizer>(
-                            () => EagerGestureRecognizer(),
-                      ),
-                    },
-                    // onCameraIdle: () => provider.cameraIdle(provider.position),
-                    markers: Set<Marker>.of(provider.markers))
-                    : const Center(
-                  child: CircularProgressIndicator(),
-                )),
-            Positioned(
-              top: DimensionConstants.d8.h,
-              left: DimensionConstants.d85.w,
-              child: ToggleSwitch(
-                activeBorders: [
-                  Border.all(
-                      color: ColorConstants.colorBlack,
-                      width: DimensionConstants.d2.w)
+                  )
                 ],
-                minWidth: DimensionConstants.d91.w,
-                minHeight: DimensionConstants.d41.h,
-                fontSize: DimensionConstants.d14.sp,
-                initialLabelIndex: provider.initialIndex,
-                radiusStyle: true,
-                cornerRadius: DimensionConstants.d8.r,
-                activeBgColor: [ColorConstants.colorWhite],
-                activeFgColor: ColorConstants.deepBlue,
-                inactiveBgColor: ColorConstants.deepBlue,
-                inactiveFgColor: ColorConstants.colorWhite,
-                totalSwitches: 2,
-                labels: const [
-                  'Default',
-                  'Satelite',
-                ],
-                onToggle: (index) {
-                  provider.updateMapStyle(index!);
-                },
               ),
-            )
-          ],
-        ),
       ),
     );
   }
 
-  Widget locationRadiusWidget(BuildContext context,
-      CreateProjectManagerProvider provider) {
+  Widget locationRadiusWidget(
+      BuildContext context, CreateProjectManagerProvider provider) {
     return Column(
       children: [
         Padding(

@@ -64,8 +64,7 @@ class _CustomSearchScaffoldState extends PlacesAutocompleteState {
   Future<Null> displayPrediction(Prediction p) async {
     if (p != null) {
       // get detail (lat/lng)
-      PlacesDetailsResponse detail =
-          await _places.getDetailsByPlaceId(p.placeId!);
+      PlacesDetailsResponse detail = await _places.getDetailsByPlaceId(p.placeId!);
       final lat = detail.result.geometry?.location.lat;
       final lng = detail.result.geometry?.location.lng;
       Map<String, String> value = Map();

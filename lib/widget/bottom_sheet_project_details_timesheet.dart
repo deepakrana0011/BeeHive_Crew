@@ -101,13 +101,15 @@ Widget projectInformation(BuildContext context, ProjectData projectData, color){
 Widget crewOnThisProjectListView(BuildContext context,bool timeSheetOrSchedule, ProjectData projectData, int listIndex){
   return SizedBox(
     height: DimensionConstants.d180.h,
-    child: ListView.builder(
+    child: ListView.separated(
       padding: EdgeInsets.zero,
       shrinkWrap: true,
       itemCount: projectData.checkins.length,
         itemBuilder: (context, index){
-      return projectData.checkins[index].crew!.isNotEmpty? userProfile(context,index, timeSheetOrSchedule, projectData.checkins[0].crew![index], projectData):Container();
-    }),
+      return projectData.checkins[index].crew!.isNotEmpty? userProfile(context,index, timeSheetOrSchedule, projectData.checkins[index].crew![0], projectData):Container();
+    }, separatorBuilder: (BuildContext context, int index) {
+        return const SizedBox(height: 8,);
+    },),
   );
 }
 

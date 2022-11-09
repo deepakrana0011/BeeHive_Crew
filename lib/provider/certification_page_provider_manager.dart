@@ -16,7 +16,7 @@ class CertificationPageProviderManager extends BaseProvider{
 
   }
 
-  Future addProfilePic(BuildContext context, int modes) async {
+  Future selectCertificate(BuildContext context, int modes) async {
     final picker = ImagePicker();
     if (modes == 1) {
       XFile? pickedImage = await picker.pickImage(source: ImageSource.camera);

@@ -58,6 +58,7 @@ extension ExtendText on Text {
       maxLines: maxLines,
       overflow: overflow,
       textAlign: alignment,
+
       style: TextStyle(
           color: color ?? (Theme.of(context).brightness == Brightness.dark ? ColorConstants.colorWhite : ColorConstants.colorBlack),
           fontFamily: StringConstants.fontFamily,

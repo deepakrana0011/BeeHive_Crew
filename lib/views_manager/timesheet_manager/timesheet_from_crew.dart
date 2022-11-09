@@ -25,8 +25,10 @@ import '../../model/project_working_hour_detail.dart';
 class TimeSheetFromCrew extends StatefulWidget {
   String id;
   int totalHours;
+
   TimeSheetFromCrew({Key? key, required this.id, required this.totalHours})
       : super(key: key);
+
   @override
   State<TimeSheetFromCrew> createState() => _TimeSheetFromCrewState();
 }
@@ -81,7 +83,12 @@ class _TimeSheetFromCrewState extends State<TimeSheetFromCrew>
 Widget userProfile(BuildContext context, TimeSheetFromCrewProvider provider) {
   return GestureDetector(
     onTap: () {
-      Navigator.pushNamed(context, RouteConstants.crewPageProfileManager,arguments: CrewProfilePageManager(projectName: provider.crewResponse!.projectData![0].projectName ?? " ", projectId: provider.crewResponse!.projectData![0].id ?? " ", crewData: provider.crewResponse!.crew![0]));
+      Navigator.pushNamed(context, RouteConstants.crewPageProfileManager,
+          arguments: CrewProfilePageManager(
+              projectName:
+                  provider.crewResponse!.projectData![0].projectName ?? " ",
+              projectId: provider.crewResponse!.projectData![0].id ?? " ",
+              crewData: provider.crewResponse!.crew![0]));
     },
     child: Padding(
       padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d55.w),
@@ -109,52 +116,56 @@ Widget userProfile(BuildContext context, TimeSheetFromCrewProvider provider) {
           SizedBox(
             width: DimensionConstants.d23.w,
           ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              Text(provider.crewResponse!.crew![0].name ?? "").boldText(
-                  context, DimensionConstants.d18.sp, TextAlign.left,
-                  color: ColorConstants.deepBlue),
-              Row(
-                children: <Widget>[
-                  Text(provider.crewResponse!.crew![0].speciality ?? "")
-                      .semiBoldText(
-                          context, DimensionConstants.d14.sp, TextAlign.left,
-                          color: ColorConstants.deepBlue),
-                  SizedBox(
-                    width: DimensionConstants.d3.w,
-                  ),
-                  const Icon(
-                    Icons.circle,
-                    size: DimensionConstants.d5,
-                  ),
-                  SizedBox(
-                    width: DimensionConstants.d3.w,
-                  ),
-                  Text("\$20.00/hr").semiBoldText(
-                      context, DimensionConstants.d14.sp, TextAlign.left,
-                      color: ColorConstants.deepBlue),
-                ],
-              ),
-              SizedBox(
-                height: DimensionConstants.d10.h,
-              ),
-              Container(
-                height: DimensionConstants.d42.h,
-                width: DimensionConstants.d134.w,
-                decoration: BoxDecoration(
-                    border: Border.all(
-                        color: ColorConstants.grayD2D2D2,
-                        width: DimensionConstants.d1.w),
-                    borderRadius:
-                        BorderRadius.circular(DimensionConstants.d8.r)),
-                child: Center(
-                  child: Text("view_profile".tr()).semiBoldText(
-                      context, DimensionConstants.d14.sp, TextAlign.center,
-                      color: ColorConstants.deepBlue),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(provider.crewResponse!.crew![0].name ?? "").boldText(
+                    context, DimensionConstants.d18.sp, TextAlign.left,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    color: ColorConstants.deepBlue),
+                Row(
+                  children: <Widget>[
+                    Text(provider.crewResponse!.crew![0].speciality ?? "")
+                        .semiBoldText(
+                            context, DimensionConstants.d14.sp, TextAlign.left,
+                            color: ColorConstants.deepBlue),
+                    SizedBox(
+                      width: DimensionConstants.d3.w,
+                    ),
+                    const Icon(
+                      Icons.circle,
+                      size: DimensionConstants.d5,
+                    ),
+                    SizedBox(
+                      width: DimensionConstants.d3.w,
+                    ),
+                    Text("\$20.00/hr").semiBoldText(
+                        context, DimensionConstants.d14.sp, TextAlign.left,
+                        color: ColorConstants.deepBlue),
+                  ],
                 ),
-              )
-            ],
+                SizedBox(
+                  height: DimensionConstants.d10.h,
+                ),
+                Container(
+                  height: DimensionConstants.d42.h,
+                  width: DimensionConstants.d134.w,
+                  decoration: BoxDecoration(
+                      border: Border.all(
+                          color: ColorConstants.grayD2D2D2,
+                          width: DimensionConstants.d1.w),
+                      borderRadius:
+                          BorderRadius.circular(DimensionConstants.d8.r)),
+                  child: Center(
+                    child: Text("view_profile".tr()).semiBoldText(
+                        context, DimensionConstants.d14.sp, TextAlign.center,
+                        color: ColorConstants.deepBlue),
+                  ),
+                )
+              ],
+            ),
           )
         ],
       ),
@@ -411,6 +422,234 @@ Widget weeklyTabBarContainerManager(BuildContext context,
                                 ListView.separated(
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
+                                  itemCount: provider.crewResponse!.projectData![index].checkins!.length,
+                                  itemBuilder: (context, innerIndex) {
+                                    return Slidable(
+                                      key: const ValueKey(0),
+                                      endActionPane: ActionPane(
+                                        extentRatio: 0.3,
+                                        motion: const ScrollMotion(),
+                                        children: [
+                                          Expanded(
+                                            child: Container(
+                                              height: DimensionConstants.d58.h,
+                                              color:
+                                                  ColorConstants.redColorEB5757,
+                                              child: Padding(
+                                                padding: EdgeInsets.only(
+                                                    left: DimensionConstants
+                                                        .d25.w),
+                                                child: Row(
+                                                  children: <Widget>[
+                                                    const ImageView(
+                                                      path: ImageConstants
+                                                          .ignoreIcon,
+                                                      color: ColorConstants
+                                                          .colorWhite,
+                                                    ),
+                                                    SizedBox(
+                                                      width: DimensionConstants
+                                                          .d8.w,
+                                                    ),
+                                                    Text("ignore".tr())
+                                                        .boldText(
+                                                            context,
+                                                            DimensionConstants
+                                                                .d14.sp,
+                                                            TextAlign.left,
+                                                            color:
+                                                                ColorConstants
+                                                                    .colorWhite)
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                      child: projectDetailTile(
+                                          context, provider, innerIndex,
+                                          projectdata: provider.crewResponse!
+                                              .projectData![index],
+                                          checkInProjectDetail: provider
+                                              .crewResponse!
+                                              .projectData![index]
+                                              .checkins),
+                                    );
+                                  },
+                                  separatorBuilder: (context, index) {
+                                    return const Divider(
+                                        color: ColorConstants.colorGreyDrawer,
+                                        height: 0.0,
+                                        thickness: 1.5);
+                                  },
+                                )
+                              ],
+                            );
+                          }),
+                      SizedBox(height: DimensionConstants.d12.h),
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: DimensionConstants.d16.w),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("total_hours".tr()).semiBoldText(
+                                    context,
+                                    DimensionConstants.d14.sp,
+                                    TextAlign.center),
+                                Text("${DateFunctions.minutesToHourString(provider.totalHours!)} Hrs")
+                                    .semiBoldText(
+                                        context,
+                                        DimensionConstants.d14.sp,
+                                        TextAlign.center)
+                              ],
+                            ),
+                            SizedBox(height: DimensionConstants.d6.h),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text("x \$${20}/hr").semiBoldText(
+                                    context,
+                                    DimensionConstants.d14.sp,
+                                    TextAlign.center),
+                                Text("\$${provider.getTotalHoursRate().toStringAsFixed(2)}")
+                                    .semiBoldText(
+                                        context,
+                                        DimensionConstants.d14.sp,
+                                        TextAlign.center)
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: DimensionConstants.d16.h),
+                      exportTimeSheetBtn(context),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
+      ],
+    ),
+  );
+}
+
+Widget newToday(BuildContext context, TabController controller,
+    TimeSheetFromCrewProvider provider, String id) {
+  return SingleChildScrollView(
+    child: Column(
+      children: [
+        SizedBox(height: DimensionConstants.d15.h),
+        Container(
+          decoration: BoxDecoration(
+            color: ColorConstants.deepBlue,
+            borderRadius:
+                BorderRadius.all(Radius.circular(DimensionConstants.d8.r)),
+          ),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                /*Padding(
+                  padding: EdgeInsets.fromLTRB(
+                      DimensionConstants.d16.w,
+                      DimensionConstants.d17.h,
+                      DimensionConstants.d16.w,
+                      DimensionConstants.d15.h),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      GestureDetector(
+                        child: backNextBtn(ImageConstants.backIconIos),
+                        onTap: () {
+                          provider
+                              .previousWeekDays(controller.index == 1 ? 7 : 14);
+                          provider.getCrewDataTimeSheet(context, id);
+                        },
+                      ),
+                      Text("${DateFunctions.capitalize(provider.weekFirstDate ?? "")} - ${DateFunctions.capitalize(provider.weekEndDate ?? "")}")
+                          .boldText(context, DimensionConstants.d16.sp,
+                          TextAlign.center,
+                          color: ColorConstants.colorWhite),
+                      provider.secondDate !=
+                          DateFormat("yyyy-MM-dd").format(DateTime.now())
+                          ? GestureDetector(
+                        child: backNextBtn(ImageConstants.nextIconIos),
+                        onTap: () {
+                          provider.nextWeekDays(
+                              controller.index == 1 ? 7 : 14);
+                          provider.getCrewDataTimeSheet(context, id);
+                        },
+                      )
+                          : Visibility(
+                          visible: false,
+                          child: backNextBtn(ImageConstants.nextIconIos))
+                    ],
+                  ),
+                ),*/
+                Container(
+                  decoration: BoxDecoration(
+                    color: (Theme.of(context).brightness == Brightness.dark
+                        ? ColorConstants.colorBlack
+                        : ColorConstants.colorWhite),
+                    border: Border.all(
+                      color: ColorConstants.colorLightGreyF2,
+                    ),
+                    borderRadius: BorderRadius.all(
+                        Radius.circular(DimensionConstants.d8.r)),
+                  ),
+                  child: Column(
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color:
+                              (Theme.of(context).brightness == Brightness.dark
+                                  ? ColorConstants.colorBlack
+                                  : ColorConstants.colorWhite),
+                          border: Border.all(
+                            color: ColorConstants.colorLightGreyF2,
+                          ),
+                          borderRadius: BorderRadius.all(
+                              Radius.circular(DimensionConstants.d8.r)),
+                        ),
+                        height: DimensionConstants.d70.h,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            projectsHoursRow(context, ImageConstants.mapIcon,
+                                "${provider.crewResponse!.activeProject} ${"projects".tr()}"),
+                            Container(
+                              height: DimensionConstants.d70.h,
+                              width: DimensionConstants.d1.w,
+                              color: ColorConstants.colorLightGrey,
+                            ),
+                            projectsHoursRow(context, ImageConstants.clockIcon,
+                                "${DateFunctions.minutesToHourString(provider.totalHours!) ?? "00:00"} ${"hours".tr()}")
+                          ],
+                        ),
+                      ),
+                      ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: provider.crewResponse!.projectData!.length,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemBuilder: (BuildContext context, int index) {
+                            return Column(
+                              children: <Widget>[
+                                /*weeklyTabBarDateContainer(
+                                    context,
+                                    provider.dateConvertorWeekly(provider
+                                        .crewResponse!
+                                        .projectData![index]
+                                        .date!
+                                        .toString()) ??
+                                        ""),*/
+                                ListView.separated(
+                                  shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
                                   itemCount: provider.crewResponse!
                                       .projectData![index].checkins!.length,
                                   itemBuilder: (context, innerIndex) {
@@ -510,235 +749,6 @@ Widget weeklyTabBarContainerManager(BuildContext context,
                                         context,
                                         DimensionConstants.d14.sp,
                                         TextAlign.center)
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                      SizedBox(height: DimensionConstants.d16.h),
-                      exportTimeSheetBtn(context),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-Widget newToday(BuildContext context,
-    TabController controller, TimeSheetFromCrewProvider provider, String id) {
-  return SingleChildScrollView(
-    child: Column(
-      children: [
-        SizedBox(height: DimensionConstants.d15.h),
-        Container(
-          decoration: BoxDecoration(
-            color: ColorConstants.deepBlue,
-            borderRadius:
-            BorderRadius.all(Radius.circular(DimensionConstants.d8.r)),
-          ),
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                /*Padding(
-                  padding: EdgeInsets.fromLTRB(
-                      DimensionConstants.d16.w,
-                      DimensionConstants.d17.h,
-                      DimensionConstants.d16.w,
-                      DimensionConstants.d15.h),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      GestureDetector(
-                        child: backNextBtn(ImageConstants.backIconIos),
-                        onTap: () {
-                          provider
-                              .previousWeekDays(controller.index == 1 ? 7 : 14);
-                          provider.getCrewDataTimeSheet(context, id);
-                        },
-                      ),
-                      Text("${DateFunctions.capitalize(provider.weekFirstDate ?? "")} - ${DateFunctions.capitalize(provider.weekEndDate ?? "")}")
-                          .boldText(context, DimensionConstants.d16.sp,
-                          TextAlign.center,
-                          color: ColorConstants.colorWhite),
-                      provider.secondDate !=
-                          DateFormat("yyyy-MM-dd").format(DateTime.now())
-                          ? GestureDetector(
-                        child: backNextBtn(ImageConstants.nextIconIos),
-                        onTap: () {
-                          provider.nextWeekDays(
-                              controller.index == 1 ? 7 : 14);
-                          provider.getCrewDataTimeSheet(context, id);
-                        },
-                      )
-                          : Visibility(
-                          visible: false,
-                          child: backNextBtn(ImageConstants.nextIconIos))
-                    ],
-                  ),
-                ),*/
-                Container(
-                  decoration: BoxDecoration(
-                    color: (Theme.of(context).brightness == Brightness.dark
-                        ? ColorConstants.colorBlack
-                        : ColorConstants.colorWhite),
-                    border: Border.all(
-                      color: ColorConstants.colorLightGreyF2,
-                    ),
-                    borderRadius: BorderRadius.all(
-                        Radius.circular(DimensionConstants.d8.r)),
-                  ),
-                  child: Column(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color:
-                          (Theme.of(context).brightness == Brightness.dark
-                              ? ColorConstants.colorBlack
-                              : ColorConstants.colorWhite),
-                          border: Border.all(
-                            color: ColorConstants.colorLightGreyF2,
-                          ),
-                          borderRadius: BorderRadius.all(
-                              Radius.circular(DimensionConstants.d8.r)),
-                        ),
-                        height: DimensionConstants.d70.h,
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            projectsHoursRow(context, ImageConstants.mapIcon,
-                                "${provider.crewResponse!.activeProject} ${"projects".tr()}"),
-                            Container(
-                              height: DimensionConstants.d70.h,
-                              width: DimensionConstants.d1.w,
-                              color: ColorConstants.colorLightGrey,
-                            ),
-                            projectsHoursRow(context, ImageConstants.clockIcon,
-                                "${DateFunctions.minutesToHourString(provider.totalHours!) ?? "00:00"} ${"hours".tr()}")
-                          ],
-                        ),
-                      ),
-                      ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: provider.crewResponse!.projectData!.length,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemBuilder: (BuildContext context, int index) {
-                            return Column(
-                              children: <Widget>[
-                                /*weeklyTabBarDateContainer(
-                                    context,
-                                    provider.dateConvertorWeekly(provider
-                                        .crewResponse!
-                                        .projectData![index]
-                                        .date!
-                                        .toString()) ??
-                                        ""),*/
-                                ListView.separated(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: provider.crewResponse!
-                                      .projectData![index].checkins!.length,
-                                  itemBuilder: (context, innerIndex) {
-                                    return Slidable(
-                                      key: const ValueKey(0),
-                                      endActionPane: ActionPane(
-                                        extentRatio: 0.3,
-                                        motion: const ScrollMotion(),
-                                        children: [
-                                          Expanded(
-                                            child: Container(
-                                              height: DimensionConstants.d58.h,
-                                              color:
-                                              ColorConstants.redColorEB5757,
-                                              child: Padding(
-                                                padding: EdgeInsets.only(
-                                                    left: DimensionConstants
-                                                        .d25.w),
-                                                child: Row(
-                                                  children: <Widget>[
-                                                    const ImageView(
-                                                      path: ImageConstants
-                                                          .ignoreIcon,
-                                                      color: ColorConstants
-                                                          .colorWhite,
-                                                    ),
-                                                    SizedBox(
-                                                      width: DimensionConstants
-                                                          .d8.w,
-                                                    ),
-                                                    Text("ignore".tr())
-                                                        .boldText(
-                                                        context,
-                                                        DimensionConstants
-                                                            .d14.sp,
-                                                        TextAlign.left,
-                                                        color:
-                                                        ColorConstants
-                                                            .colorWhite)
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                      child: projectDetailTile(
-                                          context, provider, index,
-                                          projectdata: provider.crewResponse!
-                                              .projectData![index],
-                                          checkInProjectDetail: provider
-                                              .crewResponse!
-                                              .projectData![index]
-                                              .checkins),
-                                    );
-                                  },
-                                  separatorBuilder: (context, index) {
-                                    return const Divider(
-                                        color: ColorConstants.colorGreyDrawer,
-                                        height: 0.0,
-                                        thickness: 1.5);
-                                  },
-                                )
-                              ],
-                            );
-                          }),
-                      SizedBox(height: DimensionConstants.d12.h),
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: DimensionConstants.d16.w),
-                        child: Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text("total_hours".tr()).semiBoldText(
-                                    context,
-                                    DimensionConstants.d14.sp,
-                                    TextAlign.center),
-                                Text("${DateFunctions.minutesToHourString(provider.totalHours!)} Hrs")
-                                    .semiBoldText(
-                                    context,
-                                    DimensionConstants.d14.sp,
-                                    TextAlign.center)
-                              ],
-                            ),
-                            SizedBox(height: DimensionConstants.d6.h),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text("x \$${20}/hr").semiBoldText(
-                                    context,
-                                    DimensionConstants.d14.sp,
-                                    TextAlign.center),
-                                Text("\$${provider.getTotalHoursRate().toStringAsFixed(2)}")
-                                    .semiBoldText(
-                                    context,
-                                    DimensionConstants.d14.sp,
-                                    TextAlign.center)
                               ],
                             ),
                           ],
@@ -916,7 +926,7 @@ Widget biWeeklyTabBarContainerManager(BuildContext context,
                                         ],
                                       ),
                                       child: projectDetailTile(
-                                          context, provider, index,
+                                          context, provider, innerIndex,
                                           projectdata: provider.crewResponse!
                                               .projectData![index],
                                           checkInProjectDetail: provider
@@ -1683,18 +1693,29 @@ Widget projectDetailTile(
             SizedBox(width: DimensionConstants.d10.w),
             customStepper(projectdata.checkins![index], provider),
             SizedBox(width: DimensionConstants.d10.w),
-            Text(DateFunctions.dateTO12Hour(
-                        projectdata.checkins![index].checkOutTime!)
+            Text(DateFunctions.dateTO12Hour((projectdata
+                                    .checkins![index].checkOutTime ==
+                                null ||
+                            projectdata.checkins![index].checkOutTime!
+                                .trim()
+                                .isEmpty)
+                        ? DateFunctions.dateFormatyyyyMMddHHmm(DateTime.now())
+                        : projectdata.checkins![index].checkOutTime!)
                     .substring(
                         0,
-                        DateFunctions.dateTO12Hour(
-                                    projectdata.checkins![index].checkOutTime!)
+                        DateFunctions.dateTO12Hour((projectdata.checkins![index]
+                                                .checkOutTime ==
+                                            null ||
+                                        projectdata.checkins![index].checkOutTime!
+                                            .trim()
+                                            .isEmpty)
+                                    ? DateFunctions.dateFormatyyyyMMddHHmm(DateTime.now())
+                                    : projectdata.checkins![index].checkOutTime!)
                                 .length -
                             1))
-                .regularText(
-                    context, DimensionConstants.d13.sp, TextAlign.center),
+                .regularText(context, DimensionConstants.d13.sp, TextAlign.center),
             SizedBox(width: DimensionConstants.d10.w),
-            Text("${DateFunctions.calculateTotalHourTime(projectdata.checkins![index].checkInTime!, projectdata.checkins![0].checkOutTime!).replaceAll("-", " ")} h")
+            Text("${DateFunctions.calculateTotalHourTime(projectdata.checkins![index].checkInTime!, (projectdata.checkins![0].checkOutTime == null || projectdata.checkins![0].checkOutTime!.trim().isEmpty) ? DateFunctions.dateFormatyyyyMMddHHmm(DateTime.now()) : projectdata.checkins![0].checkOutTime!).replaceAll("-", " ")} h")
                 .boldText(context, DimensionConstants.d13.sp, TextAlign.center),
             SizedBox(width: DimensionConstants.d7.w),
             ImageView(

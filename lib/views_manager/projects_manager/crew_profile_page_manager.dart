@@ -121,19 +121,19 @@ class CrewProfilePageManager extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              (crewData.profileImage == null || crewData.profileImage == "") ? ClipRRect(
+              (crewData.certificates==null||crewData.certificates.isEmpty) ? ClipRRect(
             borderRadius: BorderRadius.circular(DimensionConstants.d50.r),
             child: SizedBox(
               height: DimensionConstants.d93.h,
               width: DimensionConstants.d93.w,
-              child: ImageView(path: ImageConstants.emptyImageIcon),
+              child: const ImageView(path: ImageConstants.emptyImageIcon),
             ),
           ) : ClipRRect(
                 borderRadius: BorderRadius.circular(DimensionConstants.d50.r),
                 child: SizedBox(
                   height: DimensionConstants.d93.h,
                   width: DimensionConstants.d93.w,
-                  child: ImageView(path: (ApiConstantsCrew.BASE_URL_IMAGE + crewData.profileImage.toString()),
+                  child: ImageView(path: (ApiConstantsCrew.BASE_URL_IMAGE + crewData.certificates.toString()),
                     fit: BoxFit.contain,
                   ),
                 ),
