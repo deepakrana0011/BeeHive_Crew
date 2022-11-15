@@ -31,18 +31,13 @@ class CreateProjectManagerProvider extends BaseProvider {
     notifyListeners();
   } //BitmapDescriptor? pinLocationIconUser;
 
-  final CameraPosition kLake = const CameraPosition(
-      bearing: 192.8334901395799,
-      target: LatLng(30.7333, 76.7794),
-      tilt: 20,
-      zoom: 10);
   int initialIndex = 0;
   MapType mapType = MapType.terrain;
   double latitude = 0.0;
   double longitude = 0.0;
   var value;
   String pickUpLocation = "";
-  double locationRadius = 25;
+  double locationRadius = 10;
   bool isCurrentAddress = true;
   String? currentCountryIsoCode;
   CameraPosition? position;
@@ -52,7 +47,7 @@ class CreateProjectManagerProvider extends BaseProvider {
     latitude = value.latitude;
     longitude = value.longitude;
     getPickUpAddress(latitude, longitude);
-    showMap=true;
+    showMap = true;
   }
 
   void updateCurrentAddressValue(bool value) {
@@ -138,6 +133,11 @@ class CreateProjectManagerProvider extends BaseProvider {
     notifyListeners();
   }
 
+  double meterToKm(double value) {
+    double distanceInKiloMeters = value / 1000;
+    return double.parse((distanceInKiloMeters).toStringAsFixed(2));
+  }
+
   void navigateToNextPage(BuildContext context) {
     if (projectNameController.text.trim().isEmpty) {
       DialogHelper.showMessage(context, "please_enter_project_name".tr());
@@ -157,7 +157,7 @@ class CreateProjectManagerProvider extends BaseProvider {
     mapController?.animateCamera(CameraUpdate.newCameraPosition(
       CameraPosition(
         bearing: 0,
-        zoom: 10,
+        zoom: 14.5,
         target: LatLng(latitude, longitude),
       ),
     ));

@@ -356,6 +356,7 @@ Widget drawer(BuildContext context, BottomBarProvider provider) {
                     GestureDetector(
                       onTap: () {
                         Navigator.pop(context);
+                        provider.showScheduleScreen=true;
                         provider.onItemTapped(1);
                       },
                       child: drawerHeadingsRow(

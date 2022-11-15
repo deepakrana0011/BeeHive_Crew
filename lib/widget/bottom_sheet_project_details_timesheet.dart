@@ -1,4 +1,3 @@
-
 import 'package:beehive/constants/api_constants.dart';
 import 'package:beehive/constants/color_constants.dart';
 import 'package:beehive/constants/dimension_constants.dart';
@@ -14,7 +13,14 @@ import '../constants/image_constants.dart';
 import '../model/project_timesheet_response.dart';
 import 'image_view.dart';
 
-bottomSheetProjectDetailsTimeSheet(BuildContext context, int listIndex, {required VoidCallback onTap, required bool timeSheetOrSchedule,    ProjectData? projectData,  Color? projectColor, List<Crew>? crews,
+bottomSheetProjectDetailsTimeSheet(
+  BuildContext context,
+  int listIndex, {
+  required VoidCallback onTap,
+  required bool timeSheetOrSchedule,
+  TimeSheetProjectData? projectData,
+  Color? projectColor,
+  List<Crew>? crews,
 }) {
   showModalBottomSheet(
       isScrollControlled: true,
@@ -32,7 +38,7 @@ bottomSheetProjectDetailsTimeSheet(BuildContext context, int listIndex, {require
               child: Padding(
                 padding: EdgeInsets.only(top: DimensionConstants.d40.h),
                 child: Container(
-                 // height: DimensionConstants.d240.h,
+                  // height: DimensionConstants.d240.h,
                   width: DimensionConstants.d375.w,
                   decoration: BoxDecoration(
                     color: ColorConstants.colorWhite,
@@ -49,7 +55,8 @@ bottomSheetProjectDetailsTimeSheet(BuildContext context, int listIndex, {require
                       SizedBox(
                         height: DimensionConstants.d15.h,
                       ),
-                      crewOnThisProjectListView(context, timeSheetOrSchedule, projectData, listIndex),
+                      crewOnThisProjectListView(
+                          context, timeSheetOrSchedule, projectData, listIndex),
                       SizedBox(
                         height: DimensionConstants.d10.h,
                       ),
@@ -74,59 +81,87 @@ bottomSheetProjectDetailsTimeSheet(BuildContext context, int listIndex, {require
       });
 }
 
-Widget projectInformation(BuildContext context, ProjectData projectData, color){
+Widget projectInformation(
+    BuildContext context, TimeSheetProjectData projectData, color) {
   return Column(
-    children:<Widget> [
+    children: <Widget>[
       Container(
-        height: DimensionConstants.d40.h,
-        width: DimensionConstants.d40.w,
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(DimensionConstants.d20.r),
-        ),
-        child: Center(
-          child: Text(projectData.projectName.toString().substring(0,2).toUpperCase()).boldText(context, DimensionConstants.d16.sp, TextAlign.center,color: ColorConstants.colorWhite),
-        )
+          height: DimensionConstants.d40.h,
+          width: DimensionConstants.d40.w,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(DimensionConstants.d20.r),
+          ),
+          child: Center(
+            child: Text(projectData.projectName
+                    .toString()
+                    .substring(0, 2)
+                    .toUpperCase())
+                .boldText(context, DimensionConstants.d16.sp, TextAlign.center,
+                    color: ColorConstants.colorWhite),
+          )),
+      SizedBox(
+        height: DimensionConstants.d11.h,
       ),
-      SizedBox(height: DimensionConstants.d11.h,),
-      Text(projectData.projectName.toString()).boldText(context, DimensionConstants.d18.sp, TextAlign.center,color: ColorConstants.colorBlack,
-          maxLines: 1, overflow: TextOverflow.ellipsis),
-      SizedBox(height: DimensionConstants.d6.h,),
-      Text(DateFunctions.dateTimeWithWeek(DateTime.parse(projectData.date.toString()).toLocal())).boldText(context, DimensionConstants.d16.sp, TextAlign.center,color: ColorConstants.colorBlack),
+      Text(projectData.projectName.toString()).boldText(
+          context, DimensionConstants.d18.sp, TextAlign.center,
+          color: ColorConstants.colorBlack,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis),
+      SizedBox(
+        height: DimensionConstants.d6.h,
+      ),
+      Text(DateFunctions.dateTimeWithWeek(
+              DateTime.parse(projectData.date.toString()).toLocal()))
+          .boldText(context, DimensionConstants.d16.sp, TextAlign.center,
+              color: ColorConstants.colorBlack),
     ],
   );
-
 }
 
-Widget crewOnThisProjectListView(BuildContext context,bool timeSheetOrSchedule, ProjectData projectData, int listIndex){
+Widget crewOnThisProjectListView(BuildContext context, bool timeSheetOrSchedule,
+    TimeSheetProjectData projectData, int listIndex) {
   return SizedBox(
     height: DimensionConstants.d180.h,
     child: ListView.separated(
       padding: EdgeInsets.zero,
       shrinkWrap: true,
       itemCount: projectData.checkins.length,
-        itemBuilder: (context, index){
-      return projectData.checkins[index].crew!.isNotEmpty? userProfile(context,index, timeSheetOrSchedule, projectData.checkins[index].crew![0], projectData):Container();
-    }, separatorBuilder: (BuildContext context, int index) {
-        return const SizedBox(height: 8,);
-    },),
+      itemBuilder: (context, index) {
+        return projectData.checkins[index].crew!.isNotEmpty
+            ? userProfile(context, index, timeSheetOrSchedule,
+                projectData.checkins[index].crew![0], projectData)
+            : Container();
+      },
+      separatorBuilder: (BuildContext context, int index) {
+        return const SizedBox(
+          height: 8,
+        );
+      },
+    ),
   );
 }
 
-Widget userProfile(BuildContext context,int index, bool timeSheetOrSchedule, Crew crewData, ProjectData projectData){
+Widget userProfile(BuildContext context, int index, bool timeSheetOrSchedule,
+    Crew crewData, TimeSheetProjectData projectData) {
   return GestureDetector(
-    onTap: (){
-      if(timeSheetOrSchedule == true){
+    onTap: () {
+      if (timeSheetOrSchedule == true) {
         Navigator.of(context).pop();
-       // Navigator.pushNamed(context, RouteConstants.crewPageProfileManager, arguments: CrewProfilePageManager(projectName: projectData.projectName ?? "", crewData: crewData, projectId: projectData.sId ?? "",));
-      }else{
+        // Navigator.pushNamed(context, RouteConstants.crewPageProfileManager, arguments: CrewProfilePageManager(projectName: projectData.projectName ?? "", crewData: crewData, projectId: projectData.sId ?? "",));
+      } else {
         Navigator.of(context).pop();
-        Navigator.pushNamed(context, RouteConstants.timeSheetScreenProjectDetails,arguments: TimeSheetsScreenProjectDetails(removeInterruption: false, projectData: projectData, index: index,));
+        Navigator.pushNamed(
+            context, RouteConstants.timeSheetScreenProjectDetails,
+            arguments: TimeSheetsScreenProjectDetails(
+              removeInterruption: false,
+              projectData: projectData,
+              index: index,
+            ));
       }
-
     },
     child: Padding(
-      padding:  EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
+      padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
       child: Material(
         elevation: 2,
         borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
@@ -137,56 +172,78 @@ Widget userProfile(BuildContext context,int index, bool timeSheetOrSchedule, Cre
             borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
           ),
           child: Padding(
-            padding:  EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
+            padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
             child: Row(
-              children:<Widget> [
-              crewData.profileImage == null ?
-                  Container(
-                    height: DimensionConstants.d50.h,
-                    width: DimensionConstants.d50.w,
-                    decoration: const BoxDecoration(
-                        color: ColorConstants.primaryColor,
-                      shape: BoxShape.circle
-                    ),
-                  )
-                  : ClipRRect(
-                borderRadius: BorderRadius.circular(DimensionConstants.d50.r),
-                    child: SizedBox(
-                    height: DimensionConstants.d50.h,
-                    width: DimensionConstants.d50.w,
-                    child: ImageView(path: (ApiConstantsCrew.BASE_URL_IMAGE + crewData.profileImage.toString()),
-                    fit: BoxFit.contain,
-                    ),
+              children: <Widget>[
+                crewData.profileImage == null
+                    ? Container(
+                        height: DimensionConstants.d50.h,
+                        width: DimensionConstants.d50.w,
+                        decoration: const BoxDecoration(
+                            color: ColorConstants.primaryColor,
+                            shape: BoxShape.circle),
+                      )
+                    : ClipRRect(
+                        borderRadius:
+                            BorderRadius.circular(DimensionConstants.d50.r),
+                        child: SizedBox(
+                          height: DimensionConstants.d50.h,
+                          width: DimensionConstants.d50.w,
+                          child: ImageView(
+                            path: (ApiConstantsCrew.BASE_URL_IMAGE +
+                                crewData.profileImage.toString()),
+                            fit: BoxFit.contain,
+                          ),
+                        ),
+                      ),
+                SizedBox(
+                  width: DimensionConstants.d16.w,
                 ),
-                  ),
-                SizedBox(width: DimensionConstants.d16.w,),
                 Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children:<Widget> [
-                    Text(crewData.name.toString()).boldText(context, DimensionConstants.d16.sp, TextAlign.left,color: ColorConstants.deepBlue),
-                   Row(
-                     mainAxisAlignment: MainAxisAlignment.center,crossAxisAlignment: CrossAxisAlignment.center,
-                     children: <Widget> [
-                       Text(crewData.speciality ?? "").regularText(context, DimensionConstants.d14.sp, TextAlign.left,color: ColorConstants.deepBlue),
-                       SizedBox(width: DimensionConstants.d6.w,),
-                       Container(height: DimensionConstants.d3.h,width: DimensionConstants.d3.w,
-                       decoration: BoxDecoration(
-                         color: ColorConstants.deepBlue,
-                         borderRadius: BorderRadius.circular(DimensionConstants.d5.r),
-                       ),
-                       ),
-                       SizedBox(width: DimensionConstants.d6.w,),
-                       Text("${DateFunctions.minutesToHourString(projectData.checkins[index].hoursDiff!)}" " Hours" ?? "").regularText(context, DimensionConstants.d14.sp, TextAlign.left,color: ColorConstants.deepBlue),
-                     ],
-                   )
+                  children: <Widget>[
+                    Text(crewData.name.toString()).boldText(
+                        context, DimensionConstants.d16.sp, TextAlign.left,
+                        color: ColorConstants.deepBlue),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Text(crewData.speciality ?? "").regularText(
+                            context, DimensionConstants.d14.sp, TextAlign.left,
+                            color: ColorConstants.deepBlue),
+                        SizedBox(
+                          width: DimensionConstants.d6.w,
+                        ),
+                        Container(
+                          height: DimensionConstants.d3.h,
+                          width: DimensionConstants.d3.w,
+                          decoration: BoxDecoration(
+                            color: ColorConstants.deepBlue,
+                            borderRadius:
+                                BorderRadius.circular(DimensionConstants.d5.r),
+                          ),
+                        ),
+                        SizedBox(
+                          width: DimensionConstants.d6.w,
+                        ),
+                        Text("${DateFunctions.minutesToHourString(projectData.checkins[index].totalMinutes)}"
+                                    " Hours" ??
+                                "")
+                            .regularText(context, DimensionConstants.d14.sp,
+                                TextAlign.left,
+                                color: ColorConstants.deepBlue),
+                      ],
+                    )
                   ],
                 ),
                 Expanded(child: Container()),
-                ImageView(path: ImageConstants.arrowIcon,
-                width: DimensionConstants.d10.w,
-                height: DimensionConstants.d14.h,)
-
+                ImageView(
+                  path: ImageConstants.arrowIcon,
+                  width: DimensionConstants.d10.w,
+                  height: DimensionConstants.d14.h,
+                )
               ],
             ),
           ),
@@ -194,6 +251,4 @@ Widget userProfile(BuildContext context,int index, bool timeSheetOrSchedule, Cre
       ),
     ),
   );
-
-
 }

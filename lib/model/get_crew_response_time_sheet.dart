@@ -99,6 +99,7 @@ class ProjectDatum {
   String? projectName;
   List<String>? crewId;
   List<Checkin>? checkins;
+  Color color = Colors.primaries[Random().nextInt(Colors.primaries.length)];
 
   factory ProjectDatum.fromJson(Map<String, dynamic> json) => ProjectDatum(
         id: json["_id"],
@@ -129,7 +130,7 @@ class Checkin {
   List<Interuption>? interuption;
   String? checkOutTime;
   DateTime? date;
-  Color color = Colors.primaries[Random().nextInt(Colors.primaries.length)];
+
 
   factory Checkin.fromJson(Map<String, dynamic> json) => Checkin(
         id: json["_id"],

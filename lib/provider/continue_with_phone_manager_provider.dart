@@ -7,6 +7,7 @@ import 'package:beehive/provider/base_provider.dart';
 import 'package:beehive/views_manager/light_theme_signup_login_manager/otp_verification_page_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:intl_phone_number_input/src/utils/phone_number.dart';
 
 import '../constants/route_constants.dart';
 import '../enum/enum.dart';
@@ -17,9 +18,11 @@ class ContinueWithPhoneManagerProvider extends BaseProvider {
   final phoneNumberController = TextEditingController();
 
   String dialCode = "";
+  String countryCode = "";
 
-  getDialCode(String code) {
-    dialCode = code;
+  setDialCode(PhoneNumber value) {
+    dialCode = value.dialCode ?? "+1";
+    countryCode = value.isoCode ?? "US";
     notifyListeners();
   }
 
@@ -66,7 +69,8 @@ class ContinueWithPhoneManagerProvider extends BaseProvider {
         var value = "$dialCode-${phoneNumberController.text}";
         print("token ${model.token!}");
         SharedPreference.prefs!.setString(SharedPreference.TOKEN, model.token!);
-        print("token ${SharedPreference.prefs!.getString(SharedPreference.TOKEN)}");
+        print(
+            "token ${SharedPreference.prefs!.getString(SharedPreference.TOKEN)}");
         Navigator.pushNamed(context, RouteConstants.otpVerificationPageManager,
             arguments: {
               "value": value,

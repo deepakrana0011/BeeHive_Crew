@@ -109,6 +109,7 @@
   "projects": "Projects",
   "hours": "Hours",
   "You_have_not_checked_in_today": "You haven’t checked-in today.",
+  "you_are_currently_not_checked": "You are currently not checked into any project",
   "checked_out": "Checked-out",
   "last_check_in": "Last Check in",
   "total_hours": "Total Hours",
@@ -266,5 +267,7 @@
   "your_regular_rate": " your regular rate.",
   "are_you_sure_to_leave_project": "Are you sure you want to leave project?",
   "leave": "Leave",
-  "sorry_no_data_found": "Sorry, no data found...."
+  "sorry_no_data_found": "Sorry, no data found....",
+  "km": "KM",
+  "m": "M"
 }

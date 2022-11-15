@@ -4,7 +4,7 @@ class ProjectTimeSheetResponse {
   int? activeProject;
   int? totalHours;
   int? crewmembers;
-  List<ProjectData> projectData = [];
+  List<TimeSheetProjectData> projectData = [];
 
   ProjectTimeSheetResponse(
       {this.success,
@@ -20,9 +20,9 @@ class ProjectTimeSheetResponse {
     totalHours = json['totalHours'];
     crewmembers = json['crewmembers'];
     if (json['projectData'] != null) {
-      projectData = <ProjectData>[];
+      projectData = <TimeSheetProjectData>[];
       json['projectData'].forEach((v) {
-        projectData.add(new ProjectData.fromJson(v));
+        projectData.add(new TimeSheetProjectData.fromJson(v));
       });
     }
   }
@@ -91,16 +91,16 @@ class Manager {
   }
 }
 
-class ProjectData {
+class TimeSheetProjectData {
   String? sId;
   String? date;
   String? id;
   String? projectName;
   List<String>? crewId;
   int? status;
-  List<Checkins> checkins = [];
+  List<TimeSheetCheckins> checkins = [];
 
-  ProjectData(
+  TimeSheetProjectData(
       {this.sId,
         this.date,
         this.id,
@@ -108,7 +108,7 @@ class ProjectData {
         this.crewId,
         this.status});
 
-  ProjectData.fromJson(Map<String, dynamic> json) {
+  TimeSheetProjectData.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     date = json['date'];
     id = json['id'];
@@ -116,9 +116,9 @@ class ProjectData {
     crewId = json['crewId'].cast<String>();
     status = json['status'];
     if (json['checkins'] != null) {
-      checkins = <Checkins>[];
+      checkins = <TimeSheetCheckins>[];
       json['checkins'].forEach((v) {
-        checkins.add(new Checkins.fromJson(v));
+        checkins.add(TimeSheetCheckins.fromJson(v));
       });
     }
   }
@@ -138,7 +138,7 @@ class ProjectData {
   }
 }
 
-class Checkins {
+class TimeSheetCheckins {
   String? sId;
   String? crewId;
   String? checkInTime;
@@ -148,8 +148,9 @@ class Checkins {
   String? date;
   List<Break>? breaks;
   List<Crew>? crew;
+  int totalMinutes=0;
 
-  Checkins(
+  TimeSheetCheckins(
       {this.sId,
         this.crewId,
         this.checkInTime,
@@ -159,7 +160,7 @@ class Checkins {
         this.date,
         this.crew,this.breaks});
 
-  Checkins.fromJson(Map<String, dynamic> json) {
+  TimeSheetCheckins.fromJson(Map<String, dynamic> json) {
     sId = json['_id'];
     crewId = json['crewId'];
     checkInTime = json['checkInTime'];

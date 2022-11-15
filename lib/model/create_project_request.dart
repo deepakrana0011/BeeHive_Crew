@@ -15,6 +15,7 @@ class CreateProjectRequest {
     this.breakList,
     this.roundTimesheets,
     this.sameRate,
+    this.color,
     this.projectRate,
   });
 
@@ -32,6 +33,7 @@ class CreateProjectRequest {
   List<Break>? breakList;
   String? roundTimesheets;
   String? sameRate;
+  String? color;
   List<ProjectRate>? projectRate;
 
   factory CreateProjectRequest.fromJson(Map<String, dynamic> json) =>
@@ -51,6 +53,7 @@ class CreateProjectRequest {
             : [],
         roundTimesheets: json["roundTimesheets"],
         sameRate: json["sameRate"],
+        color: json["color"],
         projectRate: json["projectRate"] != null
             ? List<ProjectRate>.from(
                 json["projectRate"].map((x) => ProjectRate.fromJson(x)))
@@ -72,6 +75,7 @@ class CreateProjectRequest {
         "break": List<dynamic>.from(breakList!.map((x) => x.toJson())),
         "roundTimesheets": roundTimesheets,
         "sameRate": sameRate,
+        "color": color,
         "projectRate": projectRate != null
             ? List<dynamic>.from(projectRate!.map((x) => x.toJson()))
             : [],

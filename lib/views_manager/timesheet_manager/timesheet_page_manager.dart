@@ -14,12 +14,13 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 import '../../constants/image_constants.dart';
 import '../../helper/common_widgets.dart';
 import '../../helper/validations.dart';
 import '../../model/project_timesheet_response.dart';
+import '../../provider/bottom_bar_Manager_provider.dart';
 import '../../provider/timesheet_manager_provider.dart';
-import '../../widget/bottom_sheet_project_details.dart';
 import '../../widget/bottom_sheet_project_details_timesheet.dart';
 import '../../widget/image_view.dart';
 
@@ -30,13 +31,27 @@ class TimeSheetPageManager extends StatefulWidget {
   State<TimeSheetPageManager> createState() => _TimeSheetPageManagerState();
 }
 
-class _TimeSheetPageManagerState extends State<TimeSheetPageManager> with TickerProviderStateMixin {
+class _TimeSheetPageManagerState extends State<TimeSheetPageManager>
+    with TickerProviderStateMixin {
   TimeSheetManagerProvider provider = locator<TimeSheetManagerProvider>();
+
+  BottomBarManagerProvider? managerProvider;
+
+  @override
+  void initState() {
+    managerProvider =
+        Provider.of<BottomBarManagerProvider>(context, listen: false);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
     TabController tabController = TabController(length: 2, vsync: this);
     return BaseView<TimeSheetManagerProvider>(onModelReady: (provider) async {
+      //To Show Crew Screen First
+      tabController.index = managerProvider!.showCrewScreen ? 1 : 0;
+      managerProvider?.showCrewScreen=false;
+
       this.provider = provider;
       provider.startDate = DateFunctions.getCurrentDateMonthYear();
       provider.endDate = DateFunctions.getCurrentDateMonthYear();
@@ -179,7 +194,9 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager> with Ticker
               controller: controller,
               children: [
                 projects(context, tabController, provider),
-               provider.getAllCrewResponse != null? crewWidget(context):noDataFound(context),
+                provider.getAllCrewResponse != null
+                    ? crewWidget(context)
+                    : noDataFound(context),
               ]),
         ),
       ],
@@ -196,7 +213,8 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager> with Ticker
         CommonWidgets.totalProjectsTotalHoursRowTimeSheetManager(
             context,
             provider.totalActiveProjects.toString(),
-            DateFunctions.minutesToHourString(provider.totalHoursAllActiveProjects??0)),
+            DateFunctions.minutesToHourString(
+                provider.totalHoursAllActiveProjects ?? 0)),
         tabBarViewWidget(context, controller, provider)
       ],
     );
@@ -233,7 +251,7 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager> with Ticker
                   ),
                 ),
                 padding: EdgeInsets.zero,
-                controller: controller,
+                controller: provider.controller,
                 onTap: (index) {
                   if (controller.indexIsChanging) {
                     provider.updateLoadingStatus(true);
@@ -325,7 +343,9 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager> with Ticker
                             ? weeklyTabBarContainerManager(context, controller)
                             : noDataFound(context),
                         provider.projectDataResponse.isNotEmpty
-                            ? biWeeklyTabBarContainerManager(context, controller)
+                            ? weeklyTabBarContainerManager(context,
+                                controller) /*biWeeklyTabBarContainerManager(
+                                context, controller)*/
                             : noDataFound(context),
                       ],
                     ),
@@ -336,7 +356,9 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager> with Ticker
     );
   }
 
-  Widget todayWidget(BuildContext context,) {
+  Widget todayWidget(
+    BuildContext context,
+  ) {
     return Padding(
       padding: EdgeInsets.only(top: DimensionConstants.d16.h),
       child: Card(
@@ -386,23 +408,24 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager> with Ticker
                   children: [
                     projectHourRowManager(
                         context,
-                        Colors.primaries[Random().nextInt(Colors.primaries.length)],
+                        Colors.primaries[
+                            Random().nextInt(Colors.primaries.length)],
                         provider.projectDataResponse[index].projectName
                             .toString()
-                            .substring(0, 2).toUpperCase(),
+                            .substring(0, 2)
+                            .toUpperCase(),
                         provider.projectDataResponse[index].projectName
                             .toString(),
                         "${provider.projectDataResponse[index].checkins.length} Crew",
                         "${provider.projectsTotalHours[index]}h",
-                        stepperLineWithTwoCoolIcon(),
-
-                        onTap: () {
+                        stepperLineWithTwoCoolIcon(), onTap: () {
                       bottomSheetProjectDetailsTimeSheet(
                         context,
                         index,
                         onTap: () {},
                         timeSheetOrSchedule: false,
-                        projectColor: Colors.primaries[Random().nextInt(Colors.primaries.length)],
+                        projectColor: Colors.primaries[
+                            Random().nextInt(Colors.primaries.length)],
                         projectData: provider.projectDataResponse[index],
                       );
                     }),
@@ -432,7 +455,8 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager> with Ticker
             .boldText(context, DimensionConstants.d18.sp, TextAlign.center));
   }
 
-  Widget weeklyTabBarContainerManager(BuildContext context, TabController controller) {
+  Widget weeklyTabBarContainerManager(
+      BuildContext context, TabController controller) {
     return SingleChildScrollView(
       child: Column(
         children: [
@@ -458,7 +482,8 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager> with Ticker
                         GestureDetector(
                           child: backNextBtn(ImageConstants.backIconIos),
                           onTap: () {
-                            provider.previousWeekDays(controller.index == 1 ? 7 : 14);
+                            provider.previousWeekDays(
+                                controller.index == 1 ? 7 : 14);
                             provider.projectTimeSheetManager(context);
                           },
                         ),
@@ -527,31 +552,33 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager> with Ticker
                         ),
                         ListView.builder(
                             shrinkWrap: true,
-                            itemCount: provider.projectDataResponse.length,
+                            itemCount: provider.weeklyData.length,
                             physics: const NeverScrollableScrollPhysics(),
                             itemBuilder: (BuildContext context, int index) {
                               return Column(
                                 children: <Widget>[
-                                  weeklyTabBarDateContainer(context, provider.dateConvertorWeekly(provider.projectDataResponse[index].date!) ?? ""),
+                                  weeklyTabBarDateContainer(context,
+                                      provider.weeklyData[index].date ?? ""),
                                   ListView.separated(
                                     shrinkWrap: true,
                                     physics:
                                         const NeverScrollableScrollPhysics(),
-                                    itemCount: provider
-                                        .projectDataResponse[index]
-                                        .checkins
-                                        .length,
+                                    itemCount: provider.weeklyData[index]
+                                        .projectDataList!.length,
                                     itemBuilder: (context, innerIndex) {
                                       return projectDetailTile(
-                                          context, provider,index,
+                                          context, provider, innerIndex,
                                           checkInList: provider
-                                              .projectDataResponse[index]
+                                              .weeklyData[index]
+                                              .projectDataList![innerIndex]
                                               .checkins,
                                           projectName: provider
-                                              .projectDataResponse[index]
+                                              .weeklyData[index]
+                                              .projectDataList![innerIndex]
                                               .projectName,
                                           crewCount: provider
-                                              .projectDataResponse[index]
+                                              .weeklyData[index]
+                                              .projectDataList![innerIndex]
                                               .checkins
                                               .length
                                               .toString());
@@ -566,7 +593,6 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager> with Ticker
                                 ],
                               );
                             })
-
                       ],
                     ),
                   )
@@ -579,7 +605,7 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager> with Ticker
     );
   }
 
-  Widget biWeeklyTabBarContainerManager(
+/*  Widget biWeeklyTabBarContainerManager(
       BuildContext context, TabController controller) {
     return SingleChildScrollView(
       child: Column(
@@ -615,7 +641,8 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager> with Ticker
                             .boldText(context, DimensionConstants.d16.sp,
                                 TextAlign.center,
                                 color: ColorConstants.colorWhite),
-                        provider.endDate != DateFormat("yyyy-MM-dd").format(DateTime.now())
+                        provider.endDate !=
+                                DateFormat("yyyy-MM-dd").format(DateTime.now())
                             ? GestureDetector(
                                 child: backNextBtn(ImageConstants.nextIconIos),
                                 onTap: () {
@@ -666,7 +693,10 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager> with Ticker
                                 width: DimensionConstants.d1.w,
                                 color: ColorConstants.colorLightGrey,
                               ),
-                              projectsHoursRow(context, ImageConstants.clockIcon, "${provider.allProjectHour!.replaceAll("-", "") ?? "00:00"} ${"hours".tr()}")
+                              projectsHoursRow(
+                                  context,
+                                  ImageConstants.clockIcon,
+                                  "${provider.allProjectHour!.replaceAll("-", "") ?? "00:00"} ${"hours".tr()}")
                             ],
                           ),
                         ),
@@ -677,7 +707,12 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager> with Ticker
                             itemBuilder: (BuildContext context, int index) {
                               return Column(
                                 children: <Widget>[
-                                  weeklyTabBarDateContainer(context, provider.dateConvertorWeekly(provider.projectDataResponse[index].date!) ?? ""),
+                                  weeklyTabBarDateContainer(
+                                      context,
+                                      provider.dateConvertorWeekly(provider
+                                              .projectDataResponse[index]
+                                              .date!) ??
+                                          ""),
                                   ListView.separated(
                                     shrinkWrap: true,
                                     physics:
@@ -688,14 +723,19 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager> with Ticker
                                         .length,
                                     itemBuilder: (context, innerIndex) {
                                       return projectDetailTile(
-                                          context, provider,index,
+                                          context, provider, index,
                                           checkInList: provider
                                               .projectDataResponse[index]
                                               .checkins,
                                           projectName: provider
                                               .projectDataResponse[index]
                                               .projectName,
-                                          crewCount: provider.projectDataResponse[index].checkins[innerIndex].crew!.length.toString());
+                                          crewCount: provider
+                                              .projectDataResponse[index]
+                                              .checkins[innerIndex]
+                                              .crew!
+                                              .length
+                                              .toString());
                                     },
                                     separatorBuilder: (context, index) {
                                       return const Divider(
@@ -717,7 +757,7 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager> with Ticker
         ],
       ),
     );
-  }
+  }*/
 
   Widget backNextBtn(String path) {
     return Container(
@@ -734,8 +774,9 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager> with Ticker
     );
   }
 
-  Widget projectDetailTile(BuildContext context, TimeSheetManagerProvider provider,int listIndex,
-      {List<Checkins>? checkInList,
+  Widget projectDetailTile(
+      BuildContext context, TimeSheetManagerProvider provider, int listIndex,
+      {List<TimeSheetCheckins>? checkInList,
       String? projectName = "",
       String? crewCount}) {
     return GestureDetector(
@@ -745,8 +786,9 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager> with Ticker
           listIndex,
           onTap: () {},
           timeSheetOrSchedule: false,
-          projectColor: Colors.primaries[Random().nextInt(Colors.primaries.length)],
-            projectData: provider.projectDataResponse[listIndex],
+          projectColor:
+              Colors.primaries[Random().nextInt(Colors.primaries.length)],
+          projectData: provider.projectDataResponse[listIndex],
         );
       },
       child: Container(
@@ -765,13 +807,14 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager> with Ticker
                 width: DimensionConstants.d40.w,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors.primaries[Random().nextInt(Colors.primaries.length)],
+                  color: Colors
+                      .primaries[Random().nextInt(Colors.primaries.length)],
                 ),
-                child:
-                    Text(Validations.getInitials(string: projectName, limitTo: 2))
-                        .boldText(
-                            context, DimensionConstants.d16.sp, TextAlign.center,
-                            color: ColorConstants.colorWhite),
+                child: Text(Validations.getInitials(
+                        string: projectName, limitTo: 2))
+                    .boldText(
+                        context, DimensionConstants.d16.sp, TextAlign.center,
+                        color: ColorConstants.colorWhite),
               ),
               SizedBox(width: DimensionConstants.d14.w),
               SizedBox(
@@ -1043,20 +1086,34 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager> with Ticker
   }*/
 
   Widget crewWidget(BuildContext context) {
-    return provider.state == ViewState.busy? const Center(child: CircularProgressIndicator(color: ColorConstants.primaryColor,),) : Column(
-      children: <Widget>[
-        SizedBox(
-          height: DimensionConstants.d14.h,
-        ),
-        CommonWidgets.crewTabProject(context, provider.getAllCrewResponse!.totalCrews.toString() ?? '',provider.getTotalHoursOnProjects(provider.getAllCrewResponse!.data) ?? ""),
-        SizedBox(
-          height: DimensionConstants.d14.h,
-        ),
-        userProfile(context),
-      ],
-    );
+    return provider.state == ViewState.busy
+        ? const Center(
+            child: CircularProgressIndicator(
+              color: ColorConstants.primaryColor,
+            ),
+          )
+        : Column(
+            children: <Widget>[
+              SizedBox(
+                height: DimensionConstants.d14.h,
+              ),
+              CommonWidgets.crewTabProject(
+                  context,
+                  provider.getAllCrewResponse!.totalCrews.toString() ?? '',
+                  provider.getTotalHoursOnProjects(
+                          provider.getAllCrewResponse!.data) ??
+                      ""),
+              SizedBox(
+                height: DimensionConstants.d14.h,
+              ),
+              userProfile(context),
+            ],
+          );
   }
-  Widget userProfile(BuildContext context,) {
+
+  Widget userProfile(
+    BuildContext context,
+  ) {
     return SizedBox(
       height: DimensionConstants.d468.h,
       child: ListView.builder(
@@ -1069,7 +1126,12 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager> with Ticker
                 vertical: DimensionConstants.d5.h),
             child: GestureDetector(
               onTap: () {
-                Navigator.pushNamed(context, RouteConstants.timeSheetsFromCrew,arguments: TimeSheetFromCrew(id: provider.getAllCrewResponse!.data![index].id!.id!, totalHours: provider.getAllCrewResponse!.data![index].totalHours!,));
+                Navigator.pushNamed(context, RouteConstants.timeSheetsFromCrew,
+                    arguments: TimeSheetFromCrew(
+                      id: provider.getAllCrewResponse!.data![index]!.id!,
+                      totalHours:
+                          provider.getAllCrewResponse!.data![index].totalHours!,
+                    ));
               },
               child: Material(
                 elevation: 2,
@@ -1086,22 +1148,29 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager> with Ticker
                         horizontal: DimensionConstants.d16.w),
                     child: Row(
                       children: <Widget>[
-                        provider.getAllCrewResponse!.data![index].id!.profileImage != null? ClipRRect(
-                          borderRadius: BorderRadius.circular(DimensionConstants.d25.r),
-                          child: ImageView(
-                            path: ApiConstantsManager.BASEURL_IMAGE + provider.getAllCrewResponse!.data![index].id!.profileImage!,
-                            height: DimensionConstants.d50.h,
-                            width: DimensionConstants.d50.w,
-                            fit: BoxFit.cover,
-                          ),
-                        ):Container(
-                          height: DimensionConstants.d50.h,
-                          width: DimensionConstants.d50.w,
-                          decoration: BoxDecoration(
-                            color: ColorConstants.primaryColor,
-                            borderRadius: BorderRadius.circular(DimensionConstants.d25.r)
-                          ),
-                        ),
+                        provider.getAllCrewResponse!.data![index]!
+                                    .profileImage !=
+                                null
+                            ? ClipRRect(
+                                borderRadius: BorderRadius.circular(
+                                    DimensionConstants.d25.r),
+                                child: ImageView(
+                                  path: ApiConstantsManager.BASEURL_IMAGE +
+                                      provider.getAllCrewResponse!.data![index]!
+                                          .profileImage!,
+                                  height: DimensionConstants.d50.h,
+                                  width: DimensionConstants.d50.w,
+                                  fit: BoxFit.cover,
+                                ),
+                              )
+                            : Container(
+                                height: DimensionConstants.d50.h,
+                                width: DimensionConstants.d50.w,
+                                decoration: BoxDecoration(
+                                    color: ColorConstants.primaryColor,
+                                    borderRadius: BorderRadius.circular(
+                                        DimensionConstants.d25.r)),
+                              ),
                         SizedBox(
                           width: DimensionConstants.d16.w,
                         ),
@@ -1110,30 +1179,54 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager> with Ticker
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Text(provider.getAllCrewResponse!.data![index].id!.name ?? "").boldText(context,
-                                  DimensionConstants.d16.sp, TextAlign.left,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  color: ColorConstants.deepBlue),
+                              Text(provider.getAllCrewResponse!.data![index]!
+                                          .name ??
+                                      "")
+                                  .boldText(context, DimensionConstants.d16.sp,
+                                      TextAlign.left,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      color: ColorConstants.deepBlue),
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.start,
-                                children: <Widget> [
-                                  Text(provider.getAllCrewResponse!.data![index].id!.speciality ?? "").regularText(context, DimensionConstants.d14.sp, TextAlign.left,color: ColorConstants.deepBlue),
-                                  SizedBox(width: DimensionConstants.d6.w,),
-                                  Container(height: DimensionConstants.d3.h,width: DimensionConstants.d3.w,
+                                children: <Widget>[
+                                  Text(provider.getAllCrewResponse!
+                                              .data![index]!.speciality ??
+                                          "")
+                                      .regularText(
+                                          context,
+                                          DimensionConstants.d14.sp,
+                                          TextAlign.left,
+                                          color: ColorConstants.deepBlue),
+                                  SizedBox(
+                                    width: DimensionConstants.d6.w,
+                                  ),
+                                  Container(
+                                    height: DimensionConstants.d3.h,
+                                    width: DimensionConstants.d3.w,
                                     decoration: BoxDecoration(
                                       color: ColorConstants.deepBlue,
-                                      borderRadius: BorderRadius.circular(DimensionConstants.d5.r),
+                                      borderRadius: BorderRadius.circular(
+                                          DimensionConstants.d5.r),
                                     ),
                                   ),
-                                  SizedBox(width: DimensionConstants.d6.w,),
-                                  Text("${DateFunctions.minutesToHourString(provider.getAllCrewResponse!.data![index].totalHours!)}" " Hours" ?? "").regularText(context, DimensionConstants.d14.sp, TextAlign.left,color: ColorConstants.deepBlue),
+                                  SizedBox(
+                                    width: DimensionConstants.d6.w,
+                                  ),
+                                  Text(
+                                          "${DateFunctions.minutesToHourString(provider.getAllCrewResponse!.data![index].totalHours!)}"
+                                                  " Hours" ??
+                                              "")
+                                      .regularText(
+                                          context,
+                                          DimensionConstants.d14.sp,
+                                          TextAlign.left,
+                                          color: ColorConstants.deepBlue),
                                 ],
                               )
                             ],
                           ),
                         ),
-
                         ImageView(
                           path: ImageConstants.arrowIcon,
                           width: DimensionConstants.d10.w,

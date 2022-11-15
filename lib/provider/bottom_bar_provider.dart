@@ -12,6 +12,8 @@ class BottomBarProvider extends BaseProvider{
   String? _crewProfilePic;
   String? _companyLogo;
 
+  bool showScheduleScreen=false;
+
   String get crewName => _crewName ?? "";
 
   String get crewProfilePic => _crewProfilePic ?? "";

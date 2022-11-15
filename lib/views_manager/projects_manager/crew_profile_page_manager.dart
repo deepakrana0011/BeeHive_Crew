@@ -121,7 +121,7 @@ class CrewProfilePageManager extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              (crewData.certificates==null||crewData.certificates.isEmpty) ? ClipRRect(
+              (crewData?.certificates==null||crewData?.certificates.isEmpty) ? ClipRRect(
             borderRadius: BorderRadius.circular(DimensionConstants.d50.r),
             child: SizedBox(
               height: DimensionConstants.d93.h,

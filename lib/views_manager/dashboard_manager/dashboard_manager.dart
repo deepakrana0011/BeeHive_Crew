@@ -4,14 +4,10 @@ import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/date_function.dart';
 import 'package:beehive/helper/validations.dart';
-import 'package:beehive/model/crew_dashboard_response.dart';
 import 'package:beehive/model/manager_dashboard_response.dart';
 import 'package:beehive/provider/dashboard_page_manager_provider.dart';
 import 'package:beehive/provider/drawer_manager_provider.dart';
 import 'package:beehive/view/base_view.dart';
-import 'package:beehive/widget/custom_circular_bar.dart';
-import 'package:beehive/widget/custom_tab_bar.dart';
-import 'package:beehive/widget/custom_tab_bar_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -20,9 +16,7 @@ import 'package:provider/provider.dart';
 import '../../constants/color_constants.dart';
 import '../../constants/dimension_constants.dart';
 import '../../constants/image_constants.dart';
-import '../../locator.dart';
 import '../../provider/bottom_bar_Manager_provider.dart';
-import '../../provider/bottom_bar_provider.dart';
 import '../../widget/image_view.dart';
 
 class DashBoardPageManager extends StatefulWidget {
@@ -58,7 +52,7 @@ class _DashBoardPageManagerState extends State<DashBoardPageManager>
                   context, DimensionConstants.d16.sp, TextAlign.left,
                   color: ColorConstants.colorBlack),): Column(
               children: <Widget>[
-                activeProjectWidget(context, provider),
+                activeProjectWidget(context, provider,managerProvider),
                 tabBarView(
                     provider.controller!, context, provider, managerProvider!)
               ],
@@ -72,7 +66,7 @@ class _DashBoardPageManagerState extends State<DashBoardPageManager>
 }
 
 Widget activeProjectWidget(
-    BuildContext context, DashBoardPageManagerProvider provider) {
+    BuildContext context, DashBoardPageManagerProvider provider, BottomBarManagerProvider? managerProvider) {
   return Container(
     height: DimensionConstants.d151.h,
     width: double.infinity,
@@ -97,15 +91,25 @@ Widget activeProjectWidget(
           ),
           Row(
             children: <Widget>[
-              crewAndActiveProject(
-                  context,
-                  provider.managerResponse!.activeProject.toString(),
-                  "active_projects"),
+              GestureDetector(
+                onTap: (){
+                  managerProvider?.onItemTapped(1);
+                },
+                child: crewAndActiveProject(
+                    context,
+                    provider.managerResponse!.activeProject.toString(),
+                    "active_projects"),
+              ),
               Expanded(child: Container()),
-              crewAndActiveProject(
-                  context,
-                  provider.managerResponse!.crewmembers.toString(),
-                  "crew_members"),
+              GestureDetector(
+                onTap: (){
+                  managerProvider?.openCrewScreen(2);
+                },
+                child: crewAndActiveProject(
+                    context,
+                    provider.managerResponse!.crewmembers.toString(),
+                    "crew_members"),
+              ),
             ],
           ),
         ],

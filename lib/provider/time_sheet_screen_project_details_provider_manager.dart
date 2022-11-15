@@ -7,7 +7,7 @@ import '../model/manager_dashboard_response.dart';
 import '../model/project_working_hour_detail.dart';
 
 class TimeSheetScreenProjectDetailsProvider extends BaseProvider {
-  List<ProjectWorkingHourDetail> getTimeForStepper(Checkins detail) {
+  List<ProjectWorkingHourDetail> getTimeForStepper(TimeSheetCheckins detail) {
     List<Interuption> timeString = [];
     List<ProjectWorkingHourDetail> projectWorkingHourList = [];
     for (int i = 0; i < detail.breaks!.length; i++) {

@@ -16,8 +16,10 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 import '../../constants/color_constants.dart';
+import '../../provider/bottom_bar_provider.dart';
 
 class ProjectsCrew extends StatefulWidget {
   const ProjectsCrew({Key? key}) : super(key: key);
@@ -28,11 +30,26 @@ class ProjectsCrew extends StatefulWidget {
 
 class _ProjectsCrewState extends State<ProjectsCrew>
     with TickerProviderStateMixin {
+
+
+  BottomBarProvider? bottomBarProvider;
+
+  @override
+  void initState() {
+    bottomBarProvider =
+        Provider.of<BottomBarProvider>(context, listen: false);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     TabController tabController = TabController(length: 2, vsync: this);
     return BaseView<ProjectsCrewProvider>(
       onModelReady: (provider) {
+        //To Show Schedule Screen First
+        tabController.index = bottomBarProvider!.showScheduleScreen ? 1 : 0;
+        bottomBarProvider?.showScheduleScreen=false;
+
         provider.getAllCheckoutProjectsCrew(context);
         tabController.addListener(() {
           if (tabController.indexIsChanging) {

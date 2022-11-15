@@ -295,7 +295,6 @@ class CommonWidgets {
   static Widget totalProjectsTotalHoursRowTimeSheetManager(
       BuildContext context, String totalProject, String totalHours) {
     return Container(
-      height: DimensionConstants.d72.h,
       width: DimensionConstants.d343.w,
       decoration: BoxDecoration(
         color: ColorConstants.littleDarkGray,
@@ -363,7 +362,6 @@ class CommonWidgets {
   static Widget crewTabProject(
       BuildContext context, String totalProject, String totalHours) {
     return Container(
-      height: DimensionConstants.d72.h,
       width: DimensionConstants.d343.w,
       decoration: BoxDecoration(
         color: ColorConstants.littleDarkGray,

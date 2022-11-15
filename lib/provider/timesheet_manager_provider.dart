@@ -10,9 +10,11 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
 import '../model/get_all_crew_on_project_response.dart';
+import '../model/timesheet_weekly_data_model_manager.dart';
+import '../model/weekely_data_model_manager.dart';
 
 class TimeSheetManagerProvider extends BaseProvider {
-  List<ProjectData> projectDataResponse = [];
+  List<TimeSheetProjectData> projectDataResponse = [];
   List<String> projectsTotalHours = [];
   GetAllCrewOnProject? getAllCrewResponse;
   int totalActiveProjects = 0;
@@ -30,6 +32,8 @@ class TimeSheetManagerProvider extends BaseProvider {
   String? weekEndDate;
 
   int selectIndex = 0;
+
+  List<TimeSheetWeeklyDataModelManager> weeklyData = [];
 
   indexCheck(int value) {
     selectIndex = value;
@@ -50,7 +54,7 @@ class TimeSheetManagerProvider extends BaseProvider {
     return DateFormat("EEE MMM, dd").format(getDate);
   }
 
-  String getOneProjectTotalHours(List<Checkins>? checkins) {
+  String getOneProjectTotalHours(List<TimeSheetCheckins>? checkins) {
     var totalMinutes = 0;
     for (var element in checkins!) {
       var startTime = DateFunctions.getDateTimeFromString(element.checkInTime!);
@@ -79,9 +83,26 @@ class TimeSheetManagerProvider extends BaseProvider {
         if (model.projectData.isNotEmpty) {
           projectDataResponse = [];
           projectDataResponse = model.projectData;
+          if (controller?.index != 0) {
+            groupDataByDate();
+          }
           for (var element in projectDataResponse) {
+            int projectDataIndex = projectDataResponse.indexOf(element);
             for (var checkInElement in element.checkins) {
-              totalMinutes = totalMinutes + (checkInElement.hoursDiff ?? 0);
+              int checkinsIndex = element.checkins.indexOf(checkInElement);
+              var startTime = DateFunctions.getDateTimeFromString(
+                  checkInElement.checkInTime!);
+              var endTime = DateFunctions.getDateTimeFromString(
+                  (checkInElement.checkOutTime == null ||
+                          checkInElement.checkOutTime!.trim().isEmpty)
+                      ? DateFunctions.dateFormatyyyyMMddHHmm(DateTime.now())
+                      : checkInElement.checkOutTime!);
+              var minutes = endTime.difference(startTime).inMinutes;
+              totalMinutes = totalMinutes + minutes;
+
+              projectDataResponse[projectDataIndex]
+                  .checkins[checkinsIndex]
+                  .totalMinutes = minutes;
             }
             var totalHours = DateFunctions.minutesToHourString(totalMinutes);
             projectsTotalHours.add(totalHours);
@@ -106,21 +127,20 @@ class TimeSheetManagerProvider extends BaseProvider {
   }
 
   void getAllProjectTotalHours() {
-    var totalMinutes = 0;
+
+    var totalHours =0;
     for (var element in projectDataResponse) {
+      var totalMinutes = 0;
       for (var element in element.checkins) {
-        var startTime =
-            DateFunctions.getDateTimeFromString(element.checkInTime!);
-        var endTime = (element.checkOutTime == null ||
-                element.checkOutTime!.trim().isEmpty)
-            ? DateTime.now()
-            : DateFunctions.getDateTimeFromString(element.checkOutTime!);
+        var startTime = DateFunctions.getDateTimeFromString(element.checkInTime!);
+        var endTime = (element.checkOutTime == null || element.checkOutTime!.trim().isEmpty) ? DateTime.now() : DateFunctions.getDateTimeFromString(element.checkOutTime!);
         var minutes = startTime.difference(endTime).inMinutes;
         totalMinutes = totalMinutes + minutes.abs();
       }
+      totalHours = totalHours+totalMinutes;
     }
-    var totalHours = DateFunctions.minutesToHourString(totalMinutes);
-    allProjectHour = totalHours;
+
+    allProjectHour = DateFunctions.minutesToHourString(totalHours);
   }
 
   void nextWeekDays(int numberOfDays) {
@@ -182,6 +202,35 @@ class TimeSheetManagerProvider extends BaseProvider {
     } on SocketException catch (e) {
       setState(ViewState.idle);
       DialogHelper.showMessage(context, "internet_connection".tr());
+    }
+  }
+
+  void groupDataByDate() {
+    weeklyData.clear();
+    for (int i = 0; i < projectDataResponse.length; i++) {
+      var selectedDate = DateFormat("yyyy-MM-dd").parse(projectDataResponse[i].date!);
+      var dateTimeString = DateFunctions.dateFormatWithDayName(selectedDate);
+      if (weeklyData.isEmpty) {
+        List<TimeSheetProjectData> projectDataList = [];
+        projectDataList.add(projectDataResponse[i]);
+        var weeklyDataObject = TimeSheetWeeklyDataModelManager();
+        weeklyDataObject.date = dateTimeString;
+        weeklyDataObject.projectDataList=projectDataList;
+        weeklyData.add(weeklyDataObject);
+      } else {
+        var index =
+        weeklyData.indexWhere((element) => element.date == dateTimeString);
+        if (index == -1) {
+          List<TimeSheetProjectData> projectDataList = [];
+          projectDataList.add(projectDataResponse[i]);
+          var weeklyDataObject = TimeSheetWeeklyDataModelManager();
+          weeklyDataObject.date = dateTimeString;
+          weeklyDataObject.projectDataList=projectDataList;
+          weeklyData.add(weeklyDataObject);
+        } else {
+          weeklyData[index].projectDataList?.add(projectDataResponse[i]);
+        }
+      }
     }
   }
 }

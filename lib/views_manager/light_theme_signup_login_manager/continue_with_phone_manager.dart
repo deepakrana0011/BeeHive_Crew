@@ -1,5 +1,6 @@
 // ignore_for_file: must_be_immutable
 
+
 import 'package:beehive/constants/color_constants.dart';
 import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/constants/image_constants.dart';
@@ -9,10 +10,9 @@ import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
 import 'package:beehive/provider/continue_with_phone_manager_provider.dart';
 import 'package:beehive/view/base_view.dart';
-import 'package:beehive/views_manager/light_theme_signup_login_manager/email_address_screen_manager.dart';
-import 'package:beehive/views_manager/light_theme_signup_login_manager/otp_verification_page_manager.dart';
 import 'package:beehive/widget/custom_circular_bar.dart';
 import 'package:beehive/widget/image_view.dart';
+import 'package:country_codes/country_codes.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -26,7 +26,14 @@ class ContinueWithPhoneManager extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    CountryDetails details = CountryCodes.detailsForLocale();
+    Locale locale = CountryCodes.getDeviceLocale()!;
+
     return BaseView<ContinueWithPhoneManagerProvider>(
+      onModelReady: (provider){
+        provider.dialCode= details.dialCode??'+1';
+        provider.countryCode= locale.countryCode??'US';
+      },
         builder: (context, provider, _) {
       return GestureDetector(
         onTap: () {
@@ -89,7 +96,8 @@ class ContinueWithPhoneManager extends StatelessWidget {
                                       color: ColorConstants.colorWhite70),
                                   SizedBox(height: DimensionConstants.d42.h),
                                   phoneNumberWidget(
-                                      provider.phoneNumberController, provider),
+                                      provider.phoneNumberController,
+                                      provider,),
                                   SizedBox(height: DimensionConstants.d25.h),
                                   if (isResetPassword!)
                                     GestureDetector(
@@ -154,8 +162,9 @@ class ContinueWithPhoneManager extends StatelessWidget {
   }
 }
 
-Widget phoneNumberWidget(TextEditingController controller,
-    ContinueWithPhoneManagerProvider provider) {
+Widget phoneNumberWidget(
+    TextEditingController controller,
+    ContinueWithPhoneManagerProvider provider,) {
   return Stack(
     children: [
       Container(
@@ -167,12 +176,15 @@ Widget phoneNumberWidget(TextEditingController controller,
         child: InternationalPhoneNumberInput(
           textFieldController: controller,
           onInputChanged: (value) {
-            provider.getDialCode(value.dialCode!);
+            provider.setDialCode(value);
           },
+          countrySelectorScrollControlled: true,
           selectorConfig: const SelectorConfig(
             selectorType: PhoneInputSelectorType.DIALOG,
           ),
           formatInput: false,
+          initialValue: PhoneNumber(
+              isoCode: provider.countryCode, dialCode: provider.dialCode),
           selectorTextStyle: TextStyle(
               fontSize: DimensionConstants.d20.sp, fontWeight: FontWeight.w700),
           inputDecoration: InputDecoration(

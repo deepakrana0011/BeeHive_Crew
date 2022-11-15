@@ -3,6 +3,7 @@ import 'package:beehive/helper/shared_prefs.dart';
 import 'package:beehive/locator.dart';
 import 'package:beehive/provider/app_state_provider.dart';
 import 'package:beehive/widget/app_theme.dart';
+import 'package:country_codes/country_codes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -15,6 +16,7 @@ import 'router.dart' as router;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+  await CountryCodes.init();
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
   SharedPreference.prefs = await SharedPreferences.getInstance();

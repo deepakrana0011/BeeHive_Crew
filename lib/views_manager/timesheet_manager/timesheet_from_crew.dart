@@ -41,7 +41,7 @@ class _TimeSheetFromCrewState extends State<TimeSheetFromCrew>
       provider.controller = TabController(length: 3, vsync: this);
       provider.firstDate = DateFunctions.getCurrentDateMonthYear();
       provider.secondDate = DateFunctions.getCurrentDateMonthYear();
-      provider.getCrewDataTimeSheet(context, widget.id);
+      provider.getCrewDataTimeSheet(context, widget.id, showFullLoader: true);
     }, builder: (context, provider, _) {
       return Scaffold(
         appBar: CommonWidgets.appBarWithTitleAndAction(context,
@@ -190,6 +190,7 @@ Widget tabBarViewWidget(BuildContext context, TabController controller,
             ),
             elevation: 0.0,
             child: TabBar(
+              controller: provider.controller,
               indicator: BoxDecoration(
                 gradient: const LinearGradient(
                   begin: Alignment.topRight,
@@ -204,7 +205,6 @@ Widget tabBarViewWidget(BuildContext context, TabController controller,
                 ),
               ),
               padding: EdgeInsets.zero,
-              controller: controller,
               onTap: (index) {
                 if (controller.indexIsChanging) {
                   provider.updateLoadingStatus(true);
@@ -277,27 +277,37 @@ Widget tabBarViewWidget(BuildContext context, TabController controller,
             ),
           ),
           Expanded(
-            child: TabBarView(
-              controller: controller,
-              physics: NeverScrollableScrollPhysics(),
-              children: [
-                provider.crewResponse!.projectData!.isNotEmpty
-                    ? todayWidget(context, provider)
-                    : noDataFound(context),
-                provider.crewResponse!.projectData!.isNotEmpty
-                    ? weeklyTabBarContainerManager(
-                        context, controller, provider, id)
-                    : noDataFound(context),
-                provider.crewResponse!.projectData!.isNotEmpty
-                    ? biWeeklyTabBarContainerManager(
-                        context, controller, provider, id)
-                    : noDataFound(context),
-                //  provider.hasProjects ? projectsAndHoursCardList() : zeroProjectZeroHourCard(),
-                /* weeklyTabBarContainerManager(context,controller,provider,id),
+            child: provider.isLoading
+                ? const Center(
+                    child: CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                            ColorConstants.primaryColor)),
+                  )
+                : TabBarView(
+                    controller: controller,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: [
+                      provider.crewResponse!.projectData!.isNotEmpty
+                          ? todayWidget(context, provider)
+                          : noDataFound(context),
+                      provider.crewResponse!.projectData!.isNotEmpty
+                          ? weeklyTabBarContainerManager(
+                              context, controller, provider, id)
+                          : noDataFound(context),
+                      provider.crewResponse!.projectData!.isNotEmpty
+                          ? weeklyTabBarContainerManager(
+                              context,
+                              controller,
+                              provider,
+                              id) /*biWeeklyTabBarContainerManager(
+                        context, controller, provider, id)*/
+                          : noDataFound(context),
+                      //  provider.hasProjects ? projectsAndHoursCardList() : zeroProjectZeroHourCard(),
+                      /* weeklyTabBarContainerManager(context,controller,provider,id),
                 weeklyTabBarContainerManager(context,controller,provider,id),
                 Icon(Icons.directions_car, size: 350),*/
-              ],
-            ),
+                    ],
+                  ),
           ),
         ],
       ),
@@ -406,23 +416,20 @@ Widget weeklyTabBarContainerManager(BuildContext context,
                       ),
                       ListView.builder(
                           shrinkWrap: true,
-                          itemCount: provider.crewResponse!.projectData!.length,
+                          itemCount: provider.weeklyData.length,
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (BuildContext context, int index) {
                             return Column(
                               children: <Widget>[
                                 weeklyTabBarDateContainer(
                                     context,
-                                    provider.dateConvertorWeekly(provider
-                                            .crewResponse!
-                                            .projectData![index]
-                                            .date!
-                                            .toString()) ??
-                                        ""),
+                                    provider.weeklyData[index].date!
+                                        .toString()),
                                 ListView.separated(
                                   shrinkWrap: true,
                                   physics: const NeverScrollableScrollPhysics(),
-                                  itemCount: provider.crewResponse!.projectData![index].checkins!.length,
+                                  itemCount: provider.weeklyData[index]
+                                      .projectDataList!.length,
                                   itemBuilder: (context, innerIndex) {
                                     return Slidable(
                                       key: const ValueKey(0),
@@ -469,11 +476,12 @@ Widget weeklyTabBarContainerManager(BuildContext context,
                                       ),
                                       child: projectDetailTile(
                                           context, provider, innerIndex,
-                                          projectdata: provider.crewResponse!
-                                              .projectData![index],
+                                          projectdata: provider
+                                              .weeklyData[index]
+                                              .projectDataList![innerIndex],
                                           checkInProjectDetail: provider
-                                              .crewResponse!
-                                              .projectData![index]
+                                              .weeklyData[index]
+                                              .projectDataList![innerIndex]
                                               .checkins),
                                     );
                                   },
@@ -1546,7 +1554,7 @@ Widget todayWidget(BuildContext context, TimeSheetFromCrewProvider provider) {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 projectsHoursRow(context, ImageConstants.mapIcon,
-                    "${provider.crewResponse!.projectData![0].checkins!.length} ${"projects".tr()}"),
+                    "${provider.crewResponse!.projectData!.length} ${"projects".tr()}"),
                 Container(
                   height: DimensionConstants.d70.h,
                   width: DimensionConstants.d1.w,
@@ -1670,10 +1678,10 @@ Widget projectDetailTile(
               width: DimensionConstants.d40.w,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: projectdata!.checkins![index].color,
+                color: projectdata?.color,
               ),
               child: Text(Validations.getInitials(
-                          string: projectdata.projectName ?? "", limitTo: 2) ??
+                          string: projectdata?.projectName ?? "", limitTo: 2) ??
                       " ")
                   .boldText(
                       context, DimensionConstants.d16.sp, TextAlign.center,
@@ -1681,41 +1689,41 @@ Widget projectDetailTile(
             ),
             SizedBox(width: DimensionConstants.d12.w),
             Text(DateFunctions.dateTO12Hour(
-                        projectdata.checkins![index].checkInTime!)
+                        projectdata!.checkins![0].checkInTime!)
                     .substring(
                         0,
                         DateFunctions.dateTO12Hour(
-                                    projectdata.checkins![index].checkInTime!)
+                                    projectdata.checkins![0].checkInTime!)
                                 .length -
                             1))
                 .regularText(
                     context, DimensionConstants.d13.sp, TextAlign.center),
             SizedBox(width: DimensionConstants.d10.w),
-            customStepper(projectdata.checkins![index], provider),
+            customStepper(projectdata.checkins![0], provider),
             SizedBox(width: DimensionConstants.d10.w),
-            Text(DateFunctions.dateTO12Hour((projectdata
-                                    .checkins![index].checkOutTime ==
+            Text(DateFunctions.dateTO12Hour((projectdata.checkins![0].checkOutTime ==
                                 null ||
-                            projectdata.checkins![index].checkOutTime!
+                            projectdata.checkins![0].checkOutTime!
                                 .trim()
                                 .isEmpty)
                         ? DateFunctions.dateFormatyyyyMMddHHmm(DateTime.now())
-                        : projectdata.checkins![index].checkOutTime!)
+                        : projectdata.checkins![0].checkOutTime!)
                     .substring(
                         0,
-                        DateFunctions.dateTO12Hour((projectdata.checkins![index]
-                                                .checkOutTime ==
-                                            null ||
-                                        projectdata.checkins![index].checkOutTime!
-                                            .trim()
-                                            .isEmpty)
-                                    ? DateFunctions.dateFormatyyyyMMddHHmm(DateTime.now())
-                                    : projectdata.checkins![index].checkOutTime!)
+                        DateFunctions.dateTO12Hour(
+                                    (projectdata.checkins![0].checkOutTime ==
+                                                null ||
+                                            projectdata.checkins![0].checkOutTime!
+                                                .trim()
+                                                .isEmpty)
+                                        ? DateFunctions.dateFormatyyyyMMddHHmm(
+                                            DateTime.now())
+                                        : projectdata.checkins![0].checkOutTime!)
                                 .length -
                             1))
                 .regularText(context, DimensionConstants.d13.sp, TextAlign.center),
             SizedBox(width: DimensionConstants.d10.w),
-            Text("${DateFunctions.calculateTotalHourTime(projectdata.checkins![index].checkInTime!, (projectdata.checkins![0].checkOutTime == null || projectdata.checkins![0].checkOutTime!.trim().isEmpty) ? DateFunctions.dateFormatyyyyMMddHHmm(DateTime.now()) : projectdata.checkins![0].checkOutTime!).replaceAll("-", " ")} h")
+            Text("${DateFunctions.calculateTotalHourTime(projectdata.checkins![0].checkInTime!, (projectdata.checkins![0].checkOutTime == null || projectdata.checkins![0].checkOutTime!.trim().isEmpty) ? DateFunctions.dateFormatyyyyMMddHHmm(DateTime.now()) : projectdata.checkins![0].checkOutTime!).replaceAll("-", " ")} h")
                 .boldText(context, DimensionConstants.d13.sp, TextAlign.center),
             SizedBox(width: DimensionConstants.d7.w),
             ImageView(

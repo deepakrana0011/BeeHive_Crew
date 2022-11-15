@@ -5,16 +5,12 @@ import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
-import 'package:beehive/helper/decoration.dart';
 import 'package:beehive/helper/dialog_helper.dart';
-import 'package:beehive/helper/validations.dart';
-import 'package:beehive/locator.dart';
 import 'package:beehive/provider/continue_with_phone_provider.dart';
-import 'package:beehive/view/%20light_theme_signup_login/otp_verification_page.dart';
 import 'package:beehive/view/base_view.dart';
-import 'package:beehive/view/light_theme_signup_login/email_address_screen.dart';
 import 'package:beehive/widget/custom_circular_bar.dart';
 import 'package:beehive/widget/image_view.dart';
+import 'package:country_codes/country_codes.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,7 +23,12 @@ class ContinueWithPhone extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BaseView<ContinueWithPhoneProvider>(builder: (context, provider, _) {
+    CountryDetails details = CountryCodes.detailsForLocale();
+    Locale locale = CountryCodes.getDeviceLocale()!;
+    return BaseView<ContinueWithPhoneProvider>(onModelReady: (provider) {
+      provider.dialCode = details.dialCode ?? '+1';
+      provider.countryCode = locale.countryCode ?? 'US';
+    }, builder: (context, provider, _) {
       return GestureDetector(
         onTap: () {
           CommonWidgets.hideKeyboard(context);
@@ -124,14 +125,13 @@ class ContinueWithPhone extends StatelessWidget {
                                       DialogHelper.showMessage(context,
                                           "mobile_number_cant_be_empty".tr());
                                     } else {
-                                      if(isResetPassword!){
+                                      if (isResetPassword!) {
                                         provider.sendOtpForgotPhoneCrew(
                                             context, isResetPassword);
-                                      }else{
+                                      } else {
                                         provider.sendOtpSignupPhoneCrew(
                                             context, isResetPassword);
                                       }
-
                                     }
                                   }, shadowRequired: true)
                                 ],
@@ -166,9 +166,11 @@ Widget phoneNumberWidget(
         child: InternationalPhoneNumberInput(
           textFieldController: controller,
           onInputChanged: (value) {
-            provider.getDialCode(value.dialCode!);
+            provider.setDialCode(value);
           },
           formatInput: false,
+          initialValue: PhoneNumber(
+              isoCode: provider.countryCode, dialCode: provider.dialCode),
           selectorConfig: const SelectorConfig(
             selectorType: PhoneInputSelectorType.DIALOG,
           ),

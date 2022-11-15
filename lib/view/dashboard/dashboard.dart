@@ -932,7 +932,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                       )),
                   SizedBox(height: DimensionConstants.d17.h),
                   Text(provider.crewResponse!.userCheckin == null
-                          ? "You_have_not_checked_in_today".tr()
+                          ? "you_are_currently_not_checked".tr()
                           : "You have not checkout any project yet")
                       .regularText(
                           context, DimensionConstants.d14.sp, TextAlign.center,

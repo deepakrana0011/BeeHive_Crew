@@ -1,3 +1,9 @@
+import 'dart:convert';
+
+GetAllCrewOnProject getAllCrewOnProjectFromJson(String str) => GetAllCrewOnProject.fromJson(json.decode(str));
+
+String getAllCrewOnProjectToJson(GetAllCrewOnProject data) => json.encode(data.toJson());
+
 class GetAllCrewOnProject {
   GetAllCrewOnProject({
     this.success,
@@ -15,73 +21,77 @@ class GetAllCrewOnProject {
     totalCrews: json["totalCrews"],
   );
 
-
+  Map<String, dynamic> toJson() => {
+    "success": success,
+    "data": List<dynamic>.from(data!.map((x) => x.toJson())),
+    "totalCrews": totalCrews,
+  };
 }
 
 class Datum {
   Datum({
     this.id,
-    this.totalHours,
-  });
-
-  Id? id;
-  int? totalHours;
-
-  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
-    id: Id.fromJson(json["_id"]),
-    totalHours: json["totalHours"],
-  );
-
-}
-
-class Id {
-  Id({
-    this.id,
     this.email,
     this.name,
-    this.password,
-    this.status,
-    this.createdAt,
-    this.v,
+    this.title,
+    this.address,
     this.countryCode,
     this.phoneNumber,
-    this.address,
+    this.conCat,
     this.company,
-    this.position,
     this.profileImage,
+    this.position,
     this.speciality,
+    this.checkins,
+    this.totalHours,
   });
 
   String? id;
   String? email;
   String? name;
-  String? password;
-  int? status;
-  DateTime? createdAt;
-  int? v;
+  dynamic? title;
+  dynamic? address;
   String? countryCode;
   int? phoneNumber;
-  String? address;
-  String? company;
-  String? position;
-  String? profileImage;
-  String? speciality;
+  dynamic? conCat;
+  dynamic? company;
+  dynamic? profileImage;
+  dynamic? position;
+  dynamic? speciality;
+  List<dynamic>? checkins;
+  int? totalHours;
 
-  factory Id.fromJson(Map<String, dynamic> json) => Id(
+  factory Datum.fromJson(Map<String, dynamic> json) => Datum(
     id: json["_id"],
     email: json["email"],
     name: json["name"],
-    password: json["password"],
-    status: json["status"],
-    createdAt: DateTime.parse(json["createdAt"]),
-    v: json["__v"],
+    title: json["title"],
+    address: json["address"],
     countryCode: json["countryCode"],
     phoneNumber: json["phoneNumber"],
-    address: json["address"],
+    conCat: json["conCat"],
     company: json["company"],
-    position: json["position"],
     profileImage: json["profileImage"],
+    position: json["position"],
     speciality: json["speciality"],
+    checkins: List<dynamic>.from(json["checkins"].map((x) => x)),
+    totalHours: json["totalHours"],
   );
 
+  Map<String, dynamic> toJson() => {
+    "_id": id,
+    "email": email,
+    "name": name,
+    "title": title,
+    "address": address,
+    "countryCode": countryCode,
+    "phoneNumber": phoneNumber,
+    "conCat": conCat,
+    "company": company,
+    "profileImage": profileImage,
+    "position": position,
+    "speciality": speciality,
+    "checkins": List<dynamic>.from(checkins!.map((x) => x)),
+    "totalHours": totalHours,
+  };
 }

@@ -38,7 +38,7 @@ class BottomBarManager extends StatefulWidget {
 class _BottomBarManagerState extends State<BottomBarManager> {
   static final List<Widget> _widgetOptions = <Widget>[
     const DashBoardPageManager(),
-    ProjectsPageManager(),
+   const ProjectsPageManager(),
     const TimeSheetPageManager(),
     const ProfilePageManager(),
   ];

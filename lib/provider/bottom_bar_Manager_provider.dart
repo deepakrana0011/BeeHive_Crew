@@ -42,6 +42,7 @@ class BottomBarManagerProvider extends BaseProvider {
   String? projectId;
   bool createProject=false;
   bool archiveProject = false;
+  bool showCrewScreen =false;
 
   void updateDrawerData(String name, String? profilePic, String? companyLogo, String? color) {
     _companyLogo = companyLogo;
@@ -65,6 +66,12 @@ class BottomBarManagerProvider extends BaseProvider {
     notifyListeners();
   }
 
+  void openCrewScreen(int index) {
+    selectedIndex = index;
+    showCrewScreen=true;
+    updateNavigationValue(1);
+  }
+
   routeNavigation(BuildContext context, int index) {
     if (index == 0) {
       Navigator.pushNamed(context, RouteConstants.notificationsScreenManager);
@@ -75,7 +82,7 @@ class BottomBarManagerProvider extends BaseProvider {
 
   final List<Widget> widgetOptions = <Widget>[
     const DashBoardPageManager(),
-     ProjectsPageManager(),
+    const ProjectsPageManager(),
     const TimeSheetPageManager(),
     const ProfilePageManager(),
   ];
@@ -85,7 +92,7 @@ class BottomBarManagerProvider extends BaseProvider {
       return const DashBoardPageManager();
     } else if (index == 1) {
       if (fromBottomNav == 1) {
-        return  ProjectsPageManager();
+        return  const ProjectsPageManager();
       } else if (fromBottomNav == 2) {
         return ArchivedProjectDetailsManager(
             archivedOrProject: true, fromProject: false);
@@ -144,4 +151,6 @@ class BottomBarManagerProvider extends BaseProvider {
       DialogHelper.showMessage(context, "internet_connection".tr());
     }
   }
+
+
 }

@@ -26,7 +26,7 @@ class ProjectsPageManager extends StatefulWidget {
   static bool? isProjectCreated = false;
   static String? projectId = "";
 
-  ProjectsPageManager({Key? key}) : super(key: key);
+  const ProjectsPageManager({Key? key}) : super(key: key);
 
   @override
   State<ProjectsPageManager> createState() => _ProjectsPageManagerState();
@@ -118,6 +118,7 @@ class _ProjectsPageManagerState extends State<ProjectsPageManager>
                               false;
                             }
                           });
+
                         }),
                   ],
                 ),
@@ -316,7 +317,6 @@ class _ProjectsPageManagerState extends State<ProjectsPageManager>
           height: DimensionConstants.d20.h,
         ),
         Container(
-          height: DimensionConstants.d72.h,
           width: DimensionConstants.d343.w,
           decoration: BoxDecoration(
             color: ColorConstants.littleDarkGray,

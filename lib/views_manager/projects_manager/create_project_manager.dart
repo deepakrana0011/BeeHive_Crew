@@ -9,6 +9,7 @@ import 'package:beehive/view/base_view.dart';
 import 'package:beehive/views_manager/projects_manager/add_crew_page_manager.dart';
 import 'package:beehive/widget/custom_circular_bar.dart';
 import 'package:beehive/widget/image_view.dart';
+import 'package:country_codes/country_codes.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
@@ -203,8 +204,9 @@ class CreateProjectManagerState extends State<CreateProjectManager> {
           ),
           GestureDetector(
             onTap: () {
+              Locale locale = CountryCodes.getDeviceLocale()!;
               Navigator.pushNamed(context, RouteConstants.autoComplete,
-                      arguments: provider.currentCountryIsoCode ?? 'US')
+                      arguments: provider.currentCountryIsoCode ?? locale.countryCode)
                   .then((value) async {
                 if (value != null) {
                   Map<String, String> detail = value as Map<String, String>;
@@ -346,7 +348,7 @@ class CreateProjectManagerState extends State<CreateProjectManager> {
                               initialCameraPosition: CameraPosition(
                                 target: LatLng(
                                     provider.latitude, provider.longitude),
-                                zoom: 11.0,
+                                zoom: 14.5,
                               ),
                               onMapCreated: provider.onMapCreated,
                               onCameraMove: (CameraPosition cameraPosition) {
@@ -359,7 +361,7 @@ class CreateProjectManagerState extends State<CreateProjectManager> {
                                       provider.position!.target.longitude);
                                 }
                               },
-                              circles: circle,
+                             /* circles: circle,*/
                               gestureRecognizers: {
                                 Factory<OneSequenceGestureRecognizer>(
                                   () => EagerGestureRecognizer(),
@@ -429,23 +431,27 @@ class CreateProjectManagerState extends State<CreateProjectManager> {
               SizedBox(
                 width: DimensionConstants.d5.w,
               ),
-              Text(provider.locationRadius.toStringAsFixed(0)).boldText(
-                  context, DimensionConstants.d16.sp, TextAlign.left,
-                  color: ColorConstants.deepBlue),
+              Text(provider.locationRadius < 1000
+                      ? provider.locationRadius.toStringAsFixed(0)
+                      : provider
+                          .meterToKm(provider.locationRadius)
+                          .toStringAsFixed(2))
+                  .boldText(context, DimensionConstants.d16.sp, TextAlign.left,
+                      color: ColorConstants.deepBlue),
               SizedBox(
                 width: DimensionConstants.d5.w,
               ),
-              Text("m".tr()).boldText(
-                  context, DimensionConstants.d16.sp, TextAlign.left,
-                  color: ColorConstants.deepBlue),
+              Text(provider.locationRadius < 1000 ? "m".tr() : "km".tr())
+                  .boldText(context, DimensionConstants.d16.sp, TextAlign.left,
+                      color: ColorConstants.deepBlue),
             ],
           ),
         ),
         SizedBox(
           width: DimensionConstants.d470.w,
           child: SfSlider(
-            min: 25.0,
-            max: 100.0,
+            min: 10.0,
+            max: 2000.0,
             value: provider.locationRadius,
             activeColor: ColorConstants.primaryColor,
             inactiveColor: ColorConstants.grayF3F3F3,

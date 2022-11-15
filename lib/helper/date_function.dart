@@ -266,9 +266,8 @@ class DateFunctions {
     return dayName.toUpperCase();
   }
 
-
   static DateTime stringToDate(String dateString) {
-    DateTime date = DateFormat("hh:mm a").parse(dateString.toUpperCase());
+    DateTime date = DateFormat("hh:mm a").parse(dateString.toLowerCase());
     String _24HourFormat = DateFormat("HH:mm").format(date);
     DateTime _24HourFormatDate = DateFormat("HH:mm").parse(_24HourFormat);
     return _24HourFormatDate;
@@ -297,11 +296,11 @@ class DateFunctions {
     return date;
   }
 
-
-  static String stringToDateAddMintues(String dateString,int minutes) {
+  static String stringToDateAddMintues(String dateString, int minutes) {
     print("number of mintues added ${minutes}");
     print("dateString ${dateString}");
-    DateTime date = DateFormat("HH:mm").parse(dateString).add(Duration(minutes: minutes));
+    DateTime date =
+        DateFormat("HH:mm").parse(dateString).add(Duration(minutes: minutes));
     String _24HourFormat = DateFormat("HH:mm").format(date);
     return _24HourFormat;
   }
@@ -316,10 +315,8 @@ class DateFunctions {
     return date;
   }
 
-
-
   static String minutesToHourString(int minutes) {
-    var d = Duration(minutes:minutes);
+    var d = Duration(minutes: minutes);
     List<String> parts = d.toString().split(':');
     return '${parts[0].padLeft(2, '0')}:${parts[1].padLeft(2, '0')}';
   }
@@ -331,31 +328,46 @@ class DateFunctions {
     return _24HourFormat;
   }
 
-  static String calculateTotalHourTime(String checkInTime,String checkoutTime) {
+  static String calculateTotalHourTime(
+      String checkInTime, String checkoutTime) {
     var checkIntDateTime = DateFunctions.getDateTimeFromString(checkInTime);
     var checkOutTime = DateFunctions.getDateTimeFromString(checkoutTime);
-    var timeInMinutes =checkOutTime.difference(checkIntDateTime).inMinutes;
+    var timeInMinutes = checkOutTime.difference(checkIntDateTime).inMinutes;
     var totalSpendTime = DateFunctions.minutesToHourString(timeInMinutes);
-   return totalSpendTime;
+    return totalSpendTime;
   }
 
-  static List<String> monthsList = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-  static List<String> weekList = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+  static List<String> monthsList = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ];
+  static List<String> weekList = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday"
+  ];
 
   ///  "Monday, June 13 2021"
-  static String dateTimeWithWeek(DateTime dateTime){
-    int day = dateTime.day;
+  static String dateTimeWithWeek(DateTime dateTime) {
+    /* int day = dateTime.day;
     int mon = dateTime.month;
     int year = dateTime.year;
     int weekDay = dateTime.weekday;
-
-    return "${weekList[weekDay]}, ${monthsList[mon-1]} $day $year";
+    return "${weekList[weekDay]}, ${monthsList[mon-1]} $day $year";*/
+    return DateFormat("EEEE, MMMM dd yyyy").format(dateTime);
   }
-
-
-
-
-
-
-
 }

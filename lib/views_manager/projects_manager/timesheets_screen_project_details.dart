@@ -18,7 +18,7 @@ import '../../model/project_working_hour_detail.dart';
 
 class TimeSheetsScreenProjectDetails extends StatelessWidget {
   bool removeInterruption;
-  ProjectData projectData;
+  TimeSheetProjectData projectData;
   int index;
 
   TimeSheetsScreenProjectDetails(
@@ -570,7 +570,7 @@ class TimeSheetsScreenProjectDetails extends StatelessWidget {
   }
 
   Widget customStepper(TimeSheetScreenProjectDetailsProvider provider,
-      Checkins checkinsDetails) {
+      TimeSheetCheckins checkinsDetails) {
     List<Widget> widgetlist = [];
     List<ProjectWorkingHourDetail> projectDetailLIst =
         provider.getTimeForStepper(checkinsDetails);

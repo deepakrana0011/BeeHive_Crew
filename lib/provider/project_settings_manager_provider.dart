@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:beehive/locator.dart';
 import 'package:beehive/model/breakTimeModel.dart';
@@ -9,6 +10,7 @@ import 'package:beehive/views_manager/bottom_bar_manager/bottom_navigation_bar_m
 import 'package:beehive/views_manager/projects_manager/projects_page_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 import '../constants/route_constants.dart';
 import '../enum/enum.dart';
@@ -29,7 +31,15 @@ class ProjectSettingsManagerProvider extends BaseProvider {
   String? projectEndTime;
   String? dropDownValueFromTimeBreakTime;
   String? dropDownValueFromTimeBreakOnTime;
-  List<String> afterHoursRate = ["1.5X", "2X", "2.5X", "3X", "3.5X", "4X"];
+  List<String> afterHoursRate = [
+    "None",
+    "1.5X",
+    "2X",
+    "2.5X",
+    "3X",
+    "3.5X",
+    "4X"
+  ];
 
   DateTime? startingHour;
   DateTime? endingHours;
@@ -227,54 +237,62 @@ class ProjectSettingsManagerProvider extends BaseProvider {
     //   DialogHelper.showMessage(
     //       context, "Please choose round timesheet to nearest");
     // } else {
-      setState(ViewState.busy);
-      var list = weekDays.where((element) => element.selected);
-      createProjectRequest.workDays = list.map((e) => e.day!).toList();
-      createProjectRequest.hoursFrom = projectStartTime;
-      createProjectRequest.hoursTo = projectEndTime;
-      createProjectRequest.afterHoursRate = selectedAfterHourRate;
-      List<Break> breakList = [];
-      for (var element in breakWidgetList) {
-        Break value = Break();
-        value.startTime = element.breakStartTime;
-        value.interval = element.breakIntervalTime;
-        breakList.add(value);
+    setState(ViewState.busy);
+    var list = weekDays.where((element) => element.selected);
+    createProjectRequest.workDays = list.map((e) => e.day!).toList();
+    createProjectRequest.hoursFrom = projectStartTime;
+    createProjectRequest.hoursTo = projectEndTime;
+    createProjectRequest.afterHoursRate = selectedAfterHourRate;
+    createProjectRequest.color = Colors
+        .primaries[Random().nextInt(Colors.primaries.length)].value
+        .toRadixString(16)
+        .padLeft(8, '0');
+    List<Break> breakList = [];
+    for (var element in breakWidgetList) {
+      Break value = Break();
+      value.startTime = element.breakStartTime;
+      value.interval = element.breakIntervalTime;
+      breakList.add(value);
+    }
+    createProjectRequest.sameRate = '';
+    createProjectRequest.breakList = breakList;
+    createProjectRequest.roundTimesheets = selectedRoundSheetIndex == -1
+        ? ""
+        : roundTimeSheet[selectedRoundSheetIndex];
+    try {
+      var model = await api.createProject(context, createProjectRequest);
+      if (model.success!) {
+        createProjectRequest.clearCreateProjectRequest();
+        ProjectsPageManager.isProjectCreated = true;
+        ProjectsPageManager.projectId = model.data!.id!;
+        Navigator.popUntil(context, (route) {
+          if (route.settings.name == "bottomBarManager") {
+            return true;
+          } else {
+            return false;
+          }
+        });
+      } else {
+        DialogHelper.showMessage(context, model.message!);
       }
-      createProjectRequest.sameRate = '';
-      createProjectRequest.breakList = breakList;
-      createProjectRequest.roundTimesheets = selectedRoundSheetIndex == -1 ?  "" : roundTimeSheet[selectedRoundSheetIndex];
-      try {
-        var model = await api.createProject(context, createProjectRequest);
-        if (model.success!) {
-          createProjectRequest.clearCreateProjectRequest();
-          ProjectsPageManager.isProjectCreated = true;
-          ProjectsPageManager.projectId = model.data!.id!;
-          Navigator.popUntil(context, (route) {
-            if (route.settings.name == "bottomBarManager") {
-              return true;
-            } else {
-              return false;
-            }
-          });
-        } else {
-          DialogHelper.showMessage(context, model.message!);
-        }
-        setState(ViewState.idle);
-      } on FetchDataException catch (e) {
-        setState(ViewState.idle);
-        DialogHelper.showMessage(context, e.toString());
-      } on SocketException catch (e) {
-        setState(ViewState.idle);
-        DialogHelper.showMessage(context, "internet_connection".tr());
-      }
-   // }
+      setState(ViewState.idle);
+    } on FetchDataException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, e.toString());
+    } on SocketException catch (e) {
+      setState(ViewState.idle);
+      DialogHelper.showMessage(context, "internet_connection".tr());
+    }
+    // }
   }
 
-  Future<void> updateProjectByManager(BuildContext context, String projectId, update_project.UpdateProjectRequest updateProjectRequest) async {
+  Future<void> updateProjectByManager(BuildContext context, String projectId,
+      update_project.UpdateProjectRequest updateProjectRequest) async {
     setState(ViewState.busy);
-    try{
-      var model = await api.updateProjectByManager(context, projectId, updateProjectRequest);
-      if(model.success == true){
+    try {
+      var model = await api.updateProjectByManager(
+          context, projectId, updateProjectRequest);
+      if (model.success == true) {
         Navigator.of(context).pop();
       }
       setState(ViewState.idle);
@@ -288,14 +306,14 @@ class ProjectSettingsManagerProvider extends BaseProvider {
     // }
   }
 
-  Future<void> archiveProjectByManager(BuildContext context, String projectId) async {
+  Future<void> archiveProjectByManager(
+      BuildContext context, String projectId) async {
     setState(ViewState.busy);
-    try{
+    try {
       var model = await api.archiveProjectByManager(context, projectId);
-      if(model.success == true){
+      if (model.success == true) {
         Navigator.pushNamed(context, RouteConstants.bottomBarManager,
-            arguments: BottomBarManager(
-                fromBottomNav: 1, pageIndex: 1));
+            arguments: BottomBarManager(fromBottomNav: 1, pageIndex: 1));
       }
       setState(ViewState.idle);
     } on FetchDataException catch (e) {
@@ -307,14 +325,14 @@ class ProjectSettingsManagerProvider extends BaseProvider {
     }
   }
 
-  Future<void> deleteProjectByManager(BuildContext context, String projectId) async {
-      setState(ViewState.busy);
-    try{
+  Future<void> deleteProjectByManager(
+      BuildContext context, String projectId) async {
+    setState(ViewState.busy);
+    try {
       var model = await api.deleteProjectByManager(context, projectId);
-      if(model.success == true){
+      if (model.success == true) {
         Navigator.pushNamed(context, RouteConstants.bottomBarManager,
-            arguments: BottomBarManager(
-                fromBottomNav: 1, pageIndex: 1));
+            arguments: BottomBarManager(fromBottomNav: 1, pageIndex: 1));
       }
       setState(ViewState.idle);
     } on FetchDataException catch (e) {
