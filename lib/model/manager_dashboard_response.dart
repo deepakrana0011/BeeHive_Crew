@@ -74,6 +74,7 @@ class ProjectDetail {
     this.date,
     this.projectDatumId,
     this.projectName,
+    this.color,
     this.crewId,
     this.roundTimesheets,
     this.status,
@@ -83,6 +84,7 @@ class ProjectDetail {
   DateTime? date;
   String? projectDatumId;
   String? projectName;
+  String? color;
   List<String>? crewId;
   String? roundTimesheets;
   int? status;
@@ -92,6 +94,7 @@ class ProjectDetail {
         date: DateTime.parse(json["date"]),
         projectDatumId: json["id"],
         projectName: json["projectName"],
+    color: json["color"],
         crewId: List<String>.from(json["crewId"].map((x) => x)),
         roundTimesheets: json["roundTimesheets"],
         status: json["status"],

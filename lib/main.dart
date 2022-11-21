@@ -25,13 +25,12 @@ Future<void> main() async {
     DeviceOrientation.portraitDown,
   ]);
   setUpLocator();
+  int language = SharedPreference.prefs?.getInt(SharedPreference.language) ?? 0;
   await Future.delayed(const Duration(seconds: 2));
   runApp(EasyLocalization(
-    supportedLocales: const [
-      Locale('en'),
-    ],
+    supportedLocales: const [Locale('en'), Locale('ja')],
     path: 'assets/langs',
-    fallbackLocale: const Locale('en'),
+    startLocale: language == 0 ? const Locale('en') : const Locale('ja'),
     child: ChangeNotifierProvider<AppStateNotifier>(
       create: (context) => AppStateNotifier(),
       child: MyApp(),
@@ -45,6 +44,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Consumer<AppStateNotifier>(
       builder: (context, appState, _) {
         return ScreenUtilInit(
@@ -53,7 +53,14 @@ class MyApp extends StatelessWidget {
             splitScreenMode: true,
             builder: (context, child) {
               return MaterialApp(
+                builder: (context, child) {
+                  return MediaQuery(
+                    data: MediaQuery.of(context).copyWith(textScaleFactor: appState.fontSize),
+                    child: child!,
+                  );
+                },
                 theme: AppTheme.lightTheme,
+
                 darkTheme: AppTheme.darkTheme,
                 themeMode: SharedPreference.prefs!
                             .getBool(SharedPreference.THEME_STATUS) ==
@@ -78,7 +85,8 @@ class MyApp extends StatelessWidget {
                             .getBool(SharedPreference.INTRODUCTION_COMPLETE) ==
                         true
                     ? (SharedPreference.prefs!
-                                .getBool(SharedPreference.isLogin)??false
+                                .getBool(SharedPreference.isLogin) ??
+                            false
                         ? (SharedPreference.prefs!
                                     .getInt(SharedPreference.loginType) ==
                                 2

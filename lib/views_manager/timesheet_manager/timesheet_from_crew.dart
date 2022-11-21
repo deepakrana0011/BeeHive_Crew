@@ -61,7 +61,7 @@ class _TimeSheetFromCrewState extends State<TimeSheetFromCrew>
                   SizedBox(
                     height: DimensionConstants.d24.h,
                   ),
-                  userProfile(context, provider),
+                  userProfile(context, provider, widget.id),
                   SizedBox(
                     height: DimensionConstants.d16.h,
                   ),
@@ -80,15 +80,16 @@ class _TimeSheetFromCrewState extends State<TimeSheetFromCrew>
   }
 }
 
-Widget userProfile(BuildContext context, TimeSheetFromCrewProvider provider) {
+Widget userProfile(
+    BuildContext context, TimeSheetFromCrewProvider provider, String id) {
   return GestureDetector(
     onTap: () {
       Navigator.pushNamed(context, RouteConstants.crewPageProfileManager,
-          arguments: CrewProfilePageManager(
-              projectName:
-                  provider.crewResponse!.projectData![0].projectName ?? " ",
-              projectId: provider.crewResponse!.projectData![0].id ?? " ",
-              crewData: provider.crewResponse!.crew![0]));
+              arguments: CrewProfilePageManager(
+                  crewId: provider.crewResponse?.crew![0].id))
+          .then((value) {
+        provider.getCrewDataTimeSheet(context, id, showFullLoader: true);
+      });
     },
     child: Padding(
       padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d55.w),
@@ -141,9 +142,10 @@ Widget userProfile(BuildContext context, TimeSheetFromCrewProvider provider) {
                     SizedBox(
                       width: DimensionConstants.d3.w,
                     ),
-                    Text("\$20.00/hr").semiBoldText(
-                        context, DimensionConstants.d14.sp, TextAlign.left,
-                        color: ColorConstants.deepBlue),
+                    Text("\$ ${provider.crewResponse!.crew![0].projectRate}")
+                        .semiBoldText(
+                            context, DimensionConstants.d14.sp, TextAlign.left,
+                            color: ColorConstants.deepBlue),
                   ],
                 ),
                 SizedBox(
@@ -410,7 +412,7 @@ Widget weeklyTabBarContainerManager(BuildContext context,
                               color: ColorConstants.colorLightGrey,
                             ),
                             projectsHoursRow(context, ImageConstants.clockIcon,
-                                "${DateFunctions.minutesToHourString(provider.totalHours!) ?? "00:00"} ${"hours".tr()}")
+                                "${DateFunctions.minutesToHourString(provider.totalHours)} ${"hours".tr()}")
                           ],
                         ),
                       ),
@@ -508,7 +510,7 @@ Widget weeklyTabBarContainerManager(BuildContext context,
                                     context,
                                     DimensionConstants.d14.sp,
                                     TextAlign.center),
-                                Text("${DateFunctions.minutesToHourString(provider.totalHours!)} Hrs")
+                                Text("${DateFunctions.minutesToHourString(provider.totalHours)} Hrs")
                                     .semiBoldText(
                                         context,
                                         DimensionConstants.d14.sp,
@@ -519,7 +521,7 @@ Widget weeklyTabBarContainerManager(BuildContext context,
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Text("x \$${20}/hr").semiBoldText(
+                                const Text("x \$${20}/hr").semiBoldText(
                                     context,
                                     DimensionConstants.d14.sp,
                                     TextAlign.center),
@@ -636,7 +638,7 @@ Widget newToday(BuildContext context, TabController controller,
                               color: ColorConstants.colorLightGrey,
                             ),
                             projectsHoursRow(context, ImageConstants.clockIcon,
-                                "${DateFunctions.minutesToHourString(provider.totalHours!) ?? "00:00"} ${"hours".tr()}")
+                                "${DateFunctions.minutesToHourString(provider.totalHours)} ${"hours".tr()}")
                           ],
                         ),
                       ),
@@ -737,7 +739,7 @@ Widget newToday(BuildContext context, TabController controller,
                                     context,
                                     DimensionConstants.d14.sp,
                                     TextAlign.center),
-                                Text("${DateFunctions.minutesToHourString(provider.totalHours!)} Hrs")
+                                Text("${DateFunctions.minutesToHourString(provider.totalHours)} Hrs")
                                     .semiBoldText(
                                         context,
                                         DimensionConstants.d14.sp,
@@ -865,7 +867,7 @@ Widget biWeeklyTabBarContainerManager(BuildContext context,
                               color: ColorConstants.colorLightGrey,
                             ),
                             projectsHoursRow(context, ImageConstants.clockIcon,
-                                "${DateFunctions.minutesToHourString(provider.totalHours!) ?? "00:00"} ${"hours".tr()}")
+                                "${DateFunctions.minutesToHourString(provider.totalHours)} ${"hours".tr()}")
                           ],
                         ),
                       ),
@@ -966,7 +968,7 @@ Widget biWeeklyTabBarContainerManager(BuildContext context,
                                     context,
                                     DimensionConstants.d14.sp,
                                     TextAlign.center),
-                                Text("${DateFunctions.minutesToHourString(provider.totalHours!)} Hrs")
+                                Text("${DateFunctions.minutesToHourString(provider.totalHours)} Hrs")
                                     .semiBoldText(
                                         context,
                                         DimensionConstants.d14.sp,
@@ -1565,7 +1567,7 @@ Widget todayWidget(BuildContext context, TimeSheetFromCrewProvider provider) {
                     ImageConstants.clockIcon,
                     provider.crewResponse!.projectData![0].checkins!.isEmpty
                         ? "0 Hours"
-                        : "${DateFunctions.minutesToHourString(provider.totalHours!)} ${"hours".tr()}")
+                        : "${DateFunctions.minutesToHourString(provider.totalHours)} ${"hours".tr()}")
               ],
             ),
           ),
@@ -1627,7 +1629,7 @@ Widget todayWidget(BuildContext context, TimeSheetFromCrewProvider provider) {
                   children: [
                     Text("total_hours".tr()).semiBoldText(
                         context, DimensionConstants.d14.sp, TextAlign.center),
-                    Text("${DateFunctions.minutesToHourString(provider.totalHours!)} Hrs")
+                    Text("${DateFunctions.minutesToHourString(provider.totalHours)} Hrs")
                         .semiBoldText(context, DimensionConstants.d14.sp,
                             TextAlign.center)
                   ],
@@ -1678,50 +1680,28 @@ Widget projectDetailTile(
               width: DimensionConstants.d40.w,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: projectdata?.color,
+                color: projectdata?.color == null
+                    ? Colors.black
+                    : Color(int.parse("0x${projectdata?.color}")),
               ),
               child: Text(Validations.getInitials(
-                          string: projectdata?.projectName ?? "", limitTo: 2) ??
-                      " ")
+                      string: projectdata?.projectName ?? "", limitTo: 2))
                   .boldText(
                       context, DimensionConstants.d16.sp, TextAlign.center,
                       color: ColorConstants.colorWhite),
             ),
             SizedBox(width: DimensionConstants.d12.w),
-            Text(DateFunctions.dateTO12Hour(
-                        projectdata!.checkins![0].checkInTime!)
-                    .substring(
-                        0,
-                        DateFunctions.dateTO12Hour(
-                                    projectdata.checkins![0].checkInTime!)
-                                .length -
-                            1))
+            Text(DateFunctions.getTimeInHrs(
+                    projectdata!.checkins![0].checkInTime))
                 .regularText(
                     context, DimensionConstants.d13.sp, TextAlign.center),
             SizedBox(width: DimensionConstants.d10.w),
             customStepper(projectdata.checkins![0], provider),
             SizedBox(width: DimensionConstants.d10.w),
-            Text(DateFunctions.dateTO12Hour((projectdata.checkins![0].checkOutTime ==
-                                null ||
-                            projectdata.checkins![0].checkOutTime!
-                                .trim()
-                                .isEmpty)
-                        ? DateFunctions.dateFormatyyyyMMddHHmm(DateTime.now())
-                        : projectdata.checkins![0].checkOutTime!)
-                    .substring(
-                        0,
-                        DateFunctions.dateTO12Hour(
-                                    (projectdata.checkins![0].checkOutTime ==
-                                                null ||
-                                            projectdata.checkins![0].checkOutTime!
-                                                .trim()
-                                                .isEmpty)
-                                        ? DateFunctions.dateFormatyyyyMMddHHmm(
-                                            DateTime.now())
-                                        : projectdata.checkins![0].checkOutTime!)
-                                .length -
-                            1))
-                .regularText(context, DimensionConstants.d13.sp, TextAlign.center),
+            Text(DateFunctions.getTimeInHrs(
+                    projectdata.checkins![0].checkOutTime))
+                .regularText(
+                    context, DimensionConstants.d13.sp, TextAlign.center),
             SizedBox(width: DimensionConstants.d10.w),
             Text("${DateFunctions.calculateTotalHourTime(projectdata.checkins![0].checkInTime!, (projectdata.checkins![0].checkOutTime == null || projectdata.checkins![0].checkOutTime!.trim().isEmpty) ? DateFunctions.dateFormatyyyyMMddHHmm(DateTime.now()) : projectdata.checkins![0].checkOutTime!).replaceAll("-", " ")} h")
                 .boldText(context, DimensionConstants.d13.sp, TextAlign.center),

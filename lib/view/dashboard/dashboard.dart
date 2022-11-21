@@ -66,12 +66,17 @@ class _DashBoardPageState extends State<DashBoardPage>
 
   @override
   Widget build(BuildContext context) {
-    print(SharedPreference.prefs?.getString(SharedPreference.TOKEN));
+    debugPrint(SharedPreference.prefs?.getString(SharedPreference.TOKEN));
     return BaseView<DashboardProvider>(onModelReady: (provider) async {
       controller = TabController(length: 3, vsync: this);
       this.provider = provider;
       provider.startDate = DateFunctions.getCurrentDateMonthYear();
       provider.endDate = DateFunctions.getCurrentDateMonthYear();
+
+      await provider.determinePosition().then((value) async => {
+            await provider.getLngLt(context),
+          });
+
       await getDashBoardData(context);
       provider.startTimer(timer);
     }, builder: (context, provider, _) {
@@ -102,7 +107,12 @@ class _DashBoardPageState extends State<DashBoardPage>
                     SizedBox(height: DimensionConstants.d20.h),
                   ],
                 ),
-              if (provider.state == ViewState.busy) (const CustomCircularBar())
+              if (provider.state == ViewState.busy)
+                (const Center(
+                  child: CircularProgressIndicator(
+                    color: ColorConstants.primaryGradient2Color,
+                  ),
+                ))
             ],
           ));
     });
@@ -206,7 +216,8 @@ class _DashBoardPageState extends State<DashBoardPage>
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Hey " "${provider.crewResponse?.crew?.name ?? ""},")
+                        Text("Hey "
+                                "${provider.crewResponse?.crew?.name ?? ""},")
                             .boldText(context, DimensionConstants.d18.sp,
                                 TextAlign.left,
                                 maxLines: 1,
@@ -487,13 +498,15 @@ class _DashBoardPageState extends State<DashBoardPage>
                     child: DropdownButtonHideUnderline(
                       child: DropdownButtonFormField(
                         isExpanded: true,
-                        hint: Text("Select the project").regularText(context,
-                            DimensionConstants.d14.sp, TextAlign.center),
+                        hint: const Text("Select the project").regularText(
+                            context,
+                            DimensionConstants.d14.sp,
+                            TextAlign.center),
                         items: provider.allProjectCrewResponse!.activeProjects!
                             .toSet()
                             .map((ProjectDetail item) =>
                                 DropdownMenuItem<String>(
-                                  value: item.projectName,
+                                  value: item.id,
                                   onTap: () {
                                     provider.assignProjectId = item.id!;
                                   },
@@ -725,8 +738,9 @@ class _DashBoardPageState extends State<DashBoardPage>
                                             .format(context)
                                             .toUpperCase()
                                         : DateFunctions.twentyFourHourTO12Hour(
-                                            provider.initialTime
-                                                .format(context)).toUpperCase())
+                                                provider.initialTime
+                                                    .format(context))
+                                            .toUpperCase())
                                     .boldText(
                                         context,
                                         DimensionConstants.d16.sp,
@@ -1342,7 +1356,7 @@ class _DashBoardPageState extends State<DashBoardPage>
         ));
       }
     }
-    return Container(
+    return SizedBox(
         width: DimensionConstants.d75.w,
         child: Center(
             child: Flex(
@@ -1372,12 +1386,15 @@ class _DashBoardPageState extends State<DashBoardPage>
                 width: DimensionConstants.d40.w,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: checkInProjectDetail!.color,
+                  color: checkInProjectDetail?.assignProjectId?.color == null
+                      ? Colors.black
+                      : Color(int.parse(
+                          "0x${checkInProjectDetail?.assignProjectId?.color}")),
                 ),
                 child: Text(Validations.getInitials(
-                        string:
-                            checkInProjectDetail.assignProjectId!.projectName ??
-                                "",
+                        string: checkInProjectDetail!
+                                .assignProjectId!.projectName ??
+                            "",
                         limitTo: 2))
                     .boldText(
                         context, DimensionConstants.d16.sp, TextAlign.center,
@@ -1430,7 +1447,6 @@ class _DashBoardPageState extends State<DashBoardPage>
       if (value) {
         Future.delayed(const Duration(seconds: 1), () {
           var value = provider.timeFromLastCheckedIn;
-          print("value is${value}");
           stillCheckedInAlert(
               provider.crewResponse?.crew?.name ?? "",
               provider.crewResponse!.userCheckin!.assignProjectId?.address ??

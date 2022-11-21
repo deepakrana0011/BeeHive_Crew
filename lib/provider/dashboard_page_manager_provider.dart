@@ -118,25 +118,24 @@ class DashBoardPageManagerProvider extends BaseProvider {
         if (weeklyData.isEmpty) {
           List<CheckInProjectDetailManager> projectDetailList = [];
           projectDetailList.add(managerResponse!.projectData![i].checkins![k]);
-          var weekelyDataObject = WeekelyDataModelManager();
-          weekelyDataObject.date = dateTimeString;
-          weekelyDataObject.checkInDataList = projectDetailList;
-          weekelyDataObject.projectName =
-              managerResponse!.projectData![i].projectName ?? "";
-          weeklyData.add(weekelyDataObject);
+          var weeklyDataObject = WeekelyDataModelManager();
+          weeklyDataObject.date = dateTimeString;
+          weeklyDataObject.checkInDataList = projectDetailList;
+          weeklyDataObject.projectName = managerResponse!.projectData![i].projectName ?? "";
+          weeklyDataObject.color = managerResponse!.projectData![i].color ;
+          weeklyData.add(weeklyDataObject);
         } else {
           var index = weeklyData
               .indexWhere((element) => element.date == dateTimeString);
           if (index == -1) {
             List<CheckInProjectDetailManager> projectDetailList = [];
-            projectDetailList
-                .add(managerResponse!.projectData![i].checkins![k]);
-            var weekelyDataObject = WeekelyDataModelManager();
-            weekelyDataObject.date = dateTimeString;
-            weekelyDataObject.checkInDataList = projectDetailList;
-            weekelyDataObject.projectName =
-                managerResponse!.projectData![i].projectName ?? "";
-            weeklyData.add(weekelyDataObject);
+            projectDetailList.add(managerResponse!.projectData![i].checkins![k]);
+            var weeklyDataObject = WeekelyDataModelManager();
+            weeklyDataObject.date = dateTimeString;
+            weeklyDataObject.checkInDataList = projectDetailList;
+            weeklyDataObject.projectName = managerResponse!.projectData![i].projectName ?? "";
+            weeklyDataObject.color = managerResponse!.projectData![i].color ;
+            weeklyData.add(weeklyDataObject);
           } else {
             weeklyData[index]
                 .checkInDataList!

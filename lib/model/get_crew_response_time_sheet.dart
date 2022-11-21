@@ -42,6 +42,7 @@ class Crew {
       this.position,
       this.profileImage,
       this.speciality,
+      this.projectRate,
       this.certificationList});
 
   String? id;
@@ -58,40 +59,40 @@ class Crew {
   String? position;
   String? profileImage;
   String? speciality;
+  String? projectRate;
   List<Certs>? certificationList;
 
   factory Crew.fromJson(Map<String, dynamic> json) => Crew(
-      id: json["_id"],
-      email: json["email"],
-      name: json["name"],
-      password: json["password"],
-      status: json["status"],
-      createdAt: DateTime.parse(json["createdAt"]),
-      v: json["__v"],
-      countryCode: json["countryCode"],
-      phoneNumber: json["phoneNumber"],
-      address: json["address"],
-      company: json["company"],
-      position: json["position"],
-      profileImage: json["profileImage"],
-      speciality: json["speciality"],
-     // certificationList: json['certs'] != null? List<Certs>.from(json['certs'].map((x) => Certs.fromJson(x))): []
-
-
-
-
-  );
+        id: json["_id"],
+        email: json["email"],
+        name: json["name"],
+        password: json["password"],
+        status: json["status"],
+        createdAt: json["createdAt"] == null
+            ? null
+            : DateTime.parse(json["createdAt"]),
+        v: json["__v"],
+        countryCode: json["countryCode"],
+        phoneNumber: json["phoneNumber"],
+        address: json["address"],
+        company: json["company"],
+        position: json["position"],
+        profileImage: json["profileImage"],
+        speciality: json["speciality"],
+        projectRate: json["projectRate"],
+        // certificationList: json['certs'] != null? List<Certs>.from(json['certs'].map((x) => Certs.fromJson(x))): []
+      );
 }
 
 class ProjectDatum {
-  ProjectDatum({
-    this.id,
-    this.date,
-    this.projectDatumId,
-    this.projectName,
-    this.crewId,
-    this.checkins,
-  });
+  ProjectDatum(
+      {this.id,
+      this.date,
+      this.projectDatumId,
+      this.projectName,
+      this.crewId,
+      this.checkins,
+      this.color});
 
   String? id;
   DateTime? date;
@@ -99,14 +100,15 @@ class ProjectDatum {
   String? projectName;
   List<String>? crewId;
   List<Checkin>? checkins;
-  Color color = Colors.primaries[Random().nextInt(Colors.primaries.length)];
+  String? color;
 
   factory ProjectDatum.fromJson(Map<String, dynamic> json) => ProjectDatum(
         id: json["_id"],
         date: DateTime.parse(json["date"]),
         projectDatumId: json["id"],
         projectName: json["projectName"],
-        crewId: List<String>.from(json["crewId"].map((x) => x)),
+        color: json["color"],
+        crewId: json["crewId"]==null?[]:List<String>.from(json["crewId"].map((x) => x)),
         checkins: List<Checkin>.from(json["checkins"].map((x) => Checkin.fromJson(x))),
       );
 }
@@ -122,6 +124,7 @@ class Checkin {
     this.checkOutTime,
     this.date,
   });
+
   String? id;
   String? crewId;
   String? checkInTime;
@@ -131,14 +134,15 @@ class Checkin {
   String? checkOutTime;
   DateTime? date;
 
-
   factory Checkin.fromJson(Map<String, dynamic> json) => Checkin(
         id: json["_id"],
         crewId: json["crewId"],
         checkInTime: json["checkInTime"],
         hoursDiff: json["hoursDiff"],
-        checkinBreak: List<Break>.from(json["break"].map((x) => Break.fromJson(x))),
-        interuption: List<Interuption>.from(json["interuption"].map((x) => Interuption.fromJson(x))),
+        checkinBreak:
+            List<Break>.from(json["break"].map((x) => Break.fromJson(x))),
+        interuption: List<Interuption>.from(
+            json["interuption"].map((x) => Interuption.fromJson(x))),
         checkOutTime: json["checkOutTime"],
         date: DateTime.parse(json["date"]),
       );
@@ -194,6 +198,7 @@ class Certs {
   String? certName;
   String? certImage;
   List<PvtNotes>? privateNote;
+
   Certs(
       {this.crewId, this.privateNote, this.id, this.certImage, this.certName});
 
@@ -202,7 +207,8 @@ class Certs {
       crewId: json['crewId'],
       certName: json['certName'],
       certImage: json['certImage'],
-      privateNote: List<PvtNotes>.from(json['pvtNotes'].map((x) => PvtNotes.fromJson(x))));
+      privateNote: List<PvtNotes>.from(
+          json['pvtNotes'].map((x) => PvtNotes.fromJson(x))));
 }
 
 class PvtNotes {
@@ -213,6 +219,7 @@ class PvtNotes {
   String? note;
   int? status;
   String? sid;
+
   PvtNotes(
       {this.id,
       this.crewId,

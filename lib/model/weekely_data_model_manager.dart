@@ -1,4 +1,3 @@
-import 'package:beehive/model/crew_dashboard_response.dart';
 import 'package:beehive/model/manager_dashboard_response.dart';
 
 class WeekelyDataModelManager {
@@ -9,5 +8,6 @@ class WeekelyDataModelManager {
 
   String? date;
   String? projectName;
+  String? color;
   List<CheckInProjectDetailManager>? checkInDataList;
 }

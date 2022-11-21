@@ -1,3 +1,4 @@
+import 'package:beehive/helper/shared_prefs.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 class DateFunctions {
@@ -267,7 +268,14 @@ class DateFunctions {
   }
 
   static DateTime stringToDate(String dateString) {
-    DateTime date = DateFormat("hh:mm a").parse(dateString.toLowerCase());
+    String ampm = DateFormat("hh:mm a").format(DateTime.now()).split(" ")[1];
+    DateTime date;
+    if (ampm == "AM" || ampm == "PM") {
+      date = DateFormat("hh:mm a").parse(dateString.toUpperCase());
+    } else {
+      date = DateFormat("hh:mm a").parse(dateString.toLowerCase());
+    }
+
     String _24HourFormat = DateFormat("HH:mm").format(date);
     DateTime _24HourFormatDate = DateFormat("HH:mm").parse(_24HourFormat);
     return _24HourFormatDate;
@@ -337,37 +345,32 @@ class DateFunctions {
     return totalSpendTime;
   }
 
-  static List<String> monthsList = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December"
-  ];
-  static List<String> weekList = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
-    "Sunday"
-  ];
+  static String getTimeInHrs(String? dateString) {
+    if (dateString == null || dateString.trim().isEmpty) {
+      dateString = DateFunctions.dateFormatyyyyMMddHHmm(DateTime.now());
+    }
+    DateTime date = DateFormat("yyyy-MM-dd HH:mm").parse(dateString);
+    String time = '';
+    int type = SharedPreference.prefs?.getInt(SharedPreference.time) ?? 0;
+    if (type == 0) {
+      time = DateFormat("hh:mm a").format(date);
+      time = time.substring(0, time.length - 1).toLowerCase();
+    } else {
+      time = DateFormat("HH:mm").format(date);
+    }
+    return time;
+  }
 
-  ///  "Monday, June 13 2021"
+  //  "Monday, June 13 2021"
   static String dateTimeWithWeek(DateTime dateTime) {
-    /* int day = dateTime.day;
-    int mon = dateTime.month;
-    int year = dateTime.year;
-    int weekDay = dateTime.weekday;
-    return "${weekList[weekDay]}, ${monthsList[mon-1]} $day $year";*/
     return DateFormat("EEEE, MMMM dd yyyy").format(dateTime);
+  }
+
+  static String checkTimeIsNull(String? dateTime) {
+    if (dateTime == null || dateTime.trim().isEmpty) {
+      return dateFormatyyyyMMddHHmm(DateTime.now());
+    } else {
+      return dateTime;
+    }
   }
 }

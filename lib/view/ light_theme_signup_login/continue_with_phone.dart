@@ -177,6 +177,24 @@ Widget phoneNumberWidget(
           selectorTextStyle: TextStyle(
               fontSize: DimensionConstants.d20.sp, fontWeight: FontWeight.w700),
           inputDecoration: InputDecoration(
+              icon: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ImageView(
+                    path: ImageConstants.dropDownPhoneIcon,
+                    width: DimensionConstants.d9.w,
+                    height: DimensionConstants.d6.h,
+                  ),
+                  SizedBox(
+                    width: DimensionConstants.d6.w,
+                  ),
+                  Container(
+                    height: DimensionConstants.d25.h,
+                    width: DimensionConstants.d2.w,
+                    color: ColorConstants.grayD2D2D7,
+                  ),
+                ],
+              ),
               contentPadding: EdgeInsets.only(
                 bottom: DimensionConstants.d15.h,
                 right: DimensionConstants.d10.w,
@@ -189,7 +207,7 @@ Widget phoneNumberWidget(
               )),
         ),
       ),
-      Positioned(
+    /*  Positioned(
           top: DimensionConstants.d12.h,
           left: DimensionConstants.d100.w,
           child: Row(
@@ -208,7 +226,7 @@ Widget phoneNumberWidget(
                 color: ColorConstants.grayD2D2D7,
               ),
             ],
-          ))
+          ))*/
     ],
   );
 }

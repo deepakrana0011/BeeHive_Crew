@@ -24,7 +24,7 @@ class BottomBarManagerProvider extends BaseProvider {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   int selectedIndex = 0;
   int fromBottomNav = 1;
-
+  bool showScheduleScreen = false;
   String? _managerName;
   String? _managerProfilePic;
   String? _companyLogo;

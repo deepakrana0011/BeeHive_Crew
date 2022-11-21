@@ -116,8 +116,9 @@ class ProjectsCrewProvider extends BaseProvider {
   }
 
   List<String> projectNames = [];
+  List<String> projectColors = [];
   List<String> ids = [];
-  List<Color> projectColors = [];
+
 
   Future getProjectSchedulesManager(
     BuildContext context,
@@ -135,28 +136,18 @@ class ProjectsCrewProvider extends BaseProvider {
           }
         }
 
-        /// for colors
-        for (int i = 0; i < ids.toSet().toList().length; i++) {
-          projectColors
-              .add(Colors.primaries[Random().nextInt(Colors.primaries.length)]);
-          for (var element in projectNameList) {
-            element.projectName.any((ele) {
-              if (ele.sId == ids.toSet().toList()[i]) {
-                ele.color = projectColors[i];
-              }
-              return false;
-            });
-          }
-        }
 
-        /// for project name
+
+        /// for project name and color
         projectNames = [];
+        projectColors = [];
         List<String> idss = ids.toSet().toList();
         for (var element in projectNameList) {
           for (var projectElement in element.projectName) {
             for (var idElement in idss) {
               if (idElement == projectElement.sId) {
                 projectNames.add(projectElement.projectName.toString());
+                projectColors.add(projectElement.color??'');
                 idss.remove(idElement);
                 break;
               }
@@ -303,4 +294,6 @@ class ProjectsCrewProvider extends BaseProvider {
         return ["M", "Tu", "W", "Th", "F", "Sa", "Su"];
     }
   }
+
+
 }

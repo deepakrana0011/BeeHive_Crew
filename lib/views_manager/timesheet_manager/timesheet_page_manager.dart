@@ -1,4 +1,3 @@
-import 'dart:math';
 
 import 'package:beehive/constants/api_constants.dart';
 import 'package:beehive/constants/color_constants.dart';
@@ -184,7 +183,7 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager>
             ),
           ),
         ),
-        Container(
+        SizedBox(
           height: controller.index == 0
               ? DimensionConstants.d570.h
               : DimensionConstants.d580.h,
@@ -408,8 +407,7 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager>
                   children: [
                     projectHourRowManager(
                         context,
-                        Colors.primaries[
-                            Random().nextInt(Colors.primaries.length)],
+                        provider.projectDataResponse[index].color,
                         provider.projectDataResponse[index].projectName
                             .toString()
                             .substring(0, 2)
@@ -424,8 +422,7 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager>
                         index,
                         onTap: () {},
                         timeSheetOrSchedule: false,
-                        projectColor: Colors.primaries[
-                            Random().nextInt(Colors.primaries.length)],
+                        projectColor: provider.projectDataResponse[index].color,
                         projectData: provider.projectDataResponse[index],
                       );
                     }),
@@ -576,6 +573,10 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager>
                                               .weeklyData[index]
                                               .projectDataList![innerIndex]
                                               .projectName,
+                                          color:provider
+                                              .weeklyData[index]
+                                              .projectDataList![innerIndex]
+                                              .color,
                                           crewCount: provider
                                               .weeklyData[index]
                                               .projectDataList![innerIndex]
@@ -778,7 +779,7 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager>
       BuildContext context, TimeSheetManagerProvider provider, int listIndex,
       {List<TimeSheetCheckins>? checkInList,
       String? projectName = "",
-      String? crewCount}) {
+      String? crewCount,String? color}) {
     return GestureDetector(
       onTap: () {
         bottomSheetProjectDetailsTimeSheet(
@@ -786,8 +787,7 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager>
           listIndex,
           onTap: () {},
           timeSheetOrSchedule: false,
-          projectColor:
-              Colors.primaries[Random().nextInt(Colors.primaries.length)],
+          projectColor: color,
           projectData: provider.projectDataResponse[listIndex],
         );
       },
@@ -807,8 +807,7 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager>
                 width: DimensionConstants.d40.w,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: Colors
-                      .primaries[Random().nextInt(Colors.primaries.length)],
+                  color: color==null?Colors.black:Color(int.parse("0x$color")),
                 ),
                 child: Text(Validations.getInitials(
                         string: projectName, limitTo: 2))
@@ -863,7 +862,7 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager>
     );
   }
 
-  Widget projectHourRowManager(BuildContext context, Color color, String name,
+  Widget projectHourRowManager(BuildContext context, String? color, String name,
       String projectName, String totalCrew, String totalTime, Widget stepper,
       {VoidCallback? onTap}) {
     return GestureDetector(
@@ -885,7 +884,7 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager>
                   width: DimensionConstants.d40.w,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: color,
+                    color: color==null?Colors.black:Color(int.parse("0x$color")),
                   ),
                   child: Text(name).boldText(
                       context, DimensionConstants.d16.sp, TextAlign.center,
@@ -1099,10 +1098,9 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager>
               ),
               CommonWidgets.crewTabProject(
                   context,
-                  provider.getAllCrewResponse!.totalCrews.toString() ?? '',
+                  provider.getAllCrewResponse!.totalCrews.toString(),
                   provider.getTotalHoursOnProjects(
-                          provider.getAllCrewResponse!.data) ??
-                      ""),
+                          provider.getAllCrewResponse!.data)),
               SizedBox(
                 height: DimensionConstants.d14.h,
               ),
@@ -1128,7 +1126,7 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager>
               onTap: () {
                 Navigator.pushNamed(context, RouteConstants.timeSheetsFromCrew,
                     arguments: TimeSheetFromCrew(
-                      id: provider.getAllCrewResponse!.data![index]!.id!,
+                      id: provider.getAllCrewResponse!.data![index].id!,
                       totalHours:
                           provider.getAllCrewResponse!.data![index].totalHours!,
                     ));
@@ -1148,16 +1146,14 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager>
                         horizontal: DimensionConstants.d16.w),
                     child: Row(
                       children: <Widget>[
-                        provider.getAllCrewResponse!.data![index]!
-                                    .profileImage !=
+                        provider.getAllCrewResponse!.data![index].profileImage !=
                                 null
                             ? ClipRRect(
                                 borderRadius: BorderRadius.circular(
                                     DimensionConstants.d25.r),
                                 child: ImageView(
                                   path: ApiConstantsManager.BASEURL_IMAGE +
-                                      provider.getAllCrewResponse!.data![index]!
-                                          .profileImage!,
+                                      provider.getAllCrewResponse!.data![index].profileImage!,
                                   height: DimensionConstants.d50.h,
                                   width: DimensionConstants.d50.w,
                                   fit: BoxFit.cover,
@@ -1179,8 +1175,7 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager>
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Text(provider.getAllCrewResponse!.data![index]!
-                                          .name ??
+                              Text(provider.getAllCrewResponse!.data![index].name ??
                                       "")
                                   .boldText(context, DimensionConstants.d16.sp,
                                       TextAlign.left,
@@ -1191,7 +1186,7 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager>
                                 mainAxisAlignment: MainAxisAlignment.start,
                                 children: <Widget>[
                                   Text(provider.getAllCrewResponse!
-                                              .data![index]!.speciality ??
+                                              .data![index].speciality ??
                                           "")
                                       .regularText(
                                           context,
@@ -1215,8 +1210,7 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager>
                                   ),
                                   Text(
                                           "${DateFunctions.minutesToHourString(provider.getAllCrewResponse!.data![index].totalHours!)}"
-                                                  " Hours" ??
-                                              "")
+                                                  " Hours")
                                       .regularText(
                                           context,
                                           DimensionConstants.d14.sp,

@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/enum/enum.dart';
+import 'package:beehive/helper/shared_prefs.dart';
 import 'package:beehive/locator.dart';
 import 'package:beehive/model/create_project_request.dart';
 import 'package:beehive/provider/base_provider.dart';
@@ -85,11 +86,15 @@ class CreateProjectManagerProvider extends BaseProvider {
   }
 
   Future<void> getPickUpAddress(double lat, double long) async {
-    List<Placemark> placeMark = await placemarkFromCoordinates(lat, long);
-    pickUpLocation =
-        "${placeMark.first.street} ${placeMark.first.thoroughfare}${placeMark.first.subLocality}";
-    currentCountryIsoCode = placeMark.first.isoCountryCode.toString();
-    notifyListeners();
+    try {
+      List<Placemark> placeMark = await placemarkFromCoordinates(lat, long);
+      pickUpLocation =
+          "${placeMark.first.street} ${placeMark.first.thoroughfare}${placeMark.first.subLocality}";
+      currentCountryIsoCode = placeMark.first.isoCountryCode.toString();
+      notifyListeners();
+    } on Exception catch (e) {
+      print(e);
+    }
   }
 
   ///Update MapType of google Map
@@ -133,9 +138,18 @@ class CreateProjectManagerProvider extends BaseProvider {
     notifyListeners();
   }
 
-  double meterToKm(double value) {
-    double distanceInKiloMeters = value / 1000;
-    return double.parse((distanceInKiloMeters).toStringAsFixed(2));
+  String meterToKmOrMi(double value) {
+    double distanceInKMorMi = 0;
+    var metricType =
+        SharedPreference.prefs?.getInt(SharedPreference.units) ?? 0;
+    if (metricType == 0) {
+      distanceInKMorMi = value;
+    } else if (metricType == 1) {
+      distanceInKMorMi = value / 1000;
+    } else {
+      distanceInKMorMi = value / 1609.344;
+    }
+    return distanceInKMorMi.toStringAsFixed(metricType == 0 ? 0 : 2);
   }
 
   void navigateToNextPage(BuildContext context) {
@@ -161,5 +175,17 @@ class CreateProjectManagerProvider extends BaseProvider {
         target: LatLng(latitude, longitude),
       ),
     ));
+  }
+
+  String getMetricType() {
+    var metricType =
+        SharedPreference.prefs?.getInt(SharedPreference.units) ?? 0;
+    if (metricType == 0) {
+      return "m".tr();
+    } else if (metricType == 1) {
+      return "km".tr();
+    } else {
+      return "mi".tr();
+    }
   }
 }

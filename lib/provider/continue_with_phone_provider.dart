@@ -67,7 +67,7 @@ class ContinueWithPhoneProvider extends BaseProvider {
       if (model.success == true) {
         setState(ViewState.idle);
         var value = "$dialCode-${phoneNumberController.text}";
-        SharedPreference.prefs!.setString(SharedPreference.TOKEN, model!.token!);
+        SharedPreference.prefs!.setString(SharedPreference.TOKEN, model.token!);
         Navigator.pushNamed(context, RouteConstants.otpVerificationPage,
             arguments: {
               "value": value,

@@ -30,6 +30,7 @@ class AddCrewPageManagerProvider extends BaseProvider {
   }
 
   List<AddCrewData> crewList = [];
+  List<AddCrewData> crewTempList = [];
 
   List<AddCrewData> selectedCrew = [];
 
@@ -50,15 +51,15 @@ class AddCrewPageManagerProvider extends BaseProvider {
     notifyListeners();
   }
 
-  Future getCrewList(
-    BuildContext context
-  ) async {
+  Future getCrewList(BuildContext context) async {
     setState(ViewState.busy);
     try {
       var model = await api.getCrewList(context);
       if (model.success == true) {
         crewList.clear();
+        crewTempList.clear();
         crewList.addAll(model.data!);
+        crewTempList.addAll(model.data!);
         if (alreadyMemberList != null) {
           removeAlreadySelectedCrewMember(alreadyMemberList!);
         }
@@ -75,8 +76,7 @@ class AddCrewPageManagerProvider extends BaseProvider {
     }
   }
 
-  void removeAlreadySelectedCrewMember(
-      List<Crews> alreadyMemberList) {
+  void removeAlreadySelectedCrewMember(List<Crews> alreadyMemberList) {
     for (int i = 0; i < alreadyMemberList.length; i++) {
       crewList.removeWhere((element) => element.id == alreadyMemberList[i].sId);
     }
@@ -84,16 +84,44 @@ class AddCrewPageManagerProvider extends BaseProvider {
 
   void navigateToNextPage(BuildContext context) {
     if (selectedCrew.isNotEmpty) {
-      var isUpdating=alreadyMemberList!=null?true:false;
-      createProjectRequest.crewId = selectedCrew.map((e) => e.id.toString()).toList();
+      var isUpdating = alreadyMemberList != null ? true : false;
+      createProjectRequest.crewId =
+          selectedCrew.map((e) => e.id.toString()).toList();
       createProjectRequest.selectedCrewMember = selectedCrew;
       Navigator.pushNamed(context, RouteConstants.setRatesManager,
-          arguments: SetRatesPageManager(isUpdating: isUpdating,projectId: projectId,));
+          arguments: SetRatesPageManager(
+            isUpdating: isUpdating,
+            projectId: projectId,
+          ));
     } else {
       // DialogHelper.showMessage(
       //     context, "Please choose at least one crew member");
-      Navigator.pushNamed(context, RouteConstants.projectSettingsPageManager, arguments:
-          ProjectSettingsPageManager(fromProjectOrCreateProject: true));
+      Navigator.pushNamed(context, RouteConstants.projectSettingsPageManager,
+          arguments:
+              ProjectSettingsPageManager(fromProjectOrCreateProject: true));
     }
+  }
+
+  void onSearch(String text) {
+    crewList.clear();
+    if (text.isEmpty) {
+      crewList.addAll(crewTempList);
+      notifyListeners();
+      return;
+    }
+
+    for (var crew in crewTempList) {
+      var position = crew.position ?? '';
+      var company = crew.company ?? '';
+      var speciality = crew.speciality ?? '';
+      if (crew.name!.toLowerCase().contains(text) ||
+          position.toLowerCase().contains(text) ||
+          company.toLowerCase().contains(text) ||
+          speciality.toLowerCase().contains(text)) {
+        crewList.add(crew);
+      }
+    }
+
+    notifyListeners();
   }
 }

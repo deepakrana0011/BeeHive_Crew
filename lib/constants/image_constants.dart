@@ -97,6 +97,7 @@ class ImageConstants{
   static const String dropDownPhoneIcon = "assets/images/ic_drop_down_phone.svg";
   static const String passwordHideIcon = "assets/images/ic_eye_disabled.svg";
   static const String icMarker = "assets/images/ic_marker.png";
+  static const String icAvatar = "assets/images/ic_avatar.png";
 
 }
 //AIzaSyBxm2UszCS9kTUBdXlCnG5mJ6Sne57OF6c

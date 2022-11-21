@@ -16,6 +16,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../constants/color_constants.dart';
 import '../../constants/dimension_constants.dart';
 import '../../helper/decoration.dart';
+import '../../model/add_crew_response_manager.dart';
 import '../../widget/custom_switcher.dart';
 
 class SetRatesPageManager extends StatelessWidget {
@@ -33,7 +34,10 @@ class SetRatesPageManager extends StatelessWidget {
         provider.isUpdating = isUpdating;
         provider.myController = List.generate(
             provider.createProjectRequest.selectedCrewMember!.length,
-            (i) => TextEditingController());
+            (i) => TextEditingController(
+                text: provider.createProjectRequest.selectedCrewMember?[i]
+                        .projectRate ??
+                    ''));
       },
       builder: (context, provider, _) {
         return Scaffold(
@@ -228,7 +232,7 @@ Widget rateBoxWidget(
                     bottomLeft: Radius.circular(DimensionConstants.d8.r),
                     topLeft: Radius.circular(DimensionConstants.d8.r))),
             child: Center(
-              child: Text("\$").regularText(
+              child: const Text("\$").regularText(
                   context, DimensionConstants.d14.sp, TextAlign.left,
                   color: ColorConstants.colorBlack),
             ),
@@ -357,7 +361,7 @@ Widget perCrewRates(
                                   topLeft: Radius.circular(
                                       DimensionConstants.d8.r))),
                           child: Center(
-                            child: Text("\$").regularText(context,
+                            child: const Text("\$").regularText(context,
                                 DimensionConstants.d14.sp, TextAlign.left,
                                 color: isSameRate == false
                                     ? ColorConstants.colorBlack

@@ -1,6 +1,7 @@
 import 'package:beehive/constants/color_constants.dart';
 import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/constants/image_constants.dart';
+import 'package:beehive/constants/string_constants.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
 import 'package:beehive/locator.dart';
@@ -10,16 +11,32 @@ import 'package:beehive/widget/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
+import '../helper/shared_prefs.dart';
+import '../provider/app_state_provider.dart';
 
-class AppSettings extends StatelessWidget {
-  AppSettings({Key? key}) : super(key: key);
+class AppSettings extends StatefulWidget {
+  const AppSettings({Key? key}) : super(key: key);
 
+  @override
+  AppSettingsState createState() => AppSettingsState();
+}
+
+class AppSettingsState extends State<AppSettings> {
   AppSettingsProvider provider = locator<AppSettingsProvider>();
+  AppStateNotifier? appProvider;
+  int? loginType;
+
+  @override
+  void initState() {
+    appProvider = Provider.of<AppStateNotifier>(context, listen: false);
+    loginType = SharedPreference.prefs?.getInt(SharedPreference.loginType);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    var appBarHeight = AppBar().preferredSize.height;
-    var statusBarHeight = MediaQuery.of(context).viewPadding.top;
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
@@ -39,6 +56,7 @@ class AppSettings extends StatelessWidget {
       body: BaseView<AppSettingsProvider>(
         onModelReady: (provider) {
           this.provider = provider;
+          provider.getData();
         },
         builder: (context, provider, _) {
           return Column(
@@ -50,12 +68,26 @@ class AppSettings extends StatelessWidget {
                   height: 0.0,
                   thickness: 1.5),
               SizedBox(height: DimensionConstants.d16.h),
-              unitsRow(context, "units".tr(), "metric_km".tr()),
+              loginType == 1
+                  ? const SizedBox()
+                  : Column(
+                      children: [
+                        unitsRow(context, "units".tr()),
+                        SizedBox(height: DimensionConstants.d10.h),
+                      ],
+                    ),
+              timeRow(context, "time".tr()),
               SizedBox(height: DimensionConstants.d10.h),
-              timeRow(context, "time".tr(), "am_pm".tr()),
-              SizedBox(height: DimensionConstants.d10.h),
-              languageRow(context, "language".tr(), "english".tr()),
-              SizedBox(height: DimensionConstants.d24.h),
+              languageRow(context, "language".tr()),
+              loginType == 1
+                  ? const SizedBox()
+                  : Column(
+                      children: [
+                        SizedBox(height: DimensionConstants.d10.h),
+                        currencyRow(context, "currency".tr()),
+                      ],
+                    ),
+              SizedBox(height: DimensionConstants.d36.h),
               fontSize(context),
               SizedBox(height: DimensionConstants.d34.h),
               const Divider(
@@ -71,7 +103,7 @@ class AppSettings extends StatelessWidget {
     );
   }
 
-  Widget unitsRow(BuildContext context, String txt1, String txt2) {
+  Widget unitsRow(BuildContext context, String title) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
       child: Row(
@@ -79,11 +111,11 @@ class AppSettings extends StatelessWidget {
           Expanded(
               child: Align(
             alignment: Alignment.centerLeft,
-            child: Text(txt1)
+            child: Text(title)
                 .boldText(context, DimensionConstants.d16.sp, TextAlign.center),
           )),
           Container(
-            width: MediaQuery.of(context).size.width*.60,
+            width: MediaQuery.of(context).size.width * .60,
             height: DimensionConstants.d45.h,
             decoration: BoxDecoration(
                 color: ColorConstants.grayF2F2F2,
@@ -116,10 +148,11 @@ class AppSettings extends StatelessWidget {
                         value: vehicleName,
                         child: Padding(
                             padding:
-                            EdgeInsets.only(left: DimensionConstants.d10.w),
+                                EdgeInsets.only(left: DimensionConstants.d10.w),
                             child: Text(vehicleName.toString()).regularText(
                                 context,
-                                DimensionConstants.d14.sp, TextAlign.center)));
+                                DimensionConstants.d14.sp,
+                                TextAlign.center)));
                   }).toList(),
                   onChanged: (String? value) {
                     provider.onSelectedUnits(value);
@@ -133,7 +166,7 @@ class AppSettings extends StatelessWidget {
     );
   }
 
-  Widget timeRow(BuildContext context, String txt1, String txt2) {
+  Widget timeRow(BuildContext context, String title) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
       child: Row(
@@ -141,11 +174,11 @@ class AppSettings extends StatelessWidget {
           Expanded(
               child: Align(
             alignment: Alignment.centerLeft,
-            child: Text(txt1)
+            child: Text(title)
                 .boldText(context, DimensionConstants.d16.sp, TextAlign.center),
           )),
           Container(
-            width: MediaQuery.of(context).size.width*.60,
+            width: MediaQuery.of(context).size.width * .60,
             height: DimensionConstants.d45.h,
             decoration: BoxDecoration(
                 color: ColorConstants.grayF2F2F2,
@@ -178,10 +211,11 @@ class AppSettings extends StatelessWidget {
                         value: vehicleName,
                         child: Padding(
                             padding:
-                            EdgeInsets.only(left: DimensionConstants.d10.w),
+                                EdgeInsets.only(left: DimensionConstants.d10.w),
                             child: Text(vehicleName.toString()).regularText(
                                 context,
-                                DimensionConstants.d14.sp, TextAlign.center)));
+                                DimensionConstants.d14.sp,
+                                TextAlign.center)));
                   }).toList(),
                   onChanged: (String? value) {
                     provider.onSelectedTime(value);
@@ -195,7 +229,7 @@ class AppSettings extends StatelessWidget {
     );
   }
 
-  Widget languageRow(BuildContext context, String txt1, String txt2) {
+  Widget languageRow(BuildContext context, String title) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
       child: Row(
@@ -203,11 +237,11 @@ class AppSettings extends StatelessWidget {
           Expanded(
               child: Align(
             alignment: Alignment.centerLeft,
-            child: Text(txt1)
+            child: Text(title)
                 .boldText(context, DimensionConstants.d16.sp, TextAlign.center),
           )),
           Container(
-            width: MediaQuery.of(context).size.width*.60,
+            width: MediaQuery.of(context).size.width * .60,
             height: DimensionConstants.d45.h,
             decoration: BoxDecoration(
                 color: ColorConstants.grayF2F2F2,
@@ -240,13 +274,77 @@ class AppSettings extends StatelessWidget {
                         value: vehicleName,
                         child: Padding(
                             padding:
-                            EdgeInsets.only(left: DimensionConstants.d10.w),
+                                EdgeInsets.only(left: DimensionConstants.d10.w),
                             child: Text(vehicleName.toString()).regularText(
                                 context,
-                                DimensionConstants.d14.sp, TextAlign.center)));
+                                DimensionConstants.d14.sp,
+                                TextAlign.center)));
                   }).toList(),
                   onChanged: (String? value) {
-                   provider.onSelectedLanguage(value);
+                    provider.onSelectedLanguage(value);
+                  },
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget currencyRow(BuildContext context, String title) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
+      child: Row(
+        children: [
+          Expanded(
+              child: Align(
+            alignment: Alignment.centerLeft,
+            child: Text(title)
+                .boldText(context, DimensionConstants.d16.sp, TextAlign.center),
+          )),
+          Container(
+            width: MediaQuery.of(context).size.width * .60,
+            height: DimensionConstants.d45.h,
+            decoration: BoxDecoration(
+                color: ColorConstants.grayF2F2F2,
+                borderRadius: BorderRadius.circular(DimensionConstants.d8.r)),
+            child: DropdownButtonHideUnderline(
+              child: ButtonTheme(
+                child: DropdownButton(
+                  menuMaxHeight: DimensionConstants.d400.h,
+                  icon: Padding(
+                    padding: EdgeInsets.only(
+                        right: DimensionConstants.d16.w,
+                        top: DimensionConstants.d10.h,
+                        bottom: DimensionConstants.d10.h),
+                    child: ImageView(
+                      path: ImageConstants.downArrowIcon,
+                      width: DimensionConstants.d16.w,
+                      height: DimensionConstants.d16.h,
+                    ),
+                  ),
+                  hint: Padding(
+                    padding: EdgeInsets.only(left: DimensionConstants.d10.w),
+                    child: const Text("None").regularText(
+                        context, DimensionConstants.d14.sp, TextAlign.center),
+                  ),
+                  //  menuMaxHeight: DimensionConstants.d414.h,
+                  value: provider.currency,
+                  items: provider.currencyList.map((vehicleName) {
+                    return DropdownMenuItem(
+                        onTap: () {},
+                        value: vehicleName,
+                        child: Padding(
+                            padding:
+                                EdgeInsets.only(left: DimensionConstants.d10.w),
+                            child: Text(vehicleName.toString()).regularText(
+                                context,
+                                DimensionConstants.d14.sp,
+                                TextAlign.center)));
+                  }).toList(),
+                  onChanged: (String? value) {
+                    provider.onSelectedCurrency(value);
                   },
                 ),
               ),
@@ -277,8 +375,16 @@ class AppSettings extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return GestureDetector(
                     onTap: () {
-                      provider.selectedIndex = index;
-                      provider.updateLoadingStatus(true);
+                      provider.selectedFontIndex = index;
+                      SharedPreference.prefs
+                          ?.setInt(SharedPreference.fontSize, index);
+                      if (provider.selectedFontIndex == 0) {
+                        appProvider?.fontSize = 0.8;
+                      } else if (provider.selectedFontIndex == 1) {
+                        appProvider?.fontSize = 0.9;
+                      } else if (provider.selectedFontIndex == 2) {
+                        appProvider?.fontSize = 1.0;
+                      }
                     },
                     child: Container(
                       margin: EdgeInsets.only(right: DimensionConstants.d8.w),
@@ -290,7 +396,7 @@ class AppSettings extends StatelessWidget {
                               ? ColorConstants.colorBlack
                               : ColorConstants.colorLightGreyF2,
                           border: Border.all(
-                              color: provider.selectedIndex == index
+                              color: provider.selectedFontIndex == index
                                   ? (Theme.of(context).brightness ==
                                           Brightness.dark
                                       ? ColorConstants.primaryColor
@@ -312,41 +418,100 @@ class AppSettings extends StatelessWidget {
 
   Widget aboutAndSaveBtnColumn(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: DimensionConstants.d16.w,
-      ),
+      padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text("about".tr())
               .boldText(context, DimensionConstants.d16.sp, TextAlign.center),
           SizedBox(height: DimensionConstants.d22.h),
-          policyTermsDataRow(context, "privacy_policy".tr()),
+          policyRow(context, "privacy_policy".tr()),
           SizedBox(height: DimensionConstants.d22.h),
-          policyTermsDataRow(context, "terms_of_use".tr()),
+          termOfUseRow(context, "terms_of_use".tr()),
           SizedBox(height: DimensionConstants.d22.h),
-          policyTermsDataRow(context, "data_and_app_tracking".tr()),
+          dataAppTracking(context, "data_and_app_tracking".tr()),
           const Spacer(),
-          CommonWidgets.commonButton(context, "save", shadowRequired: true),
+          CommonWidgets.commonButton(context, "save".tr(), shadowRequired: true,
+              onBtnTap: () {
+            provider.saveData().then((value) {
+              if (provider.language == 'English') {
+                context.setLocale(const Locale('en'));
+              } else if (provider.language == 'Japanese') {
+                context.setLocale(const Locale('ja'));
+              }
+
+              Navigator.pop(context);
+            });
+          }),
           SizedBox(
-            height: DimensionConstants.d88.h,
+            height: DimensionConstants.d65.h,
           )
         ],
       ),
     );
   }
 
-  Widget policyTermsDataRow(BuildContext context, String title) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(title)
-            .regularText(context, DimensionConstants.d14.sp, TextAlign.center),
-        ImageView(
-          path: ImageConstants.forwardArrowIcon,
-          color: Theme.of(context).iconTheme.color,
-        )
-      ],
+  Widget policyRow(BuildContext context, String title) {
+    return GestureDetector(
+      onTap: () async {
+        await launchUrl(Uri.parse(StringConstants.privacyPolicyUrl));
+      },
+      child: Container(
+        color: Colors.transparent,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(title).regularText(
+                context, DimensionConstants.d14.sp, TextAlign.center),
+            ImageView(
+              path: ImageConstants.forwardArrowIcon,
+              color: Theme.of(context).iconTheme.color,
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget termOfUseRow(BuildContext context, String title) {
+    return GestureDetector(
+      onTap: () async {
+        await launchUrl(Uri.parse(StringConstants.termOfUSe));
+      },
+      child: Container(
+        color: Colors.transparent,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(title).regularText(
+                context, DimensionConstants.d14.sp, TextAlign.center),
+            ImageView(
+              path: ImageConstants.forwardArrowIcon,
+              color: Theme.of(context).iconTheme.color,
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget dataAppTracking(BuildContext context, String title) {
+    return GestureDetector(
+      onTap: () async {},
+      child: Container(
+        color: Colors.transparent,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(title).regularText(
+                context, DimensionConstants.d14.sp, TextAlign.center),
+            ImageView(
+              path: ImageConstants.forwardArrowIcon,
+              color: Theme.of(context).iconTheme.color,
+            )
+          ],
+        ),
+      ),
     );
   }
 }

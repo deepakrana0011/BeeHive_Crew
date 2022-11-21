@@ -61,15 +61,16 @@ class TimeSheetsScreenProjectDetails extends StatelessWidget {
                     EdgeInsets.symmetric(horizontal: DimensionConstants.d36.w),
                 child: Row(
                   children: [
-                    crewProfileContainer(context,
-                        projectData.checkins[index].crew![0].name ?? " ",
-                        path:
-                            projectData.checkins[index].crew![0].profileImage ==
-                                    null
-                                ? ''
-                                : ApiConstantsManager.BASEURL_IMAGE +
-                                    projectData.checkins[index].crew![0]
-                                        .profileImage!),
+                    crewProfileContainer(
+                      context,
+                      projectData.checkins[index].crew![0].name ?? " ",
+                      path: projectData.checkins[index].crew![0].profileImage ==
+                              null
+                          ? ''
+                          : ApiConstantsManager.BASEURL_IMAGE +
+                              projectData
+                                  .checkins[index].crew![0].profileImage!,
+                    ),
                     SizedBox(width: DimensionConstants.d14.w),
                     Container(
                       width: DimensionConstants.d1.w,
@@ -77,11 +78,10 @@ class TimeSheetsScreenProjectDetails extends StatelessWidget {
                       color: ColorConstants.colorGrayE8,
                     ),
                     SizedBox(width: DimensionConstants.d24.w),
-                    crewProfileContainer(
-                        context, projectData.projectName! ?? " ",
+                    crewProfileContainer(context, projectData.projectName!,
                         shortName:
                             projectData.projectName.toString().substring(0, 2),
-                        color: ColorConstants.colorGreen),
+                        color: projectData.color),
                   ],
                 ),
               ),
@@ -95,9 +95,9 @@ class TimeSheetsScreenProjectDetails extends StatelessWidget {
                   .boldText(
                       context, DimensionConstants.d18.sp, TextAlign.center),
               SizedBox(height: DimensionConstants.d16.h),
-              hoursContainer(context),
+              hoursContainer(context, provider),
               SizedBox(height: DimensionConstants.d26.h),
-              checkInCHeckOutStepper(context, provider),
+              Expanded(child: checkInCHeckOutStepper(context, provider)),
               SizedBox(height: DimensionConstants.d26.h),
               GestureDetector(
                 onTap: () {
@@ -148,7 +148,8 @@ class TimeSheetsScreenProjectDetails extends StatelessWidget {
                     ),
                   ),
                 ),
-              )
+              ),
+              SizedBox(height: DimensionConstants.d63.h),
             ],
           ),
         );
@@ -157,7 +158,7 @@ class TimeSheetsScreenProjectDetails extends StatelessWidget {
   }
 
   Widget crewProfileContainer(BuildContext context, String name,
-      {String? path, String? shortName, Color? color}) {
+      {String? path, String? shortName, String? color}) {
     return Row(
       children: [
         path != null
@@ -180,7 +181,9 @@ class TimeSheetsScreenProjectDetails extends StatelessWidget {
                 width: DimensionConstants.d40.w,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  color: color,
+                  color: color == null
+                      ? Colors.black
+                      : Color(int.parse('0x$color')),
                 ),
                 child: Text(shortName!).boldText(
                     context, DimensionConstants.d16.sp, TextAlign.center,
@@ -199,6 +202,7 @@ class TimeSheetsScreenProjectDetails extends StatelessWidget {
 
   Widget hoursContainer(
     BuildContext context,
+    TimeSheetScreenProjectDetailsProvider provider,
   ) {
     return Container(
       alignment: Alignment.center,
@@ -211,7 +215,7 @@ class TimeSheetsScreenProjectDetails extends StatelessWidget {
         ),
       ),
       child: Text(
-              "${DateFunctions.minutesToHourString(projectData.checkins[index].hoursDiff!)}"
+              "${DateFunctions.minutesToHourString(provider.getTotalMinutes(projectData.checkins[index].checkInTime, projectData.checkins[index].checkOutTime) ?? 0)}"
               " Hrs")
           .boldText(context, DimensionConstants.d16.sp, TextAlign.center,
               color: ColorConstants.colorBlack),
@@ -235,42 +239,9 @@ class TimeSheetsScreenProjectDetails extends StatelessWidget {
                             .length -
                         1),
             CrossAxisAlignment.center),
-        customStepper(provider, projectData.checkins[index]),
-        /*stepperLine(DimensionConstants.d35.h, ColorConstants.colorGreen),
-        // SizedBox(height: DimensionConstants.d2.h),
-        removeInterruption == false
-            ? stepperLineWithRowTextButton(
-                context,
-                DimensionConstants.d25.h,
-                "15m ${"interruption".tr()}",
-                "10:15a - 10:30a",
-                ColorConstants.colorLightRed,
-                ColorConstants.colorGray2)
-            : Container(),*/
-        // SizedBox(height: DimensionConstants.d2.h),
-        // stepperLine(DimensionConstants.d80.h, ColorConstants.colorGreen),
-        // SizedBox(height: DimensionConstants.d4.h),
-        // stepperLineWithRowText(
-        //     context,
-        //     DimensionConstants.d42.h,
-        //     "break".tr(),
-        //     "12:00p - 12:30p",
-        //     ColorConstants.colorGray,
-        //     ColorConstants.colorGray2),
-        // SizedBox(height: DimensionConstants.d4.h),
-        /*stepperLine(
-            removeInterruption == false
-                ? DimensionConstants.d240.h
-                : DimensionConstants.d280.h,
-            ColorConstants.colorGreen),*/
-        // stepperLineWithRowText(
-        //     context,
-        //     DimensionConstants.d6.h,
-        //     "5m ${"interruption".tr()}",
-        //     "3:15p - 3:20p",
-        //     ColorConstants.colorLightRed,
-        //     ColorConstants.colorGray2),
-        // stepperLine(DimensionConstants.d60.h, ColorConstants.colorGreen),
+        Expanded(
+            child:
+                customStepper(provider, projectData.checkins[index], context)),
         checkOutButton(
             context,
             "check_out".tr(),
@@ -368,7 +339,7 @@ class TimeSheetsScreenProjectDetails extends StatelessWidget {
           ),
         ),
         SizedBox(
-          width: DimensionConstants.d15.w,
+          width: DimensionConstants.d10.w,
         ),
         Padding(
           padding: EdgeInsets.only(right: DimensionConstants.d73.w),
@@ -439,7 +410,7 @@ class TimeSheetsScreenProjectDetails extends StatelessWidget {
           ),
         ),
         SizedBox(
-          width: DimensionConstants.d15.w,
+          width: DimensionConstants.d10.w,
         ),
         Padding(
           padding: EdgeInsets.only(right: DimensionConstants.d73.w),
@@ -509,7 +480,7 @@ class TimeSheetsScreenProjectDetails extends StatelessWidget {
     );
   }
 
-  Widget stepperLineWithRowTextButton(BuildContext context, double height,
+/*  Widget stepperLineWithRowTextButton(BuildContext context, double height,
       String txt, String time, Color color, Color timeColor) {
     return Row(
       // crossAxisAlignment: alignment,
@@ -567,47 +538,181 @@ class TimeSheetsScreenProjectDetails extends StatelessWidget {
         )
       ],
     );
-  }
+  }*/
 
   Widget customStepper(TimeSheetScreenProjectDetailsProvider provider,
-      TimeSheetCheckins checkinsDetails) {
-    List<Widget> widgetlist = [];
+      TimeSheetCheckins checkinsDetails, BuildContext context) {
+    List<Widget> widgetList = [];
     List<ProjectWorkingHourDetail> projectDetailLIst =
         provider.getTimeForStepper(checkinsDetails);
     for (int i = 0; i < projectDetailLIst.length; i++) {
       if (projectDetailLIst[i].type == 1) {
-        widgetlist.add(Flexible(
-          flex: projectDetailLIst[i].timeInterval!,
-          child: Container(
-            // height: DimensionConstants.d4.h,
-            color: ColorConstants.colorGreen,
+        widgetList.add(
+          Flexible(
+            flex: projectDetailLIst[i].timeInterval!,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const SizedBox(
+                  width: 120,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 12.0, right: 12.0),
+                  child: Container(
+                    width: DimensionConstants.d8.w,
+                    color: ColorConstants.colorGreen,
+                  ),
+                ),
+                const SizedBox(
+                  width: 120,
+                ),
+              ],
+            ),
           ),
-        ));
+        );
       } else if (projectDetailLIst[i].type == 2) {
-        widgetlist.add(Flexible(
-          flex: projectDetailLIst[i].timeInterval!,
-          child: Container(
-            // height: DimensionConstants.d50.h,
-            color: ColorConstants.colorGray,
+        widgetList.add(
+          Flexible(
+            flex: projectDetailLIst[i].timeInterval!,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 180,
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: Wrap(
+                      direction: Axis.vertical,
+                      children: [
+                        Text('break'.tr()).regularText(context,
+                            DimensionConstants.d14.sp, TextAlign.center,
+                            color: ColorConstants.darkGray4F4F4F),
+                        Text('10:15a - 10:30a').regularText(context,
+                            DimensionConstants.d14.sp, TextAlign.center,
+                            color: ColorConstants.darkGray4F4F4F),
+                      ],
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 12.0, right: 12.0),
+                  child: Container(
+                    width: DimensionConstants.d8.w,
+                    color: ColorConstants.colorGray,
+                  ),
+                ),
+                SizedBox(
+                  width: 120,
+                  child: Wrap(
+                    direction: Axis.vertical,
+                    children: [
+                      GestureDetector(
+                        onTap: () {},
+                        child: Container(
+                            height: DimensionConstants.d32.h,
+                            width: DimensionConstants.d93.w,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                    DimensionConstants.d4.w),
+                                border: Border.all(
+                                    color: ColorConstants.grayD2D2D2,
+                                    width: DimensionConstants.d1.w)),
+                            child: Center(
+                              child: Text("change".tr()).boldText(context,
+                                  DimensionConstants.d14.sp, TextAlign.center,
+                                  color: ColorConstants.redColorEB5757),
+                            )),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
-        ));
+        );
       } else {
-        widgetlist.add(Flexible(
-          flex: projectDetailLIst[i].timeInterval!,
-          child: Container(
-            // height: DimensionConstants.d15.h,
-            color: ColorConstants.colorLightRed,
+        widgetList.add(
+          Flexible(
+            flex: projectDetailLIst[i].timeInterval!,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(
+                  width: 120,
+                  child: Align(
+                    alignment: Alignment.topRight,
+                    child: Wrap(
+                      direction: Axis.vertical,
+                      crossAxisAlignment: WrapCrossAlignment.end,
+                      children: [
+                        Text('15 m ${'interruption'.tr()}').regularText(
+                            context, DimensionConstants.d14.sp, TextAlign.end,
+                            color: ColorConstants.redColorEB5757),
+                        Text('${DateFunctions.getTime(DateFunctions.getDateTimeFromString(projectDetailLIst[i].startTime!)).toLowerCase()} - ${DateFunctions.getTime(DateFunctions.getDateTimeFromString(projectDetailLIst[i].endTime!)).toLowerCase()}')
+                            .regularText(context, DimensionConstants.d13.sp,
+                                TextAlign.end,
+                                color: ColorConstants.darkGray4F4F4F),
+                      ],
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 12.0, right: 12.0),
+                  child: Container(
+                    width: DimensionConstants.d8.w,
+                    color: ColorConstants.colorLightRed,
+                  ),
+                ),
+                SizedBox(
+                  width: 120,
+                  child: Wrap(
+                    direction: Axis.vertical,
+                    children: [
+                      GestureDetector(
+                        onTap: () {},
+                        child: Container(
+                            height: DimensionConstants.d32.h,
+                            width: DimensionConstants.d93.w,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                    DimensionConstants.d4.w),
+                                border: Border.all(
+                                    color: ColorConstants.grayD2D2D2,
+                                    width: DimensionConstants.d1.w)),
+                            child: Center(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  const ImageView(
+                                    path: ImageConstants.ignoreIcon,
+                                  ),
+                                  SizedBox(
+                                    width: DimensionConstants.d8.w,
+                                  ),
+                                  Text("ignore".tr()).boldText(
+                                      context,
+                                      DimensionConstants.d14.sp,
+                                      TextAlign.center,
+                                      color: ColorConstants.redColorEB5757)
+                                ],
+                              ),
+                            )),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
-        ));
+        );
       }
     }
-    return Container(
-        width: DimensionConstants.d8.w,
-        height: DimensionConstants.d330.h,
+    return SizedBox(
         child: Center(
-            child: Flex(
-          direction: Axis.vertical,
-          children: widgetlist,
-        )));
+      child: Flex(
+        direction: Axis.vertical,
+        children: widgetList,
+      ),
+    ));
   }
 }

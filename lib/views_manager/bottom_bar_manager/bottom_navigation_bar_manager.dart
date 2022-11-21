@@ -5,23 +5,18 @@ import 'package:beehive/constants/image_constants.dart';
 import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/shared_prefs.dart';
-import 'package:beehive/locator.dart';
 import 'package:beehive/provider/bottom_bar_Manager_provider.dart';
-import 'package:beehive/provider/dashboard_page_manager_provider.dart';
 import 'package:beehive/view/base_view.dart';
 import 'package:beehive/views_manager/billing_information/billing_information_page_manager.dart';
 import 'package:beehive/views_manager/dashboard_manager/drawer_manager.dart';
 import 'package:beehive/views_manager/profile_manager/profile_page_manager.dart';
 import 'package:beehive/views_manager/projects_manager/projects_page_manager.dart';
 import 'package:beehive/views_manager/timesheet_manager/timesheet_page_manager.dart';
-import 'package:beehive/widget/custom_class.dart';
 import 'package:beehive/widget/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:provider/provider.dart';
 import '../../constants/route_constants.dart';
-import '../../provider/app_state_provider.dart';
 import '../dashboard_manager/dashboard_manager.dart';
 
 class BottomBarManager extends StatefulWidget {
@@ -38,7 +33,7 @@ class BottomBarManager extends StatefulWidget {
 class _BottomBarManagerState extends State<BottomBarManager> {
   static final List<Widget> _widgetOptions = <Widget>[
     const DashBoardPageManager(),
-   const ProjectsPageManager(),
+    const ProjectsPageManager(),
     const TimeSheetPageManager(),
     const ProfilePageManager(),
   ];
@@ -73,7 +68,6 @@ class _BottomBarManagerState extends State<BottomBarManager> {
               key: provider.scaffoldKey,
               drawer: DrawerManager(
                 provider: provider,
-
               ) /*drawer(
                 context,
                 provider,
@@ -95,7 +89,7 @@ class _BottomBarManagerState extends State<BottomBarManager> {
                                         provider.selectedIndex,
                                       )
                                     : ApiConstantsCrew.BASE_URL_IMAGE +
-                                    provider.companyLogo,
+                                        provider.companyLogo,
                                 height: DimensionConstants.d48.h,
                                 width: DimensionConstants.d48.w,
                                 fit: BoxFit.cover,
@@ -288,7 +282,10 @@ class _BottomBarManagerState extends State<BottomBarManager> {
   }
 }
 
-Widget drawer(BuildContext context, BottomBarManagerProvider provider,) {
+Widget drawer(
+  BuildContext context,
+  BottomBarManagerProvider provider,
+) {
   return Stack(
     children: [
       SizedBox(
@@ -304,12 +301,13 @@ Widget drawer(BuildContext context, BottomBarManagerProvider provider,) {
                       alignment: Alignment.centerRight,
                       height: DimensionConstants.d300.h,
                       width: DimensionConstants.d314.w,
-                      decoration:  BoxDecoration(
+                      decoration: BoxDecoration(
                         color: Color(int.parse(provider.drawerBgColor)),
-                         /* gradient: LinearGradient(colors: [
+                        /* gradient: LinearGradient(colors: [
                         ColorConstants.blueGradient1Color,
                         ColorConstants.blueGradient2Color
-                      ])*/),
+                      ])*/
+                      ),
                       child: Stack(
                         children: [
                           Padding(
@@ -332,7 +330,9 @@ Widget drawer(BuildContext context, BottomBarManagerProvider provider,) {
                                   borderRadius: BorderRadius.circular(
                                       DimensionConstants.d55.r),
                                   child: ImageView(
-                                    path: ApiConstantsManager.BASEURL_IMAGE+ provider.managerProfilePic, /*SharedPreference.prefs!.getString(SharedPreference.USER_PROFILE) == null? ImageConstants.drawerProfile : ApiConstantsCrew.BASE_URL_IMAGE + SharedPreference.prefs!.getString(SharedPreference.USER_PROFILE)!,*/
+                                    path: ApiConstantsManager.BASEURL_IMAGE +
+                                        provider.managerProfilePic,
+                                    /*SharedPreference.prefs!.getString(SharedPreference.USER_PROFILE) == null? ImageConstants.drawerProfile : ApiConstantsCrew.BASE_URL_IMAGE + SharedPreference.prefs!.getString(SharedPreference.USER_PROFILE)!,*/
                                     height: DimensionConstants.d110.h,
                                     width: DimensionConstants.d110.w,
                                     fit: BoxFit.cover,
@@ -346,7 +346,9 @@ Widget drawer(BuildContext context, BottomBarManagerProvider provider,) {
                                     borderRadius: BorderRadius.circular(
                                         DimensionConstants.d27.r),
                                     child: ImageView(
-                                      path:ApiConstantsManager.BASEURL_IMAGE+ provider.companyLogo, /*SharedPreference.prefs!.getString(SharedPreference.USER_LOGO) == null? ImageConstants.brandIocn : ApiConstantsCrew.BASE_URL_IMAGE + SharedPreference.prefs!.getString(SharedPreference.USER_LOGO)!*/
+                                      path: ApiConstantsManager.BASEURL_IMAGE +
+                                          provider.companyLogo,
+                                      /*SharedPreference.prefs!.getString(SharedPreference.USER_LOGO) == null? ImageConstants.brandIocn : ApiConstantsCrew.BASE_URL_IMAGE + SharedPreference.prefs!.getString(SharedPreference.USER_LOGO)!*/
                                       height: DimensionConstants.d55.h,
                                       width: DimensionConstants.d55.w,
                                       fit: BoxFit.cover,
@@ -442,6 +444,7 @@ Widget drawer(BuildContext context, BottomBarManagerProvider provider,) {
                       onTap: () {
                         Navigator.pop(context);
                         provider.onItemTapped(1);
+
                       },
                       child: drawerHeadingsRow(
                         context,
@@ -473,7 +476,7 @@ Widget drawer(BuildContext context, BottomBarManagerProvider provider,) {
                         onTap: () {
                           Navigator.pop(context);
                           Navigator.pushNamed(
-                              context, RouteConstants.appSettingsManager);
+                              context, RouteConstants.appSettings);
                         },
                         child: drawerHeadingsRow(context,
                             ImageConstants.settingsIcon, "app_settings".tr())),
@@ -501,7 +504,8 @@ Widget drawer(BuildContext context, BottomBarManagerProvider provider,) {
                             context, RouteConstants.selectToContinueScreen);*/
 
                         Navigator.of(context).pushNamedAndRemoveUntil(
-                            RouteConstants.selectToContinueScreen, (Route<dynamic> route) => false);
+                            RouteConstants.selectToContinueScreen,
+                            (Route<dynamic> route) => false);
                       },
                       child: drawerHeadingsRow(
                           context, ImageConstants.logoutIcon, "logout".tr()),

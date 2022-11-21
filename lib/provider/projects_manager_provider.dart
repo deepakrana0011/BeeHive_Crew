@@ -116,8 +116,9 @@ class ProjectsManagerProvider extends BaseProvider {
 
 
   List<String> projectNames = [];
+  List<String> projectColors = [];
   List<String> ids = [];
-  List<Color> projectColors = [];
+
 
   Future getProjectSchedulesManager(BuildContext context,) async {
     setState(ViewState.busy);
@@ -133,39 +134,14 @@ class ProjectsManagerProvider extends BaseProvider {
           }
         }
 
-        // for(var element in projectNameList) {
-        //   element.projectName.any((ele) {
-        //     for(int i = 0 ; i < ids.toSet().toList().length ; i++) {
-        //       if(ele.sId == ids.toSet().toList()[i]){
-        //         ele.color = colors2[i];
-        //         print(ele.color);
-        //       }
-        //      // return false;
-        //     }
-        //     return false;
-        //   });
-        // }
-
-        /// for colors
-          for(int i = 0 ; i < ids.toSet().toList().length ; i++) {
-            projectColors.add(Colors.primaries[Random().nextInt(Colors.primaries.length)]);
-            for(var element in projectNameList) {
-            element.projectName.any((ele) {
-              if(ele.sId == ids.toSet().toList()[i]){
-                ele.color = projectColors[i];
-              }
-              return false;
-            });
-          }
-        }
-
-        /// for project name
+        /// for project name and color
         List<String> idss = ids.toSet().toList();
         for(var element in projectNameList){
           for(var projectElement in element.projectName){
             for(var idElement in idss){
               if(idElement == projectElement.sId){
                 projectNames.add(projectElement.projectName.toString());
+                projectColors.add(projectElement.color??'');
                 idss.remove(idElement);
                 break;
               }

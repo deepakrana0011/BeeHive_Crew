@@ -66,7 +66,7 @@ class ShowCertificateCrewPage extends StatelessWidget {
                   width: double.infinity,
                   height: DimensionConstants.d500.h,
                   child:CachedNetworkImage(
-                    imageUrl: ApiConstantsCrew.BASE_URL_IMAGE + certificationData!.certImage.toString(),
+                    imageUrl: ApiConstantsCrew.BASE_URL_IMAGE + certificationData.certImage.toString(),
                     fit: BoxFit.cover,
                     placeholder: (context, _) {
                       return const Center(

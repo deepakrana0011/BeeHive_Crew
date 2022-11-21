@@ -21,6 +21,7 @@ import 'package:collection/collection.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 
 import '../enum/enum.dart';
 import '../helper/dialog_helper.dart';
@@ -30,7 +31,6 @@ import '../services/fetch_data_expection.dart';
 class DashboardProvider extends BaseProvider {
   String projectName = '';
   bool checkedInNoProjects = false;
-
   int? hours;
   String? hourOut;
   String? minOut;
@@ -38,7 +38,8 @@ class DashboardProvider extends BaseProvider {
   String? min;
   String? time;
   TimeOfDay? selectedTime;
-
+  double latitude = 0.0;
+  double longitude = 0.0;
   int hour = 0;
   int minutes = 0;
   int timerHour = 0;
@@ -85,7 +86,8 @@ class DashboardProvider extends BaseProvider {
   ) async {
     setState(ViewState.busy);
     try {
-      var model = await api.dashBoardApi(context, startDate!, endDate!);
+      var model = await api.dashBoardApi(
+          context, startDate!, endDate!, latitude, longitude);
       if (model.success ?? false) {
         crewResponse = model;
         managerProvider!.updateDrawerData(
@@ -118,12 +120,14 @@ class DashboardProvider extends BaseProvider {
       var endTime = DateFunctions.getDateTimeFromString(element.checkOutTime!);
       var minutes = endTime.difference(startTime).inMinutes;
       totalMinutes = totalMinutes + minutes;
-      totalPrice = totalPrice + double.parse(element.assignProjectId!.projectRate![0].price.toString());
+      totalPrice = totalPrice +
+          double.parse(
+              element.assignProjectId!.projectRate![0].price.toString());
     }
     totalHours = DateFunctions.minutesToHourString(totalMinutes);
     double averagePricePerHour = totalPrice / crewResponse!.allCheckin!.length;
     averageRatePerHour = averagePricePerHour.toStringAsFixed(2);
-    double hoursForEarning=totalMinutes/60;
+    double hoursForEarning = totalMinutes / 60;
     var value = hoursForEarning * averagePricePerHour;
     totalEarnings = value.toStringAsFixed(2);
     customNotify();
@@ -159,13 +163,16 @@ class DashboardProvider extends BaseProvider {
     }
   }
 
-  Future checkInApi(context, BottomBarProvider bottomBarProvider,
+  Future checkInApi(
+    context,
+    BottomBarProvider bottomBarProvider,
   ) async {
     setState(ViewState.busy);
     try {
       var checkInTime = DateFunctions.dateFormatyyyyMMddHHmm(DateTime.now());
       var model = await api.checkInApi(context, assignProjectId, checkInTime);
-      SharedPreference.prefs!.setString(SharedPreference.popUpShowTime, checkInTime);
+      SharedPreference.prefs!
+          .setString(SharedPreference.popUpShowTime, checkInTime);
       assignProjectId = "";
       if (model.success == true) {
         getDashBoardData(context, bottomBarProvider);
@@ -182,19 +189,22 @@ class DashboardProvider extends BaseProvider {
     }
   }
 
-  Future checkOutApi(context, BottomBarProvider bottomBarProvider,) async {
+  Future checkOutApi(
+    context,
+    BottomBarProvider bottomBarProvider,
+  ) async {
     setState(ViewState.busy);
     try {
       /*var checkoutTime = DateFunctions.tweleveTo24Hour(selectedCheckOutTime!.toUpperCase());
       var value = crewResponse!.userCheckin!.checkInTime!.substring(0, 10);
       var checkInTimeFinal = value + " " + selectedCheckOutTime!;
       var checkOutTime = DateFunctions.dateFormatyyyyMMddHHmm(DateTime.parse(checkInTimeFinal));*/
-
       //var checkoutTime = DateFunctions.tweleveTo24Hour(selectedCheckOutTime!.toUpperCase());
       var value = crewResponse!.userCheckin!.checkInTime!.substring(0, 10);
       var checkInTimeFinal = value + " " + selectedCheckOutTime!;
 
-      var model = await api.checkOutApiCrew(context, crewResponse!.userCheckin!.id!, checkInTimeFinal);
+      var model = await api.checkOutApiCrew(
+          context, crewResponse!.userCheckin!.id!, checkInTimeFinal);
       if (model.success == true) {
         setState(ViewState.idle);
         getDashBoardData(context, bottomBarProvider);
@@ -268,7 +278,7 @@ class DashboardProvider extends BaseProvider {
       } else {
         initialTime = pickedTime;
         selectedCheckOutTime = initialTime.to24hours();
-         //DateFunctions.twentyFourHourTO12Hour(initialTime.format(context));
+        //DateFunctions.twentyFourHourTO12Hour(initialTime.format(context));
       }
     }
   }
@@ -363,13 +373,27 @@ class DashboardProvider extends BaseProvider {
     List<Interruption> timeString = [];
     List<ProjectWorkingHourDetail> projectWorkingHourList = [];
     for (int i = 0; i < detail.allCheckinBreak!.length; i++) {
-      if (detail.allCheckinBreak![i].startTime?.toLowerCase() != "Any Time".toLowerCase()) {
-        var breakStartTimeString = detail.checkInTime!.substring(0, 10) + " " + detail.allCheckinBreak![i].startTime!.replaceAll("PM", "").replaceAll("AM", "");
-        var breakEndTimeString = detail.checkInTime!.substring(0, 10) + " " + DateFunctions.stringToDateAddMintues(detail.allCheckinBreak![i].startTime!, int.parse(detail.allCheckinBreak![i].interval!.substring(0, 2)));
-        var breakStartTimeDate = DateFunctions.getDateTimeFromString(breakStartTimeString);
-        var checkInDate = DateFunctions.getDateTimeFromString(detail.checkInTime!);
-        var checkOutDate = DateFunctions.getDateTimeFromString(detail.checkOutTime!);
-        if (breakStartTimeDate.isAfter(checkInDate) && breakStartTimeDate.isBefore(checkOutDate)) {
+      if (detail.allCheckinBreak![i].startTime?.toLowerCase() !=
+          "Any Time".toLowerCase()) {
+        var breakStartTimeString = detail.checkInTime!.substring(0, 10) +
+            " " +
+            detail.allCheckinBreak![i].startTime!
+                .replaceAll("PM", "")
+                .replaceAll("AM", "");
+        var breakEndTimeString = detail.checkInTime!.substring(0, 10) +
+            " " +
+            DateFunctions.stringToDateAddMintues(
+                detail.allCheckinBreak![i].startTime!,
+                int.parse(
+                    detail.allCheckinBreak![i].interval!.substring(0, 2)));
+        var breakStartTimeDate =
+            DateFunctions.getDateTimeFromString(breakStartTimeString);
+        var checkInDate =
+            DateFunctions.getDateTimeFromString(detail.checkInTime!);
+        var checkOutDate =
+            DateFunctions.getDateTimeFromString(detail.checkOutTime!);
+        if (breakStartTimeDate.isAfter(checkInDate) &&
+            breakStartTimeDate.isBefore(checkOutDate)) {
           var interruption = Interruption();
           interruption.startTime = breakStartTimeString;
           interruption.endTime = breakEndTimeString;
@@ -387,8 +411,6 @@ class DashboardProvider extends BaseProvider {
       var bValue = DateFunctions.getDateTimeFromString(b.startTime!);
       return aValue.compareTo(bValue);
     });
-
-
 
     if (timeString.isNotEmpty) {
       var checkInDate =
@@ -461,7 +483,43 @@ class DashboardProvider extends BaseProvider {
       } else {
         return false;
       }
-    } else
+    } else {
       return false;
+    }
+  }
+
+  Future getLngLt(context) async {
+    var value = await Geolocator.getCurrentPosition();
+    latitude = value.latitude;
+    longitude = value.longitude;
+  }
+
+
+
+
+  Future<Position> determinePosition() async {
+    setState(ViewState.busy);
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    return await Geolocator.getCurrentPosition();
   }
 }

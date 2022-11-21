@@ -20,6 +20,7 @@ class ApiConstantsManager {
   static const String allProjectsManager = "allProjects";
   static const String singleProjectDetail = "singleProjectDetails";
   static const String updateCrewMember = "updateCrewOnProject";
+  static const String updateCrewRate = "updateCrewRate";
 
   static const String MANAGER_LOGIN = "managerlogin";
   static const String CREATE_PROJECT = "newproject";
@@ -56,6 +57,8 @@ class ApiConstantsManager {
   static const String projectTimeSheet = "projectTimesheet";
   static const String getAllCrewOnProjects = "allCrewOnProjects";
   static const String getCrewDataOnTimeSheet = "crewCheckInCheckOuts/";
+  static const String crewProfile = "crewProfile/";
+
 
 }
 
@@ -98,5 +101,6 @@ class ApiConstantsCrew {
   static const String crewNewPassword = "crewNewPassword";
   static const String crewLeavingProject = "crewLeavingProject/";
   static const String archiveProjects = "archiveProjects";
+  static const String crewTimesheet = "crewTimesheet";
 
 }

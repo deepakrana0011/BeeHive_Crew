@@ -45,6 +45,7 @@ class CheckInProjectDetailCrew {
     this.createdAt,
     this.v,
     this.checkOutTime,
+
   });
 
   String? id;
@@ -58,7 +59,7 @@ class CheckInProjectDetailCrew {
   DateTime? createdAt;
   int? v;
   String? checkOutTime;
-  Color color = Colors.primaries[Random().nextInt(Colors.primaries.length)];
+
 
   factory CheckInProjectDetailCrew.fromJson(Map<String, dynamic> json) =>
       CheckInProjectDetailCrew(
@@ -81,6 +82,7 @@ class CheckInProjectDetailCrew {
         checkOutTime: json["checkOutTime"].toString().trim().isNotEmpty
             ? json["checkOutTime"]
             : null,
+
       );
 }
 
@@ -200,6 +202,7 @@ class AllCheckinAssignProjectId {
     this.status,
     this.createdAt,
     this.v,
+    this.color
   });
 
   String? id;
@@ -221,6 +224,7 @@ class AllCheckinAssignProjectId {
   int? status;
   DateTime? createdAt;
   int? v;
+  String? color ;
 
   factory AllCheckinAssignProjectId.fromJson(Map<String, dynamic> json) =>
       AllCheckinAssignProjectId(
@@ -250,5 +254,6 @@ class AllCheckinAssignProjectId {
                 json["projectRate"].map((x) => ProjectRate.fromJson(x)))
             : [],
         status: json["status"] ?? null,
+        color: json["color"]
       );
 }

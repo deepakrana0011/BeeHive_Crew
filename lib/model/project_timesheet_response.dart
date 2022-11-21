@@ -36,7 +36,7 @@ class ProjectTimeSheetResponse {
     data['activeProject'] = this.activeProject;
     data['crewmembers'] = this.crewmembers;
     if (this.projectData != null) {
-      data['projectData'] = this.projectData!.map((v) => v.toJson()).toList();
+      data['projectData'] = this.projectData.map((v) => v.toJson()).toList();
     }
     return data;
   }
@@ -96,6 +96,7 @@ class TimeSheetProjectData {
   String? date;
   String? id;
   String? projectName;
+  String? color;
   List<String>? crewId;
   int? status;
   List<TimeSheetCheckins> checkins = [];
@@ -105,6 +106,7 @@ class TimeSheetProjectData {
         this.date,
         this.id,
         this.projectName,
+        this.color,
         this.crewId,
         this.status});
 
@@ -113,6 +115,7 @@ class TimeSheetProjectData {
     date = json['date'];
     id = json['id'];
     projectName = json['projectName'];
+    color = json['color'];
     crewId = json['crewId'].cast<String>();
     status = json['status'];
     if (json['checkins'] != null) {
@@ -132,7 +135,7 @@ class TimeSheetProjectData {
     data['crewId'] = this.crewId;
     data['status'] = this.status;
     if (this.checkins != null) {
-      data['checkins'] = this.checkins!.map((v) => v.toJson()).toList();
+      data['checkins'] = this.checkins.map((v) => v.toJson()).toList();
     }
     return data;
   }

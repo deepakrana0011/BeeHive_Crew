@@ -19,7 +19,7 @@ bottomSheetProjectDetailsTimeSheet(
   required VoidCallback onTap,
   required bool timeSheetOrSchedule,
   TimeSheetProjectData? projectData,
-  Color? projectColor,
+  String? projectColor,
   List<Crew>? crews,
 }) {
   showModalBottomSheet(
@@ -89,7 +89,7 @@ Widget projectInformation(
           height: DimensionConstants.d40.h,
           width: DimensionConstants.d40.w,
           decoration: BoxDecoration(
-            color: color,
+            color: color==null?Colors.black:Color(int.parse("0x$color")),
             borderRadius: BorderRadius.circular(DimensionConstants.d20.r),
           ),
           child: Center(
@@ -229,8 +229,7 @@ Widget userProfile(BuildContext context, int index, bool timeSheetOrSchedule,
                           width: DimensionConstants.d6.w,
                         ),
                         Text("${DateFunctions.minutesToHourString(projectData.checkins[index].totalMinutes)}"
-                                    " Hours" ??
-                                "")
+                                    " Hours")
                             .regularText(context, DimensionConstants.d14.sp,
                                 TextAlign.left,
                                 color: ColorConstants.deepBlue),

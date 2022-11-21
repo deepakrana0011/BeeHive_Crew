@@ -1,6 +1,5 @@
 // ignore_for_file: must_be_immutable
 
-
 import 'package:beehive/constants/color_constants.dart';
 import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/constants/image_constants.dart';
@@ -29,12 +28,10 @@ class ContinueWithPhoneManager extends StatelessWidget {
     CountryDetails details = CountryCodes.detailsForLocale();
     Locale locale = CountryCodes.getDeviceLocale()!;
 
-    return BaseView<ContinueWithPhoneManagerProvider>(
-      onModelReady: (provider){
-        provider.dialCode= details.dialCode??'+1';
-        provider.countryCode= locale.countryCode??'US';
-      },
-        builder: (context, provider, _) {
+    return BaseView<ContinueWithPhoneManagerProvider>(onModelReady: (provider) {
+      provider.dialCode = details.dialCode ?? '+1';
+      provider.countryCode = locale.countryCode ?? 'US';
+    }, builder: (context, provider, _) {
       return GestureDetector(
         onTap: () {
           CommonWidgets.hideKeyboard(context);
@@ -96,8 +93,9 @@ class ContinueWithPhoneManager extends StatelessWidget {
                                       color: ColorConstants.colorWhite70),
                                   SizedBox(height: DimensionConstants.d42.h),
                                   phoneNumberWidget(
-                                      provider.phoneNumberController,
-                                      provider,),
+                                    provider.phoneNumberController,
+                                    provider,
+                                  ),
                                   SizedBox(height: DimensionConstants.d25.h),
                                   if (isResetPassword!)
                                     GestureDetector(
@@ -163,8 +161,9 @@ class ContinueWithPhoneManager extends StatelessWidget {
 }
 
 Widget phoneNumberWidget(
-    TextEditingController controller,
-    ContinueWithPhoneManagerProvider provider,) {
+  TextEditingController controller,
+  ContinueWithPhoneManagerProvider provider,
+) {
   return Stack(
     children: [
       Container(
@@ -188,6 +187,24 @@ Widget phoneNumberWidget(
           selectorTextStyle: TextStyle(
               fontSize: DimensionConstants.d20.sp, fontWeight: FontWeight.w700),
           inputDecoration: InputDecoration(
+              icon: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ImageView(
+                    path: ImageConstants.dropDownPhoneIcon,
+                    width: DimensionConstants.d9.w,
+                    height: DimensionConstants.d6.h,
+                  ),
+                  SizedBox(
+                    width: DimensionConstants.d6.w,
+                  ),
+                  Container(
+                    height: DimensionConstants.d25.h,
+                    width: DimensionConstants.d2.w,
+                    color: ColorConstants.grayD2D2D7,
+                  ),
+                ],
+              ),
               contentPadding: EdgeInsets.only(
                 bottom: DimensionConstants.d15.h,
                 right: DimensionConstants.d10.w,
@@ -200,7 +217,7 @@ Widget phoneNumberWidget(
               )),
         ),
       ),
-      Positioned(
+      /*  Positioned(
           top: DimensionConstants.d12.h,
           left: DimensionConstants.d100.w,
           child: Row(
@@ -219,7 +236,7 @@ Widget phoneNumberWidget(
                 color: ColorConstants.grayD2D2D7,
               ),
             ],
-          ))
+          ))*/
     ],
   );
 }

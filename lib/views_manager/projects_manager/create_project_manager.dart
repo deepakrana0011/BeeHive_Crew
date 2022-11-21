@@ -206,7 +206,8 @@ class CreateProjectManagerState extends State<CreateProjectManager> {
             onTap: () {
               Locale locale = CountryCodes.getDeviceLocale()!;
               Navigator.pushNamed(context, RouteConstants.autoComplete,
-                      arguments: provider.currentCountryIsoCode ?? locale.countryCode)
+                      arguments:
+                          provider.currentCountryIsoCode ?? locale.countryCode)
                   .then((value) async {
                 if (value != null) {
                   Map<String, String> detail = value as Map<String, String>;
@@ -361,7 +362,7 @@ class CreateProjectManagerState extends State<CreateProjectManager> {
                                       provider.position!.target.longitude);
                                 }
                               },
-                             /* circles: circle,*/
+                              /* circles: circle,*/
                               gestureRecognizers: {
                                 Factory<OneSequenceGestureRecognizer>(
                                   () => EagerGestureRecognizer(),
@@ -431,19 +432,15 @@ class CreateProjectManagerState extends State<CreateProjectManager> {
               SizedBox(
                 width: DimensionConstants.d5.w,
               ),
-              Text(provider.locationRadius < 1000
-                      ? provider.locationRadius.toStringAsFixed(0)
-                      : provider
-                          .meterToKm(provider.locationRadius)
-                          .toStringAsFixed(2))
-                  .boldText(context, DimensionConstants.d16.sp, TextAlign.left,
-                      color: ColorConstants.deepBlue),
+              Text(provider.meterToKmOrMi(provider.locationRadius)).boldText(
+                  context, DimensionConstants.d16.sp, TextAlign.left,
+                  color: ColorConstants.deepBlue),
               SizedBox(
                 width: DimensionConstants.d5.w,
               ),
-              Text(provider.locationRadius < 1000 ? "m".tr() : "km".tr())
-                  .boldText(context, DimensionConstants.d16.sp, TextAlign.left,
-                      color: ColorConstants.deepBlue),
+              Text(provider.getMetricType()).boldText(
+                  context, DimensionConstants.d16.sp, TextAlign.left,
+                  color: ColorConstants.deepBlue),
             ],
           ),
         ),

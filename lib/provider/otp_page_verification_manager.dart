@@ -35,7 +35,7 @@ class OtpPageProviderManager extends BaseProvider {
       setState(ViewState.idle);
       if (model.success == true) {
         SharedPreference.prefs!
-            .setString(SharedPreference.TOKEN, model!.token!);
+            .setString(SharedPreference.TOKEN, model.token!);
         SharedPreference.prefs!
             .setString(SharedPreference.USER_ID, model.data!.id!);
         SharedPreference.prefs!.setInt(SharedPreference.loginType, 2);
@@ -154,7 +154,7 @@ class OtpPageProviderManager extends BaseProvider {
     } on FetchDataException catch (e) {
       setState(ViewState.idle);
       DialogHelper.showMessage(context, e.toString());
-    } on SocketException catch (e) {
+    } on SocketException {
       setState(ViewState.idle);
       DialogHelper.showMessage(context, "internet_connection".tr());
     }

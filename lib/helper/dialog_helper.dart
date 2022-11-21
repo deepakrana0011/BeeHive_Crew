@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:another_flushbar/flushbar.dart';
 import 'package:beehive/constants/image_constants.dart';
 import 'package:beehive/constants/route_constants.dart';
@@ -5,6 +7,7 @@ import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/provider/notification_provider.dart';
 import 'package:beehive/view/base_view.dart';
 import 'package:beehive/widget/image_view.dart';
+import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -276,7 +279,8 @@ class DialogHelper {
 
   static callDialogBox(BuildContext context, String phoneNo,
       {required VoidCallback callManager,
-      required VoidCallback messageManager, required VoidCallback addToContactManager}) {
+      required VoidCallback messageManager,
+      required VoidCallback addToContactManager}) {
     return Dialog(
       insetPadding: EdgeInsets.only(
           left: DimensionConstants.d10.w,
@@ -286,7 +290,7 @@ class DialogHelper {
         borderRadius: BorderRadius.circular(DimensionConstants.d10.r),
       ),
       child: Container(
-     //   height: DimensionConstants.d256.h,
+        //   height: DimensionConstants.d256.h,
         decoration: BoxDecoration(
             color: Theme.of(context).brightness == Brightness.dark
                 ? ColorConstants.colorWhite90
@@ -295,7 +299,7 @@ class DialogHelper {
         child: Column(
           children: <Widget>[
             Container(
-            //  height: DimensionConstants.d185.h,
+              //  height: DimensionConstants.d185.h,
               decoration: BoxDecoration(
                   color: Theme.of(context).brightness == Brightness.dark
                       ? ColorConstants.colorBlack
@@ -394,7 +398,7 @@ class DialogHelper {
               ),
             ),
             SizedBox(height: DimensionConstants.d10.h),
-           // Expanded(child: Container()),
+            // Expanded(child: Container()),
             Expanded(
               child: GestureDetector(
                 onTap: () {
@@ -403,7 +407,7 @@ class DialogHelper {
                 child: Container(
                   alignment: Alignment.topCenter,
                   //width: double.maxFinite,
-          //      height: DimensionConstants.d60.h,
+                  //      height: DimensionConstants.d60.h,
                   decoration: BoxDecoration(
                       color: Theme.of(context).brightness == Brightness.dark
                           ? ColorConstants.colorBlack
@@ -737,7 +741,9 @@ class DialogHelper {
   }
 
   static archiveUnArchiveDialogBox(BuildContext context,
-      {required VoidCallback cancel, required VoidCallback archive, bool unarchive = false}) {
+      {required VoidCallback cancel,
+      required VoidCallback archive,
+      bool unarchive = false}) {
     return BaseView<NotificationProvider>(
       onModelReady: (provider) {},
       builder: (context, provider, _) {
@@ -767,15 +773,18 @@ class DialogHelper {
                     ),
                   ),
                 ),
-                Text(unarchive == true ? "unarchive_project_mark".tr()
-                    : "archive_project_mark".tr()).boldText(
-                    context, DimensionConstants.d18.sp, TextAlign.center,
-                    color: ColorConstants.colorBlack),
+                Text(unarchive == true
+                        ? "unarchive_project_mark".tr()
+                        : "archive_project_mark".tr())
+                    .boldText(
+                        context, DimensionConstants.d18.sp, TextAlign.center,
+                        color: ColorConstants.colorBlack),
                 SizedBox(
                   height: DimensionConstants.d23.h,
                 ),
-                Text(unarchive == true ? "are_you_sure_you_want_to_unarchive_this_project".tr()
-                    : "are_you_sure_you_want_to_archive_this_project".tr())
+                Text(unarchive == true
+                        ? "are_you_sure_you_want_to_unarchive_this_project".tr()
+                        : "are_you_sure_you_want_to_archive_this_project".tr())
                     .regularText(
                         context, DimensionConstants.d14.sp, TextAlign.center,
                         color: ColorConstants.colorBlack),
@@ -803,7 +812,10 @@ class DialogHelper {
                         height: DimensionConstants.d50.h,
                         width: DimensionConstants.d141.w,
                         child: CommonWidgets.commonButton(
-                            context, (unarchive == true ? "unarchive".tr() : "Archive".tr()),
+                            context,
+                            (unarchive == true
+                                ? "unarchive".tr()
+                                : "Archive".tr()),
                             color1: ColorConstants.redColorEB5757,
                             color2: ColorConstants.redColorEB5757,
                             fontSize: DimensionConstants.d16.sp,
@@ -876,7 +888,9 @@ class DialogHelper {
                             context, "cancel".tr(),
                             color1: ColorConstants.deepBlue,
                             color2: ColorConstants.deepBlue,
-                            fontSize: DimensionConstants.d16.sp, onBtnTap: cancel, shadowRequired: false),
+                            fontSize: DimensionConstants.d16.sp,
+                            onBtnTap: cancel,
+                            shadowRequired: false),
                       ),
                       Expanded(child: Container()),
                       SizedBox(
@@ -886,7 +900,9 @@ class DialogHelper {
                             context, "remove".tr(),
                             color1: ColorConstants.redColorEB5757,
                             color2: ColorConstants.redColorEB5757,
-                            fontSize: DimensionConstants.d16.sp, onBtnTap: delete, shadowRequired: false),
+                            fontSize: DimensionConstants.d16.sp,
+                            onBtnTap: delete,
+                            shadowRequired: false),
                       ),
                     ],
                   ),
@@ -911,9 +927,10 @@ class DialogHelper {
   }
 
   static editRateDialogBox(BuildContext context,
-      {required VoidCallback cancel, required VoidCallback delete}) {
+      {required String projectRate}) {
     FocusNode focusNode = FocusNode();
-    FocusScope.of(context).requestFocus(focusNode);
+    TextEditingController projectRateController = TextEditingController(text: projectRate);
+    focusNode.requestFocus();
     return Dialog(
       backgroundColor: Colors.transparent,
       insetPadding: EdgeInsets.only(top: DimensionConstants.d275.h),
@@ -968,9 +985,18 @@ class DialogHelper {
                             ),
                             child: TextFormField(
                               focusNode: focusNode,
-                              keyboardType: TextInputType.phone,
+                              controller: projectRateController,
+                              inputFormatters: [
+                                CurrencyTextInputFormatter(symbol: '')
+                              ],
+                              keyboardType: TextInputType.number,
+                              validator: (value){
+                                if(value!.trim().isEmpty){
+                                  return "empty_rate".tr();
+                                }
+                              },
                               decoration: ViewDecoration.inputDecorationBox(
-                                  fieldName: "20.00".tr(),
+                                  fieldName: '',
                                   radius: DimensionConstants.d8.r,
                                   fillColor: ColorConstants.littleDarkGray,
                                   color: ColorConstants.grayF2F2F2,
@@ -998,7 +1024,7 @@ class DialogHelper {
                           color1: ColorConstants.primaryGradient1Color,
                           color2: ColorConstants.primaryGradient2Color,
                           fontSize: DimensionConstants.d16.sp, onBtnTap: () {
-                        Navigator.of(context).pop();
+                        Navigator.of(context).pop(projectRateController.text);
                       }, shadowRequired: true),
                     ),
                   ],
@@ -1063,28 +1089,30 @@ class DialogHelper {
               height: DimensionConstants.d35.h,
             ),
             Padding(
-              padding: EdgeInsets.symmetric(
-                  horizontal: DimensionConstants.d24.w),
+              padding:
+                  EdgeInsets.symmetric(horizontal: DimensionConstants.d24.w),
               child: Row(
                 children: <Widget>[
                   SizedBox(
                     height: DimensionConstants.d50.h,
                     width: DimensionConstants.d141.w,
-                    child: CommonWidgets.commonButton(
-                        context, "cancel".tr(),
+                    child: CommonWidgets.commonButton(context, "cancel".tr(),
                         color1: ColorConstants.deepBlue,
                         color2: ColorConstants.deepBlue,
-                        fontSize: DimensionConstants.d16.sp, onBtnTap: cancel, shadowRequired: false),
+                        fontSize: DimensionConstants.d16.sp,
+                        onBtnTap: cancel,
+                        shadowRequired: false),
                   ),
                   Expanded(child: Container()),
                   SizedBox(
                     height: DimensionConstants.d50.h,
                     width: DimensionConstants.d141.w,
-                    child: CommonWidgets.commonButton(
-                        context, "leave".tr(),
+                    child: CommonWidgets.commonButton(context, "leave".tr(),
                         color1: ColorConstants.redColorEB5757,
                         color2: ColorConstants.redColorEB5757,
-                        fontSize: DimensionConstants.d16.sp, onBtnTap: leave, shadowRequired: false),
+                        fontSize: DimensionConstants.d16.sp,
+                        onBtnTap: leave,
+                        shadowRequired: false),
                   ),
                 ],
               ),
@@ -1094,5 +1122,4 @@ class DialogHelper {
       ),
     );
   }
-
 }

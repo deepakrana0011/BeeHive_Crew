@@ -15,18 +15,11 @@ class Validations{
   static String getInitials({String? string, int? limitTo}) {
     String value;
     if(string!.length>1){
-      value=string!.substring(0,limitTo);
+      value=string.substring(0,limitTo);
     }else{
       value=string;
     }
     return value.toUpperCase();
-    var buffer = StringBuffer();
-    var split = string!.split(' ');
-    for (var i = 0 ; i < (limitTo ?? split.length); i ++) {
-      buffer.write(split[i][0]);
-    }
-
-    return buffer.toString().toUpperCase();
   }
 
 }

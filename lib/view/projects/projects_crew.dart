@@ -1,4 +1,3 @@
-
 import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/constants/image_constants.dart';
 import 'package:beehive/constants/route_constants.dart';
@@ -30,26 +29,35 @@ class ProjectsCrew extends StatefulWidget {
 
 class _ProjectsCrewState extends State<ProjectsCrew>
     with TickerProviderStateMixin {
+  bool openScheduleScreen = false;
 
-
-  BottomBarProvider? bottomBarProvider;
+  void _observer() {
+    openScheduleScreen = Provider.of<BottomBarProvider>(context, listen: true)
+        .showScheduleScreen;
+  }
 
   @override
   void initState() {
-    bottomBarProvider =
-        Provider.of<BottomBarProvider>(context, listen: false);
     super.initState();
   }
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    _observer();
     TabController tabController = TabController(length: 2, vsync: this);
+    if (openScheduleScreen) {
+      tabController.index = 1;
+      Provider.of<BottomBarProvider>(context, listen: false)
+          .showScheduleScreen = false;
+    }
+
     return BaseView<ProjectsCrewProvider>(
       onModelReady: (provider) {
-        //To Show Schedule Screen First
-        tabController.index = bottomBarProvider!.showScheduleScreen ? 1 : 0;
-        bottomBarProvider?.showScheduleScreen=false;
-
         provider.getAllCheckoutProjectsCrew(context);
         tabController.addListener(() {
           if (tabController.indexIsChanging) {
@@ -99,8 +107,11 @@ class _ProjectsCrewState extends State<ProjectsCrew>
                                           height: DimensionConstants.d10.h,
                                           width: DimensionConstants.d10.w,
                                           decoration: BoxDecoration(
-                                            color:
-                                                provider.projectColors[index],
+                                            color: provider.projectColors[index]
+                                                    .isEmpty
+                                                ? Colors.black
+                                                : Color(int.parse(
+                                                    "0x${provider.projectColors[index]}")),
                                             borderRadius: BorderRadius.circular(
                                                 DimensionConstants.d5.r),
                                           ),
@@ -268,7 +279,9 @@ Widget allProjects(BuildContext context, ProjectsCrewProvider provider) {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Text(provider.allCheckoutProjectCrewResponse?.activeProject.toString()??'')
+                    Text(provider.allCheckoutProjectCrewResponse?.activeProject
+                                .toString() ??
+                            '')
                         .semiBoldText(
                             context, DimensionConstants.d20.sp, TextAlign.left,
                             color:
@@ -342,13 +355,16 @@ Widget projectList(BuildContext context, ProjectsCrewProvider provider) {
         //   physics: NeverScrollableScrollPhysics(),
         itemCount: provider.allCheckoutProjectCrewResponse?.projectData?.length,
         itemBuilder: (BuildContext context, int index) {
-          return projectDetailWidget(context,
-              provider.allCheckoutProjectCrewResponse!.projectData![index],provider);
+          return projectDetailWidget(
+              context,
+              provider.allCheckoutProjectCrewResponse!.projectData![index],
+              provider);
         }),
   );
 }
 
-Widget projectDetailWidget(BuildContext context, ProjectDetail projectDetail, ProjectsCrewProvider provider) {
+Widget projectDetailWidget(BuildContext context, ProjectDetail projectDetail,
+    ProjectsCrewProvider provider) {
   var value = DateFunctions.minutesToHourString(projectDetail.totalHours!);
   return Padding(
     padding: EdgeInsets.symmetric(vertical: DimensionConstants.d5.h),
@@ -394,7 +410,9 @@ Widget projectDetailWidget(BuildContext context, ProjectDetail projectDetail, Pr
                         height: DimensionConstants.d32.h,
                         width: DimensionConstants.d32.w,
                         decoration: BoxDecoration(
-                            color: projectDetail.color,
+                            color: projectDetail.color == null
+                                ? Colors.black
+                                : Color(int.parse("0x${projectDetail.color}")),
                             borderRadius: BorderRadius.circular(
                                 DimensionConstants.d16.r)),
                         child: Center(
@@ -455,11 +473,13 @@ Widget projectDetailWidget(BuildContext context, ProjectDetail projectDetail, Pr
                             ? ColorConstants.colorWhite
                             : ColorConstants.colorBlack),
                     Expanded(child: Container()),
-                    Text(provider.getTotalHoursPerProject(projectDetail)??'').semiBoldText(
-                        context, DimensionConstants.d20.sp, TextAlign.center,
-                        color: Theme.of(context).brightness == Brightness.dark
-                            ? ColorConstants.colorWhite
-                            : ColorConstants.colorBlack),
+                    Text(provider.getTotalHoursPerProject(projectDetail) ?? '')
+                        .semiBoldText(context, DimensionConstants.d20.sp,
+                            TextAlign.center,
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? ColorConstants.colorWhite
+                                    : ColorConstants.colorBlack),
                   ],
                 ),
               ),
@@ -667,7 +687,11 @@ Widget projectNameSubStringContainer(
                   width: DimensionConstants.d35.w,
                   decoration: BoxDecoration(
                       color: provider.projectNameList[weekDaysIndex]
-                          .projectName[index].color,
+                                  .projectName[index].color ==
+                              null
+                          ? Colors.black
+                          : Color(int.parse(
+                              "0x${provider.projectNameList[weekDaysIndex].projectName[index].color}")),
                       borderRadius:
                           BorderRadius.circular(DimensionConstants.d20.r)),
                   child: Center(

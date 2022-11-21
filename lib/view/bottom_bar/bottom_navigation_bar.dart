@@ -12,6 +12,7 @@ import 'package:beehive/view/profile/profile.dart';
 import 'package:beehive/view/projects/projects_crew.dart';
 import 'package:beehive/view/timesheets/timesheets_tab_bar.dart';
 import 'package:beehive/widget/image_view.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -20,6 +21,7 @@ import 'package:provider/provider.dart';
 import '../../constants/route_constants.dart';
 import '../../helper/common_widgets.dart';
 import '../../provider/app_state_provider.dart';
+import '../../provider/project_crew_provider.dart';
 
 class BottomBar extends StatefulWidget {
   const BottomBar({Key? key}) : super(key: key);
@@ -29,6 +31,8 @@ class BottomBar extends StatefulWidget {
 }
 
 class _BottomBarState extends State<BottomBar> {
+
+
   static final List<Widget> _widgetOptions = <Widget>[
     const DashBoardPage(),
     const ProjectsCrew(),
@@ -48,9 +52,17 @@ class _BottomBarState extends State<BottomBar> {
     ImageConstants.notificationIconBell
   ];
 
+
+  @override
+  void initState() {
+    super.initState();
+
+  }
+
   @override
   Widget build(BuildContext context) {
     final themeChange = Provider.of<AppStateNotifier>(context);
+
     return BaseView<BottomBarProvider>(
         onModelReady: (provider) {},
         builder: (context, provider, _) {
@@ -272,7 +284,7 @@ Widget drawer(BuildContext context, BottomBarProvider provider) {
                                 padding: EdgeInsets.only(
                                     top: DimensionConstants.d56.h,
                                     left: DimensionConstants.d43.w),
-                                child: ClipRRect(
+                                child: /*ClipRRect(
                                   borderRadius: BorderRadius.circular(
                                       DimensionConstants.d55.r),
                                   child: (provider.crewProfilePic == null ||
@@ -302,6 +314,30 @@ Widget drawer(BuildContext context, BottomBarProvider provider) {
                                             ),
                                           ),
                                         ),
+                                ),*/
+                                CircleAvatar(
+                                  backgroundColor: ColorConstants.colorWhite,
+                                  radius: DimensionConstants.d55.r,
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(DimensionConstants.d5),
+                                    child:  provider.crewProfilePic.isEmpty
+                                        ? CircleAvatar(
+                                      radius: DimensionConstants.d55.r,
+                                      backgroundColor: ColorConstants.grayF2F2F2,
+                                      child: const Padding(
+                                        padding: EdgeInsets.all(DimensionConstants.d16),
+                                        child: ImageView(
+                                          path: ImageConstants.icAvatar,
+                                        ),
+                                      ),
+                                    )
+                                        : CircleAvatar(
+                                      radius: DimensionConstants.d55.r,
+                                      backgroundImage: CachedNetworkImageProvider(
+                                          ApiConstantsCrew.BASE_URL_IMAGE +
+                                              provider.crewProfilePic),
+                                    ),
+                                  ),
                                 ),
                               ),
                               SizedBox(height: DimensionConstants.d19.h),

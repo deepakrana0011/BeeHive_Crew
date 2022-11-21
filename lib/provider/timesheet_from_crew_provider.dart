@@ -140,7 +140,7 @@ class TimeSheetFromCrewProvider extends BaseProvider {
         var checkInDate =
             DateFunctions.getDateTimeFromString(detail.checkInTime!);
         var checkOutDate =
-            DateFunctions.getDateTimeFromString(detail.checkOutTime!);
+            DateFunctions.getDateTimeFromString(DateFunctions.checkTimeIsNull(detail.checkOutTime));
         if (breakStartTimeDate.isAfter(checkInDate) &&
             breakStartTimeDate.isBefore(checkOutDate)) {
           var interruption = Interuption();

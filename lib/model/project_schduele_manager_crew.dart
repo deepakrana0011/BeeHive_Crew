@@ -32,13 +32,14 @@ class Data {
 class ProjectName {
   String? projectName;
   String? sId;
-  Color? color;
+  String? color;
 
   ProjectName({this.projectName, this.sId, this.color});
 
   ProjectName.fromJson(Map<String, dynamic> json) {
     projectName = json['projectName'];
     sId = json['_id'];
+    color = json['color'];
   }
 
 }

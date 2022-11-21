@@ -1,18 +1,17 @@
 import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/model/crew_on_this_project_response.dart';
 import 'package:beehive/model/get_crew_profile_response.dart';
-import 'package:beehive/model/get_profile_response_manager.dart' as manager_cert;
-import 'package:beehive/model/manager_dashboard_response.dart';
+import 'package:beehive/model/timesheet_crew_details.dart'
+    as manager_cert;
 import 'package:beehive/model/project_detail_crew_response.dart';
-import 'package:beehive/model/project_detail_manager_response.dart' as manager_note;
+import 'package:beehive/model/project_detail_manager_response.dart'
+    as manager_note;
 import 'package:beehive/view/%20light_theme_signup_login/continue_with_phone.dart';
 import 'package:beehive/view/%20light_theme_signup_login/otp_verification_page.dart';
 import 'package:beehive/view/bottom_bar/bottom_navigation_bar.dart';
-import 'package:beehive/view/dashboard/app_settings.dart';
 import 'package:beehive/view/dashboard/archived_projects_screen.dart';
 import 'package:beehive/view/dashboard/notifications_screen.dart';
 import 'package:beehive/view/dashboard/select_to_continue_screen.dart';
-import 'package:beehive/view/introduction/beehive_introduction.dart';
 import 'package:beehive/view/introduction/introduction_pages.dart';
 import 'package:beehive/view/light_theme_signup_login/email_address_screen.dart';
 import 'package:beehive/view/light_theme_signup_login/login_screen.dart';
@@ -33,7 +32,7 @@ import 'package:beehive/view/upgrade_crew_manager/payment_page.dart';
 import 'package:beehive/view/upgrade_crew_manager/upgrade_page.dart';
 import 'package:beehive/views_manager/billing_information/billing_information_page_manager.dart';
 import 'package:beehive/views_manager/bottom_bar_manager/bottom_navigation_bar_manager.dart';
-import 'package:beehive/views_manager/dashboard_manager/app_settings_manager.dart';
+import 'package:beehive/view/app_settings.dart';
 import 'package:beehive/views_manager/dashboard_manager/archived_projects_screen_manager.dart';
 import 'package:beehive/views_manager/dashboard_manager/notifications_screen_manager.dart';
 import 'package:beehive/views_manager/light_theme_signup_login_manager/continue_with_phone_manager.dart';
@@ -83,8 +82,11 @@ class OnGenerateRouter {
       case RouteConstants.projectDetailsPage:
         final args = settings.arguments as ProjectDetailsPage;
         return MaterialPageRoute(
-            builder: (_) =>
-                ProjectDetailsPage(archivedOrProject: args.archivedOrProject,projectId: args.projectId,totalHoursToDate: args.totalHoursToDate,),
+            builder: (_) => ProjectDetailsPage(
+                  archivedOrProject: args.archivedOrProject,
+                  projectId: args.projectId,
+                  totalHoursToDate: args.totalHoursToDate,
+                ),
             settings: settings);
       case RouteConstants.addNotePage:
         return MaterialPageRoute(
@@ -92,10 +94,14 @@ class OnGenerateRouter {
       case RouteConstants.projectSettingsPage:
         final args = settings.arguments as ProjectSettingsPage;
         return MaterialPageRoute(
-            builder: (_) => ProjectSettingsPage(projectData: args.projectData), settings: settings);
+            builder: (_) => ProjectSettingsPage(projectData: args.projectData),
+            settings: settings);
       case RouteConstants.crewProfilePage:
         return MaterialPageRoute(
-            builder: (_) => CrewProfilePage(profileData: args as Data,), settings: settings);
+            builder: (_) => CrewProfilePage(
+                  profileData: args as Data,
+                ),
+            settings: settings);
       case RouteConstants.editProfilePage:
         return MaterialPageRoute(
             builder: (_) => const EditProfilePage(), settings: settings);
@@ -123,10 +129,6 @@ class OnGenerateRouter {
       case RouteConstants.archivedProjectsScreen:
         return MaterialPageRoute(
             builder: (_) => const ArchivedProjectsScreen(), settings: settings);
-
-      case RouteConstants.appSettings:
-        return MaterialPageRoute(
-            builder: (_) => AppSettings(), settings: settings);
 
       case RouteConstants.selectToContinueScreen:
         return MaterialPageRoute(
@@ -221,9 +223,9 @@ class OnGenerateRouter {
         return MaterialPageRoute(
             builder: (_) => const NotificationsScreenManager(),
             settings: settings);
-      case RouteConstants.appSettingsManager:
+      case RouteConstants.appSettings:
         return MaterialPageRoute(
-            builder: (_) => AppSettingsManager(), settings: settings);
+            builder: (_) => const AppSettings(), settings: settings);
       case RouteConstants.loginScreenManager:
         final email = settings.arguments as String;
         return MaterialPageRoute(
@@ -236,7 +238,8 @@ class OnGenerateRouter {
         return MaterialPageRoute(
             builder: (_) => ProjectDetailsPageManager(
                   createProject: args.createProject,
-                  projectId: args.projectId, archiveProject: args.archiveProject,
+                  projectId: args.projectId,
+                  archiveProject: args.archiveProject,
                 ),
             settings: settings);
       case RouteConstants.archivedProjectsScreenManager:
@@ -248,14 +251,17 @@ class OnGenerateRouter {
             builder: (_) => CreateProjectManager(), settings: settings);
       case RouteConstants.addCrewPageManager:
         List<Crews>? list;
-        var projectId="";
+        var projectId = "";
         if (settings.arguments != null) {
           var args = settings.arguments as AddCrewPageManager;
           list = args.crewList!.cast<Crews>();
           projectId = args.projectId!;
         }
         return MaterialPageRoute(
-            builder: (_) => AddCrewPageManager(crewList: list,projectId: projectId,),
+            builder: (_) => AddCrewPageManager(
+                  crewList: list,
+                  projectId: projectId,
+                ),
             settings: settings);
       case RouteConstants.crewMemberAddByManager:
         final args = settings.arguments as CrewMemberAddByManager;
@@ -267,13 +273,18 @@ class OnGenerateRouter {
       case RouteConstants.setRatesManager:
         final args = settings.arguments as SetRatesPageManager;
         return MaterialPageRoute(
-            builder: (_) => SetRatesPageManager(isUpdating: args.isUpdating,projectId: args.projectId,),
+            builder: (_) => SetRatesPageManager(
+                  isUpdating: args.isUpdating,
+                  projectId: args.projectId,
+                ),
             settings: settings);
       case RouteConstants.projectSettingsPageManager:
         final args = settings.arguments as ProjectSettingsPageManager;
         return MaterialPageRoute(
             builder: (_) => ProjectSettingsPageManager(
-                fromProjectOrCreateProject: args.fromProjectOrCreateProject, projectData: args.projectData,),
+                  fromProjectOrCreateProject: args.fromProjectOrCreateProject,
+                  projectData: args.projectData,
+                ),
             settings: settings);
       case RouteConstants.addNotePageManager:
         final args = settings.arguments as AddNotePageManager;
@@ -281,7 +292,7 @@ class OnGenerateRouter {
             builder: (_) => AddNotePageManager(
                   isPrivate: args.isPrivate,
                   projectId: args.projectId,
-              crewId: args.crewId,
+                  crewId: args.crewId,
                 ),
             settings: settings);
       case RouteConstants.archivedProjectDetailsManager:
@@ -295,7 +306,11 @@ class OnGenerateRouter {
       case RouteConstants.crewPageProfileManager:
         final arg = args as CrewProfilePageManager;
         return MaterialPageRoute(
-            builder: (_) =>  CrewProfilePageManager(projectName: args.projectName, crewData: arg.crewData, projectId: args.projectId,), settings: settings);
+            builder: (_) => CrewProfilePageManager(
+                  crewId: args.crewId,
+
+                ),
+            settings: settings);
       case RouteConstants.timeSheetScreenManager:
         final args = settings.arguments as TimeSheetsScreenManager;
         return MaterialPageRoute(
@@ -306,7 +321,11 @@ class OnGenerateRouter {
       case RouteConstants.timeSheetsFromCrew:
         final args = settings.arguments as TimeSheetFromCrew;
         return MaterialPageRoute(
-            builder: (_) =>  TimeSheetFromCrew(id: args.id, totalHours: args.totalHours,), settings: settings);
+            builder: (_) => TimeSheetFromCrew(
+                  id: args.id,
+                  totalHours: args.totalHours,
+                ),
+            settings: settings);
       case RouteConstants.billingInformationPageManager:
         final args = settings.arguments as BillingInformationPageManager;
         return MaterialPageRoute(
@@ -319,19 +338,20 @@ class OnGenerateRouter {
             builder: (_) => const PaymentPageManager(), settings: settings);
       case RouteConstants.certificationPageManager:
         return MaterialPageRoute(
-            builder: (_) => CertificationPageManager(),
-            settings: settings);
+            builder: (_) => CertificationPageManager(), settings: settings);
       case RouteConstants.editProfilePageManager:
         return MaterialPageRoute(
             builder: (_) => const EditProfilePageManager(), settings: settings);
       case RouteConstants.changePasswordPageManager:
         return MaterialPageRoute(
-            builder: (_) => ChangePasswordPageManager(),
-            settings: settings);
+            builder: (_) => ChangePasswordPageManager(), settings: settings);
 
       case RouteConstants.autoComplete:
         return MaterialPageRoute(
-            builder: (_) => CustomSearchScaffold(currentCountryCode: args as String,), settings: settings);
+            builder: (_) => CustomSearchScaffold(
+                  currentCountryCode: args as String,
+                ),
+            settings: settings);
 
       case RouteConstants.resetPasswordScreenManager:
         final token = settings.arguments as String;
@@ -343,28 +363,45 @@ class OnGenerateRouter {
 
       case RouteConstants.showNotePageManager:
         return MaterialPageRoute(
-            builder: (_) => ShowNotePageManager(noteData: args as manager_note.Note,), settings: settings);
+            builder: (_) => ShowNotePageManager(
+                  noteData: args as manager_note.Note,
+                ),
+            settings: settings);
 
       case RouteConstants.showNotePageCrew:
         return MaterialPageRoute(
-            builder: (_) => ShowNotePageCrew(noteData: args as Note,), settings: settings);
+            builder: (_) => ShowNotePageCrew(
+                  noteData: args as Note,
+                ),
+            settings: settings);
 
       case RouteConstants.showCertificationManagerPage:
         return MaterialPageRoute(
-            builder: (_) => ShowCertificateManagerPage(certificationData: args as manager_cert.Cert), settings: settings);
+            builder: (_) => ShowCertificateManagerPage(
+                certificationData: args as manager_cert.Cert),
+            settings: settings);
 
       case RouteConstants.showCertificationCrewPage:
         return MaterialPageRoute(
-            builder: (_) => ShowCertificateCrewPage(certificationData: args as Cert), settings: settings);
+            builder: (_) =>
+                ShowCertificateCrewPage(certificationData: args as Cert),
+            settings: settings);
 
       case RouteConstants.showPrivateNoteManager:
         final args = settings.arguments as ShowPrivateNoteManager;
         return MaterialPageRoute(
-            builder: (_) => ShowPrivateNoteManager(title: args.title, note: args.note), settings: settings);
+            builder: (_) =>
+                ShowPrivateNoteManager(title: args.title, note: args.note),
+            settings: settings);
       case RouteConstants.timeSheetScreenProjectDetails:
         final args = settings.arguments as TimeSheetsScreenProjectDetails;
         return MaterialPageRoute(
-            builder: (_) => TimeSheetsScreenProjectDetails(removeInterruption: args.removeInterruption, projectData: args.projectData, index: args.index,), settings: settings);
+            builder: (_) => TimeSheetsScreenProjectDetails(
+                  removeInterruption: args.removeInterruption,
+                  projectData: args.projectData,
+                  index: args.index,
+                ),
+            settings: settings);
 
       default:
         return _onPageNotFound();

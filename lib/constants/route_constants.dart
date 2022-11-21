@@ -29,7 +29,6 @@ class RouteConstants{
   static const String signUpScreenManager = "signUpScreenManager";
   static const String emailAddressScreenManager = "emailAddressScreenManager";
   static const String notificationsScreenManager = "notificationsScreenManager";
-  static const String appSettingsManager = "appSettingsManager";
   static const String loginScreenManager = "loginScreenManager";
   static const String projectDetailsPageManager = "projectDetailsPageManager";
   static const String archivedProjectsScreenManager = "archivedProjectsScreenManager";

@@ -26,8 +26,7 @@ class LoginProvider extends BaseProvider {
       if (model.success == true) {
         SharedPreference.prefs!.setString(SharedPreference.TOKEN, model.token!);
         if (model.data!.status == 1) {
-          SharedPreference.prefs!
-              .setString(SharedPreference.USER_ID, model.data!.sId!);
+          SharedPreference.prefs!.setString(SharedPreference.USER_ID, model.data!.sId!);
           SharedPreference.prefs!.setInt(SharedPreference.loginType, 1);
           SharedPreference.prefs!.setBool(SharedPreference.isLogin, true);
           Navigator.pushNamedAndRemoveUntil(

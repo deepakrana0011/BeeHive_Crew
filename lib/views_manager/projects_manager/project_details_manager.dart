@@ -460,7 +460,7 @@ class _ProjectDetailsPageManagerState extends State<ProjectDetailsPageManager>
               myLocationButtonEnabled: false,
               compassEnabled: false,
               zoomControlsEnabled: false,
-              scrollGesturesEnabled: true,
+              scrollGesturesEnabled: false,
               markers: Set<Marker>.of(provider.markers),
               initialCameraPosition: CameraPosition(
                 target: LatLng(
@@ -746,24 +746,13 @@ class _ProjectDetailsPageManagerState extends State<ProjectDetailsPageManager>
                 SizedBox(
                   width: DimensionConstants.d13.w,
                 ),
-                Text(DateFunctions.dateTO12Hour(checkInDetail.checkInTime!).substring(0, DateFunctions.dateTO12Hour(checkInDetail.checkInTime!).length - 1)).regularText(
+                Text(DateFunctions.getTimeInHrs(checkInDetail.checkInTime)).regularText(
                     context, DimensionConstants.d13.sp, TextAlign.left,
                     color: ColorConstants.colorBlack),
                 SizedBox(width: DimensionConstants.d11.w),
                 customStepper(provider, checkInDetail),
                 SizedBox(width: DimensionConstants.d10.w),
-                Text(DateFunctions.dateTO12Hour( (checkInDetail.checkOutTime == null || checkInDetail.checkOutTime!.trim().isEmpty)
-                    ? DateFunctions.dateFormatyyyyMMddHHmm(DateTime.now())
-                    : checkInDetail.checkOutTime!)
-                    .substring(
-                    0,
-                    DateFunctions
-                        .dateTO12Hour(
-                        (checkInDetail.checkOutTime == null || checkInDetail.checkOutTime!.trim().isEmpty)
-                            ? DateFunctions.dateFormatyyyyMMddHHmm(DateTime.now())
-                            : checkInDetail.checkOutTime!)
-                        .length -
-                        1))
+                Text(DateFunctions.getTimeInHrs(checkInDetail.checkOutTime))
                     .regularText(
                     context, DimensionConstants.d13.sp, TextAlign.left,
                     color: ColorConstants.colorBlack),
@@ -909,7 +898,7 @@ class _ProjectDetailsPageManagerState extends State<ProjectDetailsPageManager>
     // : "${ApiConstantsCrew.BASE_URL_IMAGE}$image",
     var name;
     if (index == 0) {
-      name = bottomBarProvider.managerName ?? "";
+      name = bottomBarProvider.managerName;
     } else {
       name = provider.projectDetailResponse!.projectData!.crews![index - 1].name;
       hourlyRate = double.parse(provider.projectDetailResponse!.projectData!.crews![index - 1].projectRate!).toStringAsFixed(2) ;
@@ -918,12 +907,8 @@ class _ProjectDetailsPageManagerState extends State<ProjectDetailsPageManager>
       onTap: (index == 0 || widget.archiveProject == true) ? () {} : () {
         Navigator.pushNamed(context, RouteConstants.crewPageProfileManager,
             arguments: CrewProfilePageManager(
-                projectName: provider.projectDetailResponse!.projectData!
-                    .projectName ?? "",
-                crewData: provider.projectDetailResponse!.projectData!
-                    .crews![index - 1],
-                projectId: provider.projectDetailResponse!.projectData!
-                    .projectDataId ?? "")).then((value) {
+                crewId: provider.projectDetailResponse!.projectData!
+                    .crews![index - 1].sId)).then((value) {
           if (value == true) {
             Navigator.of(context).pop();
           }

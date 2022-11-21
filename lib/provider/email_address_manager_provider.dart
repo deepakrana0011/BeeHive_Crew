@@ -24,7 +24,7 @@ class EmailAddressScreenManagerProvider extends BaseProvider {
       setState(ViewState.idle);
       if (model.success == true) {
         SharedPreference.prefs!
-            .setString(SharedPreference.TOKEN, model!.token!);
+            .setString(SharedPreference.TOKEN, model.token!);
         Navigator.pushNamed(context, RouteConstants.otpVerificationPageManager,
             arguments: {
               "value": email,

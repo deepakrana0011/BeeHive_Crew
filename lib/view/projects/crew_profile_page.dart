@@ -159,7 +159,7 @@ class CrewProfilePage extends StatelessWidget {
                 ),
                 SizedBox(width: DimensionConstants.d16.w,),
                 Expanded(
-                  child:  Text(profileData.phoneNumber.toString() ?? "").regularText(
+                  child:  Text(profileData.phoneNumber.toString()).regularText(
                       context, DimensionConstants.d14.sp, TextAlign.left, maxLines: 1, overflow: TextOverflow.ellipsis),
                 )
 

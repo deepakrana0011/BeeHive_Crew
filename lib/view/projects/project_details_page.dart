@@ -6,6 +6,7 @@ import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
 import 'package:beehive/helper/date_function.dart';
+import 'package:beehive/helper/shared_prefs.dart';
 import 'package:beehive/model/manager_dashboard_response.dart';
 import 'package:beehive/model/project_working_hour_detail.dart';
 import 'package:beehive/provider/project_details_provider.dart';
@@ -349,7 +350,7 @@ Widget mapAndHoursDetails(
             myLocationButtonEnabled: false,
             compassEnabled: false,
             zoomControlsEnabled: false,
-            scrollGesturesEnabled: true,
+            scrollGesturesEnabled: false,
             markers: Set<Marker>.of(provider.markers),
             initialCameraPosition: CameraPosition(
               target: LatLng(
@@ -357,7 +358,7 @@ Widget mapAndHoursDetails(
                       0.0,
                   provider.projectDetailCrewResponse?.projectData?.latitude ??
                       0.0),
-              zoom: 11.0,
+              zoom: 14.0,
             ),
             onMapCreated: (controller) {
               provider.googleMapController = controller;
@@ -392,7 +393,8 @@ Widget mapAndHoursDetails(
                       ? ColorConstants.colorWhite
                       : ColorConstants.colorBlack),
               Expanded(child: Container()),
-              Text(provider.getToTalHours()/*totalHoursToDate != ""
+              Text(provider
+                          .getToTalHours() /*totalHoursToDate != ""
                       ? totalHoursToDate
                       : (provider.projectDetailCrewResponse == null
                           ? ""
@@ -400,7 +402,8 @@ Widget mapAndHoursDetails(
                                       ?.checkins?.isEmpty ==
                                   true
                               ? ""
-                              : "${DateFunctions.calculateTotalHourTime(provider.projectDetailCrewResponse!.projectData!.checkins![0].checkInTime!, provider.projectDetailCrewResponse!.projectData!.checkins![0].checkOutTime!)} h"))*/)
+                              : "${DateFunctions.calculateTotalHourTime(provider.projectDetailCrewResponse!.projectData!.checkins![0].checkInTime!, provider.projectDetailCrewResponse!.projectData!.checkins![0].checkOutTime!)} h"))*/
+                      )
                   .semiBoldText(
                       context, DimensionConstants.d14.sp, TextAlign.left,
                       color: Theme.of(context).brightness == Brightness.dark
@@ -570,13 +573,7 @@ Widget crewDetail(BuildContext context, ProjectDetailsPageProvider provider,
                       ),
                     ],
                   ),
-                Text(DateFunctions.dateTO12Hour(checkInDetail.checkInTime!)
-                        .substring(
-                            0,
-                            DateFunctions.dateTO12Hour(
-                                        checkInDetail.checkInTime!)
-                                    .length -
-                                1))
+                Text(DateFunctions.getTimeInHrs(checkInDetail.checkInTime))
                     .regularText(
                   context,
                   DimensionConstants.d13.sp,
@@ -592,25 +589,7 @@ Widget crewDetail(BuildContext context, ProjectDetailsPageProvider provider,
                 SizedBox(
                   width: DimensionConstants.d9.w,
                 ),
-                Text(DateFunctions.dateTO12Hour(
-                            (checkInDetail.checkOutTime == null ||
-                                    checkInDetail.checkOutTime!.trim().isEmpty)
-                                ? DateFunctions.dateFormatyyyyMMddHHmm(
-                                    DateTime.now())
-                                : checkInDetail.checkOutTime!)
-                        .substring(
-                            0,
-                            DateFunctions.dateTO12Hour((checkInDetail
-                                                    .checkOutTime ==
-                                                null ||
-                                            checkInDetail.checkOutTime!
-                                                .trim()
-                                                .isEmpty)
-                                        ? DateFunctions.dateFormatyyyyMMddHHmm(
-                                            DateTime.now())
-                                        : checkInDetail.checkOutTime!)
-                                    .length -
-                                1))
+                Text(DateFunctions.getTimeInHrs(checkInDetail.checkOutTime))
                     .regularText(
                   context,
                   DimensionConstants.d13.sp,
@@ -885,7 +864,7 @@ Widget scaleNotesWidget(BuildContext context) {
       ),
       child: ListView.builder(
         itemCount: 3,
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         itemBuilder: (BuildContext context, int index) {
           return Column(
             children: <Widget>[
@@ -1443,37 +1422,51 @@ Widget crewWidget(BuildContext context, bool archivedOrNot,
                           )
                         : Row(
                             children: <Widget>[
-                              SizedBox(
-                                width: DimensionConstants.d100.w,
-                                child: Text(provider
-                                            .projectDetailCrewResponse!
-                                            .projectData!
-                                            .crews![index - 1]
-                                            .position ??
-                                        "")
-                                    .regularText(
-                                        context,
-                                        DimensionConstants.d14.sp,
-                                        TextAlign.left,
-                                        color: Theme.of(context).brightness ==
-                                                Brightness.dark
-                                            ? ColorConstants.colorWhite
-                                            : ColorConstants.deepBlue,
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis),
-                              ),
+                              provider.projectDetailCrewResponse!.projectData!
+                                          .crews![index - 1].position ==
+                                      null
+                                  ? const SizedBox()
+                                  : SizedBox(
+                                      width: DimensionConstants.d100.w,
+                                      child: Text(provider
+                                                  .projectDetailCrewResponse!
+                                                  .projectData!
+                                                  .crews![index - 1]
+                                                  .position ??
+                                              "")
+                                          .regularText(
+                                              context,
+                                              DimensionConstants.d14.sp,
+                                              TextAlign.left,
+                                              color: Theme.of(context)
+                                                          .brightness ==
+                                                      Brightness.dark
+                                                  ? ColorConstants.colorWhite
+                                                  : ColorConstants.deepBlue,
+                                              maxLines: 1,
+                                              overflow: TextOverflow.ellipsis),
+                                    ),
                               archivedOrNot != true
                                   ? SizedBox(
                                       width: DimensionConstants.d75.w,
-                                      child: Text(
-                                              "\$${provider.projectDetailCrewResponse!.projectData!.projectRate![index - 1].price.toString()}/hr")
-                                          .regularText(
+                                      child: provider
+                                                  .projectDetailCrewResponse!
+                                                  .projectData!
+                                                  .crews![index - 1]
+                                                  .sId ==
+                                              provider
+                                                  .projectDetailCrewResponse!
+                                                  .projectData
+                                                  ?.projectRate?[0]
+                                                  .crewId
+                                          ? Text("\$${provider.projectDetailCrewResponse!.projectData!.projectRate![0].price.toString()}/hr").regularText(
                                               context,
                                               DimensionConstants.d14.sp,
                                               TextAlign.left,
                                               color: ColorConstants.deepBlue,
                                               maxLines: 1,
-                                              overflow: TextOverflow.ellipsis))
+                                              overflow: TextOverflow.ellipsis)
+                                          : const SizedBox())
                                   : Text("invite_pending".tr()).regularText(
                                       context,
                                       DimensionConstants.d14.sp,

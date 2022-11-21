@@ -25,58 +25,77 @@ class AddCrewPageManager extends StatelessWidget {
   List<Crews>? crewList;
   String? projectId;
 
-  AddCrewPageManager({Key? key,this.crewList,this.projectId}) : super(key: key);
+  AddCrewPageManager({Key? key, this.crewList, this.projectId})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BaseView<AddCrewPageManagerProvider>(
       onModelReady: (provider) {
-        provider.alreadyMemberList=crewList;
-        provider.projectId=projectId;
+        provider.alreadyMemberList = crewList;
+        provider.projectId = projectId;
         provider.getCrewList(context);
       },
       builder: (context, provider, _) {
-        return Scaffold(
-          appBar: CommonWidgets.appBarWithTitleAndAction(context,
-              title: "add_crew", popFunction: () {
+        return GestureDetector(
+          onTap: () {
             CommonWidgets.hideKeyboard(context);
-            Navigator.pop(context);
-          }),
-          body: Padding(
-            padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
-            child: SingleChildScrollView(
+          },
+          child: Scaffold(
+            resizeToAvoidBottomInset: false,
+            appBar: CommonWidgets.appBarWithTitleAndAction(context,
+                title: "add_crew", popFunction: () {
+              CommonWidgets.hideKeyboard(context);
+              Navigator.pop(context);
+            }),
+            body: Padding(
+              padding:
+                  EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
               child: Column(
-                children: <Widget>[
-                  SizedBox(
-                    height: DimensionConstants.d16.h,
-                  ),
-                  searchBarWidget(),
-                  SizedBox(
-                    height: DimensionConstants.d13.h,
-                  ),
-                  shareWidget(context, provider),
-                  SizedBox(
-                    height: DimensionConstants.d13.h,
-                  ),
-                  crewWidget(context, provider),
-                  SizedBox(
-                    height: DimensionConstants.d30.h,
-                  ),
-                  provider.state == ViewState.idle
-                      ? CommonWidgets.commonButton(context, "next".tr(),
-                          color1: ColorConstants.primaryGradient2Color,
-                          color2: ColorConstants.primaryGradient1Color,
-                          fontSize: DimensionConstants.d14.sp, onBtnTap: () {
-                          provider.navigateToNextPage(context);
-                        }, shadowRequired: true)
-                      : const Center(
-                          child: CircularProgressIndicator(
-                            color: ColorConstants.primaryGradient2Color,
+                children: [
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: <Widget>[
+                          SizedBox(
+                            height: DimensionConstants.d16.h,
                           ),
-                        ),
-                  SizedBox(
-                    height: DimensionConstants.d50.h,
+                          searchBarWidget(provider),
+                          SizedBox(
+                            height: DimensionConstants.d13.h,
+                          ),
+                          shareWidget(context, provider),
+                          SizedBox(
+                            height: DimensionConstants.d13.h,
+                          ),
+                          crewWidget(context, provider),
+                        ],
+                      ),
+                    ),
                   ),
+                  Column(
+                    children: [
+                      SizedBox(
+                        height: DimensionConstants.d20.h,
+                      ),
+                      provider.state == ViewState.idle
+                          ? CommonWidgets.commonButton(context, "next".tr(),
+                              color1: ColorConstants.primaryGradient2Color,
+                              color2: ColorConstants.primaryGradient1Color,
+                              fontSize: DimensionConstants.d14.sp,
+                              onBtnTap: () {
+                              provider.navigateToNextPage(context);
+                            }, shadowRequired: true)
+                          : const Center(
+                              child: CircularProgressIndicator(
+                                color: ColorConstants.primaryGradient2Color,
+                              ),
+                            ),
+                      SizedBox(
+                        height: DimensionConstants.d50.h,
+                      ),
+                    ],
+                  )
                 ],
               ),
             ),
@@ -87,7 +106,7 @@ class AddCrewPageManager extends StatelessWidget {
   }
 }
 
-Widget searchBarWidget() {
+Widget searchBarWidget(AddCrewPageManagerProvider provider) {
   return Container(
     height: DimensionConstants.d45.h,
     decoration: BoxDecoration(
@@ -109,6 +128,9 @@ Widget searchBarWidget() {
             child: TextFormField(
               cursorColor: ColorConstants.colorBlack,
               maxLines: 1,
+              onChanged: (value){
+                provider.onSearch(value.toLowerCase());
+              },
               decoration: ViewDecoration.inputDecorationBox(
                 fieldName: "search_for_name_city_or_trade".tr(),
                 radius: DimensionConstants.d8.r,
@@ -203,11 +225,12 @@ Widget crewWidget(
   BuildContext context,
   AddCrewPageManagerProvider provider,
 ) {
-  return Container(
-    height: DimensionConstants.d420.h,
+  return SizedBox(
     width: double.infinity,
     child: ListView.builder(
+      physics: const NeverScrollableScrollPhysics(),
       itemCount: provider.crewList.length,
+      shrinkWrap: true,
       itemBuilder: (BuildContext context, int index) {
         return Padding(
           padding: EdgeInsets.symmetric(vertical: DimensionConstants.d8.h),
@@ -246,7 +269,9 @@ Widget crewWidget(
                           color: ColorConstants.deepBlue),
                       if (provider.crewList[index].position!.isNotEmpty)
                         Text(provider.crewList[index].position!).regularText(
-                            context, DimensionConstants.d14.sp, TextAlign.center,
+                            context,
+                            DimensionConstants.d14.sp,
+                            TextAlign.center,
                             color: ColorConstants.deepBlue),
                       if (provider.crewList[index].address!.isNotEmpty)
                         Text(provider.crewList[index].address.toString())

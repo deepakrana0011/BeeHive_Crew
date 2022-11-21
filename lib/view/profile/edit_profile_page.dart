@@ -159,16 +159,15 @@ Widget profilePic(BuildContext context, VoidCallback changePhotoTap,
     alignment: Alignment.center,
     child: Column(
       children: <Widget>[
-        ClipRRect(
-          borderRadius: BorderRadius.circular(DimensionConstants.d50.r),
-          child: ImageView(
-            path: provider.profileImage == " "
-                ? ImageConstants.emptyImageIcon
-                : provider.profileImage,
-            height: DimensionConstants.d100.h,
-            width: DimensionConstants.d100.w,
-            fit: BoxFit.fill,
-          ),
+        ImageView(
+          path: provider.profileImage == " "
+              ? ImageConstants.emptyImageIcon
+              : provider.profileImage,
+          height: DimensionConstants.d100.w,
+          width: DimensionConstants.d100.w,
+          fit: BoxFit.cover,
+          circleCrop: true,
+          radius: DimensionConstants.d55.r,
         ),
         SizedBox(
           height: DimensionConstants.d16.h,

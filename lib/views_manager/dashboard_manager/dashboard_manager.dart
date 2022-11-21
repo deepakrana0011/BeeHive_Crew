@@ -441,6 +441,8 @@ Widget weeklyTabBarContainerManager(
                                   itemBuilder: (context, innerIndex) {
                                     return projectDetailTile(context, provider,
                                         checkInList: provider.weeklyData[index].checkInDataList!,
+                                        color: provider
+                                            .weeklyData[index].color,
                                         projectName: provider
                                             .weeklyData[index].projectName,
                                         crewCount: provider.weeklyData[index]
@@ -495,6 +497,7 @@ Widget projectHourRowManager(
           child: projectDetailTile(context, provider,
               checkInList: provider.managerResponse!.projectData![index].checkins,
               projectName: provider.managerResponse!.projectData![index].projectName,
+              color: provider.managerResponse!.projectData![index].color,
               crewCount: provider.managerResponse!.projectData![index].checkins!.length
                   .toString()),
         );
@@ -509,7 +512,7 @@ Widget projectHourRowManager(
 
 Widget projectDetailTile(
     BuildContext context, DashBoardPageManagerProvider provider,
-    {List<CheckInProjectDetailManager>? checkInList, String? projectName = "", String? crewCount}) {
+    {List<CheckInProjectDetailManager>? checkInList, String? projectName = "", String? crewCount,String? color}) {
   return GestureDetector(
     onTap: () {},
     child: Padding(
@@ -525,8 +528,7 @@ Widget projectDetailTile(
             width: DimensionConstants.d40.w,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color:
-                  Colors.primaries[Random().nextInt(Colors.primaries.length)],
+              color: color==null?Colors.black:Color(int.parse("0x$color")),
             ),
             child: Text(Validations.getInitials(string: projectName, limitTo: 2))
                     .boldText(
@@ -534,7 +536,7 @@ Widget projectDetailTile(
                         color: ColorConstants.colorWhite),
           ),
          // SizedBox(width: DimensionConstants.d14.w),
-          Container(
+          SizedBox(
             width: DimensionConstants.d120.w,
             child: Text(projectName ?? "")
                 .boldText(context, DimensionConstants.d13.sp, TextAlign.center),

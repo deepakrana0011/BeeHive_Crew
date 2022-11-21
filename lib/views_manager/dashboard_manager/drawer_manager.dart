@@ -4,8 +4,6 @@ import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/shared_prefs.dart';
 import 'package:beehive/provider/bottom_bar_Manager_provider.dart';
-import 'package:beehive/provider/drawer_manager_provider.dart';
-import 'package:beehive/view/base_view.dart';
 import 'package:beehive/views_manager/billing_information/billing_information_page_manager.dart';
 import 'package:beehive/widget/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -82,7 +80,7 @@ class _DrawerManagerState extends State<DrawerManager> {
                                               DimensionConstants.d55.r),
                                           child: Container(
                                             color: Colors.white,
-                                            height: DimensionConstants.d110.h,
+                                            height: DimensionConstants.d110.w,
                                             width: DimensionConstants.d110.w,
                                             child: Padding(
                                               padding:
@@ -90,7 +88,7 @@ class _DrawerManagerState extends State<DrawerManager> {
                                               child: ImageView(
                                                 path: widget.provider!.managerProfilePic.isEmpty ? "" : ApiConstantsCrew.BASE_URL_IMAGE + widget.provider!.managerProfilePic,/*SharedPreference.prefs!.getString(SharedPreference.USER_PROFILE) != null ?ApiConstantsManager.BASEURL_IMAGE+SharedPreference.prefs!.getString(SharedPreference.USER_PROFILE)!: "" ,*/
                                                 height:
-                                                    DimensionConstants.d110.h,
+                                                    DimensionConstants.d110.w,
                                                 width:
                                                     DimensionConstants.d110.w,
                                                 circleCrop: true,
@@ -207,11 +205,15 @@ class _DrawerManagerState extends State<DrawerManager> {
                         onTap: () {
                           Navigator.pop(context);
                           widget.provider!.onItemTapped(1);
+                          widget.provider!.showScheduleScreen = true;
                         },
                         child: drawerHeadingsRow(
                           context,
                           ImageConstants.calendarIcon,
                           "schedule".tr(),
+                            active: widget.provider!.selectedIndex == 1
+                                ? true
+                                : false
                         ),
                       ),
                       SizedBox(height: DimensionConstants.d33.h),
@@ -238,7 +240,7 @@ class _DrawerManagerState extends State<DrawerManager> {
                           onTap: () {
                             Navigator.pop(context);
                             Navigator.pushNamed(
-                                context, RouteConstants.appSettingsManager);
+                                context, RouteConstants.appSettings);
                           },
                           child: drawerHeadingsRow(
                               context,

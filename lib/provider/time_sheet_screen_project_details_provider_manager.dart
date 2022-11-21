@@ -21,7 +21,7 @@ class TimeSheetScreenProjectDetailsProvider extends BaseProvider {
         var checkInDate =
             DateFunctions.getDateTimeFromString(detail.checkInTime!);
         var checkOutDate =
-            DateFunctions.getDateTimeFromString(detail.checkOutTime!);
+            DateFunctions.getDateTimeFromString(DateFunctions.checkTimeIsNull(detail.checkOutTime));
         if (breakStartTimeDate.isAfter(checkInDate) &&
             breakStartTimeDate.isBefore(checkOutDate)) {
           var interruption = Interuption();
@@ -98,5 +98,14 @@ class TimeSheetScreenProjectDetailsProvider extends BaseProvider {
           type: 1));
     }
     return projectWorkingHourList;
+  }
+
+  int? getTotalMinutes(String? checkInTime, String? checkOutTime) {
+    var startTime = DateFunctions.getDateTimeFromString(checkInTime!);
+    var endTime = DateFunctions.getDateTimeFromString(
+        (checkOutTime == null || checkOutTime.trim().isEmpty)
+            ? DateFunctions.dateFormatyyyyMMddHHmm(DateTime.now())
+            : checkOutTime);
+    return endTime.difference(startTime).inMinutes;
   }
 }

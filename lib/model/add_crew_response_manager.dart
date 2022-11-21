@@ -9,7 +9,7 @@ class AddCrewResponseManager {
     if (json['data'] != null) {
       data = <AddCrewData>[];
       json['data'].forEach((v) {
-        data!.add(new AddCrewData.fromJson(v));
+        data!.add(AddCrewData.fromJson(v));
       });
     }
   }
@@ -30,6 +30,7 @@ class AddCrewData {
   String? name;
   String? position;
   String? profileImage;
+  String? projectRate;
   String? speciality;
   bool isSelected = false;
 
@@ -46,7 +47,7 @@ class AddCrewData {
         this.name,
         this.position,
         this.profileImage,
-        this.speciality});
+        this.speciality,this.projectRate});
 
   AddCrewData.fromJson(Map<String, dynamic> json) {
     id = json['_id'];
@@ -62,6 +63,7 @@ class AddCrewData {
     position = json['position']??"";
     profileImage = json['profileImage'];
     speciality = json['speciality'];
+    projectRate = json['projectRate'];
   }
 
 }

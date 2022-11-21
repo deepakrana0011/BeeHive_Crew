@@ -75,8 +75,9 @@ class TimeSheetManagerProvider extends BaseProvider {
       {showFullLoader = false}) async {
     showFullLoader ? setState(ViewState.busy) : updateLoading(true);
     try {
-      var model =
-          await api.projectTimeSheetManager(context, startDate!, endDate!);
+      var currentTime = DateFunctions.dateFormatyyyyMMddHHmm(DateTime.now());
+      var model = await api.projectTimeSheetManager(
+          context, startDate!, endDate!, currentTime);
       if (model.success == true) {
         totalActiveProjects = model.activeProject ?? 0;
         totalHoursAllActiveProjects = model.totalHours ?? 0;
@@ -127,17 +128,20 @@ class TimeSheetManagerProvider extends BaseProvider {
   }
 
   void getAllProjectTotalHours() {
-
-    var totalHours =0;
+    var totalHours = 0;
     for (var element in projectDataResponse) {
       var totalMinutes = 0;
       for (var element in element.checkins) {
-        var startTime = DateFunctions.getDateTimeFromString(element.checkInTime!);
-        var endTime = (element.checkOutTime == null || element.checkOutTime!.trim().isEmpty) ? DateTime.now() : DateFunctions.getDateTimeFromString(element.checkOutTime!);
+        var startTime =
+            DateFunctions.getDateTimeFromString(element.checkInTime!);
+        var endTime = (element.checkOutTime == null ||
+                element.checkOutTime!.trim().isEmpty)
+            ? DateTime.now()
+            : DateFunctions.getDateTimeFromString(element.checkOutTime!);
         var minutes = startTime.difference(endTime).inMinutes;
         totalMinutes = totalMinutes + minutes.abs();
       }
-      totalHours = totalHours+totalMinutes;
+      totalHours = totalHours + totalMinutes;
     }
 
     allProjectHour = DateFunctions.minutesToHourString(totalHours);
@@ -208,24 +212,25 @@ class TimeSheetManagerProvider extends BaseProvider {
   void groupDataByDate() {
     weeklyData.clear();
     for (int i = 0; i < projectDataResponse.length; i++) {
-      var selectedDate = DateFormat("yyyy-MM-dd").parse(projectDataResponse[i].date!);
+      var selectedDate =
+          DateFormat("yyyy-MM-dd").parse(projectDataResponse[i].date!);
       var dateTimeString = DateFunctions.dateFormatWithDayName(selectedDate);
       if (weeklyData.isEmpty) {
         List<TimeSheetProjectData> projectDataList = [];
         projectDataList.add(projectDataResponse[i]);
         var weeklyDataObject = TimeSheetWeeklyDataModelManager();
         weeklyDataObject.date = dateTimeString;
-        weeklyDataObject.projectDataList=projectDataList;
+        weeklyDataObject.projectDataList = projectDataList;
         weeklyData.add(weeklyDataObject);
       } else {
         var index =
-        weeklyData.indexWhere((element) => element.date == dateTimeString);
+            weeklyData.indexWhere((element) => element.date == dateTimeString);
         if (index == -1) {
           List<TimeSheetProjectData> projectDataList = [];
           projectDataList.add(projectDataResponse[i]);
           var weeklyDataObject = TimeSheetWeeklyDataModelManager();
           weeklyDataObject.date = dateTimeString;
-          weeklyDataObject.projectDataList=projectDataList;
+          weeklyDataObject.projectDataList = projectDataList;
           weeklyData.add(weeklyDataObject);
         } else {
           weeklyData[index].projectDataList?.add(projectDataResponse[i]);

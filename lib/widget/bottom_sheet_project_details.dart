@@ -1,4 +1,3 @@
-
 import 'package:beehive/constants/api_constants.dart';
 import 'package:beehive/constants/color_constants.dart';
 import 'package:beehive/constants/dimension_constants.dart';
@@ -13,7 +12,13 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../constants/image_constants.dart';
 import 'image_view.dart';
 
-bottomSheetProjectDetails(BuildContext context, {required VoidCallback onTap, required bool timeSheetOrSchedule,  ProjectData? projectData,  Color? projectColor, List<Crews>? crews,
+bottomSheetProjectDetails(
+  BuildContext context, {
+  required VoidCallback onTap,
+  required bool timeSheetOrSchedule,
+  ProjectData? projectData,
+  Color? projectColor,
+  List<Crews>? crews,
 }) {
   showModalBottomSheet(
       isScrollControlled: true,
@@ -73,54 +78,74 @@ bottomSheetProjectDetails(BuildContext context, {required VoidCallback onTap, re
       });
 }
 
-Widget projectInformation(BuildContext context, ProjectData projectData, color){
+Widget projectInformation(
+    BuildContext context, ProjectData projectData, color) {
   return Column(
-    children:<Widget> [
+    children: <Widget>[
       Container(
-        height: DimensionConstants.d40.h,
-        width: DimensionConstants.d40.w,
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(DimensionConstants.d20.r),
-        ),
-        child: Center(
-          child: Text(projectData.projectName.toString().substring(0,2).toUpperCase()).boldText(context, DimensionConstants.d16.sp, TextAlign.center,color: ColorConstants.colorWhite),
-        )
+          height: DimensionConstants.d40.h,
+          width: DimensionConstants.d40.w,
+          decoration: BoxDecoration(
+            color: color,
+            borderRadius: BorderRadius.circular(DimensionConstants.d20.r),
+          ),
+          child: Center(
+            child: Text(projectData.projectName
+                    .toString()
+                    .substring(0, 2)
+                    .toUpperCase())
+                .boldText(context, DimensionConstants.d16.sp, TextAlign.center,
+                    color: ColorConstants.colorWhite),
+          )),
+      SizedBox(
+        height: DimensionConstants.d11.h,
       ),
-      SizedBox(height: DimensionConstants.d11.h,),
-      Text(projectData.projectName.toString()).boldText(context, DimensionConstants.d18.sp, TextAlign.center,color: ColorConstants.colorBlack,
-          maxLines: 1, overflow: TextOverflow.ellipsis),
-      SizedBox(height: DimensionConstants.d6.h,),
-      Text(DateFunctions.dateTimeWithWeek(DateTime.parse(projectData.createdAt.toString()).toLocal())).boldText(context, DimensionConstants.d16.sp, TextAlign.center,color: ColorConstants.colorBlack),
+      Text(projectData.projectName.toString()).boldText(
+          context, DimensionConstants.d18.sp, TextAlign.center,
+          color: ColorConstants.colorBlack,
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis),
+      SizedBox(
+        height: DimensionConstants.d6.h,
+      ),
+      Text(DateFunctions.dateTimeWithWeek(
+              DateTime.parse(projectData.createdAt.toString()).toLocal()))
+          .boldText(context, DimensionConstants.d16.sp, TextAlign.center,
+              color: ColorConstants.colorBlack),
     ],
   );
-
 }
 
-Widget crewOnThisProjectListView(BuildContext context,bool timeSheetOrSchedule, ProjectData projectData){
+Widget crewOnThisProjectListView(
+    BuildContext context, bool timeSheetOrSchedule, ProjectData projectData) {
   return SizedBox(
     height: DimensionConstants.d180.h,
     child: ListView.builder(
-      padding: EdgeInsets.zero,
-      shrinkWrap: true,
-      itemCount: projectData.crews!.length,
-        itemBuilder: (context, index){
-      return userProfile(context, timeSheetOrSchedule, projectData.crews![index], projectData);
-    }),
+        padding: EdgeInsets.zero,
+        shrinkWrap: true,
+        itemCount: projectData.crews!.length,
+        itemBuilder: (context, index) {
+          return userProfile(context, timeSheetOrSchedule,
+              projectData.crews![index], projectData);
+        }),
   );
 }
 
-Widget userProfile(BuildContext context, bool timeSheetOrSchedule, Crews crewData, ProjectData projectData){
+Widget userProfile(BuildContext context, bool timeSheetOrSchedule,
+    Crews crewData, ProjectData projectData) {
   return GestureDetector(
-    onTap: (){
-      if(timeSheetOrSchedule == true){
+    onTap: () {
+      if (timeSheetOrSchedule == true) {
         Navigator.of(context).pop();
-        Navigator.pushNamed(context, RouteConstants.crewPageProfileManager, arguments: CrewProfilePageManager(projectName: projectData.projectName ?? "", crewData: crewData, projectId: projectData.sId ?? "",));
-      }else{
+        Navigator.pushNamed(context, RouteConstants.crewPageProfileManager,
+            arguments: CrewProfilePageManager(
+              crewId: projectData.crews![0].sId ?? "",
+            ));
+      } else {
         Navigator.of(context).pop();
-        Navigator.pushNamed(context, RouteConstants.timeSheetScreenManager,arguments: TimeSheetsScreenManager(removeInterruption: false));
+        Navigator.pushNamed(context, RouteConstants.timeSheetScreenManager,
+            arguments: TimeSheetsScreenManager(removeInterruption: false));
       }
-
     },
     child: Material(
       elevation: 2,
@@ -132,48 +157,58 @@ Widget userProfile(BuildContext context, bool timeSheetOrSchedule, Crews crewDat
           borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
         ),
         child: Padding(
-          padding:  EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
+          padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
           child: Row(
-            children:<Widget> [
-            crewData.profileImage == null ?
-                Container(
-                  height: DimensionConstants.d50.h,
-                  width: DimensionConstants.d50.w,
-                  decoration: const BoxDecoration(
-                      color: ColorConstants.primaryColor,
-                    shape: BoxShape.circle
-                  ),
-                )
-                : ClipRRect(
-              borderRadius: BorderRadius.circular(DimensionConstants.d50.r),
-                  child: SizedBox(
-                  height: DimensionConstants.d50.h,
-                  width: DimensionConstants.d50.w,
-                  child: ImageView(path: (ApiConstantsCrew.BASE_URL_IMAGE + crewData.profileImage.toString()),
-                  fit: BoxFit.contain,
-                  ),
+            children: <Widget>[
+              crewData.profileImage == null
+                  ? Container(
+                      height: DimensionConstants.d50.h,
+                      width: DimensionConstants.d50.w,
+                      decoration: const BoxDecoration(
+                          color: ColorConstants.primaryColor,
+                          shape: BoxShape.circle),
+                    )
+                  : ClipRRect(
+                      borderRadius:
+                          BorderRadius.circular(DimensionConstants.d50.r),
+                      child: SizedBox(
+                        height: DimensionConstants.d50.h,
+                        width: DimensionConstants.d50.w,
+                        child: ImageView(
+                          path: (ApiConstantsCrew.BASE_URL_IMAGE +
+                              crewData.profileImage.toString()),
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+              SizedBox(
+                width: DimensionConstants.d16.w,
               ),
-                ),
-              SizedBox(width: DimensionConstants.d16.w,),
               Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children:<Widget> [
-                  Text(crewData.name.toString()).boldText(context, DimensionConstants.d16.sp, TextAlign.left,color: ColorConstants.deepBlue),
-                  Text(crewData.position != null ? "${crewData.position}    \$${crewData.projectRate}/hr" : "\$${crewData.projectRate}/hr").regularText(context, DimensionConstants.d14.sp, TextAlign.left,color: ColorConstants.deepBlue),
+                children: <Widget>[
+                  Text(crewData.name.toString()).boldText(
+                      context, DimensionConstants.d16.sp, TextAlign.left,
+                      color: ColorConstants.deepBlue),
+                  Text(crewData.position != null
+                          ? "${crewData.position}    \$${crewData.projectRate}/hr"
+                          : "\$${crewData.projectRate}/hr")
+                      .regularText(
+                          context, DimensionConstants.d14.sp, TextAlign.left,
+                          color: ColorConstants.deepBlue),
                 ],
               ),
               Expanded(child: Container()),
-              ImageView(path: ImageConstants.arrowIcon,
-              width: DimensionConstants.d10.w,
-              height: DimensionConstants.d14.h,)
-
+              ImageView(
+                path: ImageConstants.arrowIcon,
+                width: DimensionConstants.d10.w,
+                height: DimensionConstants.d14.h,
+              )
             ],
           ),
         ),
       ),
     ),
   );
-
-
 }

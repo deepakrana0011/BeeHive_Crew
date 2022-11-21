@@ -23,20 +23,20 @@ class AllCheckoutProjectCrewResponse {
 }
 
 class ProjectDetail {
-  ProjectDetail({
-    this.id,
-    this.projectName,
-    this.crewId,
-    this.checkins,
-    this.totalHours,
-  });
+  ProjectDetail(
+      {this.id,
+      this.projectName,
+      this.crewId,
+      this.checkins,
+      this.totalHours,
+      this.color});
 
   String? id;
   String? projectName;
   List<String>? crewId;
   List<Checkin>? checkins;
   int? totalHours;
-  Color color = Colors.primaries[Random().nextInt(Colors.primaries.length)];
+  String? color;
 
   factory ProjectDetail.fromJson(Map<String, dynamic> json) => ProjectDetail(
         id: json["_id"],
@@ -45,6 +45,7 @@ class ProjectDetail {
         checkins: List<Checkin>.from(
             json["checkins"].map((x) => Checkin.fromJson(x))),
         totalHours: json["totalHours"],
+        color: json["color"],
       );
 }
 
