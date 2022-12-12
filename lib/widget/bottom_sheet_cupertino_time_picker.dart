@@ -11,7 +11,8 @@ import 'image_view.dart';
 
 bottomSheetTimeSheetTimePicker(
   BuildContext context, {
-  required VoidCallback onTap,
+  required Function selectedDate,
+  required DateTime? currentTime,
   required bool timeSheetOrSchedule,
 }) {
   showModalBottomSheet(
@@ -39,26 +40,20 @@ bottomSheetTimeSheetTimePicker(
                         topRight: Radius.circular(DimensionConstants.d41.r)),
                   ),
                   child: Padding(
-                    padding:  EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
+                    padding: EdgeInsets.symmetric(
+                        horizontal: DimensionConstants.d16.w),
                     child: Column(
                       children: <Widget>[
                         SizedBox(
                           height: DimensionConstants.d20.h,
                         ),
-                        Text("change_time".tr()).boldText(
-                            context, DimensionConstants.d20.sp, TextAlign.center,
+                        Text("change_time".tr()).boldText(context,
+                            DimensionConstants.d20.sp, TextAlign.center,
                             color: ColorConstants.deepBlue),
-                        SizedBox(height: DimensionConstants.d10.h,),
-                        timeSelector(),
-                        CommonWidgets.commonButton(
-                            context, "save".tr(),
-                            color1: ColorConstants.primaryGradient1Color,
-                            color2: ColorConstants.primaryGradient2Color,
-                            fontSize: DimensionConstants.d16.sp,
-                            shadowRequired: true, onBtnTap: () {
-                          Navigator.of(context).pop();
-
-                        }),
+                        SizedBox(
+                          height: DimensionConstants.d10.h,
+                        ),
+                        timeSelector(context, currentTime!, selectedDate),
                       ],
                     ),
                   ),
@@ -81,7 +76,9 @@ bottomSheetTimeSheetTimePicker(
       });
 }
 
-Widget timeSelector() {
+Widget timeSelector(
+    BuildContext context, DateTime initialTime, Function selectedDate) {
+  DateTime selectedTime = initialTime;
   return Column(
     crossAxisAlignment: CrossAxisAlignment.start,
     children: [
@@ -102,14 +99,22 @@ Widget timeSelector() {
               ),
             ),
             child: CupertinoDatePicker(
-              initialDateTime: DateFormat("hh:mm a").parse("12:00 AM"),
+              initialDateTime: initialTime,
               mode: CupertinoDatePickerMode.time,
               use24hFormat: false,
               // This is called when the user changes the date.
-              onDateTimeChanged: (DateTime newDate) {},
+              onDateTimeChanged: (DateTime newDate) {
+                selectedTime = newDate;
+              },
             ),
           ))),
-
+      CommonWidgets.commonButton(context, "save".tr(),
+          color1: ColorConstants.primaryGradient1Color,
+          color2: ColorConstants.primaryGradient2Color,
+          fontSize: DimensionConstants.d16.sp,
+          shadowRequired: true, onBtnTap: () {
+        selectedDate(selectedTime);
+      }),
     ],
   );
 }

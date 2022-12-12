@@ -215,7 +215,9 @@ class CrewProfilePageManager extends StatelessWidget {
           ),
           provider.priceUpdateLoader
               ? const Center(
-                  child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,),
+                  child: CircularProgressIndicator(
+                    color: ColorConstants.primaryGradient2Color,
+                  ),
                 )
               : crewRateWidget(context, provider),
         ],

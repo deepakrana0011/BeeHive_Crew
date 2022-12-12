@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "714581837920",
+    "project_id": "beehive-c47d9",
+    "storage_bucket": "beehive-c47d9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:714581837920:android:61909dd6113a2d0ccf5b05",
+        "android_client_info": {
+          "package_name": "com.devherds.beehive"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "714581837920-argpmabfbj1t7np794qds53pemgq7b41.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAsx-x_EofGOPFt97oYPBnq50V1I2QmSXc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "714581837920-argpmabfbj1t7np794qds53pemgq7b41.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

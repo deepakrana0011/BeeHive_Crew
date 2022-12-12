@@ -228,6 +228,8 @@ class LoginScreenManager extends StatelessWidget {
           contPadding: provider.passwordContentPadding,
           suffixIcon: IconButton(
             padding: EdgeInsets.zero,
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
             icon: ImageView(
               path: provider.passwordVisible
                   ? ImageConstants.eyeIcon

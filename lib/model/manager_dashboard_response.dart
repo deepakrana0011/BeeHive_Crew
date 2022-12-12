@@ -1,5 +1,7 @@
 import 'package:beehive/model/crew_dashboard_response.dart';
 
+import 'crew_timesheet_model.dart';
+
 class ManagerDashboardResponse {
   ManagerDashboardResponse({
     this.success,
@@ -27,20 +29,20 @@ class ManagerDashboardResponse {
 }
 
 class Manager {
-  Manager({
-    this.id,
-    this.email,
-    this.name,
-    this.password,
-    this.status,
-    this.profileImage,
-    this.companyLogo,
-    this.createdAt,
-    this.v,
-    this.countryCode,
-    this.phoneNumber,
-    this.customColor
-  });
+  Manager(
+      {this.id,
+      this.email,
+      this.name,
+      this.password,
+      this.status,
+      this.profileImage,
+      this.companyLogo,
+      this.createdAt,
+      this.v,
+      this.countryCode,
+      this.phoneNumber,
+      this.customColor});
+
   String? id;
   String? email;
   String? name;
@@ -53,6 +55,7 @@ class Manager {
   String? countryCode;
   int? phoneNumber;
   String? customColor;
+
   factory Manager.fromJson(Map<String, dynamic> json) => Manager(
         id: json["_id"],
         email: json["email"],
@@ -68,6 +71,7 @@ class Manager {
         customColor: json["customColor"] ?? "",
       );
 }
+
 class ProjectDetail {
   ProjectDetail({
     this.id,
@@ -80,6 +84,7 @@ class ProjectDetail {
     this.status,
     this.checkins,
   });
+
   String? id;
   DateTime? date;
   String? projectDatumId;
@@ -89,12 +94,13 @@ class ProjectDetail {
   String? roundTimesheets;
   int? status;
   List<CheckInProjectDetailManager>? checkins;
+
   factory ProjectDetail.fromJson(Map<String, dynamic> json) => ProjectDetail(
         id: json["_id"],
         date: DateTime.parse(json["date"]),
         projectDatumId: json["id"],
         projectName: json["projectName"],
-    color: json["color"],
+        color: json["color"],
         crewId: List<String>.from(json["crewId"].map((x) => x)),
         roundTimesheets: json["roundTimesheets"],
         status: json["status"],
@@ -102,17 +108,19 @@ class ProjectDetail {
             .map((x) => CheckInProjectDetailManager.fromJson(x))),
       );
 }
+
 class CheckInProjectDetailManager {
-  CheckInProjectDetailManager({
-    this.id,
-    this.crewId,
-    this.checkInTime,
-    this.hoursDiff,
-    this.checkinBreak,
-    this.interuption,
-    this.checkOutTime,
-    this.crew
-  });
+  CheckInProjectDetailManager(
+      {this.id,
+      this.crewId,
+      this.checkInTime,
+      this.hoursDiff,
+      this.checkinBreak,
+      this.interuption,
+      this.interuptions,
+      this.checkOutTime,
+      this.crew});
+
   String? id;
   String? crewId;
   CrewMemberDetail? crew;
@@ -120,7 +128,9 @@ class CheckInProjectDetailManager {
   int? hoursDiff;
   List<Break>? checkinBreak;
   List<Interruption>? interuption;
+  List<Interuption>? interuptions;
   String? checkOutTime;
+
   factory CheckInProjectDetailManager.fromJson(Map<String, dynamic> json) =>
       CheckInProjectDetailManager(
         id: json["_id"],
@@ -134,26 +144,27 @@ class CheckInProjectDetailManager {
             List<Break>.from(json["break"].map((x) => Break.fromJson(x))),
         interuption: List<Interruption>.from(
             json["interuption"].map((x) => Interruption.fromJson(x))),
+        interuptions: List<Interuption>.from(
+            json["interuption"].map((x) => Interuption.fromJson(x))),
         checkOutTime: json["checkOutTime"],
       );
 }
 
 class CrewMemberDetail {
-  CrewMemberDetail({
-    this.id,
-    this.email,
-    this.name,
-    this.password,
-    this.status,
-    this.projectRate
-  });
+  CrewMemberDetail(
+      {this.id,
+      this.email,
+      this.name,
+      this.password,
+      this.status,
+      this.projectRate});
 
   String? id;
   String? email;
   String? name;
   String? password;
   int? status;
-  String ? projectRate;
+  String? projectRate;
 
   factory CrewMemberDetail.fromJson(Map<String, dynamic> json) =>
       CrewMemberDetail(
@@ -165,51 +176,3 @@ class CrewMemberDetail {
         projectRate: json["sameRate"] ?? json["projectRate"] ?? "",
       );
 }
-
-/*class Break {
-  Break({
-    this.startTime,
-    this.interval,
-    this.id,
-  });
-
-  String? startTime;
-  String? interval;
-  String? id;
-
-  factory Break.fromJson(Map<String, dynamic> json) => Break(
-        startTime: json["startTime"],
-        interval: json["interval"],
-        id: json["_id"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "startTime": startTime,
-        "interval": interval,
-        "_id": id,
-      };
-}
-
-class Interuption {
-  Interuption({
-    this.startTime,
-    this.endTime,
-    this.id,
-  });
-
-  String? startTime;
-  String? endTime;
-  String? id;
-
-  factory Interuption.fromJson(Map<String, dynamic> json) => Interuption(
-        startTime: json["startTime"],
-        endTime: json["endTime"],
-        id: json["_id"],
-      );
-
-  Map<String, dynamic> toJson() => {
-        "startTime": startTime,
-        "endTime": endTime,
-        "_id": id,
-      };
-}*/

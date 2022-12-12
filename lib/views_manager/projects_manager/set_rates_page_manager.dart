@@ -252,7 +252,7 @@ Widget rateBoxWidget(
                 maxLines: 1,
                 keyboardType: TextInputType.number,
                 decoration: ViewDecoration.inputDecorationBoxRate(
-                  fieldName: "20.00",
+                  fieldName: "00.00",
                   radius: DimensionConstants.d8.r,
                   fillColor: Theme.of(context).brightness == Brightness.dark
                       ? ColorConstants.colorWhite
@@ -392,7 +392,7 @@ Widget perCrewRates(
                                           .withOpacity(0.5)
                                       : ColorConstants.colorBlack),
                               decoration: ViewDecoration.inputDecorationBoxRate(
-                                fieldName: "20.00",
+                                fieldName: "00.00",
                                 radius: DimensionConstants.d8.r,
                                 fillColor: Theme.of(context).brightness ==
                                         Brightness.dark

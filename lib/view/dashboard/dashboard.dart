@@ -1,26 +1,22 @@
 // ignore_for_file: use_build_context_synchronously
 
 import 'dart:async';
-import 'dart:math';
 
 import 'package:beehive/enum/enum.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/extension/time_of_day_extenstion.dart';
+import 'package:beehive/globals/globals.dart';
 import 'package:beehive/helper/date_function.dart';
 import 'package:beehive/helper/shared_prefs.dart';
 import 'package:beehive/helper/validations.dart';
 import 'package:beehive/model/allProjectCrewResponse.dart';
-import 'package:beehive/model/check_box_model_crew.dart';
 import 'package:beehive/model/crew_dashboard_response.dart';
 import 'package:beehive/model/project_working_hour_detail.dart';
-import 'package:beehive/widget/custom_circular_bar.dart';
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
-
 import '../../constants/color_constants.dart';
 import '../../constants/dimension_constants.dart';
 import '../../constants/image_constants.dart';
@@ -28,10 +24,9 @@ import '../../constants/route_constants.dart';
 import '../../helper/common_widgets.dart';
 import '../../helper/dialog_helper.dart';
 import '../../locator.dart';
+import '../../notification/firebase_notification.dart';
 import '../../provider/bottom_bar_provider.dart';
 import '../../provider/dashboard_provider.dart';
-import '../../widget/custom_tab_bar.dart';
-import '../../widget/get_time.dart';
 import '../../widget/image_view.dart';
 import '../base_view.dart';
 
@@ -46,13 +41,15 @@ class _DashBoardPageState extends State<DashBoardPage>
     with TickerProviderStateMixin {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   DashboardProvider provider = locator<DashboardProvider>();
-
+  var currentFocus;
   BottomBarProvider? bottomBarProvider;
   TabController? controller;
   Timer? timer;
+  FirebaseNotification firebaseNotification = locator<FirebaseNotification>();
 
   @override
   void initState() {
+    firebaseNotification.configureFireBase(context);
     bottomBarProvider = Provider.of<BottomBarProvider>(context, listen: false);
     super.initState();
   }
@@ -73,10 +70,11 @@ class _DashBoardPageState extends State<DashBoardPage>
       provider.startDate = DateFunctions.getCurrentDateMonthYear();
       provider.endDate = DateFunctions.getCurrentDateMonthYear();
 
-      await provider.determinePosition().then((value) async => {
-            await provider.getLngLt(context),
-          });
-
+      if (Globals.latitude == 0.0 && Globals.longitude == 0.0) {
+        await provider.checkPermission().then((value) async => {
+              if (value) {await provider.getLatLng(context)}
+            });
+      }
       await getDashBoardData(context);
       provider.startTimer(timer);
     }, builder: (context, provider, _) {
@@ -1454,5 +1452,16 @@ class _DashBoardPageState extends State<DashBoardPage>
         });
       }
     }
+  }
+
+  Widget _buildMyDoneWidget() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text('My Done Widget'),
+        const SizedBox(width: 10.0),
+        Icon(Icons.arrow_drop_down, size: 20.0),
+      ],
+    );
   }
 }

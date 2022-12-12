@@ -17,9 +17,10 @@ import '../../helper/decoration.dart';
 import '../../helper/dialog_helper.dart';
 
 class CrewMemberAddByManager extends StatelessWidget {
-
   String projectId;
-  CrewMemberAddByManager({Key? key,required this.projectId}) : super(key: key);
+
+  CrewMemberAddByManager({Key? key, required this.projectId}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return BaseView<CrewMemberAddByManagerProvider>(
@@ -27,10 +28,11 @@ class CrewMemberAddByManager extends StatelessWidget {
       builder: (context, provider, _) {
         return Scaffold(
           appBar: CommonWidgets.appBarWithTitleAndAction(context,
-              title: "add_profile", actionButtonRequired: false,
-              popFunction: () { CommonWidgets.hideKeyboard(context);
-              Navigator.pop(context);}
-          ),
+              title: "add_profile",
+              actionButtonRequired: false, popFunction: () {
+            CommonWidgets.hideKeyboard(context);
+            Navigator.pop(context);
+          }),
           body: SingleChildScrollView(
             child: Column(
               children: <Widget>[
@@ -55,15 +57,16 @@ class CrewMemberAddByManager extends StatelessWidget {
                 SizedBox(
                   height: DimensionConstants.d24.h,
                 ),
-                textFiledName(context, "name", "John Smith",provider.nameController),
+                textFiledName(context, "name", provider.nameController),
                 SizedBox(
                   height: DimensionConstants.d16.h,
                 ),
-                textFiledName(context, "title", "Carpenter",provider.titleController),
+                textFiledName(context, "title", provider.titleController),
                 SizedBox(
                   height: DimensionConstants.d16.h,
                 ),
-                textFiledName(context, "specialty", "Framing & Finishing",provider.specialityController),
+                textFiledName(
+                    context, "specialty", provider.specialityController),
                 SizedBox(
                   height: DimensionConstants.d24.h,
                 ),
@@ -76,34 +79,43 @@ class CrewMemberAddByManager extends StatelessWidget {
                 SizedBox(
                   height: DimensionConstants.d24.h,
                 ),
-                textFiledName(context, "company", "xyz Company",provider.companyController),
+                textFiledName(context, "company", provider.companyController),
                 SizedBox(
                   height: DimensionConstants.d16.h,
                 ),
-                textFiledName(context, "phone", "123-555-2514",provider.phoneController),
+                textFiledName(context, "phone", provider.phoneController),
                 SizedBox(
                   height: DimensionConstants.d16.h,
                 ),
-                textFiledName(context, "email", "johnsmith@gmail.com",provider.emailController),
+                textFiledName(context, "email", provider.emailController),
                 SizedBox(
                   height: DimensionConstants.d16.h,
                 ),
-                textFiledName(
-                    context, "address", "88 Bloor St E. Toronto, ON, M4W3G9",provider.addressController),
+                textFiledName(context, "address", provider.addressController),
                 SizedBox(
                   height: DimensionConstants.d38.h,
                 ),
                 Padding(
                   padding: EdgeInsets.symmetric(
                       horizontal: DimensionConstants.d16.w),
-                  child:provider.state == ViewState.idle? CommonWidgets.commonButton(context, "save".tr(),
-                      color1: ColorConstants.primaryGradient2Color,
-                      color2: ColorConstants.primaryGradient1Color,
-                      fontSize: DimensionConstants.d14.sp, onBtnTap: () {
-                    provider.addNewCrewByManager(context, projectId);
-                  },
-                    shadowRequired: true
-                  ):const Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,),),
+                  child: provider.state == ViewState.idle
+                      ? CommonWidgets.commonButton(context, "save".tr(),
+                          color1: ColorConstants.primaryGradient2Color,
+                          color2: ColorConstants.primaryGradient1Color,
+                          fontSize: DimensionConstants.d14.sp, onBtnTap: () {
+                        if (provider.nameController.text.trim().isEmpty) {
+                          DialogHelper.showMessage(
+                              context, "name_required".tr());
+                        }else{
+                          provider.addNewCrewByManager(context, projectId);
+                        }
+
+                        }, shadowRequired: true)
+                      : const Center(
+                          child: CircularProgressIndicator(
+                            color: ColorConstants.primaryGradient2Color,
+                          ),
+                        ),
                 ),
                 SizedBox(
                   height: DimensionConstants.d50.h,
@@ -148,7 +160,8 @@ Widget profilePic(BuildContext context, VoidCallback changePhotoTap,
   );
 }
 
-Widget textFiledName(BuildContext context, String title, String hintName, TextEditingController controller) {
+Widget textFiledName(
+    BuildContext context, String title, TextEditingController controller) {
   return Padding(
     padding: EdgeInsets.symmetric(horizontal: DimensionConstants.d16.w),
     child: Column(
@@ -170,9 +183,9 @@ Widget textFiledName(BuildContext context, String title, String hintName, TextEd
                 : ColorConstants.colorBlack,
             border: Theme.of(context).brightness == Brightness.dark
                 ? Border.all(
-                color: Theme.of(context).brightness == Brightness.dark
-                    ? ColorConstants.colorWhite
-                    : Colors.transparent)
+                    color: Theme.of(context).brightness == Brightness.dark
+                        ? ColorConstants.colorWhite
+                        : Colors.transparent)
                 : null,
             borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
           ),
@@ -183,7 +196,7 @@ Widget textFiledName(BuildContext context, String title, String hintName, TextEd
                 : ColorConstants.colorBlack,
             maxLines: 1,
             decoration: ViewDecoration.inputDecorationBox(
-              fieldName: hintName.tr(),
+              fieldName: '',
               radius: DimensionConstants.d8.r,
               fillColor: Theme.of(context).brightness == Brightness.dark
                   ? ColorConstants.colorWhite

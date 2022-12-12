@@ -147,6 +147,7 @@ class TimeSheetCheckins {
   String? checkInTime;
   int? hoursDiff;
   List<Interuption>? interuption;
+  List<Interuption>? ignoredInteruption;
   String? checkOutTime;
   String? date;
   List<Break>? breaks;
@@ -159,6 +160,7 @@ class TimeSheetCheckins {
         this.checkInTime,
         this.hoursDiff,
         this.interuption,
+        this.ignoredInteruption,
         this.checkOutTime,
         this.date,
         this.crew,this.breaks});
@@ -172,6 +174,12 @@ class TimeSheetCheckins {
       interuption = <Interuption>[];
       json['interuption'].forEach((v) {
         interuption!.add( Interuption.fromJson(v));
+      });
+    }
+    if (json['ignoredInteruption'] != null) {
+      ignoredInteruption = <Interuption>[];
+      json['ignoredInteruption'].forEach((v) {
+        ignoredInteruption!.add( Interuption.fromJson(v));
       });
     }
     checkOutTime = json['checkOutTime'];
@@ -191,7 +199,7 @@ class TimeSheetCheckins {
   }
 
   Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
+    final Map<String, dynamic> data = <String, dynamic>{};
     data['_id'] = this.sId;
     data['crewId'] = this.crewId;
     data['checkInTime'] = this.checkInTime;

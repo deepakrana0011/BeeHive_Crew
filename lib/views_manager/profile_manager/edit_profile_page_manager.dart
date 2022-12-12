@@ -168,7 +168,7 @@ class _EditProfilePageManagerState extends State<EditProfilePageManager> {
                                     height: DimensionConstants.d40.h,
                                     width: DimensionConstants.d40.w,
                                     decoration: BoxDecoration(
-                                        color: provider.currentColor.toColor(),
+                                        color: provider.currentColor!.toColor(),
                                         borderRadius: BorderRadius.circular(
                                             DimensionConstants.d8.r)),
                                   ),
@@ -186,8 +186,7 @@ class _EditProfilePageManagerState extends State<EditProfilePageManager> {
                                           enabledThumbRadius:
                                               DimensionConstants.d10.r,
                                         ),
-                                        initialColor:
-                                            HSVColor.fromColor(Colors.green),
+                                        initialColor: provider.currentColor!,
                                         onChanged: provider.updateColor,
                                       )),
                                 ],

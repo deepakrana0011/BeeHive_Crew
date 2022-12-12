@@ -1,4 +1,3 @@
-import 'dart:ffi';
 
 import 'package:another_flushbar/flushbar.dart';
 import 'package:beehive/constants/image_constants.dart';
@@ -7,9 +6,9 @@ import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/provider/notification_provider.dart';
 import 'package:beehive/view/base_view.dart';
 import 'package:beehive/widget/image_view.dart';
-import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -929,7 +928,8 @@ class DialogHelper {
   static editRateDialogBox(BuildContext context,
       {required String projectRate}) {
     FocusNode focusNode = FocusNode();
-    TextEditingController projectRateController = TextEditingController(text: projectRate);
+    TextEditingController projectRateController =
+        TextEditingController(text: projectRate);
     focusNode.requestFocus();
     return Dialog(
       backgroundColor: Colors.transparent,
@@ -987,11 +987,11 @@ class DialogHelper {
                               focusNode: focusNode,
                               controller: projectRateController,
                               inputFormatters: [
-                                CurrencyTextInputFormatter(symbol: '')
+                                FilteringTextInputFormatter.digitsOnly
                               ],
                               keyboardType: TextInputType.number,
-                              validator: (value){
-                                if(value!.trim().isEmpty){
+                              validator: (value) {
+                                if (value!.trim().isEmpty) {
                                   return "empty_rate".tr();
                                 }
                               },

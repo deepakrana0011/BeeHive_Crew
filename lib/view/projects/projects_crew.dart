@@ -407,7 +407,7 @@ Widget projectDetailWidget(BuildContext context, ProjectDetail projectDetail,
                 child: Row(
                   children: <Widget>[
                     Container(
-                        height: DimensionConstants.d32.h,
+                        height: DimensionConstants.d32.w,
                         width: DimensionConstants.d32.w,
                         decoration: BoxDecoration(
                             color: projectDetail.color == null
@@ -461,7 +461,7 @@ Widget projectDetailWidget(BuildContext context, ProjectDetail projectDetail,
                   children: <Widget>[
                     ImageView(
                       path: ImageConstants.clockIconAllProjects,
-                      height: DimensionConstants.d34.h,
+                      height: DimensionConstants.d34.w,
                       width: DimensionConstants.d34.w,
                     ),
                     SizedBox(
@@ -569,26 +569,32 @@ Widget schedule(BuildContext context, ProjectsCrewProvider provider) {
                                   itemCount: provider.dates.length,
                                   itemBuilder:
                                       (BuildContext context, int index) {
-                                    return Padding(
-                                      padding: provider.dates[index] <= 9
-                                          ? EdgeInsets.only(
-                                              left: DimensionConstants.d25.w,
-                                              right: DimensionConstants.d14.w,
-                                              top: DimensionConstants.d9.h)
-                                          : EdgeInsets.only(
-                                              left: DimensionConstants.d19.w,
-                                              right: DimensionConstants.d12.w,
-                                              top: DimensionConstants.d9.h),
-                                      child: Text("${provider.dates[index]}")
-                                          .semiBoldText(
-                                              context,
-                                              DimensionConstants.d14.sp,
-                                              TextAlign.center,
-                                              color: Theme.of(context)
-                                                          .brightness ==
-                                                      Brightness.dark
-                                                  ? ColorConstants.colorWhite
-                                                  : ColorConstants.colorBlack),
+                                        var totalWidth =
+                                            MediaQuery.of(context).size.width -
+                                                DimensionConstants.d32.w;
+                                    return SizedBox(
+                                      width: totalWidth/7,
+                                      child: Padding(
+                                        padding: provider.dates[index] <= 9
+                                            ? EdgeInsets.only(
+                                                left: DimensionConstants.d25.w,
+                                                right: DimensionConstants.d14.w,
+                                                top: DimensionConstants.d9.h)
+                                            : EdgeInsets.only(
+                                                left: DimensionConstants.d19.w,
+                                                right: DimensionConstants.d12.w,
+                                                top: DimensionConstants.d9.h),
+                                        child: Text("${provider.dates[index]}")
+                                            .semiBoldText(
+                                                context,
+                                                DimensionConstants.d14.sp,
+                                                TextAlign.center,
+                                                color: Theme.of(context)
+                                                            .brightness ==
+                                                        Brightness.dark
+                                                    ? ColorConstants.colorWhite
+                                                    : ColorConstants.colorBlack),
+                                      ),
                                     );
                                   })),
                           Container(
@@ -602,37 +608,43 @@ Widget schedule(BuildContext context, ProjectsCrewProvider provider) {
                                   itemCount: provider.days.length,
                                   itemBuilder:
                                       (BuildContext context, int index) {
-                                    return Column(
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                              left: DimensionConstants.d19.w,
-                                              right: DimensionConstants.d14.w,
-                                              top: DimensionConstants.d9.h,
-                                              bottom: DimensionConstants.d9.h),
-                                          child: Text(provider.days[index])
-                                              .semiBoldText(
-                                                  context,
-                                                  DimensionConstants.d14.sp,
-                                                  TextAlign.center,
-                                                  color: Theme.of(context)
-                                                              .brightness ==
-                                                          Brightness.dark
-                                                      ? ColorConstants
-                                                          .colorWhite
-                                                      : ColorConstants
-                                                          .colorBlack),
-                                        ),
-                                        Expanded(
-                                          child: Container(
-                                              width: DimensionConstants.d45.w,
-                                              // color: Theme.of(context).brightness == Brightness.dark
-                                              //     ? ColorConstants.colorBlack
-                                              //     : ColorConstants.colorWhite,
-                                              child: checkByWeekSubstring(
-                                                  context, provider, index)),
-                                        ),
-                                      ],
+                                        var totalWidth =
+                                            MediaQuery.of(context).size.width -
+                                                DimensionConstants.d32.w;
+                                    return SizedBox(
+                                      width: totalWidth/7,
+                                      child: Column(
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.only(
+                                                left: DimensionConstants.d19.w,
+                                                right: DimensionConstants.d14.w,
+                                                top: DimensionConstants.d9.h,
+                                                bottom: DimensionConstants.d9.h),
+                                            child: Text(provider.days[index])
+                                                .semiBoldText(
+                                                    context,
+                                                    DimensionConstants.d14.sp,
+                                                    TextAlign.center,
+                                                    color: Theme.of(context)
+                                                                .brightness ==
+                                                            Brightness.dark
+                                                        ? ColorConstants
+                                                            .colorWhite
+                                                        : ColorConstants
+                                                            .colorBlack),
+                                          ),
+                                          Expanded(
+                                            child: SizedBox(
+                                                width: DimensionConstants.d45.w,
+                                                // color: Theme.of(context).brightness == Brightness.dark
+                                                //     ? ColorConstants.colorBlack
+                                                //     : ColorConstants.colorWhite,
+                                                child: checkByWeekSubstring(
+                                                    context, provider, index)),
+                                          ),
+                                        ],
+                                      ),
                                     );
                                   })),
                         ],
@@ -683,7 +695,7 @@ Widget projectNameSubStringContainer(
                   right: DimensionConstants.d2.w,
                   top: DimensionConstants.d9.h),
               child: Container(
-                  height: DimensionConstants.d35.h,
+                  height: DimensionConstants.d35.w,
                   width: DimensionConstants.d35.w,
                   decoration: BoxDecoration(
                       color: provider.projectNameList[weekDaysIndex]

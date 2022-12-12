@@ -22,7 +22,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../constants/route_constants.dart';
+import '../../model/crew_timesheet_model.dart';
 import '../../model/project_detail_crew_response.dart';
+import '../../model/time_sheets_screen_arguments.dart';
 
 class ProjectDetailsPage extends StatefulWidget {
   bool archivedOrProject;
@@ -526,8 +528,12 @@ Widget todayTab(BuildContext context, ProjectDetailsPageProvider provider) {
         if (provider.projectDetailCrewResponse != null &&
             provider
                 .projectDetailCrewResponse!.projectData!.checkins!.isNotEmpty)
-          crewDetail(context, provider,
+          crewDetail(
+              context,
+              provider,
               provider.projectDetailCrewResponse!.projectData!.checkins![0],
+              provider.projectDetailCrewResponse!.projectData!.projectName!,
+              provider.projectDetailCrewResponse!.projectData!.color,
               isToday: true)
         //stepperLine(context,),
       ],
@@ -535,12 +541,28 @@ Widget todayTab(BuildContext context, ProjectDetailsPageProvider provider) {
   );
 }
 
-Widget crewDetail(BuildContext context, ProjectDetailsPageProvider provider,
+Widget crewDetail(
+    BuildContext context,
+    ProjectDetailsPageProvider provider,
     CheckInProjectDetailManager checkInDetail,
+    String projectName,
+    String? color,
     {bool isToday = false}) {
   return GestureDetector(
     onTap: () {
-      Navigator.pushNamed(context, RouteConstants.timeSheetsScreen);
+      Navigator.pushNamed(context, RouteConstants.timeSheetsScreen,
+          arguments: TimeSheetsScreenArguments(
+              provider.projectDetailCrewResponse?.projectData!.crews![0].name,
+              provider.projectDetailCrewResponse?.projectData!.crews![0]
+                  .profileImage,
+              AllCheckin(
+                  assignProjectId:
+                      AssignProjectId(projectName: projectName, color: color),
+                  checkInTime: checkInDetail.checkInTime,
+                  checkOutTime: checkInDetail.checkOutTime,
+                  allCheckinBreak: provider
+                      .projectDetailCrewResponse?.projectData!.projectDataBreak,
+                  interuption: checkInDetail.interuptions)));
     },
     child: Padding(
       padding: const EdgeInsets.all(8.0),
@@ -585,7 +607,7 @@ Widget crewDetail(BuildContext context, ProjectDetailsPageProvider provider,
                 SizedBox(
                   width: DimensionConstants.d9.w,
                 ),
-                customStepper(provider, checkInDetail),
+                Expanded(child: customStepper(provider, checkInDetail)),
                 SizedBox(
                   width: DimensionConstants.d9.w,
                 ),
@@ -1163,7 +1185,10 @@ Widget weeklyTabBarContainer(
                       context,
                       provider,
                       provider.projectDetailCrewResponse!.projectData!
-                          .checkins![innerIndex]);
+                          .checkins![innerIndex],
+                      provider
+                          .projectDetailCrewResponse!.projectData!.projectName!,
+                      provider.projectDetailCrewResponse!.projectData!.color);
                 },
                 separatorBuilder: (context, index) {
                   return const Divider(

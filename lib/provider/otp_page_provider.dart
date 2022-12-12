@@ -57,6 +57,8 @@ class OtpPageProvider extends BaseProvider {
       setState(ViewState.idle);
       if (model.success == true) {
         SharedPreference.prefs!.setString(SharedPreference.TOKEN, model.token!);
+        SharedPreference.prefs!
+            .setString(SharedPreference.USER_ID, model.data!.id!);
         SharedPreference.prefs!.setBool(SharedPreference.isLogin, true);
         SharedPreference.prefs!.setInt(SharedPreference.loginType, 1);
         Navigator.pushNamedAndRemoveUntil(

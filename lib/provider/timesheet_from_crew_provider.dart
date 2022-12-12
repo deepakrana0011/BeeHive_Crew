@@ -22,6 +22,14 @@ class TimeSheetFromCrewProvider extends BaseProvider {
   int selectIndex = 0;
   List<TimeSheetWeeklyModel> weeklyData = [];
   TabController? controller;
+  bool _mainLoader = false;
+
+  bool get mainLoader => _mainLoader;
+
+  set mainLoader(bool value) {
+    _mainLoader = value;
+    notifyListeners();
+  }
 
   indexCheck(int value) {
     selectIndex = value;
@@ -139,8 +147,8 @@ class TimeSheetFromCrewProvider extends BaseProvider {
             DateFunctions.getDateTimeFromString(breakStartTimeString);
         var checkInDate =
             DateFunctions.getDateTimeFromString(detail.checkInTime!);
-        var checkOutDate =
-            DateFunctions.getDateTimeFromString(DateFunctions.checkTimeIsNull(detail.checkOutTime));
+        var checkOutDate = DateFunctions.getDateTimeFromString(
+            DateFunctions.checkTimeIsNull(detail.checkOutTime));
         if (breakStartTimeDate.isAfter(checkInDate) &&
             breakStartTimeDate.isBefore(checkOutDate)) {
           var interruption = Interuption();
@@ -202,7 +210,7 @@ class TimeSheetFromCrewProvider extends BaseProvider {
               : DateFunctions.getDateTimeFromString(detail.checkOutTime!);
       var checkOutDateString = detail.checkOutTime!;
       var workingMinutesDifference =
-          checkInDate.difference(checkOutDate).inMinutes;
+          checkOutDate.difference(checkInDate).inMinutes;
       projectWorkingHourList.add(ProjectWorkingHourDetail(
           startTime: checkInDateString,
           endTime: checkOutDateString,
@@ -223,8 +231,8 @@ class TimeSheetFromCrewProvider extends BaseProvider {
     return projectWorkingHourList;
   }
 
-  getTotalHoursRate() {
-    var getPerMinutesRate = 20 / 60;
+  getTotalHoursRate(String? projectRate) {
+    var getPerMinutesRate = /*int.parse(projectRate!)*/20 / 60;
     var price = getPerMinutesRate * totalHours;
     return price;
   }
@@ -260,6 +268,31 @@ class TimeSheetFromCrewProvider extends BaseProvider {
           weeklyData[index].projectDataList?.add(crewResponse!.projectData![i]);
         }
       }
+    }
+  }
+
+  Future<void> ignoreAllInteruptions(BuildContext context, String checkInId,
+      int index, int? innerIndex) async {
+    try {
+      mainLoader = true;
+      var model = await api.ignoreAllInteruptions(context, checkInId);
+      if (model.success!) {
+        if (innerIndex == null) {
+          crewResponse!.projectData![index].checkins![0].interuption = [];
+        } else {
+          weeklyData[index]
+              .projectDataList![innerIndex]
+              .checkins![0]
+              .interuption = [];
+        }
+      }
+      mainLoader = false;
+    } on FetchDataException catch (e) {
+      mainLoader = false;
+      DialogHelper.showMessage(context, e.toString());
+    } on SocketException catch (e) {
+      mainLoader = false;
+      DialogHelper.showMessage(context, "internet_connection".tr());
     }
   }
 }

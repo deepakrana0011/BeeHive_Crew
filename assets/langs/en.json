@@ -271,5 +271,8 @@
   "km": "km",
   "m": "m",
   "mi": "mi",
-  "empty_rate": "Empty Rate"
+  "empty_rate": "Empty Rate",
+  "please_select_different_check_in_time": "Please select different checkIn Time",
+  "invalid_check_in_time": "Invalid Check In Time",
+  "please_use_different_set_of_password": "Please use different set of password"
 }

@@ -56,4 +56,6 @@ class RouteConstants{
   static const String showCertificationCrewPage = "showCertificationCrewPage";
   static const String showPrivateNoteManager = "showPrivateNoteManager";
   static const String timeSheetScreenProjectDetails = "timeSheetScreenProjectDetails";
+  static const String privacyPolicyScreen = "privacyPolicyScreen";
+  static const String termsOfUse = "termsOfUse";
  }

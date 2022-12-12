@@ -46,6 +46,7 @@ import 'package:beehive/provider/sign_up_manager_provider.dart';
 import 'package:beehive/provider/sign_up_provider.dart';
 import 'package:beehive/provider/time_sheet_provider_crew.dart';
 import 'package:beehive/provider/time_sheet_screen_project_details_provider_manager.dart';
+import 'package:beehive/provider/time_sheets_screen_provider.dart';
 import 'package:beehive/provider/timesheet_from_crew_provider.dart';
 import 'package:beehive/provider/timesheet_manager_provider.dart';
 import 'package:beehive/services/api_class.dart';
@@ -53,10 +54,13 @@ import 'package:beehive/widget/custom_class.dart';
 import 'package:dio/dio.dart';
 import 'package:get_it/get_it.dart';
 
+import 'notification/firebase_notification.dart';
+
 GetIt locator = GetIt.instance;
 
 void setUpLocator() {
   locator.registerFactory<IntroductionProvider>(() => IntroductionProvider());
+  locator.registerLazySingleton(() => FirebaseNotification());
   locator.registerFactory<SignInProvider>(() => SignInProvider());
   locator.registerFactory<BottomBarProvider>(() => BottomBarProvider());
   locator.registerFactory<AppStateNotifier>(() => AppStateNotifier());
@@ -107,6 +111,7 @@ void setUpLocator() {
   locator.registerLazySingleton(() => Api());
   locator.registerLazySingleton(() => CreateProjectRequest());
   locator.registerFactory(() => TimeSheetScreenProjectDetailsProvider());
+  locator.registerFactory(() => TimeSheetsScreenProvider());
   locator.registerLazySingleton<Dio>(() {
     Dio dio = Dio();
     dio.interceptors.add(LogInterceptor(

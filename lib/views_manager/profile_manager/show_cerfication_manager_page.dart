@@ -3,7 +3,6 @@ import 'package:beehive/constants/api_constants.dart';
 import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
-import 'package:beehive/model/timesheet_crew_details.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -12,7 +11,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class ShowCertificateManagerPage extends StatelessWidget {
   ShowCertificateManagerPage({Key? key, required this.certificationData})
       : super(key: key);
-  Cert certificationData;
+  dynamic certificationData;
 
   @override
   Widget build(BuildContext context) {
@@ -74,11 +73,7 @@ class ShowCertificateManagerPage extends StatelessWidget {
                             );
                           },
                           errorWidget: (context, _, __) {
-                            return const Center(
-                              child: CircularProgressIndicator(
-                                color: ColorConstants.primaryGradient2Color,
-                              ),
-                            );
+                            return const Icon(Icons.error);
                           },
                         ),
                       )

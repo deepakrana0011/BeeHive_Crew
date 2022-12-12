@@ -151,7 +151,7 @@ class DashBoardPageManagerProvider extends BaseProvider {
     for (var element in checkins!) {
       if(element.checkOutTime != " "){
         var startTime = DateFunctions.getDateTimeFromString(element.checkInTime!);
-        var endTime = element.checkOutTime==null?DateTime.now():DateFunctions.getDateTimeFromString(element.checkOutTime!);
+        var endTime = DateFunctions.getDateTimeFromString( DateFunctions.checkTimeIsNull(element.checkOutTime));
         var minutes = endTime.difference(startTime).inMinutes;
         totalMinutes = totalMinutes + minutes.abs();
       }
@@ -166,7 +166,7 @@ class DashBoardPageManagerProvider extends BaseProvider {
       for (var element in element.checkins!) {
         if(element.checkOutTime != " "){
           var startTime = DateFunctions.getDateTimeFromString(element.checkInTime!);
-          var endTime = element.checkOutTime==null?DateTime.now():DateFunctions.getDateTimeFromString(element.checkOutTime!);
+          var endTime =   DateFunctions.getDateTimeFromString( DateFunctions.checkTimeIsNull(element.checkOutTime));
           var minutes = endTime.difference(startTime).inMinutes;
           totalMinutes = totalMinutes + minutes.abs();
         }

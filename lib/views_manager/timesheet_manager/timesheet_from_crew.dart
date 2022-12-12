@@ -21,6 +21,7 @@ import '../../helper/dialog_helper.dart';
 import '../../helper/validations.dart';
 import '../../model/get_crew_response_time_sheet.dart';
 import '../../model/project_working_hour_detail.dart';
+import '../../widget/custom_circular_bar.dart';
 
 class TimeSheetFromCrew extends StatefulWidget {
   String id;
@@ -56,23 +57,30 @@ class _TimeSheetFromCrewState extends State<TimeSheetFromCrew>
                   color: ColorConstants.primaryColor,
                 ),
               )
-            : Column(
-                children: <Widget>[
-                  SizedBox(
-                    height: DimensionConstants.d24.h,
+            : Stack(
+                children: [
+                  Column(
+                    children: <Widget>[
+                      SizedBox(
+                        height: DimensionConstants.d24.h,
+                      ),
+                      userProfile(context, provider, widget.id),
+                      SizedBox(
+                        height: DimensionConstants.d16.h,
+                      ),
+                      CommonWidgets.crewTabProjectTimeSheet(
+                          context,
+                          provider.crewResponse!.activeProject.toString() == ""
+                              ? ""
+                              : provider.crewResponse!.activeProject.toString(),
+                          DateFunctions.minutesToHourString(widget.totalHours)),
+                      tabBarViewWidget(
+                          context, provider.controller!, provider, widget.id)
+                    ],
                   ),
-                  userProfile(context, provider, widget.id),
-                  SizedBox(
-                    height: DimensionConstants.d16.h,
-                  ),
-                  CommonWidgets.crewTabProjectTimeSheet(
-                      context,
-                      provider.crewResponse!.activeProject.toString() == ""
-                          ? ""
-                          : provider.crewResponse!.activeProject.toString(),
-                      DateFunctions.minutesToHourString(widget.totalHours)),
-                  tabBarViewWidget(
-                      context, provider.controller!, provider, widget.id)
+                  provider.mainLoader
+                      ? const CustomCircularBar()
+                      : const SizedBox()
                 ],
               ),
       );
@@ -440,36 +448,52 @@ Widget weeklyTabBarContainerManager(BuildContext context,
                                         motion: const ScrollMotion(),
                                         children: [
                                           Expanded(
-                                            child: Container(
-                                              height: DimensionConstants.d58.h,
-                                              color:
-                                                  ColorConstants.redColorEB5757,
-                                              child: Padding(
-                                                padding: EdgeInsets.only(
-                                                    left: DimensionConstants
-                                                        .d25.w),
-                                                child: Row(
-                                                  children: <Widget>[
-                                                    const ImageView(
-                                                      path: ImageConstants
-                                                          .ignoreIcon,
-                                                      color: ColorConstants
-                                                          .colorWhite,
-                                                    ),
-                                                    SizedBox(
-                                                      width: DimensionConstants
-                                                          .d8.w,
-                                                    ),
-                                                    Text("ignore".tr())
-                                                        .boldText(
-                                                            context,
+                                            child: GestureDetector(
+                                              onTap: () {
+                                                provider.ignoreAllInteruptions(
+                                                    context,
+                                                    provider
+                                                        .weeklyData[index]
+                                                        .projectDataList![
+                                                            innerIndex]
+                                                        .checkins![0]
+                                                        .id!,
+                                                    index,
+                                                    innerIndex);
+                                              },
+                                              child: Container(
+                                                height:
+                                                    DimensionConstants.d58.h,
+                                                color: ColorConstants
+                                                    .redColorEB5757,
+                                                child: Padding(
+                                                  padding: EdgeInsets.only(
+                                                      left: DimensionConstants
+                                                          .d25.w),
+                                                  child: Row(
+                                                    children: <Widget>[
+                                                      const ImageView(
+                                                        path: ImageConstants
+                                                            .ignoreIcon,
+                                                        color: ColorConstants
+                                                            .colorWhite,
+                                                      ),
+                                                      SizedBox(
+                                                        width:
                                                             DimensionConstants
-                                                                .d14.sp,
-                                                            TextAlign.left,
-                                                            color:
-                                                                ColorConstants
-                                                                    .colorWhite)
-                                                  ],
+                                                                .d8.w,
+                                                      ),
+                                                      Text("ignore".tr())
+                                                          .boldText(
+                                                              context,
+                                                              DimensionConstants
+                                                                  .d14.sp,
+                                                              TextAlign.left,
+                                                              color:
+                                                                  ColorConstants
+                                                                      .colorWhite)
+                                                    ],
+                                                  ),
                                                 ),
                                               ),
                                             ),
@@ -521,11 +545,11 @@ Widget weeklyTabBarContainerManager(BuildContext context,
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                const Text("x \$${20}/hr").semiBoldText(
+                                 Text("x \$${provider.crewResponse!.crew![0].projectRate}/hr").semiBoldText(
                                     context,
                                     DimensionConstants.d14.sp,
                                     TextAlign.center),
-                                Text("\$${provider.getTotalHoursRate().toStringAsFixed(2)}")
+                                Text("\$${provider.getTotalHoursRate(provider.crewResponse!.crew![0].projectRate).toStringAsFixed(2)}")
                                     .semiBoldText(
                                         context,
                                         DimensionConstants.d14.sp,
@@ -754,7 +778,7 @@ Widget newToday(BuildContext context, TabController controller,
                                     context,
                                     DimensionConstants.d14.sp,
                                     TextAlign.center),
-                                Text("\$${provider.getTotalHoursRate().toStringAsFixed(2)}")
+                                Text("\$${provider.getTotalHoursRate(provider.crewResponse!.crew![0].projectRate).toStringAsFixed(2)}")
                                     .semiBoldText(
                                         context,
                                         DimensionConstants.d14.sp,
@@ -983,7 +1007,7 @@ Widget biWeeklyTabBarContainerManager(BuildContext context,
                                     context,
                                     DimensionConstants.d14.sp,
                                     TextAlign.center),
-                                Text("\$${provider.getTotalHoursRate().toStringAsFixed(2)}")
+                                Text("\$${provider.getTotalHoursRate(provider.crewResponse!.crew![0].projectRate).toStringAsFixed(2)}")
                                     .semiBoldText(
                                         context,
                                         DimensionConstants.d14.sp,
@@ -1582,25 +1606,36 @@ Widget todayWidget(BuildContext context, TimeSheetFromCrewProvider provider) {
                     motion: const ScrollMotion(),
                     children: [
                       Expanded(
-                        child: Container(
-                          height: DimensionConstants.d58.h,
-                          color: ColorConstants.redColorEB5757,
-                          child: Padding(
-                            padding:
-                                EdgeInsets.only(left: DimensionConstants.d25.w),
-                            child: Row(
-                              children: <Widget>[
-                                const ImageView(
-                                  path: ImageConstants.ignoreIcon,
-                                  color: ColorConstants.colorWhite,
-                                ),
-                                SizedBox(
-                                  width: DimensionConstants.d8.w,
-                                ),
-                                Text("ignore".tr()).boldText(context,
-                                    DimensionConstants.d14.sp, TextAlign.left,
-                                    color: ColorConstants.colorWhite)
-                              ],
+                        child: GestureDetector(
+                          onTap: () {
+                            provider.ignoreAllInteruptions(
+                                context,
+                                provider.crewResponse!.projectData![index]
+                                    .checkins![0]
+                                    .id!,
+                                index,
+                                null);
+                          },
+                          child: Container(
+                            height: DimensionConstants.d58.h,
+                            color: ColorConstants.redColorEB5757,
+                            child: Padding(
+                              padding:
+                                  EdgeInsets.only(left: DimensionConstants.d25.w),
+                              child: Row(
+                                children: <Widget>[
+                                  const ImageView(
+                                    path: ImageConstants.ignoreIcon,
+                                    color: ColorConstants.colorWhite,
+                                  ),
+                                  SizedBox(
+                                    width: DimensionConstants.d8.w,
+                                  ),
+                                  Text("ignore".tr()).boldText(context,
+                                      DimensionConstants.d14.sp, TextAlign.left,
+                                      color: ColorConstants.colorWhite)
+                                ],
+                              ),
                             ),
                           ),
                         ),
@@ -1638,9 +1673,9 @@ Widget todayWidget(BuildContext context, TimeSheetFromCrewProvider provider) {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("x \$${20}/hr").semiBoldText(
+                    Text("x \$${provider.crewResponse!.crew![0].projectRate}/hr").semiBoldText(
                         context, DimensionConstants.d14.sp, TextAlign.center),
-                    Text("\$${provider.getTotalHoursRate().toStringAsFixed(2)}")
+                    Text("\$${provider.getTotalHoursRate(provider.crewResponse!.crew![0].projectRate).toStringAsFixed(2)}")
                         .semiBoldText(context, DimensionConstants.d14.sp,
                             TextAlign.center)
                   ],

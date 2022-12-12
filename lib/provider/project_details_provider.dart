@@ -21,17 +21,14 @@ class ProjectDetailsPageProvider extends BaseProvider {
   GoogleMapController? googleMapController;
   String? projectId;
   List<Marker> markers = [];
-
   ProjectDetailCrewResponse? projectDetailCrewResponse;
-
   DateTime? selectedStartDate = DateTime.now();
   DateTime? selectedEndDate = DateTime.now();
-
   String? startDate;
   String? endDate;
-
   String? weekFirstDate;
   String? weekEndDate;
+
 
 
 

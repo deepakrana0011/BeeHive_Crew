@@ -1,6 +1,7 @@
 import 'package:beehive/constants/color_constants.dart';
 import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/constants/image_constants.dart';
+import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/constants/string_constants.dart';
 import 'package:beehive/extension/all_extensions.dart';
 import 'package:beehive/helper/common_widgets.dart';
@@ -13,8 +14,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../helper/shared_prefs.dart';
-import '../provider/app_state_provider.dart';
+import '../../helper/shared_prefs.dart';
+import '../../provider/app_state_provider.dart';
 
 class AppSettings extends StatefulWidget {
   const AppSettings({Key? key}) : super(key: key);
@@ -68,9 +69,7 @@ class AppSettingsState extends State<AppSettings> {
                   height: 0.0,
                   thickness: 1.5),
               SizedBox(height: DimensionConstants.d16.h),
-              loginType == 1
-                  ? const SizedBox()
-                  : Column(
+             Column(
                       children: [
                         unitsRow(context, "units".tr()),
                         SizedBox(height: DimensionConstants.d10.h),
@@ -122,6 +121,7 @@ class AppSettingsState extends State<AppSettings> {
                 borderRadius: BorderRadius.circular(DimensionConstants.d8.r)),
             child: DropdownButtonHideUnderline(
               child: ButtonTheme(
+                alignedDropdown: true,
                 child: DropdownButton(
                   menuMaxHeight: DimensionConstants.d400.h,
                   icon: Padding(
@@ -135,24 +135,16 @@ class AppSettingsState extends State<AppSettings> {
                       height: DimensionConstants.d16.h,
                     ),
                   ),
-                  hint: Padding(
-                    padding: EdgeInsets.only(left: DimensionConstants.d10.w),
-                    child: const Text("None").regularText(
-                        context, DimensionConstants.d14.sp, TextAlign.center),
-                  ),
+                  hint: const Text("None").regularText(
+                      context, DimensionConstants.d14.sp, TextAlign.center),
                   //  menuMaxHeight: DimensionConstants.d414.h,
                   value: provider.units,
                   items: provider.unitsList.map((vehicleName) {
                     return DropdownMenuItem(
                         onTap: () {},
                         value: vehicleName,
-                        child: Padding(
-                            padding:
-                                EdgeInsets.only(left: DimensionConstants.d10.w),
-                            child: Text(vehicleName.toString()).regularText(
-                                context,
-                                DimensionConstants.d14.sp,
-                                TextAlign.center)));
+                        child: Text(vehicleName.toString()).regularText(context,
+                            DimensionConstants.d14.sp, TextAlign.center));
                   }).toList(),
                   onChanged: (String? value) {
                     provider.onSelectedUnits(value);
@@ -185,6 +177,7 @@ class AppSettingsState extends State<AppSettings> {
                 borderRadius: BorderRadius.circular(DimensionConstants.d8.r)),
             child: DropdownButtonHideUnderline(
               child: ButtonTheme(
+                alignedDropdown: true,
                 child: DropdownButton(
                   menuMaxHeight: DimensionConstants.d400.h,
                   icon: Padding(
@@ -198,24 +191,16 @@ class AppSettingsState extends State<AppSettings> {
                       height: DimensionConstants.d16.h,
                     ),
                   ),
-                  hint: Padding(
-                    padding: EdgeInsets.only(left: DimensionConstants.d10.w),
-                    child: const Text("None").regularText(
-                        context, DimensionConstants.d14.sp, TextAlign.center),
-                  ),
+                  hint: const Text("None").regularText(
+                      context, DimensionConstants.d14.sp, TextAlign.center),
                   //  menuMaxHeight: DimensionConstants.d414.h,
                   value: provider.time,
                   items: provider.timesList.map((vehicleName) {
                     return DropdownMenuItem(
                         onTap: () {},
                         value: vehicleName,
-                        child: Padding(
-                            padding:
-                                EdgeInsets.only(left: DimensionConstants.d10.w),
-                            child: Text(vehicleName.toString()).regularText(
-                                context,
-                                DimensionConstants.d14.sp,
-                                TextAlign.center)));
+                        child: Text(vehicleName.toString()).regularText(context,
+                            DimensionConstants.d14.sp, TextAlign.center));
                   }).toList(),
                   onChanged: (String? value) {
                     provider.onSelectedTime(value);
@@ -248,6 +233,7 @@ class AppSettingsState extends State<AppSettings> {
                 borderRadius: BorderRadius.circular(DimensionConstants.d8.r)),
             child: DropdownButtonHideUnderline(
               child: ButtonTheme(
+                alignedDropdown: true,
                 child: DropdownButton(
                   menuMaxHeight: DimensionConstants.d400.h,
                   icon: Padding(
@@ -261,24 +247,15 @@ class AppSettingsState extends State<AppSettings> {
                       height: DimensionConstants.d16.h,
                     ),
                   ),
-                  hint: Padding(
-                    padding: EdgeInsets.only(left: DimensionConstants.d10.w),
-                    child: const Text("None").regularText(
-                        context, DimensionConstants.d14.sp, TextAlign.center),
-                  ),
-                  //  menuMaxHeight: DimensionConstants.d414.h,
+                  hint: const Text("None").regularText(
+                      context, DimensionConstants.d14.sp, TextAlign.center),
                   value: provider.language,
                   items: provider.languagesList.map((vehicleName) {
                     return DropdownMenuItem(
                         onTap: () {},
                         value: vehicleName,
-                        child: Padding(
-                            padding:
-                                EdgeInsets.only(left: DimensionConstants.d10.w),
-                            child: Text(vehicleName.toString()).regularText(
-                                context,
-                                DimensionConstants.d14.sp,
-                                TextAlign.center)));
+                        child: Text(vehicleName.toString()).regularText(context,
+                            DimensionConstants.d14.sp, TextAlign.center));
                   }).toList(),
                   onChanged: (String? value) {
                     provider.onSelectedLanguage(value);
@@ -311,6 +288,7 @@ class AppSettingsState extends State<AppSettings> {
                 borderRadius: BorderRadius.circular(DimensionConstants.d8.r)),
             child: DropdownButtonHideUnderline(
               child: ButtonTheme(
+                alignedDropdown: true,
                 child: DropdownButton(
                   menuMaxHeight: DimensionConstants.d400.h,
                   icon: Padding(
@@ -324,24 +302,16 @@ class AppSettingsState extends State<AppSettings> {
                       height: DimensionConstants.d16.h,
                     ),
                   ),
-                  hint: Padding(
-                    padding: EdgeInsets.only(left: DimensionConstants.d10.w),
-                    child: const Text("None").regularText(
-                        context, DimensionConstants.d14.sp, TextAlign.center),
-                  ),
+                  hint: const Text("None").regularText(
+                      context, DimensionConstants.d14.sp, TextAlign.center),
                   //  menuMaxHeight: DimensionConstants.d414.h,
                   value: provider.currency,
                   items: provider.currencyList.map((vehicleName) {
                     return DropdownMenuItem(
                         onTap: () {},
                         value: vehicleName,
-                        child: Padding(
-                            padding:
-                                EdgeInsets.only(left: DimensionConstants.d10.w),
-                            child: Text(vehicleName.toString()).regularText(
-                                context,
-                                DimensionConstants.d14.sp,
-                                TextAlign.center)));
+                        child: Text(vehicleName.toString()).regularText(context,
+                            DimensionConstants.d14.sp, TextAlign.center));
                   }).toList(),
                   onChanged: (String? value) {
                     provider.onSelectedCurrency(value);
@@ -428,8 +398,8 @@ class AppSettingsState extends State<AppSettings> {
           policyRow(context, "privacy_policy".tr()),
           SizedBox(height: DimensionConstants.d22.h),
           termOfUseRow(context, "terms_of_use".tr()),
-          SizedBox(height: DimensionConstants.d22.h),
-          dataAppTracking(context, "data_and_app_tracking".tr()),
+          /* SizedBox(height: DimensionConstants.d22.h),
+          dataAppTracking(context, "data_and_app_tracking".tr()),*/
           const Spacer(),
           CommonWidgets.commonButton(context, "save".tr(), shadowRequired: true,
               onBtnTap: () {
@@ -454,7 +424,8 @@ class AppSettingsState extends State<AppSettings> {
   Widget policyRow(BuildContext context, String title) {
     return GestureDetector(
       onTap: () async {
-        await launchUrl(Uri.parse(StringConstants.privacyPolicyUrl));
+        // await launchUrl(Uri.parse(StringConstants.privacyPolicyUrl));
+        Navigator.pushNamed(context, RouteConstants.privacyPolicyScreen);
       },
       child: Container(
         color: Colors.transparent,
@@ -476,7 +447,8 @@ class AppSettingsState extends State<AppSettings> {
   Widget termOfUseRow(BuildContext context, String title) {
     return GestureDetector(
       onTap: () async {
-        await launchUrl(Uri.parse(StringConstants.termOfUSe));
+        //await launchUrl(Uri.parse(StringConstants.termOfUSe));
+        Navigator.pushNamed(context, RouteConstants.termsOfUse);
       },
       child: Container(
         color: Colors.transparent,

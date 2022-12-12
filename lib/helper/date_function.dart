@@ -281,6 +281,8 @@ class DateFunctions {
     return _24HourFormatDate;
   }
 
+
+
   static String capitalize(String value) {
     if (value.isNotEmpty) {
       var result = value[0].toUpperCase();
@@ -364,6 +366,10 @@ class DateFunctions {
   //  "Monday, June 13 2021"
   static String dateTimeWithWeek(DateTime dateTime) {
     return DateFormat("EEEE, MMMM dd yyyy").format(dateTime);
+  }
+
+  static String dateTimeWithMonthName(DateTime dateTime) {
+    return DateFormat("MMM dd, yyyy").format(dateTime);
   }
 
   static String checkTimeIsNull(String? dateTime) {

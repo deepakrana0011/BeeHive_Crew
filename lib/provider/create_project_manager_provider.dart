@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/enum/enum.dart';
@@ -7,16 +6,13 @@ import 'package:beehive/helper/shared_prefs.dart';
 import 'package:beehive/locator.dart';
 import 'package:beehive/model/create_project_request.dart';
 import 'package:beehive/provider/base_provider.dart';
-import 'package:beehive/views_manager/projects_manager/add_crew_page_manager.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-
-import '../constants/image_constants.dart';
+import 'package:location/location.dart';
 import '../helper/dialog_helper.dart';
-import '../services/fetch_data_expection.dart';
 
 class CreateProjectManagerProvider extends BaseProvider {
   final projectNameController = TextEditingController();
@@ -47,7 +43,7 @@ class CreateProjectManagerProvider extends BaseProvider {
     value = await Geolocator.getCurrentPosition();
     latitude = value.latitude;
     longitude = value.longitude;
-    getPickUpAddress(latitude, longitude);
+    await getPickUpAddress(latitude, longitude);
     showMap = true;
   }
 
@@ -88,12 +84,14 @@ class CreateProjectManagerProvider extends BaseProvider {
   Future<void> getPickUpAddress(double lat, double long) async {
     try {
       List<Placemark> placeMark = await placemarkFromCoordinates(lat, long);
-      pickUpLocation =
-          "${placeMark.first.street} ${placeMark.first.thoroughfare}${placeMark.first.subLocality}";
-      currentCountryIsoCode = placeMark.first.isoCountryCode.toString();
-      notifyListeners();
+      if (placeMark.isNotEmpty) {
+        pickUpLocation =
+            "${placeMark.first.street} ${placeMark.first.thoroughfare}${placeMark.first.subLocality}";
+        currentCountryIsoCode = placeMark.first.isoCountryCode.toString();
+        notifyListeners();
+      }
     } on Exception catch (e) {
-      print(e);
+      debugPrint("Get Address: $e");
     }
   }
 
@@ -108,29 +106,28 @@ class CreateProjectManagerProvider extends BaseProvider {
     notifyListeners();
   }
 
-  Future<Position> determinePosition() async {
+  Future<bool> determinePosition() async {
     bool serviceEnabled;
     LocationPermission permission;
 
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
+      return false;
     }
 
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
+        return false;
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
+      return false;
     }
 
-    return await Geolocator.getCurrentPosition();
+    return true;
   }
 
   updateValue(double value) {

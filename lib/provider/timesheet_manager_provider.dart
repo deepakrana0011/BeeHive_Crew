@@ -195,7 +195,8 @@ class TimeSheetManagerProvider extends BaseProvider {
   Future<void> getAllCrewOnProject(context) async {
     setState(ViewState.busy);
     try {
-      var model = await api.getAllCrewOnProjects(context);
+      var currentTime = DateFunctions.dateFormatyyyyMMddHHmm(DateTime.now());
+      var model = await api.getAllCrewOnProjects(context,currentTime);
       if (model.success == true) {
         getAllCrewResponse = model;
       }

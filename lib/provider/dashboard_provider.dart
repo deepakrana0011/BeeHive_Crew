@@ -5,6 +5,7 @@ import 'dart:io';
 
 import 'package:beehive/constants/color_constants.dart';
 import 'package:beehive/extension/time_of_day_extenstion.dart';
+import 'package:beehive/globals/globals.dart';
 import 'package:beehive/helper/date_function.dart';
 import 'package:beehive/helper/shared_prefs.dart';
 import 'package:beehive/model/allProjectCrewResponse.dart';
@@ -22,6 +23,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:location/location.dart';
 
 import '../enum/enum.dart';
 import '../helper/dialog_helper.dart';
@@ -38,8 +40,6 @@ class DashboardProvider extends BaseProvider {
   String? min;
   String? time;
   TimeOfDay? selectedTime;
-  double latitude = 0.0;
-  double longitude = 0.0;
   int hour = 0;
   int minutes = 0;
   int timerHour = 0;
@@ -80,6 +80,9 @@ class DashboardProvider extends BaseProvider {
   String? selectedCheckOutTime;
   List<WeekelyDataModelCrew> weeklyData = [];
 
+  Location location = Location();
+  LocationData? locationData;
+
   Future getDashBoardData(
     BuildContext context,
     BottomBarProvider? managerProvider,
@@ -87,7 +90,7 @@ class DashboardProvider extends BaseProvider {
     setState(ViewState.busy);
     try {
       var model = await api.dashBoardApi(
-          context, startDate!, endDate!, latitude, longitude);
+          context, startDate!, endDate!, Globals.latitude, Globals.longitude);
       if (model.success ?? false) {
         crewResponse = model;
         managerProvider!.updateDrawerData(
@@ -488,38 +491,35 @@ class DashboardProvider extends BaseProvider {
     }
   }
 
-  Future getLngLt(context) async {
-    var value = await Geolocator.getCurrentPosition();
-    latitude = value.latitude;
-    longitude = value.longitude;
+  Future getLatLng(context) async {
+    Location location = Location();
+    LocationData locationData = await location.getLocation();
+    Globals.latitude = locationData.latitude ?? 0.0;
+    Globals.longitude = locationData.longitude ?? 0.0;
   }
 
-
-
-
-  Future<Position> determinePosition() async {
+  Future<bool> checkPermission() async {
     setState(ViewState.busy);
+
     bool serviceEnabled;
-    LocationPermission permission;
+    PermissionStatus permissionGranted;
 
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    serviceEnabled = await location.serviceEnabled();
     if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
+      serviceEnabled = await location.requestService();
+      if (!serviceEnabled) {
+        return false;
       }
     }
 
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
+    permissionGranted = await location.hasPermission();
+    if (permissionGranted == PermissionStatus.denied) {
+      permissionGranted = await location.requestPermission();
+      if (permissionGranted != PermissionStatus.granted) {
+        return false;
+      }
     }
 
-    return await Geolocator.getCurrentPosition();
+    return true;
   }
 }

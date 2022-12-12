@@ -64,9 +64,9 @@ class ProfilePageManager extends StatelessWidget {
                               provider.getManagerProfile(context).then((value) {
                                 bottomBarProvider.updateDrawerData(
                                     value!.data!.name!,
-                                    value.data!.profileImage!,
-                                    value.data!.companyLogo!,
-                                    value.data!.customColor!);
+                                    value.data!.profileImage,
+                                    value.data!.companyLogo,
+                                    value.data!.customColor);
                               });
                             });
                           }),
@@ -174,7 +174,7 @@ Widget profileWidget(BuildContext context, ProfilePageManagerProvider provider,
     width: MediaQuery.of(context).size.width,
     decoration: BoxDecoration(
         color: provider.profileResponse!.data!.customColor == null
-            ? provider.currentColor.toColor()
+            ? HSVColor.fromColor(ColorConstants.blueGradient1Color).toColor()
             : Color(int.parse(
                 provider.profileResponse!.data!.customColor.toString())),
         borderRadius: BorderRadius.only(
@@ -234,12 +234,10 @@ Widget profileWidget(BuildContext context, ProfilePageManagerProvider provider,
             Stack(
               children: [
                 Center(
-                  child: Stack(
-                    children: [
-                      CircleAvatar(
-                        backgroundColor: ColorConstants.colorWhite,
-                        radius: DimensionConstants.d75.r,
-                        child: Padding(
+                  child: CircleAvatar(
+                      backgroundColor: ColorConstants.colorWhite,
+                      radius: DimensionConstants.d75.r,
+                      child: Padding(
                           padding: const EdgeInsets.all(DimensionConstants.d5),
                           child: provider.profileResponse!.data!.profileImage ==
                                   null
@@ -254,17 +252,17 @@ Widget profileWidget(BuildContext context, ProfilePageManagerProvider provider,
                                     ),
                                   ),
                                 )
-                              : CircleAvatar(
+                              : ImageView(
+                                  circleCrop: true,
+                                  width: DimensionConstants.d150.w,
+                                  height: DimensionConstants.d150.w,
+                                  fit: BoxFit.cover,
+                                  color: ColorConstants.colorWhite,
                                   radius: DimensionConstants.d75.r,
-                                  backgroundImage: CachedNetworkImageProvider(
-                                      ApiConstantsCrew.BASE_URL_IMAGE +
-                                          provider.profileResponse!.data!
-                                              .profileImage!),
-                                ),
-                        ),
-                      ),
-                    ],
-                  ),
+                                  path: ApiConstantsCrew.BASE_URL_IMAGE +
+                                      provider
+                                          .profileResponse!.data!.profileImage!,
+                                ))),
                 ),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(100, 60, 0, 0),

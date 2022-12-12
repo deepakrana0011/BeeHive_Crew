@@ -98,6 +98,7 @@ class OtpVerificationPage extends StatelessWidget {
                                       child: GestureDetector(
                                         onTap: () {
                                           CommonWidgets.hideKeyboard(context);
+                                          provider.textEditController.clear();
                                           if (isEmailVerification!) {
                                             provider.resendOtpApiEmail(
                                                 context, value!);
@@ -182,45 +183,43 @@ class OtpVerificationPage extends StatelessWidget {
 }*/
 
 Widget optVerifyFiled(BuildContext context, OtpPageProvider provider) {
-  return Container(
-    child: PinCodeTextField(
-      appContext: context,
-      pastedTextStyle: const TextStyle(
-        color: ColorConstants.colorBlack,
-        fontWeight: FontWeight.w600,
-      ),
-      length: 4,
-      animationType: AnimationType.fade,
-      textStyle: TextStyle(
-        color: ColorConstants.colorBlack,
-        fontSize: DimensionConstants.d16.sp,
-        fontWeight: FontWeight.w600,
-      ),
-      pinTheme: PinTheme(
-          activeColor: ColorConstants.primaryColor,
-          disabledColor: ColorConstants.grayE0E0E0,
-          inactiveFillColor: ColorConstants.colorWhite,
-          inactiveColor: ColorConstants.grayE0E0E0,
-          selectedColor: ColorConstants.primaryColor,
-          shape: PinCodeFieldShape.box,
-          borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
-          fieldHeight: DimensionConstants.d60.h,
-          fieldWidth: DimensionConstants.d60.w,
-          errorBorderColor: ColorConstants.redColorEB5757,
-          activeFillColor: ColorConstants.colorWhite,
-          selectedFillColor: ColorConstants.colorWhite),
-      cursorColor: Colors.black,
-      animationDuration: Duration(milliseconds: 100),
-      enableActiveFill: true,
-      controller: provider.textEditController,
-      keyboardType: TextInputType.number,
-      onCompleted: (String v) {
-        provider.getOtp(v);
-      },
-      onChanged: (value) {},
-      beforeTextPaste: (text) {
-        return true;
-      },
+  return PinCodeTextField(
+    appContext: context,
+    pastedTextStyle: const TextStyle(
+      color: ColorConstants.colorBlack,
+      fontWeight: FontWeight.w600,
     ),
+    length: 4,
+    animationType: AnimationType.fade,
+    textStyle: TextStyle(
+      color: ColorConstants.colorBlack,
+      fontSize: DimensionConstants.d16.sp,
+      fontWeight: FontWeight.w600,
+    ),
+    pinTheme: PinTheme(
+        activeColor: ColorConstants.primaryColor,
+        disabledColor: ColorConstants.grayE0E0E0,
+        inactiveFillColor: ColorConstants.colorWhite,
+        inactiveColor: ColorConstants.grayE0E0E0,
+        selectedColor: ColorConstants.primaryColor,
+        shape: PinCodeFieldShape.box,
+        borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
+        fieldHeight: DimensionConstants.d60.h,
+        fieldWidth: DimensionConstants.d60.w,
+        errorBorderColor: ColorConstants.redColorEB5757,
+        activeFillColor: ColorConstants.colorWhite,
+        selectedFillColor: ColorConstants.colorWhite),
+    cursorColor: Colors.black,
+    animationDuration: const Duration(milliseconds: 100),
+    enableActiveFill: true,
+    controller: provider.textEditController,
+    keyboardType: TextInputType.number,
+    onCompleted: (String v) {
+      provider.getOtp(v);
+    },
+    onChanged: (value) {},
+    beforeTextPaste: (text) {
+      return true;
+    },
   );
 }

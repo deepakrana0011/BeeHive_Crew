@@ -20,11 +20,11 @@ class SignUpProvider extends BaseProvider {
   final nameController = TextEditingController();
   final passwordController = TextEditingController();
 
-  Future signUpCrew(BuildContext context, String emailController) async {
+  Future signUpCrew(BuildContext context, String emailController, String? fcmToken) async {
     setState(ViewState.busy);
     try {
       var model = await api.signUpCrew(context, nameController.text,
-          emailController, passwordController.text);
+          emailController, passwordController.text,fcmToken);
       SharedPreference.prefs!.setString(SharedPreference.TOKEN, model.token!);
       if (model.success == true) {
         setState(ViewState.idle);

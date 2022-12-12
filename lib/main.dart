@@ -4,6 +4,7 @@ import 'package:beehive/locator.dart';
 import 'package:beehive/provider/app_state_provider.dart';
 import 'package:beehive/widget/app_theme.dart';
 import 'package:country_codes/country_codes.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
@@ -16,6 +17,7 @@ import 'router.dart' as router;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
+  await Firebase.initializeApp();
   await CountryCodes.init();
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
@@ -29,7 +31,7 @@ Future<void> main() async {
   await Future.delayed(const Duration(seconds: 2));
   runApp(EasyLocalization(
     supportedLocales: const [Locale('en'), Locale('ja')],
-    path: 'assets/langs',
+    path: 'assets/langs',   //  41433491252
     startLocale: language == 0 ? const Locale('en') : const Locale('ja'),
     child: ChangeNotifierProvider<AppStateNotifier>(
       create: (context) => AppStateNotifier(),

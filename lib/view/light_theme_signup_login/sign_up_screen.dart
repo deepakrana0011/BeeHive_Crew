@@ -16,6 +16,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../notification/firebase_notification.dart';
+
 class SignUpScreen extends StatelessWidget {
   SignUpScreen({Key? key, required this.email}) : super(key: key);
   final String email;
@@ -24,11 +26,16 @@ class SignUpScreen extends StatelessWidget {
   final passwordFocusNode = FocusNode();
   final _formKey = GlobalKey<FormState>();
   SignUpProvider provider = locator<SignUpProvider>();
+  FirebaseNotification firebaseNotification = locator<FirebaseNotification>();
+  String? _fcmToken;
 
   @override
   Widget build(BuildContext context) {
-    return BaseView<SignUpProvider>(onModelReady: (provider) {
+    return BaseView<SignUpProvider>(onModelReady: (provider) async {
       this.provider = provider;
+      await firebaseNotification.getToken().then((value) {
+        _fcmToken = value;
+      });
     }, builder: (context, provider, _) {
       return GestureDetector(
         onTap: () {
@@ -102,7 +109,7 @@ class SignUpScreen extends StatelessWidget {
                                             passwordFocus = true;
                                         if (_formKey.currentState!.validate()) {
                                           CommonWidgets.hideKeyboard(context);
-                                          provider.signUpCrew(context, email);
+                                          provider.signUpCrew(context, email,_fcmToken);
                                         } else {}
                                       }, shadowRequired: true)
                                     : Center(

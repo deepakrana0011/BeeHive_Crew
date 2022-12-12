@@ -300,7 +300,8 @@ class TimeSheetsScreenManager extends StatelessWidget {
             onTap: (){
               bottomSheetTimeSheetTimePicker(
                 context,
-                onTap: () {}, timeSheetOrSchedule: true,
+                currentTime: DateTime.now(),
+                selectedDate: (){}, timeSheetOrSchedule: true,
 
               );
             },
@@ -363,7 +364,8 @@ class TimeSheetsScreenManager extends StatelessWidget {
             onTap: (){
               bottomSheetTimeSheetTimePicker(
                 context,
-                onTap: () {}, timeSheetOrSchedule: true,
+                currentTime: DateTime.now(),
+                selectedDate: (){}, timeSheetOrSchedule: true,
 
               );
             },

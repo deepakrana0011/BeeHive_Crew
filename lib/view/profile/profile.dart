@@ -249,11 +249,15 @@ Widget profileWidget(BuildContext context, VoidCallback onTapOnEditButton,
                               ),
                             ),
                           )
-                        : CircleAvatar(
+                        : ImageView(
+                            circleCrop: true,
+                            width: DimensionConstants.d150.w,
+                            height: DimensionConstants.d150.w,
+                            fit: BoxFit.cover,
+                            color: ColorConstants.colorWhite,
                             radius: DimensionConstants.d75.r,
-                            backgroundImage: CachedNetworkImageProvider(
-                                ApiConstantsCrew.BASE_URL_IMAGE +
-                                    provider.getObj!.data!.profileImage!),
+                            path: ApiConstantsCrew.BASE_URL_IMAGE +
+                                provider.getObj!.data!.profileImage!,
                           ),
                   ),
                 ),

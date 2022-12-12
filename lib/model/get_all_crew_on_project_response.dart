@@ -9,22 +9,26 @@ class GetAllCrewOnProject {
     this.success,
     this.data,
     this.totalCrews,
+    this.totalHours
   });
 
   bool? success;
   List<Datum>? data;
   int? totalCrews;
+  int? totalHours;
 
   factory GetAllCrewOnProject.fromJson(Map<String, dynamic> json) => GetAllCrewOnProject(
     success: json["success"],
     data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
     totalCrews: json["totalCrews"],
+    totalHours: json["totalHours"],
   );
 
   Map<String, dynamic> toJson() => {
     "success": success,
     "data": List<dynamic>.from(data!.map((x) => x.toJson())),
     "totalCrews": totalCrews,
+    "totalHours": totalHours,
   };
 }
 

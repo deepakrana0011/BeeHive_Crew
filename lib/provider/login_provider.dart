@@ -18,10 +18,10 @@ class LoginProvider extends BaseProvider {
   bool passwordContentPadding = false;
   bool passwordVisible = false;
 
-  Future loginCrew(BuildContext context, String email, String password) async {
+  Future loginCrew(BuildContext context, String email, String password,String? deviceToken) async {
     setState(ViewState.busy);
     try {
-      var model = await api.loginCrew(context, email, password);
+      var model = await api.loginCrew(context, email, password,deviceToken);
       setState(ViewState.idle);
       if (model.success == true) {
         SharedPreference.prefs!.setString(SharedPreference.TOKEN, model.token!);

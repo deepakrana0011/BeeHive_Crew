@@ -24,6 +24,7 @@ class ProjectData {
     this.id,
     this.managerId,
     this.projectName,
+    this.color,
     this.address,
     this.latitude,
     this.longitude,
@@ -46,6 +47,7 @@ class ProjectData {
   String? id;
   String? managerId;
   String? projectName;
+  String? color;
   String? address;
   double? latitude;
   double? longitude;
@@ -68,6 +70,7 @@ class ProjectData {
         id: json["_id"],
         managerId: json["managerId"],
         projectName: json["projectName"],
+        color: json["color"],
         address: json["address"],
         latitude: json["latitude"].toDouble(),
         longitude: json["longitude"].toDouble(),
@@ -83,25 +86,25 @@ class ProjectData {
         sameRate: json["sameRate"],
         projectRate: List<ProjectRate>.from(
             json["projectRate"].map((x) => ProjectRate.fromJson(x))),
-        checkins: json["checkins"]!=null?List<CheckInProjectDetailManager>.from(json["checkins"]
-            .map((x) => CheckInProjectDetailManager.fromJson(x))):[],
+        checkins: json["checkins"] != null
+            ? List<CheckInProjectDetailManager>.from(json["checkins"]
+                .map((x) => CheckInProjectDetailManager.fromJson(x)))
+            : [],
         manager: Manager.fromJson(json["manager"]),
-        crews: List<Data>.from(
-            json["crews"].map((x) => Data.fromJson(x))),
+        crews: List<Data>.from(json["crews"].map((x) => Data.fromJson(x))),
         notes: List<Note>.from(json["notes"].map((x) => Note.fromJson(x))),
       );
 }
 
 class Manager {
-  Manager({
-    this.id,
-    this.email,
-    this.name,
-    this.password,
-    this.countryCode,
-    this.phoneNumber,
-    this.profileImage
-  });
+  Manager(
+      {this.id,
+      this.email,
+      this.name,
+      this.password,
+      this.countryCode,
+      this.phoneNumber,
+      this.profileImage});
 
   String? id;
   String? email;
@@ -112,17 +115,14 @@ class Manager {
   String? profileImage;
 
   factory Manager.fromJson(Map<String, dynamic> json) => Manager(
-        id: json["_id"],
-        email: json["email"],
-        name: json["name"],
-        password: json["password"],
-        countryCode: json["countryCode"],
-        phoneNumber: json["phoneNumber"],
-        profileImage: json["profileImage"]
-      );
+      id: json["_id"],
+      email: json["email"],
+      name: json["name"],
+      password: json["password"],
+      countryCode: json["countryCode"],
+      phoneNumber: json["phoneNumber"],
+      profileImage: json["profileImage"]);
 }
-
-
 
 class Note {
   Note({this.id, this.assignProjectId, this.title, this.note, this.image});

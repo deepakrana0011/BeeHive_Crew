@@ -97,7 +97,7 @@ class ChangePasswordPage extends StatelessWidget {
                           textFiledName(context, "old_password", "*********", oldPasswordController),
                           SizedBox(height: DimensionConstants.d16.h,),
                           textFiledName(context, "new_password", "*********", newPasswordController),
-                          SizedBox(height: DimensionConstants.d16.h,),
+                          SizedBox(height: DimensionConstants.d16.h,),f
                           textFiledName(context, "re_enter_new_password", "*********", renewPasswordController),*/
                           const Spacer(),
                           CommonWidgets.commonButton(
@@ -269,6 +269,9 @@ class ChangePasswordPage extends StatelessWidget {
           return "password_required".tr();
         } else if (!Validations.validateStructure(value)) {
           return "invalid_password_format".tr();
+        }
+        else if (oldPasswordController.text.trim()==value.trim()) {
+          return "please_use_different_set_of_password".tr();
         }
         {
           return null;

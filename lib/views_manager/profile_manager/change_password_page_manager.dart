@@ -269,6 +269,9 @@ class ChangePasswordPageManager extends StatelessWidget {
         } else if (!Validations.validateStructure(value)) {
           return "invalid_password_format".tr();
         }
+        else if (oldPasswordController.text.trim()==value.trim()) {
+          return "please_use_different_set_of_password".tr();
+        }
         {
           return null;
         }

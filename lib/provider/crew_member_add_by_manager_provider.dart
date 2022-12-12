@@ -17,8 +17,8 @@ class CrewMemberAddByManagerProvider extends BaseProvider {
   final phoneController = TextEditingController();
   final emailController = TextEditingController();
   final addressController = TextEditingController();
-
   String profileImage = " ";
+
   Future addProfilePic(BuildContext context, int modes) async {
     Navigator.pop(context);
     final picker = ImagePicker();
@@ -63,12 +63,9 @@ class CrewMemberAddByManagerProvider extends BaseProvider {
         name: nameController.text,
         profile: profileImage,
       );
+      setState(ViewState.idle);
       if (model.success == true) {
         Navigator.pop(context);
-        setState(ViewState.idle);
-        DialogHelper.showMessage(context, model.message!);
-      } else {
-        setState(ViewState.idle);
       }
     } on FetchDataException catch (e) {
       setState(ViewState.idle);

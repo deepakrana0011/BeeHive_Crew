@@ -153,6 +153,8 @@ class EmailAddressScreen extends StatelessWidget {
           focusColor: ColorConstants.colorBlack,
           contPadding: contPadding,
           suffixIcon:  IconButton(
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
                   padding: EdgeInsets.zero,
                   icon: const ImageView(
                     path: ImageConstants.circleCloseIcon,

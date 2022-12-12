@@ -18,6 +18,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../notification/firebase_notification.dart';
+
 class LoginScreen extends StatelessWidget {
   String? email;
 
@@ -28,11 +30,16 @@ class LoginScreen extends StatelessWidget {
   final emailFocusNode = FocusNode();
   final passwordFocusNode = FocusNode();
   final _formKey = GlobalKey<FormState>();
+  FirebaseNotification firebaseNotification = locator<FirebaseNotification>();
+  String? _fcmToken;
 
   @override
   Widget build(BuildContext context) {
-    return BaseView<LoginProvider>(onModelReady: (provider) {
+    return BaseView<LoginProvider>(onModelReady: (provider) async {
       emailController.text = email ?? "";
+      await firebaseNotification.getToken().then((value) {
+        _fcmToken = value;
+      });
     }, builder: (context, provider, _) {
       return GestureDetector(
         onTap: () {
@@ -125,20 +132,21 @@ class LoginScreen extends StatelessWidget {
                                     SizedBox(height: DimensionConstants.d29.h),
                                     CommonWidgets.commonButton(
                                         context, "login".tr(), onBtnTap: () {
-                                          emailFocus = true;
-                                          passwordFocus = true;
+                                      emailFocus = true;
+                                      passwordFocus = true;
                                       CommonWidgets.hideKeyboard(context);
                                       if (_formKey.currentState!.validate()) {
                                         provider.loginCrew(
                                             context,
                                             emailController.text,
-                                            passwordController.text);
+                                            passwordController.text,
+                                            _fcmToken);
                                       }
                                     }, shadowRequired: true),
                                     SizedBox(height: DimensionConstants.d16.h),
                                     GestureDetector(
                                       onTap: () {
-                                       /* Navigator.pushNamed(context,
+                                        /* Navigator.pushNamed(context,
                                             RouteConstants.emailAddressScreen,
                                             arguments: {
                                               "email": emailController.text
@@ -190,7 +198,8 @@ class LoginScreen extends StatelessWidget {
           FontWeight.w400, ColorConstants.colorBlack),
       decoration: ViewDecoration.inputDecorationTextField(
           contPadding: provider.emailContentPadding,
-          fillColor: ColorConstants.colorWhite, showError: emailFocus ?? !emailFocusNode.hasFocus),
+          fillColor: ColorConstants.colorWhite,
+          showError: emailFocus ?? !emailFocusNode.hasFocus),
       textInputAction: TextInputAction.next,
       keyboardType: TextInputType.text,
       onChanged: (value) {
@@ -227,6 +236,8 @@ class LoginScreen extends StatelessWidget {
           contPadding: provider.passwordContentPadding,
           suffixIcon: IconButton(
             padding: EdgeInsets.zero,
+            splashColor: Colors.transparent,
+            highlightColor: Colors.transparent,
             icon: ImageView(
               path: provider.passwordVisible
                   ? ImageConstants.eyeIcon
@@ -237,7 +248,8 @@ class LoginScreen extends StatelessWidget {
               provider.updateLoadingStatus(true);
             },
           ),
-          fillColor: ColorConstants.colorWhite, showError: passwordFocus ?? !passwordFocusNode.hasFocus),
+          fillColor: ColorConstants.colorWhite,
+          showError: passwordFocus ?? !passwordFocusNode.hasFocus),
       textInputAction: TextInputAction.done,
       keyboardType: TextInputType.text,
       onChanged: (value) {

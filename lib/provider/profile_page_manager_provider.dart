@@ -45,7 +45,7 @@ class ProfilePageManagerProvider extends BaseProvider {
   double sColor = 0;
   double vColor = 0;
 
-  HSVColor currentColor = HSVColor.fromColor(ColorConstants.blueGradient1Color);
+  HSVColor? currentColor;
 
   updateColor(HSVColor color) {
     currentColor = color;
@@ -69,6 +69,12 @@ class ProfilePageManagerProvider extends BaseProvider {
         ? ""
         : ApiConstantsCrew.BASE_URL_IMAGE +
             profileResponse!.data!.profileImage!;
+
+    currentColor = profileResponse?.data?.customColor == null
+        ? HSVColor.fromColor(ColorConstants.blueGradient1Color)
+        : HSVColor.fromColor(
+            Color(int.parse(profileResponse?.data?.customColor)));
+
     companyIcon = profileResponse!.data!.companyLogo == null
         ? ""
         : ApiConstantsCrew.BASE_URL_IMAGE + profileResponse!.data!.companyLogo!;
@@ -171,17 +177,17 @@ class ProfilePageManagerProvider extends BaseProvider {
           imageChanged: isImageChanged,
           name: nameController.text,
           profile: profileImage,
-          color: currentColor.toColor().toString().substring(6, 16),
+          color: currentColor!.toColor().toString().substring(6, 16),
           companyChanged: isCompanyLogo);
       updateLoader = false;
       if (model.success == true) {
         Navigator.pop(context);
       }
     } on FetchDataException catch (e) {
-      updateLoader=false;
+      updateLoader = false;
       DialogHelper.showMessage(context, e.toString());
     } on SocketException catch (e) {
-      updateLoader=false;
+      updateLoader = false;
       DialogHelper.showMessage(context, "internet_connection".tr());
     }
   }

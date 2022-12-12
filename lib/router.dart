@@ -1,13 +1,14 @@
 import 'package:beehive/constants/route_constants.dart';
 import 'package:beehive/model/crew_on_this_project_response.dart';
 import 'package:beehive/model/get_crew_profile_response.dart';
-import 'package:beehive/model/timesheet_crew_details.dart'
-    as manager_cert;
+import 'package:beehive/model/timesheet_crew_details.dart' as manager_cert;
 import 'package:beehive/model/project_detail_crew_response.dart';
 import 'package:beehive/model/project_detail_manager_response.dart'
     as manager_note;
 import 'package:beehive/view/%20light_theme_signup_login/continue_with_phone.dart';
 import 'package:beehive/view/%20light_theme_signup_login/otp_verification_page.dart';
+import 'package:beehive/view/appSettings/privacy_policy_screen.dart';
+import 'package:beehive/view/appSettings/terms_of_use_screen.dart';
 import 'package:beehive/view/bottom_bar/bottom_navigation_bar.dart';
 import 'package:beehive/view/dashboard/archived_projects_screen.dart';
 import 'package:beehive/view/dashboard/notifications_screen.dart';
@@ -32,7 +33,7 @@ import 'package:beehive/view/upgrade_crew_manager/payment_page.dart';
 import 'package:beehive/view/upgrade_crew_manager/upgrade_page.dart';
 import 'package:beehive/views_manager/billing_information/billing_information_page_manager.dart';
 import 'package:beehive/views_manager/bottom_bar_manager/bottom_navigation_bar_manager.dart';
-import 'package:beehive/view/app_settings.dart';
+import 'package:beehive/view/appSettings/app_settings.dart';
 import 'package:beehive/views_manager/dashboard_manager/archived_projects_screen_manager.dart';
 import 'package:beehive/views_manager/dashboard_manager/notifications_screen_manager.dart';
 import 'package:beehive/views_manager/light_theme_signup_login_manager/continue_with_phone_manager.dart';
@@ -62,6 +63,8 @@ import 'package:beehive/views_manager/timesheet_manager/timesheet_from_crew.dart
 import 'package:beehive/widget/autoCompletePlaces.dart';
 import 'package:beehive/views_manager/profile_manager/show_cerfication_manager_page.dart';
 import 'package:flutter/material.dart';
+
+import 'model/time_sheets_screen_arguments.dart';
 
 class OnGenerateRouter {
   static Route<dynamic> onGenerate(RouteSettings settings) {
@@ -120,7 +123,11 @@ class OnGenerateRouter {
 
       case RouteConstants.timeSheetsScreen:
         return MaterialPageRoute(
-            builder: (_) => const TimeSheetsScreen(), settings: settings);
+            builder: (_) => TimeSheetsScreen(
+                  timeSheetsScreenArguments:
+                      settings.arguments as TimeSheetsScreenArguments,
+                ),
+            settings: settings);
 
       case RouteConstants.notificationsScreen:
         return MaterialPageRoute(
@@ -308,7 +315,6 @@ class OnGenerateRouter {
         return MaterialPageRoute(
             builder: (_) => CrewProfilePageManager(
                   crewId: args.crewId,
-
                 ),
             settings: settings);
       case RouteConstants.timeSheetScreenManager:
@@ -378,13 +384,25 @@ class OnGenerateRouter {
       case RouteConstants.showCertificationManagerPage:
         return MaterialPageRoute(
             builder: (_) => ShowCertificateManagerPage(
-                certificationData: args as manager_cert.Cert),
+                certificationData: args as dynamic),
             settings: settings);
 
       case RouteConstants.showCertificationCrewPage:
         return MaterialPageRoute(
             builder: (_) =>
                 ShowCertificateCrewPage(certificationData: args as Cert),
+            settings: settings);
+
+        case RouteConstants.privacyPolicyScreen:
+        return MaterialPageRoute(
+            builder: (_) =>
+                const PrivacyPolicyScreen(),
+            settings: settings);
+
+        case RouteConstants.termsOfUse:
+        return MaterialPageRoute(
+            builder: (_) =>
+                const TermsOfUseScreen(),
             settings: settings);
 
       case RouteConstants.showPrivateNoteManager:

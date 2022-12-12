@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'crew_dashboard_response.dart';
+
 CrewTimeSheetModel crewTimeSheetModelFromJson(String str) => CrewTimeSheetModel.fromJson(json.decode(str));
 
 String crewTimeSheetModelToJson(CrewTimeSheetModel data) => json.encode(data.toJson());
@@ -83,7 +85,6 @@ class AllCheckin {
     "assignProjectId": assignProjectId?.toJson(),
     "checkInTime": checkInTime,
     "hoursDiff": hoursDiff,
-    "break": List<dynamic>.from(allCheckinBreak!.map((x) => x.toJson())),
     "status": status,
     "interuption": List<dynamic>.from(interuption!.map((x) => x.toJson())),
     "createdAt": createdAt?.toIso8601String(),
@@ -92,29 +93,7 @@ class AllCheckin {
   };
 }
 
-class Break {
-  Break({
-    this.startTime,
-    this.interval,
-    this.id,
-  });
 
-  String? startTime;
-  String? interval;
-  String? id;
-
-  factory Break.fromJson(Map<String, dynamic> json) => Break(
-    startTime: json["startTime"],
-    interval: json["interval"],
-    id: json["_id"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "startTime": startTime,
-    "interval": interval,
-    "_id": id,
-  };
-}
 
 class AssignProjectId {
   AssignProjectId({
@@ -207,6 +186,7 @@ class Crew {
     this.id,
     this.email,
     this.name,
+    this.profileImage,
     this.password,
     this.status,
     this.createdAt,
@@ -218,6 +198,7 @@ class Crew {
   String? id;
   String? email;
   String? name;
+  String? profileImage;
   String? password;
   int? status;
   DateTime? createdAt;
@@ -229,6 +210,7 @@ class Crew {
     id: json["_id"],
     email: json["email"],
     name: json["name"],
+    profileImage: json["profileImage"],
     password: json["password"],
     status: json["status"],
     createdAt: DateTime.parse(json["createdAt"]),
@@ -241,6 +223,7 @@ class Crew {
     "_id": id,
     "email": email,
     "name": name,
+    "profileImage": profileImage,
     "password": password,
     "status": status,
     "createdAt": createdAt?.toIso8601String(),

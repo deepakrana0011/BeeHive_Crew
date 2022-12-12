@@ -694,34 +694,38 @@ class _ProjectsPageManagerState extends State<ProjectsPageManager>
                           children: <Widget>[
                             SizedBox(
                                 height: DimensionConstants.d37.h,
-                                child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: provider.dates.length,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      return Padding(
-                                        padding: provider.dates[index] <= 9
-                                            ? EdgeInsets.only(
-                                                left: DimensionConstants.d25.w,
-                                                right: DimensionConstants.d14.w,
-                                                top: DimensionConstants.d9.h)
-                                            : EdgeInsets.only(
-                                                left: DimensionConstants.d19.w,
-                                                right: DimensionConstants.d12.w,
-                                                top: DimensionConstants.d9.h),
-                                        child: Text("${provider.dates[index]}")
-                                            .semiBoldText(
-                                                context,
-                                                DimensionConstants.d14.sp,
-                                                TextAlign.center,
-                                                color: Theme.of(context)
-                                                            .brightness ==
-                                                        Brightness.dark
-                                                    ? ColorConstants.colorWhite
-                                                    : ColorConstants
-                                                        .colorBlack),
-                                      );
-                                    })),
+                                width: MediaQuery.of(context).size.width,
+                                child: GridView.builder(
+                                  itemCount: provider.dates.length,
+                                  shrinkWrap: true,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return Padding(
+                                      padding: provider.dates[index] <= 9
+                                          ? EdgeInsets.only(
+                                              left: DimensionConstants.d25.w,
+                                              right: DimensionConstants.d14.w,
+                                              top: DimensionConstants.d9.h)
+                                          : EdgeInsets.only(
+                                              left: DimensionConstants.d19.w,
+                                              right: DimensionConstants.d12.w,
+                                              top: DimensionConstants.d9.h),
+                                      child: Text("${provider.dates[index]}")
+                                          .semiBoldText(
+                                              context,
+                                              DimensionConstants.d14.sp,
+                                              TextAlign.center,
+                                              color: Theme.of(context)
+                                                          .brightness ==
+                                                      Brightness.dark
+                                                  ? ColorConstants.colorWhite
+                                                  : ColorConstants.colorBlack),
+                                    );
+                                  },
+                                  gridDelegate:
+                                      const SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 7),
+                                )),
                             Container(
                                 height: DimensionConstants.d337.h,
                                 color: Theme.of(context).brightness ==
@@ -729,11 +733,16 @@ class _ProjectsPageManagerState extends State<ProjectsPageManager>
                                     ? ColorConstants.colorBlack
                                     : ColorConstants.grayF1F1F1,
                                 child: ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: provider.days.length,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      return Column(
+                                  scrollDirection: Axis.horizontal,
+                                  itemCount: provider.days.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    var totalWidth =
+                                        MediaQuery.of(context).size.width -
+                                            DimensionConstants.d32.w;
+                                    return SizedBox(
+                                      width: totalWidth / 7,
+                                      child: Column(
                                         children: [
                                           Padding(
                                             padding: EdgeInsets.only(
@@ -765,8 +774,10 @@ class _ProjectsPageManagerState extends State<ProjectsPageManager>
                                                     context, provider, index)),
                                           ),
                                         ],
-                                      );
-                                    })),
+                                      ),
+                                    );
+                                  },
+                                )),
                           ],
                         ),
                       ),
@@ -796,7 +807,6 @@ class _ProjectsPageManagerState extends State<ProjectsPageManager>
         itemBuilder: (BuildContext context, int index) {
           return GestureDetector(
             onTap: () async {
-
               await provider
                   .crewOnThisProject(
                       context,
@@ -809,9 +819,12 @@ class _ProjectsPageManagerState extends State<ProjectsPageManager>
                       onTap: () {},
                       timeSheetOrSchedule: true,
                       projectData: provider.projectData!,
-                      projectColor: provider.projectNameList[weekDaysIndex].projectName[index].color == null
+                      projectColor: provider.projectNameList[weekDaysIndex]
+                                  .projectName[index].color ==
+                              null
                           ? Colors.black
-                          : Color(int.parse("0x${provider.projectNameList[weekDaysIndex].projectName[index].color}")));
+                          : Color(int.parse(
+                              "0x${provider.projectNameList[weekDaysIndex].projectName[index].color}")));
                 }
               });
             },

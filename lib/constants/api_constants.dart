@@ -21,6 +21,9 @@ class ApiConstantsManager {
   static const String singleProjectDetail = "singleProjectDetails";
   static const String updateCrewMember = "updateCrewOnProject";
   static const String updateCrewRate = "updateCrewRate";
+  static const String ignoreAllInteruptions = "ignoreAllInteruptions";
+  static const String revertCheckinInteruptions = "revertCheckinInteruptions";
+  static const String updateBreakAndTime = "updateBreakAndTime";
 
   static const String MANAGER_LOGIN = "managerlogin";
   static const String CREATE_PROJECT = "newproject";
@@ -40,7 +43,7 @@ class ApiConstantsManager {
   static const String GET_MANAGER_PROFILE = "getManagerProfile";
   static const String UPDATE_MANAGER_PROFILE = "updatemanagerprofile";
   static const String ADD_NEW_CREW_BY_MANAGER = "addingcrew";
-  static const String RESEND_OTP = "resend";
+  static const String RESEND_OTP = "resendCodeEmailManager";
   static const String RESEND_OTP_PHONE = "resendtokenonphone";
 
   static const String managerProjectSchedule = "projectSchedule";
@@ -80,6 +83,7 @@ class ApiConstantsCrew {
   static const String resetPasswordCrew = "resetPassword";
 
   static const String GET_CREW_PROFILE = "getCrewProfile";
+  static const String getNotifications = "getNotification/";
   static const String UPDATE_CREW_PROFILE = "updateprofile/";
   static const String GET_OTP_FOR_PASSWORD = "forgotpassword";
   static const String VERIFY_OTP_RESETPASSWORD = "verifyforgot";
@@ -89,7 +93,7 @@ class ApiConstantsCrew {
   static const String crewDashboard = "crewDashboard";
   static const String CHECK_IN_CREW = "checkintime";
   static const String RESEND_OTP_PHONE = "resendtokenonphone";
-  static const String RESEND_OTP_EMAIL = "resend";
+  static const String RESEND_OTP_EMAIL = "resendCodeEmailCrew";
   static const String CHECK_OUT_API = "checkouttime/";
 
 

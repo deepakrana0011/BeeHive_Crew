@@ -16,6 +16,7 @@ import '../../helper/validations.dart';
 import '../../locator.dart';
 import '../../model/crew_timesheet_model.dart';
 import '../../model/project_working_hour_detail.dart';
+import '../../model/time_sheets_screen_arguments.dart';
 import '../../widget/image_view.dart';
 import '../base_view.dart';
 
@@ -238,7 +239,13 @@ class _TimeSheetsTabBarState extends State<TimeSheetsTabBar>
               itemCount: provider.crewTimeSheetModel!.allCheckin!.length,
               shrinkWrap: true,
               itemBuilder: (BuildContext context, int index) {
-                return projectDetailTile(context,
+                return projectDetailTile(context, onTap: () {
+                  Navigator.pushNamed(context, RouteConstants.timeSheetsScreen,
+                      arguments: TimeSheetsScreenArguments(
+                          provider.crewTimeSheetModel!.crew?.name,
+                          provider.crewTimeSheetModel!.crew?.profileImage,
+                          provider.crewTimeSheetModel!.allCheckin![index]));
+                },
                     checkInProjectDetail:
                         provider.crewTimeSheetModel!.allCheckin![index]);
               },
@@ -493,7 +500,7 @@ class _TimeSheetsTabBarState extends State<TimeSheetsTabBar>
                                 children: [
                                   ListView.builder(
                                       shrinkWrap: true,
-                                      reverse:true,
+                                      reverse: true,
                                       itemCount: provider.weeklyData.length,
                                       physics:
                                           const NeverScrollableScrollPhysics(),
@@ -518,7 +525,7 @@ class _TimeSheetsTabBarState extends State<TimeSheetsTabBar>
                                             ),
                                             ListView.separated(
                                               shrinkWrap: true,
-                                              reverse:true,
+                                              reverse: true,
                                               physics:
                                                   const NeverScrollableScrollPhysics(),
                                               itemCount: provider
@@ -529,6 +536,16 @@ class _TimeSheetsTabBarState extends State<TimeSheetsTabBar>
                                                   (context, innerIndex) {
                                                 return projectDetailTile(
                                                     context,
+                                                    onTap: () {
+                                                      Navigator.pushNamed(context, RouteConstants.timeSheetsScreen,
+                                                          arguments: TimeSheetsScreenArguments(
+                                                              provider.crewTimeSheetModel!.crew?.name,
+                                                              provider.crewTimeSheetModel!.crew?.profileImage,
+                                                              provider
+                                                                  .weeklyData[index]
+                                                                  .checkInDataList![
+                                                              innerIndex]));
+                                                    },
                                                     checkInProjectDetail: provider
                                                             .weeklyData[index]
                                                             .checkInDataList![

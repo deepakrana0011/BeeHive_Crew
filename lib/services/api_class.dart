@@ -20,9 +20,8 @@ import 'package:beehive/model/get_crew_response_time_sheet.dart';
 import 'package:beehive/model/manager_dashboard_response.dart';
 import 'package:beehive/model/email_verification_response_manager.dart';
 import 'package:beehive/model/email_verified_response_manager.dart';
-import 'package:beehive/model/get_assinged_crew_manager.dart';
+import 'package:beehive/model/get_assinged_crew_manager.dart' as assigned;
 import 'package:beehive/model/get_crew_profile_response.dart';
-import 'package:beehive/model/get_otp_fro_password.dart';
 import 'package:beehive/model/login_response_manager.dart';
 import 'package:beehive/model/phone_otp_response_manager.dart';
 import 'package:beehive/model/private_note_response_manager.dart';
@@ -34,7 +33,6 @@ import 'package:beehive/model/project_settings_response_manager.dart';
 import 'package:beehive/model/project_timesheet_response.dart';
 import 'package:beehive/model/resend_otp_response.dart';
 import 'package:beehive/model/resend_top_by_phone_crew_response.dart';
-import 'package:beehive/model/reset_password_by_phone_response.dart';
 import 'package:beehive/model/reset_password_response_crew.dart';
 import 'package:beehive/model/set_crew_rate_Manger_response.dart';
 import 'package:beehive/model/set_project_rate_request.dart';
@@ -42,23 +40,23 @@ import 'package:beehive/model/update_crew_profile_response.dart';
 import 'package:beehive/model/update_crew_request.dart';
 import 'package:beehive/model/update_project_request.dart';
 import 'package:beehive/model/update_project_response.dart';
-import 'package:beehive/model/weekly_check_in_Response.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:syncfusion_flutter_sliders/sliders.dart';
 import '../constants/api_constants.dart';
 import '../model/allProjectCrewResponse.dart';
 import '../model/all_checkout_projects_crew.dart';
 import '../model/create_project_response_manager.dart';
 import '../model/crew_dashboard_response.dart';
-import '../model/dash_board_page_response_crew.dart';
 import '../model/edit_profile_response_manager.dart';
-import '../model/get_otp_response_manager.dart';
+import '../model/get_assinged_crew_manager.dart';
 import '../model/get_profile_response_manager.dart';
+import '../model/ignore_all_interuptions_response.dart';
+import '../model/notifications_model.dart';
+import '../model/revert_checkin_interuptions_response.dart';
 import '../model/sign_up_manager_response.dart';
 import '../model/timesheet_crew_details.dart';
+import '../model/update_check_in_out_response.dart';
 import '../model/update_crew_rate_response.dart';
-import '../model/verify_otp_response_manager.dart';
 import 'fetch_data_expection.dart';
 
 class Api {
@@ -464,7 +462,7 @@ class Api {
 
   Future<SetRateForCrewResponse> setProjectRate(
       BuildContext context,
-      List<CrewId> selectedCrew,
+      List<assigned.CrewId> selectedCrew,
       String projectId,
       List<TextEditingController> rateList,
       String sameRate,
@@ -820,9 +818,15 @@ class Api {
     String name,
     String email,
     password,
+    String? fcmToken,
   ) async {
     try {
-      var map = {"name": name, "email": email, "password": password};
+      var map = {
+        "name": name,
+        "email": email,
+        "password": password,
+        "deviceToken": fcmToken
+      };
       var response = await dio
           .post(ApiConstantsCrew.BASEURL + ApiConstantsCrew.SIGNUP, data: map);
       return SignUpResponse.fromJson(json.decode(response.toString()));
@@ -953,11 +957,13 @@ class Api {
     BuildContext context,
     String email,
     String password,
+    String? deviceToken,
   ) async {
     try {
       var map = {
         "email": email,
         "password": password,
+        "deviceToken": deviceToken
       };
       var response = await dio.post(
           ApiConstantsCrew.BASEURL + ApiConstantsCrew.CREW_LOGIN,
@@ -1029,6 +1035,26 @@ class Api {
         ApiConstantsCrew.BASEURL + ApiConstantsCrew.GET_CREW_PROFILE,
       );
       return GetCrewProfileResponse.fromJson(json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+
+  Future<NotificationsModel> getNotifications(
+      BuildContext context, String userId) async {
+    try {
+      dio.options.headers["authorization"] =
+          SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var response = await dio.get(
+        ApiConstantsCrew.BASEURL + ApiConstantsCrew.getNotifications + userId,
+      );
+      return NotificationsModel.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());
@@ -1349,6 +1375,74 @@ class Api {
           "${ApiConstantsManager.BASEURL}${ApiConstantsManager.updateCrewRate}/$crewId",
           data: request);
       return UpdateCrewRateResponse.fromJson(json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+
+  Future<IgnoreAllInteruptionsResponse> ignoreAllInteruptions(
+      BuildContext context, String checkInId) async {
+    try {
+      dio.options.headers["authorization"] =
+          SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var response = await dio.put(
+          "${ApiConstantsManager.BASEURL}${ApiConstantsManager.ignoreAllInteruptions}/$checkInId");
+      return IgnoreAllInteruptionsResponse.fromJson(
+          json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+
+  Future<RevertCheckinInteruptionsResponse> revertCheckinInteruptions(
+      BuildContext context, String checkInId) async {
+    try {
+      dio.options.headers["authorization"] =
+          SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var response = await dio.put(
+          "${ApiConstantsManager.BASEURL}${ApiConstantsManager.revertCheckinInteruptions}/$checkInId");
+      return RevertCheckinInteruptionsResponse.fromJson(
+          json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+
+  Future<UpdateCheckInOutResponse> updateCheckInOutTime(
+      BuildContext context, String checkInId, int type, String time) async {
+    //type 0 for checkin and 1 for checkout
+    try {
+      var data;
+      if (type == 0) {
+        data = {"checkInTime": time};
+      } else {
+        data = {"checkOutTime": time};
+      }
+      dio.options.headers["authorization"] =
+          SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var response = await dio.put(
+          "${ApiConstantsManager.BASEURL}${ApiConstantsManager.updateBreakAndTime}/$checkInId",
+          data: data);
+      return UpdateCheckInOutResponse.fromJson(
+          json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());
@@ -1714,13 +1808,15 @@ class Api {
 
   Future<GetAllCrewOnProject> getAllCrewOnProjects(
     BuildContext context,
+    String currentTime,
   ) async {
     try {
       dio.options.headers["authorization"] =
           SharedPreference.prefs!.getString(SharedPreference.TOKEN);
-      var response = await dio.get(
-        ApiConstantsManager.BASEURL + ApiConstantsManager.getAllCrewOnProjects,
-      );
+      var response = await dio.post(
+          ApiConstantsManager.BASEURL +
+              ApiConstantsManager.getAllCrewOnProjects,
+          data: {"date": currentTime});
       return GetAllCrewOnProject.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {

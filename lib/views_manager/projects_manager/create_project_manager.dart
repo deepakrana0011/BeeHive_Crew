@@ -40,8 +40,7 @@ class CreateProjectManagerState extends State<CreateProjectManager> {
         onModelReady: (provider) async {
       provider.createProjectRequest.clearCreateProjectRequest();
       await provider.determinePosition().then((value) async => {
-            await provider.getLngLt(context),
-            //provider.setCustomMapPinUser(),
+            if (value) await provider.getLngLt(context),
           });
     }, builder: (context, provider, _) {
       Set<Circle> mCircle = {

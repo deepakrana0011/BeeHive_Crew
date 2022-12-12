@@ -89,7 +89,7 @@ Widget projectInformation(
           height: DimensionConstants.d40.h,
           width: DimensionConstants.d40.w,
           decoration: BoxDecoration(
-            color: color==null?Colors.black:Color(int.parse("0x$color")),
+            color: color == null ? Colors.black : Color(int.parse("0x$color")),
             borderRadius: BorderRadius.circular(DimensionConstants.d20.r),
           ),
           child: Center(
@@ -177,24 +177,20 @@ Widget userProfile(BuildContext context, int index, bool timeSheetOrSchedule,
               children: <Widget>[
                 crewData.profileImage == null
                     ? Container(
-                        height: DimensionConstants.d50.h,
+                        height: DimensionConstants.d50.w,
                         width: DimensionConstants.d50.w,
                         decoration: const BoxDecoration(
                             color: ColorConstants.primaryColor,
                             shape: BoxShape.circle),
                       )
-                    : ClipRRect(
-                        borderRadius:
-                            BorderRadius.circular(DimensionConstants.d50.r),
-                        child: SizedBox(
-                          height: DimensionConstants.d50.h,
-                          width: DimensionConstants.d50.w,
-                          child: ImageView(
-                            path: (ApiConstantsCrew.BASE_URL_IMAGE +
-                                crewData.profileImage.toString()),
-                            fit: BoxFit.contain,
-                          ),
-                        ),
+                    : ImageView(
+                        path: (ApiConstantsCrew.BASE_URL_IMAGE +
+                            crewData.profileImage.toString()),
+                        fit: BoxFit.cover,
+                        circleCrop: true,
+                        height: DimensionConstants.d50.w,
+                        width: DimensionConstants.d50.w,
+                        radius: DimensionConstants.d25.r,
                       ),
                 SizedBox(
                   width: DimensionConstants.d16.w,
@@ -228,8 +224,9 @@ Widget userProfile(BuildContext context, int index, bool timeSheetOrSchedule,
                         SizedBox(
                           width: DimensionConstants.d6.w,
                         ),
-                        Text("${DateFunctions.minutesToHourString(projectData.checkins[index].totalMinutes)}"
-                                    " Hours")
+                        Text(
+                                "${DateFunctions.minutesToHourString(projectData.checkins[index].totalMinutes)}"
+                                " Hours")
                             .regularText(context, DimensionConstants.d14.sp,
                                 TextAlign.left,
                                 color: ColorConstants.deepBlue),

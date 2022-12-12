@@ -129,6 +129,7 @@ class EditProfilePage extends StatelessWidget {
                                 color2: ColorConstants.primaryGradient1Color,
                                 fontSize: DimensionConstants.d14.sp,
                                 onBtnTap: () {
+                              CommonWidgets.hideKeyboard(context);
                               if (provider.nameController.text.trim().isEmpty) {
                                 DialogHelper.showMessage(
                                     context, "name_required".tr());

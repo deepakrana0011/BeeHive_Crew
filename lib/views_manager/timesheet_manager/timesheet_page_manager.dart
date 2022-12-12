@@ -1099,8 +1099,8 @@ class _TimeSheetPageManagerState extends State<TimeSheetPageManager>
               CommonWidgets.crewTabProject(
                   context,
                   provider.getAllCrewResponse!.totalCrews.toString(),
-                  provider.getTotalHoursOnProjects(
-                          provider.getAllCrewResponse!.data)),
+                  DateFunctions.minutesToHourString(
+                          provider.getAllCrewResponse!.totalHours??0)),
               SizedBox(
                 height: DimensionConstants.d14.h,
               ),
