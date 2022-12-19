@@ -1,3 +1,4 @@
+import 'package:beehive/constants/api_constants.dart';
 import 'package:beehive/constants/color_constants.dart';
 import 'package:beehive/constants/dimension_constants.dart';
 import 'package:beehive/constants/image_constants.dart';
@@ -7,6 +8,7 @@ import 'package:beehive/helper/date_function.dart';
 import 'package:beehive/model/notifications_model.dart';
 import 'package:beehive/provider/notification_provider.dart';
 import 'package:beehive/view/base_view.dart';
+import 'package:beehive/widget/custom_circular_bar.dart';
 import 'package:beehive/widget/image_view.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
@@ -71,13 +73,23 @@ class NotificationsScreen extends StatelessWidget {
                             color: ColorConstants.primaryGradient2Color,
                           ),
                         )
-                      : ListView.separated(
-                          shrinkWrap: true,
-                          itemBuilder: (context, index) =>
-                              invitedNotificationContainer(context, index,
-                                  provider.notifications[index]),
-                          separatorBuilder: (context, index) => divider(),
-                          itemCount: provider.notifications.length),
+                      : Stack(
+                          children: [
+                            ListView.separated(
+                                shrinkWrap: true,
+                                itemBuilder: (context, index) =>
+                                    invitedNotificationContainer(
+                                        context,
+                                        index,
+                                        provider.notifications[index],
+                                        provider),
+                                separatorBuilder: (context, index) => divider(),
+                                itemCount: provider.notifications.length),
+                            provider.mainLoader
+                                ? const CustomCircularBar()
+                                : const SizedBox()
+                          ],
+                        ),
             ));
   }
 
@@ -85,16 +97,35 @@ class NotificationsScreen extends StatelessWidget {
     BuildContext context,
     int index,
     Notifications notification,
+    NotificationProvider provider,
   ) {
     return GestureDetector(
       onTap: () {
-        showDialog(
-            context: context,
-            builder: (BuildContext context) => DialogHelper.notificationDialog(
-                  context,
-                  photoFromCamera: () {},
-                  photoFromGallery: () {},
-                ));
+        if (notification.status == 0) {
+          showDialog(
+              context: context,
+              builder: (BuildContext c) => DialogHelper.notificationDialog(
+                    c,
+                    latitude: notification.assignProjectId?.latitude ?? 0.0,
+                    longitude: notification.assignProjectId?.longitude ?? 0.0,
+                    name: notification.managerId?.name ?? '',
+                    acceptFutureInvites: notification.acceptFutureInvites ?? 0,
+                    projectName:
+                        notification.assignProjectId?.projectName ?? '',
+                    address: notification.assignProjectId?.address ?? '',
+                    decline: () {
+                      Navigator.of(context).pop();
+                      provider.acceptDecline(
+                          context, notification.id, index, "2");
+                    },
+                    accept: (acceptFutureInvites) {
+                      provider.checkValue=acceptFutureInvites;
+                      Navigator.of(context).pop();
+                      provider.acceptDecline(
+                          context, notification.id, index, "1");
+                    },
+                  ));
+        }
       },
       child: Container(
         color: Colors.transparent,
@@ -103,12 +134,24 @@ class NotificationsScreen extends StatelessWidget {
             vertical: DimensionConstants.d24.h),
         child: Row(
           children: [
-            SizedBox(
-              width: DimensionConstants.d50.w,
-              height: DimensionConstants.d50.h,
-              child: const ImageView(
-                  path: ImageConstants.timeSheetsProfile, fit: BoxFit.cover),
-            ),
+            (notification.managerId!.profileImage == null ||
+                    notification.managerId!.profileImage!.isEmpty)
+                ? ImageView(
+                    width: DimensionConstants.d50.w,
+                    height: DimensionConstants.d50.w,
+                    path: ImageConstants.icAvatar,
+                    color: ColorConstants.grayF2F2F2,
+                    circleCrop: true,
+                    radius: DimensionConstants.d25.r,
+                    fit: BoxFit.cover)
+                : ImageView(
+                    width: DimensionConstants.d50.w,
+                    height: DimensionConstants.d50.w,
+                    path: ApiConstantsCrew.BASE_URL_IMAGE +
+                        notification.managerId!.profileImage!,
+                    circleCrop: true,
+                    radius: DimensionConstants.d25.r,
+                    fit: BoxFit.cover),
             SizedBox(width: DimensionConstants.d23.w),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -135,14 +178,20 @@ class NotificationsScreen extends StatelessWidget {
                       size: 8,
                     ),
                     SizedBox(width: DimensionConstants.d8.w),
-                    Text(DateFunctions.getTime(notification.createdAt!))
+                    Text(DateFunctions.getTime(
+                            notification.createdAt!.toUtc().toLocal()))
                         .regularText(context, DimensionConstants.d14.sp,
                             TextAlign.center),
                   ],
                 ),
                 SizedBox(height: DimensionConstants.d8.h),
-                Text("invited_to_join_new_project".tr()).regularText(
-                    context, DimensionConstants.d14.sp, TextAlign.center),
+                Text(notification.status == 1
+                        ? "${notification.assignProjectId?.projectName ?? ''} ${"accepted".tr()}"
+                        : notification.status == 2
+                            ? "${notification.assignProjectId?.projectName ?? ''} ${"declined".tr()}"
+                            : "invited_to_join_new_project".tr())
+                    .regularText(
+                        context, DimensionConstants.d14.sp, TextAlign.center),
               ],
             )
           ],

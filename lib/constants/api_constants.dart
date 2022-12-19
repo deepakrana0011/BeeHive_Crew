@@ -84,6 +84,7 @@ class ApiConstantsCrew {
 
   static const String GET_CREW_PROFILE = "getCrewProfile";
   static const String getNotifications = "getNotification/";
+  static const String invitationStatus = "invitationStatus/";
   static const String UPDATE_CREW_PROFILE = "updateprofile/";
   static const String GET_OTP_FOR_PASSWORD = "forgotpassword";
   static const String VERIFY_OTP_RESETPASSWORD = "verifyforgot";

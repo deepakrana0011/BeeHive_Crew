@@ -223,7 +223,6 @@ class CreateProjectManagerState extends State<CreateProjectManager> {
               });
             },
             child: Container(
-              height: DimensionConstants.d45.h,
               decoration: BoxDecoration(
                 color: Theme.of(context).brightness == Brightness.dark
                     ? ColorConstants.littleDarkGray
@@ -237,6 +236,7 @@ class CreateProjectManagerState extends State<CreateProjectManager> {
                 borderRadius: BorderRadius.circular(DimensionConstants.d8.r),
               ),
               child: TextFormField(
+              minLines: 1,
                 maxLines: 10,
                 enabled: false,
                 controller: controller,

@@ -45,11 +45,9 @@ class _DashBoardPageState extends State<DashBoardPage>
   BottomBarProvider? bottomBarProvider;
   TabController? controller;
   Timer? timer;
-  FirebaseNotification firebaseNotification = locator<FirebaseNotification>();
 
   @override
   void initState() {
-    firebaseNotification.configureFireBase(context);
     bottomBarProvider = Provider.of<BottomBarProvider>(context, listen: false);
     super.initState();
   }

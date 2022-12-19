@@ -13,6 +13,15 @@ import '../model/notifications_model.dart';
 import '../services/fetch_data_expection.dart';
 
 class NotificationProvider extends BaseProvider {
+  bool _mainLoader = false;
+
+  bool get mainLoader => _mainLoader;
+
+  set mainLoader(bool value) {
+    _mainLoader = value;
+    notifyListeners();
+  }
+
   List<Notifications> notifications = [];
 
   Completer<GoogleMapController> controller = Completer();
@@ -47,6 +56,27 @@ class NotificationProvider extends BaseProvider {
       DialogHelper.showMessage(context, e.toString());
     } on SocketException catch (e) {
       setState(ViewState.idle);
+      DialogHelper.showMessage(context, "internet_connection".tr());
+    }
+  }
+
+  Future<void> acceptDecline(
+      BuildContext context, String? id, int index, String status) async {
+    //status 1 for accept and 2 for decline
+    mainLoader = true;
+    try {
+      var model = await api.acceptDeclineInvite(context, id!, status,checkValue);
+      if (model.success == true) {
+        notifications[index].status = int.parse(status);
+        mainLoader = false;
+      } else {
+        mainLoader = false;
+      }
+    } on FetchDataException catch (e) {
+      mainLoader = false;
+      DialogHelper.showMessage(context, e.toString());
+    } on SocketException catch (e) {
+      mainLoader = false;
       DialogHelper.showMessage(context, "internet_connection".tr());
     }
   }

@@ -38,6 +38,7 @@ class Notifications {
     this.status,
     this.createdAt,
     this.v,
+    this.acceptFutureInvites
   });
 
   String? id;
@@ -49,6 +50,7 @@ class Notifications {
   int? status;
   DateTime? createdAt;
   int? v;
+  int? acceptFutureInvites;
 
   factory Notifications.fromJson(Map<String, dynamic> json) => Notifications(
         id: json["_id"],
@@ -60,6 +62,7 @@ class Notifications {
         status: json["status"],
         createdAt: DateTime.parse(json["createdAt"]),
         v: json["__v"],
+        acceptFutureInvites: json["acceptFutureInvites"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -72,6 +75,7 @@ class Notifications {
         "status": status,
         "createdAt": createdAt?.toIso8601String(),
         "__v": v,
+        "acceptFutureInvites": acceptFutureInvites,
       };
 }
 

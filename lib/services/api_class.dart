@@ -51,6 +51,7 @@ import '../model/edit_profile_response_manager.dart';
 import '../model/get_assinged_crew_manager.dart';
 import '../model/get_profile_response_manager.dart';
 import '../model/ignore_all_interuptions_response.dart';
+import '../model/invitation_status_model.dart';
 import '../model/notifications_model.dart';
 import '../model/revert_checkin_interuptions_response.dart';
 import '../model/sign_up_manager_response.dart';
@@ -366,13 +367,14 @@ class Api {
 
   Future<AddCrewResponseManager> getCrewList(
     BuildContext context,
+    String? projectId,
   ) async {
     try {
       dio.options.headers["authorization"] =
           SharedPreference.prefs!.getString(SharedPreference.TOKEN);
-      var response = await dio.get(
-        ApiConstantsManager.BASEURL + ApiConstantsManager.GET_CREW_LIST,
-      );
+      var response = await dio.post(
+          ApiConstantsManager.BASEURL + ApiConstantsManager.GET_CREW_LIST,
+          data: {"projectId": projectId ?? ''});
       return AddCrewResponseManager.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
@@ -709,7 +711,7 @@ class Api {
           ? {
               "profileImage": profileImage,
               "address": address,
-              "projectId": projectId,
+              "title": title,
               "position": title,
               "speciality": speciality,
               "company": company,
@@ -721,7 +723,7 @@ class Api {
               "address": address,
               "position": title,
               "speciality": speciality,
-              "projectId": projectId,
+              "title": title,
               "company": company,
               "name": name,
               "phoneNumber": phone,
@@ -1055,6 +1057,26 @@ class Api {
         ApiConstantsCrew.BASEURL + ApiConstantsCrew.getNotifications + userId,
       );
       return NotificationsModel.fromJson(json.decode(response.toString()));
+    } on DioError catch (e) {
+      if (e.response != null) {
+        var errorData = jsonDecode(e.response.toString());
+        var errorMessage = errorData["message"];
+        throw FetchDataException(errorMessage);
+      } else {
+        throw const SocketException("Socket Exception");
+      }
+    }
+  }
+
+  Future<InvitationStatusModel> acceptDeclineInvite(
+      BuildContext context, String id, String status, bool checkValue) async {
+    try {
+      dio.options.headers["authorization"] =
+          SharedPreference.prefs!.getString(SharedPreference.TOKEN);
+      var response = await dio.post(
+          ApiConstantsCrew.BASEURL + ApiConstantsCrew.invitationStatus + id,
+          data: {"status": status, "acceptFutureInvites": checkValue ? 1 : 0});
+      return InvitationStatusModel.fromJson(json.decode(response.toString()));
     } on DioError catch (e) {
       if (e.response != null) {
         var errorData = jsonDecode(e.response.toString());

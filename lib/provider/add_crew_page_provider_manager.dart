@@ -54,7 +54,7 @@ class AddCrewPageManagerProvider extends BaseProvider {
   Future getCrewList(BuildContext context) async {
     setState(ViewState.busy);
     try {
-      var model = await api.getCrewList(context);
+      var model = await api.getCrewList(context,projectId);
       if (model.success == true) {
         crewList.clear();
         crewTempList.clear();

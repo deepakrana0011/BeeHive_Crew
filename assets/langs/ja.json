@@ -142,7 +142,7 @@
   "apple_pay": "Apple Pay",
   "google_pay": "Google Pay",
   "paypal": "Paypal",
-  "benjamin_poole_invited_you_to_join_a_new_project": "Benjamin Poole invited you to join a new project",
+  "invited_you_to_join_a_new_project": "invited you to join a new project",
   "momentum_smart_house_project": "Momentum Smart House Project",
   "accept": "Accept",
   "decline": "Decline",
@@ -271,5 +271,8 @@
   "km": "km",
   "m": "m",
   "mi": "mi",
-  "please_use_different_set_of_password.": "Please use different set of password"
+  "please_use_different_set_of_password.": "Please use different set of password",
+  "accepted": "Accepted",
+  "declined": "Declined",
+  "something_went_wrong": "Something went wrong!"
 }

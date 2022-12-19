@@ -1,4 +1,3 @@
-
 import 'package:another_flushbar/flushbar.dart';
 import 'package:beehive/constants/image_constants.dart';
 import 'package:beehive/constants/route_constants.dart';
@@ -441,10 +440,19 @@ class DialogHelper {
   }
 
   static notificationDialog(BuildContext context,
-      {required VoidCallback photoFromGallery,
-      required VoidCallback photoFromCamera}) {
+      {required String name,
+      required String projectName,
+      required String address,
+      required double latitude,
+      required double longitude,
+      required int acceptFutureInvites,
+      required Function(bool) accept,
+      required VoidCallback decline}) {
     return BaseView<NotificationProvider>(
-      onModelReady: (provider) {},
+      onModelReady: (provider) {
+        provider.checkValue = acceptFutureInvites == 1;
+        print('llll ${provider.checkValue}');
+      },
       builder: (context, provider, _) {
         return Dialog(
           insetPadding: EdgeInsets.zero,
@@ -494,8 +502,7 @@ class DialogHelper {
                     padding: EdgeInsets.symmetric(
                         horizontal: DimensionConstants.d40.w),
                     child: Text(
-                            "benjamin_poole_invited_you_to_join_a_new_project"
-                                .tr())
+                            "$name ${"invited_you_to_join_a_new_project".tr()}")
                         .boldText(
                       context,
                       DimensionConstants.d18.sp,
@@ -521,8 +528,12 @@ class DialogHelper {
                       myLocationButtonEnabled: false,
                       compassEnabled: false,
                       zoomControlsEnabled: false,
-                      scrollGesturesEnabled: true,
-                      initialCameraPosition: provider.kLake,
+                      scrollGesturesEnabled: false,
+                      zoomGesturesEnabled: false,
+                      initialCameraPosition: CameraPosition(
+                          target: LatLng(latitude, longitude),
+                          tilt: 20,
+                          zoom: 10),
                       onMapCreated: (GoogleMapController controller) {
                         provider.controller.complete(controller);
                       },
@@ -532,7 +543,7 @@ class DialogHelper {
                 SizedBox(
                   height: DimensionConstants.d16.h,
                 ),
-                Text("momentum_smart_house_project".tr()).boldText(
+                Text(projectName).boldText(
                     context, DimensionConstants.d16.sp, TextAlign.left,
                     color: Theme.of(context).brightness == Brightness.dark
                         ? ColorConstants.colorWhite
@@ -555,7 +566,7 @@ class DialogHelper {
                     SizedBox(
                       width: DimensionConstants.d4.w,
                     ),
-                    const Text("123 Northfield Road, Toronto").regularText(
+                    Text(address).regularText(
                         context, DimensionConstants.d14.sp, TextAlign.left,
                         color: Theme.of(context).brightness == Brightness.dark
                             ? ColorConstants.colorWhite
@@ -614,12 +625,11 @@ class DialogHelper {
                             height: DimensionConstants.d50.h,
                             color1: ColorConstants.primaryGradient2Color,
                             color2: ColorConstants.primaryGradient1Color,
-                            fontSize: DimensionConstants.d14.sp, onBtnTap: () {
-                          Navigator.of(context).pop();
-                          Navigator.pushNamed(
-                              context, RouteConstants.projectDetailsPage);
-                        }),
-                      ),
+                            fontSize: DimensionConstants.d14.sp,
+                            onBtnTap:(){
+                              accept(provider.checkValue);
+                            },
+                      )),
                       Expanded(child: Container()),
                       SizedBox(
                         height: DimensionConstants.d50.h,
@@ -629,13 +639,8 @@ class DialogHelper {
                             height: DimensionConstants.d50.h,
                             color1: ColorConstants.deepBlue,
                             color2: ColorConstants.deepBlue,
-                            fontSize: DimensionConstants.d14.sp, onBtnTap: () {
-                          Navigator.of(context).pop();
-                          Navigator.pushNamed(
-                            context,
-                            RouteConstants.archivedProjectsScreen,
-                          );
-                        }),
+                            fontSize: DimensionConstants.d14.sp,
+                            onBtnTap: decline),
                       ),
                     ],
                   ),

@@ -3,6 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+import '../view/dashboard/notifications_screen.dart';
 
 class FirebaseNotification {
   late BuildContext context;
@@ -19,7 +20,6 @@ class FirebaseNotification {
   Future<void> configureFireBase(BuildContext context) async {
     this.context = context;
     flutterNotification(context);
-
     FirebaseMessaging.instance
         .getInitialMessage()
         .then((RemoteMessage? message) async {
@@ -30,30 +30,23 @@ class FirebaseNotification {
 
     FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
       print("Notification Data ${message.data}");
-      print("Notification Data ${message.notification?.title??''}");
-      print("Notification Data ${message.notification?.body??''}");
 
       if (message.data["type"] != null && message.data["type"] == "Assigned") {
-
-
-          RemoteNotification? notification = message.notification;
-          AndroidNotification? android = message.notification?.android;
-          if (notification != null && android != null) {
-            _flutterLocalNotificationsPlugin.show(
-                notification.hashCode,
-                notification.title,
-                notification.body,
-                NotificationDetails(
-                  android: AndroidNotificationDetails(channel.id, channel.name,
-                      channelDescription: channel.description,
-                      importance: Importance.max,
-                      priority: Priority.high),
-                ),
-                payload: json.encode(message.data));
-          }
-
-
-
+        RemoteNotification? notification = message.notification;
+        AndroidNotification? android = message.notification?.android;
+        if (notification != null && android != null) {
+          _flutterLocalNotificationsPlugin.show(
+              notification.hashCode,
+              notification.title,
+              notification.body,
+              NotificationDetails(
+                android: AndroidNotificationDetails(channel.id, channel.name,
+                    channelDescription: channel.description,
+                    importance: Importance.max,
+                    priority: Priority.high),
+              ),
+              payload: json.encode(message.data));
+        }
       }
     });
 
@@ -120,13 +113,10 @@ class FirebaseNotification {
   }
 
   intentToNextScreen(notification) {
-    /*if (notification["ptype"] == 'SMS') {
-      Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) => MessageDetailsScreen(
-                args: MessageDetailsScreenArgs(
-                    notification['pfrom'], notification['pfrom'], null),
-              )));
-    }*/
+    if (notification["type"] == 'Assigned') {
+      Navigator.of(context).push(
+          MaterialPageRoute(builder: (context) => const NotificationsScreen()));
+    }
   }
 
   Future onSelectNotification(String? payload) async {

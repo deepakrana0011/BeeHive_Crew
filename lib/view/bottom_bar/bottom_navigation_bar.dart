@@ -20,6 +20,8 @@ import 'package:provider/provider.dart';
 
 import '../../constants/route_constants.dart';
 import '../../helper/common_widgets.dart';
+import '../../locator.dart';
+import '../../notification/firebase_notification.dart';
 import '../../provider/app_state_provider.dart';
 import '../../provider/project_crew_provider.dart';
 
@@ -53,10 +55,12 @@ class _BottomBarState extends State<BottomBar> {
   ];
 
 
+  FirebaseNotification firebaseNotification = locator<FirebaseNotification>();
+
   @override
   void initState() {
     super.initState();
-
+    firebaseNotification.configureFireBase(context);
   }
 
   @override

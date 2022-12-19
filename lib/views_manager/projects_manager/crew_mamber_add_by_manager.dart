@@ -15,6 +15,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../helper/decoration.dart';
 import '../../helper/dialog_helper.dart';
+import '../../helper/validations.dart';
 
 class CrewMemberAddByManager extends StatelessWidget {
   String projectId;
@@ -106,6 +107,15 @@ class CrewMemberAddByManager extends StatelessWidget {
                         if (provider.nameController.text.trim().isEmpty) {
                           DialogHelper.showMessage(
                               context, "name_required".tr());
+                        }else  if (provider.phoneController.text.trim().isEmpty) {
+                          DialogHelper.showMessage(
+                              context, "phone_required".tr());
+                        }else  if (provider.emailController.text.trim().isEmpty) {
+                          DialogHelper.showMessage(
+                              context, "email_required".tr());
+                        } else if (!Validations.emailValidation(provider.emailController.text.trim())) {
+                          DialogHelper.showMessage(
+                              context, "invalid_email".tr());
                         }else{
                           provider.addNewCrewByManager(context, projectId);
                         }
@@ -116,7 +126,7 @@ class CrewMemberAddByManager extends StatelessWidget {
                             color: ColorConstants.primaryGradient2Color,
                           ),
                         ),
-                ),
+                ), //
                 SizedBox(
                   height: DimensionConstants.d50.h,
                 ),
