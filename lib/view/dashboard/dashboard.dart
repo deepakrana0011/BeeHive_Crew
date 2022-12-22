@@ -73,7 +73,7 @@ class _DashBoardPageState extends State<DashBoardPage>
               if (value) {await provider.getLatLng(context)}
             });
       }
-      await getDashBoardData(context);
+      await getDashBoardData(context, showFullLoader: true);
       provider.startTimer(timer);
     }, builder: (context, provider, _) {
       return Scaffold(
@@ -882,11 +882,16 @@ class _DashBoardPageState extends State<DashBoardPage>
               ),
             ),
             Expanded(
-              child: provider.selectedTabIndex == 0
-                  ? provider.crewResponse!.allCheckin!.isNotEmpty
-                      ? projectsAndHoursCardList(provider)
-                      : zeroProjectZeroHourCard(provider)
-                  : weeklyTabBarContainer(provider),
+              child: provider.isLoading
+                  ? const Center(
+                      child: CircularProgressIndicator(
+                      color: ColorConstants.primaryGradient2Color,
+                    ))
+                  : provider.selectedTabIndex == 0
+                      ? provider.crewResponse!.allCheckin!.isNotEmpty
+                          ? projectsAndHoursCardList(provider)
+                          : zeroProjectZeroHourCard(provider)
+                      : weeklyTabBarContainer(provider),
             )
           ],
         ),
@@ -997,7 +1002,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   projectsHoursRow(ImageConstants.mapIcon,
-                      "${provider.crewResponse!.allCheckin!.length} ${"projects".tr()}"),
+                      "${provider.crewResponse!.projects} ${"projects".tr()}"),
                   Container(
                     height: DimensionConstants.d70.h,
                     width: DimensionConstants.d1.w,
@@ -1070,7 +1075,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                                 provider.nextWeekDays(
                                     provider.selectedTabIndex == 1 ? 7 : 14);
                                 provider.getDashBoardData(
-                                    context, bottomBarProvider);
+                                    context, bottomBarProvider, false);
                               })
                             : Visibility(
                                 visible: false,
@@ -1109,7 +1114,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               projectsHoursRow(ImageConstants.mapIcon,
-                                  "${provider.crewResponse!.allCheckin!.length} ${"projects".tr()}"),
+                                  "${provider.crewResponse!.projects} ${"projects".tr()}"),
                               Container(
                                 height: DimensionConstants.d70.h,
                                 width: DimensionConstants.d1.w,
@@ -1436,8 +1441,9 @@ class _DashBoardPageState extends State<DashBoardPage>
     );
   }
 
-  Future<void> getDashBoardData(BuildContext context) async {
-    await provider.getDashBoardData(context, bottomBarProvider);
+  Future<void> getDashBoardData(BuildContext context,
+      {showFullLoader = false}) async {
+    await provider.getDashBoardData(context, bottomBarProvider, showFullLoader);
     if (provider.crewResponse!.userCheckin != null) {
       var value = provider.oneHourSpendForCheckin();
       if (value) {
@@ -1455,9 +1461,9 @@ class _DashBoardPageState extends State<DashBoardPage>
   Widget _buildMyDoneWidget() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
+      children: const [
         Text('My Done Widget'),
-        const SizedBox(width: 10.0),
+        SizedBox(width: 10.0),
         Icon(Icons.arrow_drop_down, size: 20.0),
       ],
     );

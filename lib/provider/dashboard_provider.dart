@@ -83,11 +83,18 @@ class DashboardProvider extends BaseProvider {
   Location location = Location();
   LocationData? locationData;
 
+  bool isLoading = false;
+
+  void updateLoading(bool value) {
+    isLoading = value;
+    customNotify();
+  }
+
   Future getDashBoardData(
     BuildContext context,
-    BottomBarProvider? managerProvider,
+    BottomBarProvider? managerProvider,bool showFullLoader,
   ) async {
-    setState(ViewState.busy);
+    showFullLoader ? setState(ViewState.busy) : updateLoading(true);
     try {
       var model = await api.dashBoardApi(
           context, startDate!, endDate!, Globals.latitude, Globals.longitude);
@@ -102,15 +109,15 @@ class DashboardProvider extends BaseProvider {
         if (selectedTabIndex != 0) {
           groupDataByDate();
         }
-        setState(ViewState.idle);
+        showFullLoader ? setState(ViewState.idle) : updateLoading(false);
       } else {
-        setState(ViewState.idle);
+        showFullLoader ? setState(ViewState.idle) : updateLoading(false);
       }
     } on FetchDataException catch (e) {
-      setState(ViewState.idle);
+      showFullLoader ? setState(ViewState.idle) : updateLoading(false);
       DialogHelper.showMessage(context, e.toString());
     } on SocketException catch (e) {
-      setState(ViewState.idle);
+      showFullLoader ? setState(ViewState.idle) : updateLoading(false);
       DialogHelper.showMessage(context, "internet_connection".tr());
     }
   }
@@ -178,7 +185,7 @@ class DashboardProvider extends BaseProvider {
           .setString(SharedPreference.popUpShowTime, checkInTime);
       assignProjectId = "";
       if (model.success == true) {
-        getDashBoardData(context, bottomBarProvider);
+        getDashBoardData(context, bottomBarProvider,true);
       } else {
         setState(ViewState.idle);
         DialogHelper.showMessage(context, model.message!);
@@ -210,7 +217,7 @@ class DashboardProvider extends BaseProvider {
           context, crewResponse!.userCheckin!.id!, checkInTimeFinal);
       if (model.success == true) {
         setState(ViewState.idle);
-        getDashBoardData(context, bottomBarProvider);
+        getDashBoardData(context, bottomBarProvider,true);
       }
     } on FetchDataException catch (e) {
       setState(ViewState.idle);

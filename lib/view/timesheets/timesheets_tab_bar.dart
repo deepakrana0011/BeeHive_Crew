@@ -216,7 +216,7 @@ class _TimeSheetsTabBarState extends State<TimeSheetsTabBar>
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   projectsHoursRow(ImageConstants.mapIcon,
-                      "${provider.crewTimeSheetModel?.allCheckin?.length} ${"projects".tr()}"),
+                      "${provider.crewTimeSheetModel?.projects} ${"projects".tr()}"),
                   Container(
                     height: DimensionConstants.d70.h,
                     width: DimensionConstants.d1.w,
@@ -381,7 +381,7 @@ class _TimeSheetsTabBarState extends State<TimeSheetsTabBar>
         ));
       }
     }
-    return Container(
+    return SizedBox(
         width: DimensionConstants.d75.w,
         child: Center(
             child: Flex(
@@ -468,7 +468,7 @@ class _TimeSheetsTabBarState extends State<TimeSheetsTabBar>
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               projectsHoursRow(ImageConstants.mapIcon,
-                                  "${provider.crewTimeSheetModel!.allCheckin!.length} ${"projects".tr()}"),
+                                  "${provider.crewTimeSheetModel!.projects??0} ${"projects".tr()}"),
                               Container(
                                 height: DimensionConstants.d70.h,
                                 width: DimensionConstants.d1.w,
