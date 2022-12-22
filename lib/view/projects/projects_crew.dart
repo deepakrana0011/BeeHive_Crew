@@ -346,13 +346,13 @@ Widget allProjects(BuildContext context, ProjectsCrewProvider provider) {
 
 Widget projectList(BuildContext context, ProjectsCrewProvider provider) {
   return Container(
-    height: DimensionConstants.d410.h,
     width: DimensionConstants.d343.w,
     color: Theme.of(context).brightness == Brightness.dark
         ? ColorConstants.colorBlack
         : ColorConstants.colorWhite,
     child: ListView.builder(
-        //   physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
         itemCount: provider.allCheckoutProjectCrewResponse?.projectData?.length,
         itemBuilder: (BuildContext context, int index) {
           return projectDetailWidget(
@@ -569,11 +569,11 @@ Widget schedule(BuildContext context, ProjectsCrewProvider provider) {
                                   itemCount: provider.dates.length,
                                   itemBuilder:
                                       (BuildContext context, int index) {
-                                        var totalWidth =
-                                            MediaQuery.of(context).size.width -
-                                                DimensionConstants.d32.w;
+                                    var totalWidth =
+                                        MediaQuery.of(context).size.width -
+                                            DimensionConstants.d32.w;
                                     return SizedBox(
-                                      width: totalWidth/7,
+                                      width: totalWidth / 7,
                                       child: Padding(
                                         padding: provider.dates[index] <= 9
                                             ? EdgeInsets.only(
@@ -593,7 +593,8 @@ Widget schedule(BuildContext context, ProjectsCrewProvider provider) {
                                                             .brightness ==
                                                         Brightness.dark
                                                     ? ColorConstants.colorWhite
-                                                    : ColorConstants.colorBlack),
+                                                    : ColorConstants
+                                                        .colorBlack),
                                       ),
                                     );
                                   })),
@@ -608,11 +609,11 @@ Widget schedule(BuildContext context, ProjectsCrewProvider provider) {
                                   itemCount: provider.days.length,
                                   itemBuilder:
                                       (BuildContext context, int index) {
-                                        var totalWidth =
-                                            MediaQuery.of(context).size.width -
-                                                DimensionConstants.d32.w;
+                                    var totalWidth =
+                                        MediaQuery.of(context).size.width -
+                                            DimensionConstants.d32.w;
                                     return SizedBox(
-                                      width: totalWidth/7,
+                                      width: totalWidth / 7,
                                       child: Column(
                                         children: [
                                           Padding(
@@ -620,7 +621,8 @@ Widget schedule(BuildContext context, ProjectsCrewProvider provider) {
                                                 left: DimensionConstants.d19.w,
                                                 right: DimensionConstants.d14.w,
                                                 top: DimensionConstants.d9.h,
-                                                bottom: DimensionConstants.d9.h),
+                                                bottom:
+                                                    DimensionConstants.d9.h),
                                             child: Text(provider.days[index])
                                                 .semiBoldText(
                                                     context,

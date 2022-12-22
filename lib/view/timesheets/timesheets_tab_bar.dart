@@ -216,7 +216,7 @@ class _TimeSheetsTabBarState extends State<TimeSheetsTabBar>
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   projectsHoursRow(ImageConstants.mapIcon,
-                      "${provider.crewTimeSheetModel?.projects} ${"projects".tr()}"),
+                      "${provider.crewTimeSheetModel?.checkInProjects} ${"projects".tr()}"),
                   Container(
                     height: DimensionConstants.d70.h,
                     width: DimensionConstants.d1.w,
@@ -468,7 +468,7 @@ class _TimeSheetsTabBarState extends State<TimeSheetsTabBar>
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               projectsHoursRow(ImageConstants.mapIcon,
-                                  "${provider.crewTimeSheetModel!.projects??0} ${"projects".tr()}"),
+                                  "${provider.crewTimeSheetModel!.checkInProjects??0} ${"projects".tr()}"),
                               Container(
                                 height: DimensionConstants.d70.h,
                                 width: DimensionConstants.d1.w,

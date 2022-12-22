@@ -11,6 +11,7 @@ class CrewTimeSheetModel {
     this.success,
     this.crew,
     this.projects,
+    this.checkInProjects,
     this.totalProjectHours,
     this.allCheckin,
   });
@@ -18,6 +19,7 @@ class CrewTimeSheetModel {
   bool? success;
   Crew? crew;
   int? projects;
+  int? checkInProjects;
   int? totalProjectHours;
   List<AllCheckin>? allCheckin;
 
@@ -25,6 +27,7 @@ class CrewTimeSheetModel {
     success: json["success"],
     crew: Crew.fromJson(json["crew"]),
     projects: json["projects"],
+    checkInProjects: json["checkInProjects"],
     totalProjectHours: json["totalProjectHours"],
     allCheckin: List<AllCheckin>.from(json["allCheckin"].map((x) => AllCheckin.fromJson(x))),
   );
@@ -33,6 +36,7 @@ class CrewTimeSheetModel {
     "success": success,
     "crew": crew?.toJson(),
     "projects": projects,
+    "checkInProjects": checkInProjects,
     "totalProjectHours": totalProjectHours,
     "allCheckin": List<dynamic>.from(allCheckin!.map((x) => x.toJson())),
   };

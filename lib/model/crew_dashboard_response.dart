@@ -7,6 +7,7 @@ class CrewDashboardResponse {
     this.success,
     this.crew,
     this.projects,
+    this.checkInProjects,
     this.allCheckin,
     this.userCheckin,
   });
@@ -14,6 +15,7 @@ class CrewDashboardResponse {
   bool? success;
   CrewDetail? crew;
   int? projects;
+  int? checkInProjects;
   List<CheckInProjectDetailCrew>? allCheckin;
   CheckInProjectDetailCrew? userCheckin;
 
@@ -22,6 +24,7 @@ class CrewDashboardResponse {
         success: json["success"],
         crew: CrewDetail.fromJson(json["crew"]),
         projects: json["projects"],
+        checkInProjects: json["checkInProjects"],
         allCheckin: json["allCheckin"] != null
             ? List<CheckInProjectDetailCrew>.from(json["allCheckin"]
                 .map((x) => CheckInProjectDetailCrew.fromJson(x)))

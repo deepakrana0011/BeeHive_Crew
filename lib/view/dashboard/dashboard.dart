@@ -73,7 +73,7 @@ class _DashBoardPageState extends State<DashBoardPage>
               if (value) {await provider.getLatLng(context)}
             });
       }
-      await getDashBoardData(context, showFullLoader: true);
+      await getDashBoardData(context,showFullLoader: true);
       provider.startTimer(timer);
     }, builder: (context, provider, _) {
       return Scaffold(
@@ -816,10 +816,8 @@ class _DashBoardPageState extends State<DashBoardPage>
                   switch (index) {
                     case 0:
                       {
-                        provider.startDate =
-                            DateFunctions.getCurrentDateMonthYear();
-                        provider.endDate =
-                            DateFunctions.getCurrentDateMonthYear();
+                        provider.startDate = DateFunctions.getCurrentDateMonthYear();
+                        provider.endDate = DateFunctions.getCurrentDateMonthYear();
                         provider.selectedStartDate = null;
                         provider.selectedEndDate = null;
                         getDashBoardData(context);
@@ -882,16 +880,11 @@ class _DashBoardPageState extends State<DashBoardPage>
               ),
             ),
             Expanded(
-              child: provider.isLoading
-                  ? const Center(
-                      child: CircularProgressIndicator(
-                      color: ColorConstants.primaryGradient2Color,
-                    ))
-                  : provider.selectedTabIndex == 0
-                      ? provider.crewResponse!.allCheckin!.isNotEmpty
-                          ? projectsAndHoursCardList(provider)
-                          : zeroProjectZeroHourCard(provider)
-                      : weeklyTabBarContainer(provider),
+              child:provider.isLoading?const Center(child: CircularProgressIndicator(color: ColorConstants.primaryGradient2Color,)): provider.selectedTabIndex == 0
+                  ? provider.crewResponse!.allCheckin!.isNotEmpty
+                      ? projectsAndHoursCardList(provider)
+                      : zeroProjectZeroHourCard(provider)
+                  : weeklyTabBarContainer(provider),
             )
           ],
         ),
@@ -1002,7 +995,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   projectsHoursRow(ImageConstants.mapIcon,
-                      "${provider.crewResponse!.projects} ${"projects".tr()}"),
+                      "${provider.crewResponse!.checkInProjects} ${"projects".tr()}"),
                   Container(
                     height: DimensionConstants.d70.h,
                     width: DimensionConstants.d1.w,
@@ -1075,7 +1068,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                                 provider.nextWeekDays(
                                     provider.selectedTabIndex == 1 ? 7 : 14);
                                 provider.getDashBoardData(
-                                    context, bottomBarProvider, false);
+                                    context, bottomBarProvider,false);
                               })
                             : Visibility(
                                 visible: false,
@@ -1114,7 +1107,7 @@ class _DashBoardPageState extends State<DashBoardPage>
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               projectsHoursRow(ImageConstants.mapIcon,
-                                  "${provider.crewResponse!.projects} ${"projects".tr()}"),
+                                  "${provider.crewResponse!.checkInProjects} ${"projects".tr()}"),
                               Container(
                                 height: DimensionConstants.d70.h,
                                 width: DimensionConstants.d1.w,
@@ -1441,9 +1434,8 @@ class _DashBoardPageState extends State<DashBoardPage>
     );
   }
 
-  Future<void> getDashBoardData(BuildContext context,
-      {showFullLoader = false}) async {
-    await provider.getDashBoardData(context, bottomBarProvider, showFullLoader);
+  Future<void> getDashBoardData(BuildContext context, {showFullLoader = false}) async {
+    await provider.getDashBoardData(context, bottomBarProvider,showFullLoader);
     if (provider.crewResponse!.userCheckin != null) {
       var value = provider.oneHourSpendForCheckin();
       if (value) {
